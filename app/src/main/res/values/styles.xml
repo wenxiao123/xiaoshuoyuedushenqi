@@ -1,0 +1,48 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorAccent2</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- 自定义 Dialog 样式 -->
+    <style name="BaseDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>  <!-- 没有标题-->
+        <item name="android:windowBackground">@android:color/white</item>   <!-- 背景颜色 -->
+        <item name="android:windowFrame">@null</item>   <!-- 没有边框 -->
+        <item name="android:windowIsFloating">true</item>   <!-- 窗口浮动 -->
+        <item name="android:windowContentOverlay">@null</item>  <!-- 没有阴影 -->
+    </style>
+
+    <!-- 隐藏标题栏和设置状态栏透明 -->
+    <style name="TransparentStatusBarTheme" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/colorAccent2</item>
+    </style>
+
+
+    <style name="CTheme" parent="TransparentStatusBarTheme">
+        <item name="android:windowFullscreen">true</item>   <!--全屏-->
+    </style>
+    <!--控制dialog进出动画-->
+    <style name="dialog_animation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <!-- 进入时的动画 -->
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+        <!-- 退出时的动画 -->
+    </style>
+
+    <style name="dialog_setting"  parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item><!-- 无标题 -->
+        <item name="android:windowBackground">@color/white</item>//背景设置为透明
+    </style>
+
+</resources>

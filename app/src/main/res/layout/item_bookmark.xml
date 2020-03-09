@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:minHeight="@dimen/item_catalog_height"
+    android:layout_height="wrap_content"
+    android:background="#F7F7F7">
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/tv_item_catalog_chapter_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/item_catalog_content"
+        android:textColor="@color/item_catalog_text"
+        android:textSize="14sp"
+        android:gravity="start|center"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:background="@drawable/selector_item_catalog_bg" />
+    <TextView
+        android:layout_below="@id/tv_item_catalog_chapter_name"
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="3"
+        android:text="222222222222222222222233333333333333333333333333334444444444444444"
+        android:textColor="@color/item_catalog_text"
+        android:textSize="12sp"
+        android:gravity="start|center"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:background="@drawable/selector_item_catalog_bg" />
+    <TextView
+        android:layout_below="@id/tv_content"
+        android:id="@+id/tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/item_catalog_content"
+        android:textColor="@color/item_catalog_text"
+        android:textSize="10sp"
+        android:gravity="start|center"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:background="@drawable/selector_item_catalog_bg"
+        />
+<View
+    android:layout_width="match_parent"
+    android:layout_height="0.8dp"
+    android:background="@color/white"/>
+</RelativeLayout>
+

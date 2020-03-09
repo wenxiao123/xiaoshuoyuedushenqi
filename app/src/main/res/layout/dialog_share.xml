@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_tip_dialog_bg">
+   <ImageView
+    android:id="@+id/img"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    />
+    <TextView
+        android:id="@+id/tv_dialog_tip_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:text="确定要退出登录？"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:gravity="center" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_dialog_tip_ensure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="是"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/bachground_redfill"
+            android:clickable="true"/>
+
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv_dialog_tip_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="否"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/discovery_all_book_text_normal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="#00000000"
+            android:clickable="true"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

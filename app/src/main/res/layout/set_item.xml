@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingRight="10dp"
+    >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:padding="15dp"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
+    <ImageView
+        android:id="@+id/iv_right"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:tint="@color/gray"
+        android:rotation="180"
+        android:src="@drawable/all_novel_back"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/img_title"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:tint="@color/gray"
+        android:gravity="center"
+        android:text="v 1.0.8"
+        android:textColor="@color/black"
+        android:src="@mipmap/jiangxu" />
+    <View
+        android:layout_marginLeft="15dp"
+        android:id="@+id/line"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_a3"/>
+</RelativeLayout>

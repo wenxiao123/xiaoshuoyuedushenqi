@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_novel_intro_top_image_bg"
+                android:layout_width="0dp"
+                android:layout_height="230dp"
+                android:foreground="@color/novel_intro_top_image_bg_fg"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_cover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- top_navi_bar -->
+
+            <ImageView
+                android:id="@+id/iv_novel_intro_back"
+                android:layout_width="@dimen/novel_intro_top_navi_bar_height"
+                android:layout_height="@dimen/novel_intro_top_navi_bar_height"
+                android:layout_marginTop="20dp"
+                android:padding="13dp"
+                android:src="@drawable/novel_intro_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_novel_intro_menu"
+                android:layout_width="@dimen/novel_intro_top_navi_bar_height"
+                android:layout_height="@dimen/novel_intro_top_navi_bar_height"
+                android:layout_marginTop="20dp"
+                android:padding="9dp"
+                android:src="@drawable/novel_intro_menu"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- novel_intro -->
+
+            <ImageView
+                android:id="@+id/iv_novel_intro_novel_cover"
+                android:layout_width="110dp"
+                android:layout_height="140dp"
+                android:layout_marginRight="20dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/default_cover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_novel_intro_menu" />
+
+            <TextView
+                android:id="@+id/tv_novel_intro_novel_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/novel_intro_text_margin_start_to_cover"
+                android:ellipsize="end"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:text="@string/item_novel_source_name"
+                android:textColor="@color/novel_intro_novel_name_text"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_novel_intro_back" />
+
+            <TextView
+                android:id="@+id/tv_novel_intro_novel_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:text="@string/item_novel_source_author"
+                android:textColor="@color/novel_intro_novel_author_text"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_name" />
+
+            <TextView
+                android:id="@+id/tv_novel_intro_novel_web_site"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="30dp"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:text="@string/item_novel_source_web_site"
+                android:textColor="@color/novel_intro_novel_web_site_text"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_author" />
+
+            <View
+                android:id="@+id/v_novel_intro_line_between_cover_and_introduce"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="@dimen/novel_intro_margin_start_and_end"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="@dimen/novel_intro_margin_start_and_end"
+                android:background="@color/novel_intro_line_between_cover_and_introduce"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_novel_intro_top_image_bg" />
+
+            <TextView
+                android:id="@+id/tv_novel_intro_novel_introduce"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/novel_intro_margin_start_and_end"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="@dimen/novel_intro_margin_start_and_end"
+                android:maxLines="3"
+                android:text="@string/item_novel_source_introduce"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/v_novel_intro_line_between_cover_and_introduce" />
+
+            <ImageView
+                android:id="@+id/iv_novel_intro_more_introduce"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginEnd="@dimen/novel_intro_margin_start_and_end"
+                android:padding="1dp"
+                android:src="@drawable/novel_intro_more_introduce"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_introduce" />
+
+            <!-- separate line -->
+
+            <View
+                android:id="@+id/v_novel_intro_separate_line"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/novel_intro_separate_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_novel_intro_more_introduce" />
+
+            <!-- catalog -->
+
+            <TextView
+                android:id="@+id/tv_novel_intro_catalog"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/selector_novel_intro_catalog_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="start|center"
+                android:paddingStart="@dimen/novel_intro_margin_start_and_end"
+                android:paddingEnd="@dimen/novel_intro_margin_start_and_end"
+                android:text="@string/novel_intro_catalog"
+                android:textColor="@color/novel_intro_catalog_text"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/v_novel_intro_separate_line" />
+
+            <ImageView
+                android:layout_width="@dimen/novel_intro_catalog_height"
+                android:layout_height="@dimen/novel_intro_catalog_height"
+                android:padding="15dp"
+                android:src="@drawable/novel_intro_catalog_next"
+                android:tint="@color/gray_6c"
+                app:layout_constraintBottom_toBottomOf="@id/tv_novel_intro_catalog"
+                app:layout_constraintEnd_toEndOf="@id/tv_novel_intro_catalog"
+                app:layout_constraintTop_toTopOf="@id/tv_novel_intro_catalog" />
+
+            <!-- separate -->
+            <View
+                android:id="@+id/v_novel_intro_separate_line2"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/novel_intro_separate_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_catalog" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/v_novel_intro_separate_line2">
+
+                <RelativeLayout
+                    android:id="@+id/title_rel"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:text="更多同类好书"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/txt_back"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:padding="3dp"
+                        android:src="@drawable/item_category_more" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toLeftOf="@id/txt_back"
+                        android:gravity="center_vertical|right"
+                        android:text="更多"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycle_book"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title_rel"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="50dp"/>
+            </RelativeLayout>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+    <RelativeLayout
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/eve"/>
+        <RelativeLayout
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_load"
+                android:layout_centerVertical="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/txt_load"/>
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/iv_load"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="全本缓存"/>
+        </RelativeLayout>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textSize="14sp"
+            android:background="@drawable/bachground_yellow"
+            android:text="开始阅读"/>
+        <RelativeLayout
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_upload"
+                android:layout_centerVertical="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/add_bookshelf"/>
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/iv_upload"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="加入书架"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/grid_share"
+        android:visibility="gone"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</FrameLayout>
