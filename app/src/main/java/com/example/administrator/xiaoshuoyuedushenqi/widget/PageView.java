@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ScreenUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -186,9 +188,22 @@ public class PageView extends View {
 //根据路径得到Typeface
         Typeface tf;
         if(z==0) {
-            tf = Typeface.createFromAsset(mgr, "font/fzkatong.ttf");
-        }else {
+            //tf = Typeface.createFromAsset(mgr, "font/fzkatong.ttf");
+            String path=Environment.getExternalStorageDirectory().toString()+"/SPM/fzkatong.ttf";
+            File  file = new File(path);
+            if(file.exists()){
+                file.getParentFile().mkdirs();
+            }
+            tf=Typeface.createFromFile(file);
+        }else if(z==1) {
             tf = Typeface.createFromAsset(mgr, "font/qihei.ttf");
+        }else {
+            String path=Environment.getExternalStorageDirectory().toString()+"/SPM/方正华隶.ttf";
+            File  file = new File(path);
+            if(file.exists()){
+                file.getParentFile().mkdirs();
+            }
+            tf=Typeface.createFromFile(file);
         }
         textPaint.setTypeface(tf);
         drawText(canvas, textPaint, mTextSize + getPaddingTop());

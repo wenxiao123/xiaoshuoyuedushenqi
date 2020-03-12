@@ -14,7 +14,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePagingLoadAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.ANNovelData;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 
 import java.util.List;
 
@@ -22,11 +24,11 @@ import java.util.List;
  * @author WX
  * Created on 2019/12/21
  */
-public class NovelAdapter extends BasePagingLoadAdapter<ANNovelData> {
+public class NovelAdapter extends BasePagingLoadAdapter<NovalInfo> {
 
     private NovelListener mListener;
 
-    public NovelAdapter(Context mContext, List<ANNovelData> mList,
+    public NovelAdapter(Context mContext, List<NovalInfo> mList,
                         LoadMoreListener loadMoreListener, NovelListener novelListener) {
         super(mContext, mList, loadMoreListener);
         mListener = novelListener;
@@ -51,9 +53,9 @@ public class NovelAdapter extends BasePagingLoadAdapter<ANNovelData> {
         NovelViewHolder novelViewHolder = (NovelViewHolder) holder;
         novelViewHolder.title.setText(mList.get(position).getTitle());
         novelViewHolder.author.setText(mList.get(position).getAuthor());
-        novelViewHolder.shortInfo.setText(mList.get(position).getShortInfo());
+        novelViewHolder.shortInfo.setText(mList.get(position).getContent());
         Glide.with(mContext)
-                .load(mList.get(position).getCover())
+                .load(UrlObtainer.GetUrl()+mList.get(position).getPic())
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.cover_place_holder)
                         .error(R.drawable.cover_error))
@@ -64,12 +66,13 @@ public class NovelAdapter extends BasePagingLoadAdapter<ANNovelData> {
                 mListener.clickItem(mList.get(position).getTitle());
             }
         });
+        novelViewHolder.cata.setText(" | "+mList.get(position).getCategory_name());
     }
 
     class NovelViewHolder extends RecyclerView.ViewHolder {
         ImageView cover;
         TextView title;
-        TextView author;
+        TextView author,cata;
         TextView shortInfo;
 
         public NovelViewHolder(@NonNull View itemView) {
@@ -78,6 +81,7 @@ public class NovelAdapter extends BasePagingLoadAdapter<ANNovelData> {
             title = itemView.findViewById(R.id.tv_item_novel_title);
             author = itemView.findViewById(R.id.tv_item_novel_author);
             shortInfo = itemView.findViewById(R.id.tv_item_novel_short_info);
+            cata=itemView.findViewById(R.id.tv_item_novel_cata);
         }
     }
 }

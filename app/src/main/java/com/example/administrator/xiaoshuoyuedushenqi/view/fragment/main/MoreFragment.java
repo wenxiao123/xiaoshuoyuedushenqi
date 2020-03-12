@@ -16,11 +16,13 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Version;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.MarketTools;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.VersionUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AdminSetActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FeedbackActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.LoginActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
@@ -47,8 +49,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     MainRecyleAdapter mainRecyleAdapter2;
     MainRecyleAdapter mainRecyleAdapter3;
     RecyclerView recyclerView1, recyclerView2, recyclerView3;
-    String[] strings1={"随时赚现金","给个五星好评","随时赚现金","意见反馈","分享给好友"};
-    int[] ints1={R.mipmap.bookmark,R.mipmap.bookmark,R.mipmap.bookmark,R.mipmap.bookmark,R.mipmap.bookmark};
+    String[] strings1={"随时赚现金","给个五星好评","意见反馈","分享给好友"};
+    int[] ints1={R.mipmap.bookmark,R.mipmap.bookmark,R.mipmap.bookmark,R.mipmap.bookmark};
     String[] strings2={"夜间模式"};
     int[] ints2={R.mipmap.bookmark};
     String[] strings3={"阅读记录","设置"};
@@ -66,13 +68,15 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
                     case 0:
                         break;
                     case 1:
+//                        MarketTools.getTools().startMarket(Context mContext);//打开应用市场，打开当前安装应用的手机应用市场
+//                        MarketTools.getTools().startMarket(Context mContext,String appPackageName);//指定应用包名去打开当前安装应用的手机应用市场
+//                        MarketTools.getTools().startMarket(Context mContext,String appMarketPackageName);//指定应用包名，指定应用商店包名去打开
+                        MarketTools.getTools().startMarket(getContext());
                         break;
                     case 2:
-                        break;
-                    case 3:
                         getContext().startActivity(new Intent(getContext(), FeedbackActivity.class));
                         break;
-                    case 4:
+                    case 3:
                         final ShareDialog tipDialog = new ShareDialog.Builder(getActivity())
                                 .setContent("是否清除缓存")
                                 .setCancel("下次再说")
@@ -156,6 +160,12 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
 
         recyclerView3= getActivity().findViewById(R.id.recycle_part3);
         recyclerView3.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.VERTICAL,false));
+        getActivity().findViewById(R.id.rel_login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getContext().startActivity(new Intent(getContext(), LoginActivity.class));
+            }
+        });
     }
 
     @Override

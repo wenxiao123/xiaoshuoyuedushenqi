@@ -11,7 +11,8 @@
         android:layout_height="200dp"
         android:background="@color/test_fore_ground">
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:id="@+id/rel_login"
+        android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_centerVertical="true">
         <com.example.administrator.xiaoshuoyuedushenqi.widget.OvalImageView

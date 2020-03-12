@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private static final int FG_BOOKSHELF = 0;
     private static final int FG_DISCOVERY = 1;
     private static final int FG_MORE = 2;
-    private static final int FG_BOOKMARK = 3;
+    public static final int FG_BOOKMARK = 3;
 
     private static final String KEY_BOOKSHELF_FG = "bookshelf_fg";
     private static final String KEY_DISCOVERY_FG = "discovery_fg";
@@ -282,7 +282,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 break;
         }
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void checked(){
+        // 如果已经点击了该菜单项，无视该操作
+        if (mBookMarkAfter.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        // 在开启当前菜单项的动画前，先切换其他菜单项的 icon
+        mBookshelfBeforeIv.setVisibility(View.VISIBLE);
+        mBookshelfAfterIv.setVisibility(View.INVISIBLE);
+        mDiscoveryBeforeIv.setVisibility(View.VISIBLE);
+        mDiscoveryAfterIv.setVisibility(View.INVISIBLE);
+        mMoreBeforeIv.setVisibility(View.VISIBLE);
+        mMoreAfterIv.setVisibility(View.INVISIBLE);
+        // 开启当前菜单项的动画
+        initBookmarkShowAnim();
+        mBookMarkAfter.setVisibility(View.VISIBLE);
+        mBookmarkAnim.start();
+        // 切换 Fragment
+        changeFragment(FG_BOOKMARK);
+    }
     /**
      * 初始化“书架”图标的显示动画
      */
@@ -403,7 +422,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
      * @see #FG_DISCOVERY 发现页面（DiscoveryFragment）
      * @see #FG_MORE 更多页面（MoreFragment）
      */
-    private void changeFragment(int i) {
+    public void changeFragment(int i) {
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         Fragment showFragment = null;
         switch (i) {
@@ -452,6 +471,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mCurrFragment = showFragment;
 
         ft.commit();
+    }
+
+    private FragmentTransaction switchFragment(Fragment targetFragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (!targetFragment.isAdded()) {
+            //绗竴娆′娇鐢╯witchFragment()鏃禼urrentFragment涓簄ull锛屾墍浠ヨ鍒ゆ柇涓€涓?
+            if (mCurrFragment != null) {
+                transaction.hide(mCurrFragment);
+            }
+            transaction.add(R.id.fv_main_fragment_container, targetFragment,targetFragment.getClass().getName());
+        } else {
+            transaction .hide(mCurrFragment).show(targetFragment);
+        }
+        mCurrFragment = targetFragment;
+        return transaction;
     }
 
     /**

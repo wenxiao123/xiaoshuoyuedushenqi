@@ -10,31 +10,34 @@
     android:id="@+id/bookshelf_title"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:background="@color/colorAccent2"
+    android:background="@drawable/background_grint"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     android:orientation="horizontal">
     <ImageView
+        android:layout_marginLeft="10dp"
         android:id="@+id/iv_bookshelf_add"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:padding="2dp"
+        android:tint="@color/white"
         android:src="@mipmap/sousuo"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="0dp"/>
     <ImageView
+        android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
         android:id="@+id/iv_bookshelf_more"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:padding="2dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
         android:src="@mipmap/more"/>
     <TextView
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:id="@+id/tv_bookshelf_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

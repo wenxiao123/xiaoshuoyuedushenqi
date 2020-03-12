@@ -42,6 +42,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.BookCataloActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MainActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MyBookshelfActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
@@ -454,15 +455,19 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         mCheckedList.add(false);
         mBookshelfNovelsAdapter = new BookshelfNovelsAdapter(getActivity(), mDataList, mCheckedList,
                 new BookshelfNovelsAdapter.BookshelfNovelListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void clickItem(int position) {
-                        if (!NetUtil.hasInternet(getActivity())) {
-                            showShortToast("当前无网络，请检查网络后重试");
-                            return;
-                        }
-                        if (mIsDeleting||mDataList.get(position).getType()==-1) {
-                            return;
-                        }
+                        if(position==mDataList.size()-1){
+                            ((MainActivity)getActivity()).checked();
+                        }else {
+                            if (!NetUtil.hasInternet(getActivity())) {
+                                showShortToast("当前无网络，请检查网络后重试");
+                                return;
+                            }
+                            if (mIsDeleting || mDataList.get(position).getType() == -1) {
+                                return;
+                            }
 //                        if(mDataList.get(position).getType()==1){
 //                            TxtConfig.saveIsOnVerticalPageMode(getContext(),false);
 //                            HwTxtPlayActivity.loadTxtFile(getContext(), mDataList.get(position).getNovelUrl());
@@ -481,6 +486,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                             intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
                             intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
                             startActivity(intent);
+                        }
                        // }
                     }
 

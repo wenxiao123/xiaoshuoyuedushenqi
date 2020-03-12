@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -58,7 +59,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private RecyclerView mCategoryNovelRv;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mRefreshSrv;
-
+    private FrameLayout frameLayout_banner;
     private HotRankAdapter mHotRankAdapter;
     private List<List<String>> mHotRankNovelNameList;
 
@@ -114,6 +115,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
                 }, 500);
             }
         });
+        frameLayout_banner=getActivity().findViewById(R.id.banner);
         mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager);
 
         uIndicator4 = getActivity().findViewById(R.id.indicator4);
@@ -177,6 +179,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         if (mIsVisited && !mIsLoadedData) {
             requestUpdate();
             mProgressBar.setVisibility(View.VISIBLE);
+            frameLayout_banner.setVisibility(View.GONE);
             mIsLoadedData = true;
         }
     }
@@ -190,6 +193,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         if (mIsVisited && !mIsLoadedData && mIsCreatedView) {
             requestUpdate();
             mProgressBar.setVisibility(View.VISIBLE);
+            frameLayout_banner.setVisibility(View.GONE);
             mIsLoadedData = true;
         }
     }
@@ -211,7 +215,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected int getPosition() {
-        return 0;
+        return 2;
     }
 
 
@@ -248,7 +252,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
-
+        frameLayout_banner.setVisibility(View.VISIBLE);
         if (dataList.isEmpty()) {
             return;
         }
@@ -280,6 +284,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     public void getCategoryNovelsError(String errorMsg) {
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
+        frameLayout_banner.setVisibility(View.GONE);
     }
 
     private void initHotRankAdapter() {

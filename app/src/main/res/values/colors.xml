@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent2">#EA2626</color>
     <color name="red">#e60606</color>
+    <color name="red_aa">#F15C2F</color>
+    <color name="red_a2">#FF4D89</color>
     <color name="colorAccent">@android:color/holo_blue_light</color>
 
     <!-- app -->

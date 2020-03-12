@@ -3,6 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -73,8 +75,15 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
         Typeface tf;
         if(i==0) {
             tf = Typeface.createFromAsset(mgr, "font/fzkatong.ttf");
-        }else {
+        }else  if(i==1) {
             tf = Typeface.createFromAsset(mgr, "font/qihei.ttf");
+        }else {
+            String path= Environment.getExternalStorageDirectory().toString()+"/SPM/方正华隶.ttf";
+            File file = new File(path);
+            if(file.exists()){
+                file.getParentFile().mkdirs();
+            }
+            tf=Typeface.createFromFile(file);
         }
         screenViewHolder.text.setTypeface(tf);
         screenViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

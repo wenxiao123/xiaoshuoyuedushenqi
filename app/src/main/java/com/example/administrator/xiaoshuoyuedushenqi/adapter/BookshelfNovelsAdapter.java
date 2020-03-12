@@ -74,9 +74,11 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             contentViewHolder.checkBox.setVisibility(View.VISIBLE);
             // 先设置 CheckBox 的状态，解决 RecyclerView 对 CheckBox 的复用所造成的影响
             if (mCheckedList.get(i)) {
-                contentViewHolder.checkBox.setVisibility(View.VISIBLE);
+                contentViewHolder.checkBox.setImageResource(R.mipmap.sys_selected);
+                contentViewHolder.cover.setAlpha(0.5f);
             } else {
-                contentViewHolder.checkBox.setVisibility(View.GONE);
+                contentViewHolder.cover.setAlpha(1f);
+                contentViewHolder.checkBox.setImageResource(R.mipmap.sys_select);
             }
         } else {
             contentViewHolder.checkBox.setVisibility(View.GONE);
@@ -118,7 +120,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             contentViewHolder.img_add.setVisibility(View.GONE);
         }else if(mDataList.get(i).getType() == -1){
             Glide.with(mContext)
-                    .load(R.drawable.bachground_line)
+                    .load(R.drawable.grey)
                     .apply(new RequestOptions()
 //                           .placeholder(R.drawable.cover_place_holder)
                             .error(R.drawable.cover_error))
@@ -131,11 +133,13 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 if (mIsMultiDelete) {
-                    if (contentViewHolder.checkBox.getVisibility()==View.VISIBLE) {
-                        contentViewHolder.checkBox.setVisibility(View.GONE);
+                    if (contentViewHolder.cover.getAlpha()==0.5f) {
+                        contentViewHolder.checkBox.setImageResource(R.mipmap.sys_select);
+                        contentViewHolder.cover.setAlpha(1f);
                         mCheckedList.set(i, false);
                     } else {
-                        contentViewHolder.checkBox.setVisibility(View.VISIBLE);
+                        contentViewHolder.checkBox.setImageResource(R.mipmap.sys_selected);
+                        contentViewHolder.cover.setAlpha(0.5f);
                         mCheckedList.set(i, true);
                     }
                     int z=0;

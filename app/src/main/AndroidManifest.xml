@@ -20,7 +20,10 @@
         <activity android:name=".view.activity.EpubCatalogActivity" />
         <activity android:name=".view.activity.CatalogActivity" />
         <activity android:name=".test.TestActivity"></activity>
-        <activity android:name=".view.activity.SearchActivity"/>
+        <activity android:name=".view.activity.FenleiNovelActivity"/>
+        <activity android:name=".view.activity.SearchActivity"
+           />
+        <activity android:name=".view.activity.LoginActivity"/>
         <activity
             android:name=".view.activity.MainActivity"
             android:theme="@style/AppTheme">

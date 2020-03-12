@@ -17,6 +17,9 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore.ExclusivelistGFragment;
+import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore.FemaleLikeFragment;
+import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore.MaleLikeFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.FemaleFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.MaleFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.PressFragment;
@@ -30,8 +33,6 @@ import java.util.List;
  * Created on 2020/2/20
  */
 public class BookstoreFragment extends BaseFragment implements View.OnClickListener{
-
-    private static final String TAG = "zh";
     private ImageView mSearchView;
     private TextView mAllBookTv;
     private EnhanceTabLayout mTabLayout;
@@ -52,29 +53,30 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     protected void initData() {
-//        mFragmentList.add(new MaleFragment());
-//        mFragmentList.add(new FemaleFragment());
-//        mFragmentList.add(new PressFragment());
+        mFragmentList.add(new MaleLikeFragment());
+        mFragmentList.add(new FemaleLikeFragment());
+        mFragmentList.add(new ExclusivelistGFragment());
 
-        mPageTitleList.add(getString(R.string.discovery_male));
-        mPageTitleList.add(getString(R.string.discovery_female));
-        mPageTitleList.add(getString(R.string.discovery_press));
+        mPageTitleList.add("男生喜欢");
+        mPageTitleList.add("女生喜欢");
+        mPageTitleList.add("专属榜单");
     }
 
     @Override
     protected void initView() {
-        mSearchView = getActivity().findViewById(R.id.iv_discovery_search_icon);
+        mSearchView = getActivity().findViewById(R.id.iv_discovery_search_icon1);
         mSearchView.setOnClickListener(this);
-        mAllBookTv = getActivity().findViewById(R.id.tv_discovery_all_book);
+        mAllBookTv = getActivity().findViewById(R.id.tv_discovery_all_book1);
         mAllBookTv.setOnClickListener(this);
 
+        mTabLayout = getActivity().findViewById(R.id.tv_discovery_tab_layout1);
         // TabLayout + ViewPager
-        mViewPager = getActivity().findViewById(R.id.vp_discovery_view_pager);
+        mViewPager = getActivity().findViewById(R.id.vp_discovery_view_pager1);
         // 在 Fragment 中只能使用 getChildFragmentManager() 获取 FragmentManager 来处理子 Fragment
         mViewPager.setAdapter(new NormalViewPagerAdapter(getChildFragmentManager(),
                 mFragmentList, mPageTitleList));
         // 缓存左右两侧的两个页面（很重要！！！，不设置这个切换到前两个的时候就会重新加载数据）
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(2);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -91,7 +93,6 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
 
             }
         });
-        mTabLayout = getActivity().findViewById(R.id.tv_discovery_tab_layout);
         for(int i=0;i<mPageTitleList.size();i++){
             mTabLayout.addTab(mPageTitleList.get(i));
         }
@@ -103,7 +104,7 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
 //        });
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.getmTabLayout().getTabAt(0).select();
-        //mViewPager.setPageTransformer(false, new DiscoveryPageTransformer(mTabLayout));
+//        mViewPager.setPageTransformer(false, new DiscoveryPageTransformer(mTabLayout.getmTabLayout()));
     }
 
     @Override
@@ -119,10 +120,10 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_discovery_search_icon:
+            case R.id.iv_discovery_search_icon1:
                 jump2Activity(SearchActivity.class);
                 break;
-            case R.id.tv_discovery_all_book:
+            case R.id.tv_discovery_all_book1:
                 if (!NetUtil.hasInternet(getActivity())) {
                     showShortToast("当前无网络，请检查网络后重试");
                     return;

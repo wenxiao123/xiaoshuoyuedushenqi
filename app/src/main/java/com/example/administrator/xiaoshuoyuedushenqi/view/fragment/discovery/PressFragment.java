@@ -125,7 +125,7 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
 
     @Override
     protected int getPosition() {
-        return 2;
+        return 0;
     }
 
     /**

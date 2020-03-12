@@ -62,4 +62,5 @@ dependencies {
     implementation project(':hwtxtreaderlib')
     implementation project(':indicator')
     compile 'com.github.fingerth:FingerthAndroidUtils:1.0.3'
+    compile 'q.rorbin:VerticalTabLayout:1.2.5'
 }

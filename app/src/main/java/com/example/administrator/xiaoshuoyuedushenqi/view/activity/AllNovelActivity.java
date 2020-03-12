@@ -524,31 +524,31 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         } else {    // 第一次加载
             if (mNovelAdapter == null) {
                 mDataList = dataList;
-                mNovelAdapter = new NovelAdapter(this, mDataList,
-                        new BasePagingLoadAdapter.LoadMoreListener() {
-                            @Override
-                            public void loadMore() {
-                                // 加载下一页
-                                mCurrStart += Constant.NOVEL_PAGE_NUM;
-                                mIsLoadingMore = true;
-                                requestNovels(true);
-                            }
-                        },
-                        new NovelAdapter.NovelListener() {
-                            @Override
-                            public void clickItem(String novelName) {
-                                if (mRefreshSrv.isRefreshing()) {
-                                    return;
-                                }
-                                if (mIsSearching) {
-                                    return;
-                                }
-                                Intent intent = new Intent(AllNovelActivity.this, SearchActivity.class);
-                                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-                                intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
-                                startActivity(intent);
-                            }
-                        });
+//                mNovelAdapter = new NovelAdapter(this, mDataList,
+//                        new BasePagingLoadAdapter.LoadMoreListener() {
+//                            @Override
+//                            public void loadMore() {
+//                                // 加载下一页
+//                                mCurrStart += Constant.NOVEL_PAGE_NUM;
+//                                mIsLoadingMore = true;
+//                                requestNovels(true);
+//                            }
+//                        },
+//                        new NovelAdapter.NovelListener() {
+//                            @Override
+//                            public void clickItem(String novelName) {
+//                                if (mRefreshSrv.isRefreshing()) {
+//                                    return;
+//                                }
+//                                if (mIsSearching) {
+//                                    return;
+//                                }
+//                                Intent intent = new Intent(AllNovelActivity.this, SearchActivity.class);
+//                                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+//                                intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+//                                startActivity(intent);
+//                            }
+//                        });
                 mNovelListRv.setAdapter(mNovelAdapter);
             } else {
                 mDataList.clear();

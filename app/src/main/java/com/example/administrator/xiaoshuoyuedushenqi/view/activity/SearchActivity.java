@@ -1,6 +1,8 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
@@ -29,6 +31,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SoftInputUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search.HistoryFragment;
+import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search.SearchFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search.SearchResultFragment;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -49,16 +52,18 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private ImageView mDeleteSearchTextIv;
 
     private HistoryFragment mHistoryFragment;
+    private SearchFragment mSearchFragment;
     private SearchResultFragment mSearchResultFragment;
     private FragmentManager mFragmentManager = getSupportFragmentManager();
     private boolean mIsShowSearchResFg = false;     // 是否正在显示搜索结果 Fragment
     private String mLastSearch = "";        // 记录上一搜索词
-
+    private RecyclerView search_recyler;
     private DatabaseManager mManager;   // 数据库管理类
 
     @Override
     protected void doBeforeSetContentView() {
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);   //隐藏标题栏
+        StatusBarUtil.setLightColorStatusBar(this);
     }
 
     @Override
@@ -78,6 +83,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initView() {
+        search_recyler=findViewById(R.id.search_recyler);
         mBackIv = findViewById(R.id.iv_search_back);
         mBackIv.setOnClickListener(this);
         mSearchBarEt = findViewById(R.id.et_search_search_bar);
@@ -103,6 +109,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     // 显示删除 icon
                     mDeleteSearchTextIv.setVisibility(View.VISIBLE);
                 }
+                showSearchFg(s.toString());
             }
 
             @Override
@@ -131,11 +138,12 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         mDeleteSearchTextIv.setOnClickListener(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void doAfterInit() {
         // 更改状态栏颜色
-//        StatusBarUtil.setLightColorStatusBar(this);
-//        getWindow().setStatusBarColor(getResources().getColor(R.color.search_bg));
+        StatusBarUtil.setLightColorStatusBar(this);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.search_bg));
 
         String novelName = getIntent().getStringExtra(KEY_NOVEL_NAME);
         if (novelName != null) {
@@ -233,6 +241,24 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.add(R.id.fv_search_container, mHistoryFragment);
         ft.show(mHistoryFragment);
+        ft.commit();
+    }
+
+    /**
+     * 第一次进入搜索页面时，显示历史搜索 Fragment
+     */
+    private void showSearchFg(String stringContent) {
+        if (mSearchFragment == null) {
+            mSearchFragment = SearchFragment.newInstance(stringContent);
+        }else {
+            return;
+        }
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.add(R.id.fv_search_container, mSearchFragment);
+        if (mHistoryFragment != null) {
+            ft.hide(mHistoryFragment);
+        }
+        ft.show(mSearchFragment);
         ft.commit();
     }
 

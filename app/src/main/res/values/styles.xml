@@ -9,6 +9,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="AppTheme1" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
     <!-- 自定义 Dialog 样式 -->
     <style name="BaseDialog" parent="android:style/Theme.Dialog">
@@ -20,12 +28,12 @@
     </style>
 
     <!-- 隐藏标题栏和设置状态栏透明 -->
-    <style name="TransparentStatusBarTheme" parent="AppTheme">
+    <style name="TransparentStatusBarTheme" parent="AppTheme1">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/colorAccent2</item>
+        <item name="android:statusBarColor">@color/white</item>
     </style>
 
 

@@ -181,11 +181,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private float mTextSize;    // 字体大小
     private float mRowSpace;    // 行距
     private int mTheme;         // 阅读主题
-    private int mStyle;         // 阅读主题
+    private int mStyle;         // 字体样式
     private float mBrightness;  // 屏幕亮度，为 -1 时表示系统亮度
     private boolean mIsNightMode;           // 是否为夜间模式
     private int mTurnType;      // 翻页模式：0 为正常，1 为仿真
-    private String[] strings = {"方正卡通","方正旗黑"};
+    private String[] strings = {"方正卡通","方正旗黑","方正华隶"};
     private float mMinTextSize = 36f;
     private float mMaxTextSize = 76f;
     private float mMinRowSpace = 0f;
@@ -591,6 +591,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 textStyleAdapter.setPosition(position);
                 textStyleAdapter.notifyDataSetChanged();
                 mPageView.setmSype(position);
+                mStyle=position;
             }
         });
         if (mBrightness == -1f) {    // 系统亮度

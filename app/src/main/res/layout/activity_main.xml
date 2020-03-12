@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="@dimen/bottom_bar_height" />
+        app:layout_constraintGuide_percent="0.91928864" />
 
     <!-- bottom bar bg -->
 
@@ -79,7 +79,8 @@
         android:id="@+id/v_main_bottom_bar_separator"
         android:layout_width="0dp"
         android:layout_height="0.1dp"
-        android:background="@color/color_main_bottom_bar_separator"
+        android:elevation="1dp"
+        android:background="@drawable/eve"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/gl_main_h_bottom_bar_top"/>

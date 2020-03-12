@@ -19,6 +19,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.SearchUpdat
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.FlowLayout;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.LineBreakLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import java.util.ArrayList;
@@ -34,11 +35,12 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
     private RecyclerView mHistoryListFv;
     private TextView mClearAllIv;
-
+    private ImageView delect_all;
     private DatabaseManager mManager;
     private HistoryAdapter mHistoryAdapter;
     private List<String> mContentList = new ArrayList<>();  // 搜索内容集合
     private RecyclerView recyclerView_hot_book;
+    private LineBreakLayout lineBreakLayout;
     private BookhotAdapter bookhotAdapter;
     @Override
     protected int getLayoutId() {
@@ -65,7 +67,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                 EventBusUtil.sendEvent(event);
             }
         });
-
+        delect_all=getActivity().findViewById(R.id.iv_delect_all);
         recyclerView_hot_book=getActivity().findViewById(R.id.recycle_hot_book);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView_hot_book.setLayoutManager(gridLayoutManager);
@@ -94,7 +96,10 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         mClearAllIv.setOnClickListener(this);
         if (mContentList.size() != 0) {
             mClearAllIv.setVisibility(View.VISIBLE);
+            delect_all.setVisibility(View.VISIBLE);
         }
+        lineBreakLayout=getActivity().findViewById(R.id.lineBreak);
+        lineBreakLayout.setLables(mContentList, true);
     }
 
     @Override
@@ -123,6 +128,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         mContentList = mManager.queryAllHistory();
         if (mContentList.size() != 0) {
             mClearAllIv.setVisibility(View.VISIBLE);
+            delect_all.setVisibility(View.VISIBLE);
         }
         mHistoryAdapter.updateList(mContentList);   // 记得要先更新 Adapter 的数据
         //mHistoryListFv.updateView();
@@ -149,6 +155,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                                 mHistoryAdapter.notifyDataSetChanged();
                                 // 图标隐藏
                                 mClearAllIv.setVisibility(View.GONE);
+                                delect_all.setVisibility(View.GONE);
                             }
 
                             @Override

@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.http;
 
+import android.support.annotation.NonNull;
+
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 
 /**
@@ -9,6 +11,10 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
  * Created on 2019/11/6
  */
 public class UrlObtainer {
+
+    public static String GetUrl() {
+        return "http://cms.scxy88.cn/";
+    }
 
     /**
      * 获取排行榜小说

@@ -94,9 +94,9 @@ public class Constant {
     public static final String CATEGORY_TYPE_REPUTATION = "reputation";   // 好评
     public static final String CATEGORY_TYPE_OVER = "over";   // 完结
     public static final String CATEGORY_TYPE_MONTH = "month";   // 包月
-    public static final String CATEGORY_TYPE_HOT_TEXT = "热门";
-    public static final String CATEGORY_TYPE_NEW_TEXT = "新书";
-    public static final String CATEGORY_TYPE_REPUTATION_TEXT = "好评";
+    public static final String CATEGORY_TYPE_HOT_TEXT = "最热";
+    public static final String CATEGORY_TYPE_NEW_TEXT = "最新";
+    public static final String CATEGORY_TYPE_REPUTATION_TEXT = "评分";
     public static final String CATEGORY_TYPE_OVER_TEXT = "完结";
     public static final String CATEGORY_TYPE_MONTH_TEXT = "包月";
     // major（男生）

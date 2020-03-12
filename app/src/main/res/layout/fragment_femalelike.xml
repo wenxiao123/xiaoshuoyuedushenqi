@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+    <q.rorbin.verticaltablayout.VerticalTabLayout
+        android:id="@+id/tablayout1"
+        android:layout_marginTop="15dp"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        app:indicator_color="@color/red_aa"
+        app:indicator_width="4dp"
+        app:tab_margin="10dp"
+        app:indicator_corners="20dp"
+        app:indicator_gravity="left"
+        app:tab_height="50dp"
+        android:visibility="visible"
+        app:tab_mode="scrollable" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/grid_fenlei1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

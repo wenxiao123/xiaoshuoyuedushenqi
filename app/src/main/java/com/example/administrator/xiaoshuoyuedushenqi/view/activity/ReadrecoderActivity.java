@@ -20,6 +20,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.PinyinUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SDCardHelper;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SideBar;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search.SearchResultFragment;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import java.io.File;
 import java.io.Serializable;
@@ -59,6 +61,28 @@ public class ReadrecoderActivity extends BaseActivity {
                finish();
             }
         });
+        findViewById(R.id.iv_bookshelf_more).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final TipDialog tipDialog = new TipDialog.Builder(ReadrecoderActivity.this)
+                        .setContent("是否清除缓存")
+                        .setCancel("取消")
+                        .setEnsure("确定")
+                        .setOnClickListener(new TipDialog.OnClickListener() {
+                            @Override
+                            public void clickEnsure() {
+
+                            }
+
+                            @Override
+                            public void clickCancel() {
+
+                            }
+                        })
+                        .build();
+                tipDialog.show();
+            }
+        });
         showSearchResFg();
     }
 
@@ -86,4 +110,5 @@ public class ReadrecoderActivity extends BaseActivity {
     protected boolean isRegisterEventBus() {
         return false;
     }
+
 }

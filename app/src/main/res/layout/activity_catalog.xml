@@ -121,7 +121,7 @@
         app:tabTextColor="#E6E4E4"
         app:tab_Mode="mode_fixed"
         app:tabSelectTextColor="@color/white"
-        app:tabTextSize="9sp"
+        app:tabTextSize="7sp"
         >
 
     </com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout>

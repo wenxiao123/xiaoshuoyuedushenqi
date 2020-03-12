@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.model;
 
+import android.util.Log;
+
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IPressContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovelsBean;
@@ -7,6 +9,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelD
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
