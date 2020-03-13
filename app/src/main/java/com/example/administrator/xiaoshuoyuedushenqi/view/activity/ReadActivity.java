@@ -82,6 +82,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private static final String LOADING_TEXT = "正在加载中…";
 
     public static final String KEY_NOVEL_URL = "read_key_novel_url";
+    public static final String KEY_CHPATER_ID = "chpter_id";
     public static final String KEY_NAME = "read_key_name";
     public static final String KEY_COVER = "read_key_cover";
     public static final String KEY_CHAPTER_INDEX = "read_key_chapter_index";
@@ -190,7 +191,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private float mMaxTextSize = 76f;
     private float mMinRowSpace = 0f;
     private float mMaxRowSpace = 48f;
-
+    private int chpter_id;
+    private int first_read;
     // 监听系统亮度的变化
     private ContentObserver mBrightnessObserver = new ContentObserver(new Handler()) {
         @Override
@@ -223,10 +225,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     @Override
     protected void initData() {
         // 从前一个活动传来
+        chpter_id=getIntent().getIntExtra(KEY_CHPATER_ID,1);
+        first_read=getIntent().getIntExtra("first_read",0);
         mNovelUrl = getIntent().getStringExtra(KEY_NOVEL_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
-        mChapterIndex = getIntent().getIntExtra(KEY_CHAPTER_INDEX, 0);
+        weigh=getIntent().getIntExtra("weigh",0);
+        //mChapterIndex = getIntent().getIntExtra(KEY_CHAPTER_INDEX, 0);
         mCatalog_posotion = getIntent().getIntExtra(Catalog_start_Position, 0);
         mPosition = getIntent().getIntExtra(KEY_POSITION, 0);
         mIsReverse = getIntent().getBooleanExtra(KEY_IS_REVERSE, false);
@@ -570,7 +575,14 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     protected void doAfterInit() {
         if (mType == 0) {
             // 先通过小说 url 获取所有章节 url 信息
-            mPresenter.getChapterList(UrlObtainer.getCatalogInfo(mNovelUrl));
+            //mPresenter.getChapterList(mid);
+            if(first_read==0){
+            mPresenter.getDetailedChapterData(chpter_id+"");
+            }else if(first_read==1){
+                mPresenter.getDetailedChapterData(mNovelUrl+"",1+"");
+            }else if(first_read==2){
+                mPresenter.getDetailedChapterData(mNovelUrl+"",chpter_id+"");
+            }
         } else if (mType == 1) {
             // 通过 FilePath 读取本地小说
             mPresenter.loadTxt(mNovelUrl);
@@ -635,10 +647,29 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             if (mIsReverse) {   // 如果倒置了目录的话，需要倒置章节索引
                 mChapterIndex = mChapterUrlList.size() - 1 - mChapterIndex;
             }
-            if (mType == 0 || mType == 1) {
+            if (mType == 1) {
                 BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
                         mCover, mChapterIndex, mPageView.getPosition(), mType);
                 mDbManager.insertBookshelfNovel(dbData);
+            }else if (mType == 0) {
+                if(!mDbManager.isExistInBookshelfNovel(mNovelUrl + "")) {
+                    BookshelfNovelDbData dbData;
+                        dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
+                                mCover, mChapterIndex, (int) Float.parseFloat(mNovelProgress.replace("%", "")), mType, mPageView.getSecondPos(), mChapterIndex + "",weigh);
+
+                    mDbManager.insertBookshelfNovel(dbData);
+                    //Log.e("sss1", "onDestroy: "+dbData);
+                }else {
+                    BookshelfNovelDbData dbData;
+                        dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
+                                mCover, mChapterIndex, (int) Float.parseFloat(mNovelProgress.replace("%", "")), mType, mPageView.getSecondPos(), mChapterIndex + "",weigh);
+                        mDbManager.updataBookshelfNovel(dbData,mNovelUrl+"");
+
+//                    BookshelfNovelDbData dbData = new BookshelfNovelDbData(mid+"", mName,
+//                            mCover, mChapterIndex, (int)Float.parseFloat(mNovelProgress.replace("%","")), mType, mPageView.getSecondPos(),mChapterIndex+" ");
+
+                    //Log.e("sss2", "onDestroy: "+dbData);
+                }
             } else if (mType == 2) {
                 BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
                         mCover, mChapterIndex, mPageView.getFirstPos(), mType, mPageView.getSecondPos());
@@ -705,6 +736,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     String webContent;
     String webName;
+    String id;
     /**
      * 获取具体章节信息成功
      */
@@ -715,6 +747,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             mStateTv.setText("获取不到相关数据，请查看其他章节");
             return;
         }
+        id=data.getId();
+        mChapterIndex=Integer.parseInt(id);
         webContent=data.getContent();
         webName=data.getName();
         mStateTv.setVisibility(View.GONE);
@@ -833,7 +867,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mIsLoadingChapter = false;
         mStateTv.setText("读取失败");
     }
-
+    int weigh;
     /**
      * 点击上一页/下一页后加载具体章节
      */
@@ -841,23 +875,26 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         if (mIsLoadingChapter) {    // 已经在加载了
             return;
         }
+        Log.e("AAA", "showChapter: "+mChapterIndex);
         if (mType == 0) {   // 显示网络小说
-            mPosition = 0;     // 归零
-            mPageView.clear();              // 清除当前文字
-            mStateTv.setVisibility(View.VISIBLE);
-            mStateTv.setText(LOADING_TEXT);
-            mIsLoadingChapter = true;
-            if (!mChapterUrlList.isEmpty()) {
+            if (mChapterIndex>=weigh) {
+                showShortToast("当前显示为最后一章");
+                return;
+            } else if(mChapterIndex==0){
+               showShortToast("当前显示为第一章");
+                return;
+            }else {
+                mPosition = 0;     // 归零
+                mPageView.clear();              // 清除当前文字
+                mStateTv.setVisibility(View.VISIBLE);
+                mStateTv.setText(LOADING_TEXT);
+                mIsLoadingChapter = true;
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mPresenter.getDetailedChapterData(UrlObtainer.getDetailedChapter(
-                                mChapterUrlList.get(mChapterIndex)));
+                        mPresenter.getDetailedChapterData(mNovelUrl,mChapterIndex+"");
                     }
                 }, 200);
-            } else {
-                mStateTv.setText("加载失败");
-                mIsLoadingChapter = false;
             }
         } else if (mType == 1) {
             // 记得归零！！！
@@ -1133,6 +1170,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     intent.putExtra(CatalogActivity.KEY_URL, mNovelUrl);    // 传递当前小说的 url
                     intent.putExtra(CatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
                     intent.putExtra(CatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
+                    intent.putExtra("weigh",weigh);
                     startActivity(intent);
                 } else if (mType == 1) {
                     // 跳转到目录页面，并且将自己的引用传递给它

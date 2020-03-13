@@ -103,6 +103,11 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     }
 
     @Override
+    public void getDetailedChapterData(String bookid, String id) {
+        mModel.getDetailedChapterData(bookid,id);
+    }
+
+    @Override
     public void loadTxt(String filePath) {
         mModel.loadTxt(filePath);
     }

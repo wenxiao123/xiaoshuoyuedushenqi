@@ -16,8 +16,7 @@
             <FrameLayout
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="180dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -67,7 +66,7 @@
                 android:layout_toRightOf="@id/iv_male_hot_rank_title"
                 android:text="@string/male_hot_rank_title"
                 android:textColor="@color/male_hot_rank_title"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/iv_item_category_more"

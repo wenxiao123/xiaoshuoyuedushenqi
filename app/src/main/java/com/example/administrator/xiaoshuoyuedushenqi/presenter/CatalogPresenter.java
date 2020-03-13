@@ -2,8 +2,11 @@ package com.example.administrator.xiaoshuoyuedushenqi.presenter;
 
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.ICatalogContract;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
 import com.example.administrator.xiaoshuoyuedushenqi.model.CatalogModel;
+
+import java.util.List;
 
 /**
  * @author WX
@@ -19,7 +22,7 @@ public class CatalogPresenter extends BasePresenter<ICatalogContract.View>
     }
 
     @Override
-    public void getCatalogDataSuccess(CatalogData catalogData) {
+    public void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
         if (isAttachView()) {
             getMvpView().getCatalogDataSuccess(catalogData);
         }
@@ -33,7 +36,7 @@ public class CatalogPresenter extends BasePresenter<ICatalogContract.View>
     }
 
     @Override
-    public void getCatalogData(String url) {
-        mModel.getCatalogData(url);
+    public void getCatalogData(String id,int posion) {
+        mModel.getCatalogData(id,posion);
     }
 }

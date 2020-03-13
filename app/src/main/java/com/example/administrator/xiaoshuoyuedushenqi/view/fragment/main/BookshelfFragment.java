@@ -98,7 +98,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         mPresenter.queryAllBook();
     }
     public void  updata2(){
-        //mPresenter.queryAllBook();
+        mPresenter.queryAllBook();
     }
     @Override
     protected BookshelfPresenter getPresenter() {
@@ -472,20 +472,40 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 //                            TxtConfig.saveIsOnVerticalPageMode(getContext(),false);
 //                            HwTxtPlayActivity.loadTxtFile(getContext(), mDataList.get(position).getNovelUrl());
 //                        }else {
-                            Intent intent = new Intent(getActivity(), ReadActivity.class);
-                            // 小说 url
-                            intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
-                            // 小说名
-                            intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
-                            // 小说封面 url
-                            intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
-                            // 小说类型
-                            intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
-                            // 开始阅读的位置
-                            intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
-                            intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
-                            intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
-                            startActivity(intent);
+                            if(mDataList.get(position).getType()==0){
+                                Intent intent = new Intent(getActivity(), ReadActivity.class);
+                                // 小说 url
+                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
+                                // 小说名
+                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
+                                // 小说封面 url
+                                intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+                                // 小说类型
+                                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
+                                // 开始阅读的位置
+                                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
+                                intent.putExtra("weigh", mDataList.get(position).getWeight());
+                                intent.putExtra(ReadActivity.KEY_CHPATER_ID, Integer.parseInt(mDataList.get(position).getChapterid().trim()));
+                                intent.putExtra("first_read",2);
+                                intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
+                                intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
+                                startActivity(intent);
+                            }else {
+                                Intent intent = new Intent(getActivity(), ReadActivity.class);
+                                // 小说 url
+                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
+                                // 小说名
+                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
+                                // 小说封面 url
+                                intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+                                // 小说类型
+                                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
+                                // 开始阅读的位置
+                                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
+                                intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
+                                intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
+                                startActivity(intent);
+                            }
                         }
                        // }
                     }

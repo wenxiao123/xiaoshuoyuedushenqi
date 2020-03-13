@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.constract;
 
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 
 import java.util.List;
@@ -10,22 +12,22 @@ import java.util.List;
  */
 public interface IMaleContract {
     interface View {
-        void getHotRankDataSuccess(List<List<String>> novelNameList);
+        void getHotRankDataSuccess(List<CategoryNovels> novelNameList);
         void getHotRankDataError(String errorMsg);
-        void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList);
+        void getCategoryNovelsSuccess(List<Noval_details> novalDetailsList);
         void getCategoryNovelsError(String errorMsg);
     }
     interface Presenter {
-        void getHotRankDataSuccess(List<List<String>> novelNameList);
+        void getHotRankDataSuccess(List<CategoryNovels> novelNameList);
         void getHotRankDataError(String errorMsg);
-        void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList);
+        void getCategoryNovelsSuccess(List<Noval_details> novalDetailsList);
         void getCategoryNovelsError(String errorMsg);
 
-        void getHotRankData();      // 获取热门排行
-        void getCategoryNovels();   // 获取分类小说
+        void getHotRankData(String id);      // 获取热门排行
+        void getCategoryNovels(String id);   // 获取分类小说
     }
     interface Model {
-        void getHotRankData();      // 获取热门排行
-        void getCategoryNovels();   // 获取分类小说
+        void getHotRankData(String id);      // 获取热门排行
+        void getCategoryNovels(String id);   // 获取分类小说
     }
 }

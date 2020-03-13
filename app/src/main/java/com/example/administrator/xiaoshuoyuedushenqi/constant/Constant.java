@@ -57,12 +57,16 @@ public class Constant {
     public static final String TABLE_HISTORY_WORD = "TABLE_HISTORY_WORD";   // 搜索词
     // 书架书籍表
     public static final String TABLE_BOOKSHELF_NOVEL = "TABLE_BOOKSHELF_NOVEL";
+    // 书架书籍表
+    public static final String TABLE_LINE_BOOKSHELF_NOVEL = "TABLE_LINE_BOOKSHELF_NOVEL";
     // 书籍书签表
     public static final String TABLE_BOOKMARK_NOVEL = "TABLE_BOOKMARK_NOVEL";
     // 书架书籍表的记录
     public static final String TABLE_BOOKSHELF_NOVEL_NOVEL_URL = "TABLE_BOOKSHELF_NOVEL_NOVEL_URL"; // 小说 URL（主键）
     public static final String TABLE_BOOKMARK_ID = "TABLE_BOOKMARK_ID"; // 小说 URL（主键）
     public static final String TABLE_BOOKSHELF_NOVEL_NAME = "TABLE_BOOKSHELF_NOVEL_NAME"; // 小说名
+    public static final String TABLE_BOOKSHELF_NOVEL_WIGH = "TABLE_BOOKSHELF_NOVEL_WIGH"; // 小说名
+    public static final String TABLE_BOOKSHELF_NOVEL_ID = "TABLE_BOOKSHELF_NOVEL_ID"; // 小说名
     public static final String TABLE_BOOKSHELF_NOVEL_COVER = "TABLE_BOOKSHELF_NOVEL_COVER"; // 小说封面
     public static final String TABLE_BOOKSHELF_NOVEL_CONTENT = "TABLE_BOOKSHELF_NOVEL_CONTENT"; // 书签内容
     // 章节索引：网络小说和本地 epub 小说为目录索引，本地 txt 小说无需该属性

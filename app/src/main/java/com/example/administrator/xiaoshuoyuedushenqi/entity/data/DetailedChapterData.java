@@ -7,6 +7,15 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 public class DetailedChapterData {
     private String name;    // 章节名
     private String content; // 章节内容
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public DetailedChapterData(String name, String content) {
         this.name = name;

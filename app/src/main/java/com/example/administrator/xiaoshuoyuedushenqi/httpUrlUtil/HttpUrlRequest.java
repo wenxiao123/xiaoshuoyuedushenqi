@@ -57,6 +57,9 @@ public class HttpUrlRequest {
                         case GET:
                             connection.setRequestMethod("GET");
                             break;
+                        case POST:
+                            connection.setRequestMethod("POST");
+                            break;
                         default:
                             break;
                     }

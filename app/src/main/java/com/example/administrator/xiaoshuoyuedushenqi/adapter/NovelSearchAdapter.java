@@ -55,7 +55,9 @@ public class NovelSearchAdapter extends
     @Override
     public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, final int i) {
         novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i));
-        setColor(novelSourceViewHolder.name,mNovelSourceDataList.get(i),name_search,mContext.getResources().getColor(R.color.red_aa));
+        if(name_search!=null&&!name_search.equals("")) {
+            setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i), name_search, mContext.getResources().getColor(R.color.red_aa));
+        }
         novelSourceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,5 +85,8 @@ public class NovelSearchAdapter extends
         view.setText(fulltext, TextView.BufferType.SPANNABLE);
         Spannable str = (Spannable) view.getText();
         int i = fulltext.indexOf(subtext);
-        str.setSpan(new ForegroundColorSpan(color), i, i + subtext.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);}
+        if (i>=0) {
+            str.setSpan(new ForegroundColorSpan(color), i, i + subtext.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
 }

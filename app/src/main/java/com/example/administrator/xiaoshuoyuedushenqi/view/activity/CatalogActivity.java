@@ -20,6 +20,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.ICatalogContract;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
@@ -63,7 +64,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     private String mUrl;
     private String mName;
     private String mCover;
-
+    int weigh;
     /*
      * 如果是在 ReadActivity 通过点击目录跳转过来，那么持有该 ReadActivity 的引用，
      * 之后如果跳转到新的章节时，利用该引用结束旧的 ReadActivity
@@ -98,6 +99,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mUrl = getIntent().getStringExtra(KEY_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
+        weigh=getIntent().getIntExtra("weigh",0);
         queryBookMarks(mUrl);
     }
     String[]  sTitle={"目录","书签"};
@@ -153,15 +155,12 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         }
         mEnhanceTabLayout.getmTabLayout().getTabAt(0).select();
     }
-
+    int z=1;
     @Override
     protected void doAfterInit() {
 //        StatusBarUtil.setLightColorStatusBar(this);
 //        getWindow().setStatusBarColor(getResources().getColor(R.color.catalog_bg));
-
-        if (mUrl != null) {
-            mPresenter.getCatalogData(UrlObtainer.getCatalogInfo(mUrl));
-        }
+      mPresenter.getCatalogData(mUrl,z);
     }
     private List<BookmarkNovelDbData> bookmarkNovelDbDatas = new ArrayList<>();
     private DatabaseManager mDbManager;
@@ -259,7 +258,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 // 点击 item，跳转到相应小说阅读页
                 Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
+                intent.putExtra(ReadActivity.KEY_CHPATER_ID, catalogData.get(position).getWeigh());
                 intent.putExtra(ReadActivity.KEY_NAME, mName);
+                intent.putExtra("first_read",2);
+                intent.putExtra("weigh",weigh);
                 intent.putExtra(ReadActivity.KEY_COVER, mCover);
                 intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
                 intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
@@ -273,12 +275,13 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
             }
         });
     }
-
+    List<Cataloginfo> catalogData=new ArrayList<>();
     /**
      * 获取目录数据成功
      */
     @Override
-    public void getCatalogDataSuccess(CatalogData catalogData) {
+    public void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
+        this.catalogData=catalogData;
         mIsRefreshing = false;
         mProgressBar.setVisibility(View.GONE);
         mErrorPageTv.setVisibility(View.GONE);
@@ -289,15 +292,21 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
             mErrorPageTv.setVisibility(View.VISIBLE);
             return;
         }
-        mChapterNameList = catalogData.getChapterNameList();
-        mChapterUrlList = catalogData.getChapterUrlList();
+        mChapterNameList.clear();
+        mChapterUrlList.clear();
+        for(int i=0;i<catalogData.size();i++){
+            mChapterNameList.add(catalogData.get(i).getTitle());
+            mChapterUrlList.add(catalogData.get(i).getReurl());
+        }
+//        mChapterNameList = catalogData.getChapterNameList();
+//        mChapterUrlList = catalogData.getChapterUrlList();
         if (mIsReverse) {   // 如果是倒序显示的话需要先倒置
             Collections.reverse(mChapterNameList);
             Collections.reverse(mChapterUrlList);
         }
 
         int count = mChapterUrlList.size();
-        mChapterCountTv.setText("共" + count + "章");
+        mChapterCountTv.setText("共" + weigh + "章");
         initAdapter();
         mCatalogListRv.setAdapter(mCatalogAdapter);
     }
@@ -372,7 +381,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mPresenter.getCatalogData(UrlObtainer.getCatalogInfo(mUrl));
+                mPresenter.getCatalogData(mUrl,z);
             }
         }, 300);
     }

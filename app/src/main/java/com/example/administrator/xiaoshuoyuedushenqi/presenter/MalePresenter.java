@@ -2,6 +2,8 @@ package com.example.administrator.xiaoshuoyuedushenqi.presenter;
 
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleContract;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.model.MaleModel;
 
@@ -21,7 +23,7 @@ public class MalePresenter extends BasePresenter<IMaleContract.View>
     }
 
     @Override
-    public void getHotRankDataSuccess(List<List<String>> novelNameList) {
+    public void getHotRankDataSuccess(List<CategoryNovels> novelNameList) {
         if (isAttachView()) {
             getMvpView().getHotRankDataSuccess(novelNameList);
         }
@@ -35,7 +37,7 @@ public class MalePresenter extends BasePresenter<IMaleContract.View>
     }
 
     @Override
-    public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
+    public void getCategoryNovelsSuccess(List<Noval_details> dataList) {
         if (isAttachView()) {
             getMvpView().getCategoryNovelsSuccess(dataList);
         }
@@ -49,12 +51,12 @@ public class MalePresenter extends BasePresenter<IMaleContract.View>
     }
 
     @Override
-    public void getHotRankData() {
-        mModel.getHotRankData();
+    public void getHotRankData(String id) {
+        mModel.getHotRankData(id);
     }
 
     @Override
-    public void getCategoryNovels() {
-        mModel.getCategoryNovels();
+    public void getCategoryNovels(String id) {
+        mModel.getCategoryNovels(id);
     }
 }

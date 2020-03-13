@@ -92,7 +92,10 @@ public class LineBreakLayout extends ViewGroup {
 //                    }
 //                });
                 //将标签添加到容器中
+                TextView view=new TextView(getContext());
+                view.setWidth(10);
                 addView(tv);
+                addView(view);
             }
         }
     }

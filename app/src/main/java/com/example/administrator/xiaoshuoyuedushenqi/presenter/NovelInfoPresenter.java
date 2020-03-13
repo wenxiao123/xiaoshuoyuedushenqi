@@ -3,6 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.presenter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IAllNovelContract;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.NovelInfoContract;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.ANNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.RequestCNData;
@@ -25,9 +26,9 @@ public class NovelInfoPresenter extends BasePresenter<NovelInfoContract.View>
     }
 
     @Override
-    public void getNovelsSuccess(List<ANNovelData> dataList, boolean isEnd) {
+    public void getNovelsSuccess(Noval_details noval_details,List<Noval_details> novalDetails) {
         if (isAttachView()) {
-            getMvpView().getNovelsSuccess(dataList, isEnd);
+            getMvpView().getNovelsSuccess(noval_details,novalDetails);
         }
     }
 
@@ -53,8 +54,8 @@ public class NovelInfoPresenter extends BasePresenter<NovelInfoContract.View>
     }
 
     @Override
-    public void getNovels(RequestCNData requestCNData) {
-        mModel.getNovels(requestCNData);
+    public void getNovels(String id) {
+        mModel.getNovels(id);
     }
 
     @Override

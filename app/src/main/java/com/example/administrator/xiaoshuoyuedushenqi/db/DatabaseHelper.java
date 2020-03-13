@@ -22,7 +22,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // 创建书架书籍信息表
     private static final String CREATE_TABLE_BOOKSHELF_NOVEL = "create table " + Constant.TABLE_BOOKSHELF_NOVEL
             + " (" + Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " text primary key, "
-            + Constant.TABLE_BOOKSHELF_NOVEL_NAME + " text, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_NAME + " text , "
+            + Constant.TABLE_BOOKSHELF_NOVEL_ID + " text , "
+            + Constant.TABLE_BOOKSHELF_NOVEL_WIGH +" text , "
             + Constant.TABLE_BOOKSHELF_NOVEL_COVER + " text, "
             + Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX + " int, "
             + Constant.TABLE_BOOKSHELF_NOVEL_TYPE + " int, "

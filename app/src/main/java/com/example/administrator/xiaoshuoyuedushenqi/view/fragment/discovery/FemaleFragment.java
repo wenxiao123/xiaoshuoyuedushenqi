@@ -134,7 +134,7 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
 
     @Override
     protected int getPosition() {
-        return 1;
+        return 2;
     }
 
     /**
@@ -249,56 +249,56 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
     }
 
     private void initCategoryAdapter() {
-        mCategoryAdapter = new CategoryAdapter(getActivity(),
-                mCategoryNameList, mMoreList, mNovelDataList,
-                new CategoryAdapter.CategoryListener() {
-                    @Override
-                    public void clickNovel(String novelName) {
-                        if (mRefreshSrv.isRefreshing()) {
-                            return;
-                        }
-                        if (!NetUtil.hasInternet(getActivity())) {
-                            showShortToast("当前无网络，请检查网络后重试");
-                            return;
-                        }
-                        // 跳转到该小说的搜索结果页
-                        Intent intent = new Intent(getActivity(), SearchActivity.class);
-                        intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void clickMore(int position) {
-                        if (mRefreshSrv.isRefreshing()) {
-                            return;
-                        }
-                        if (!NetUtil.hasInternet(getActivity())) {
-                            showShortToast("当前无网络，请检查网络后重试");
-                            return;
-                        }
-                        int gender = 1;
-                        String major;
-                        switch (position) {
-                            case 0:
-                                major = Constant.CATEGORY_MAJOR_GDYQ;
-                                break;
-                            case 1:
-                                major = Constant.CATEGORY_MAJOR_XDYQ;
-                                break;
-                            case 2:
-                                major = Constant.CATEGORY_MAJOR_QCXY;
-                                break;
-                            default:
-                                major = Constant.CATEGORY_MAJOR_GDYQ;
-                                break;
-                        }
-                        // 跳转到全部小说页面
-                        Intent intent = new Intent(getActivity(), AllNovelActivity.class);
-                        intent.putExtra(AllNovelActivity.KEY_GENDER, gender);   // 性别
-                        intent.putExtra(AllNovelActivity.KEY_MAJOR, major);     // 一级分类
-                        startActivity(intent);
-                    }
-                });
+//        mCategoryAdapter = new CategoryAdapter(getActivity(),
+//                mCategoryNameList, mMoreList, mNovelDataList,
+//                new CategoryAdapter.CategoryListener() {
+//                    @Override
+//                    public void clickNovel(String novelName) {
+//                        if (mRefreshSrv.isRefreshing()) {
+//                            return;
+//                        }
+//                        if (!NetUtil.hasInternet(getActivity())) {
+//                            showShortToast("当前无网络，请检查网络后重试");
+//                            return;
+//                        }
+//                        // 跳转到该小说的搜索结果页
+//                        Intent intent = new Intent(getActivity(), SearchActivity.class);
+//                        intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+//                        startActivity(intent);
+//                    }
+//
+//                    @Override
+//                    public void clickMore(int position) {
+//                        if (mRefreshSrv.isRefreshing()) {
+//                            return;
+//                        }
+//                        if (!NetUtil.hasInternet(getActivity())) {
+//                            showShortToast("当前无网络，请检查网络后重试");
+//                            return;
+//                        }
+//                        int gender = 1;
+//                        String major;
+//                        switch (position) {
+//                            case 0:
+//                                major = Constant.CATEGORY_MAJOR_GDYQ;
+//                                break;
+//                            case 1:
+//                                major = Constant.CATEGORY_MAJOR_XDYQ;
+//                                break;
+//                            case 2:
+//                                major = Constant.CATEGORY_MAJOR_QCXY;
+//                                break;
+//                            default:
+//                                major = Constant.CATEGORY_MAJOR_GDYQ;
+//                                break;
+//                        }
+//                        // 跳转到全部小说页面
+//                        Intent intent = new Intent(getActivity(), AllNovelActivity.class);
+//                        intent.putExtra(AllNovelActivity.KEY_GENDER, gender);   // 性别
+//                        intent.putExtra(AllNovelActivity.KEY_MAJOR, major);     // 一级分类
+//                        startActivity(intent);
+//                    }
+//                });
         mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
 }

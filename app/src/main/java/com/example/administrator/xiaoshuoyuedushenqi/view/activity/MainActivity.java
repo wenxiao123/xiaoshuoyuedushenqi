@@ -4,7 +4,10 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -103,7 +106,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     protected void initData() {
 
     }
-
+    MyReceiver receiver;
     @Override
     protected void initView() {
         mBookshelfBg = findViewById(R.id.v_main_bottom_bar_bookshelf_bg);
@@ -124,6 +127,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mDiscoveryAfterIv = findViewById(R.id.iv_main_bottom_bar_discovery_after);
         mBookMarkAfter = findViewById(R.id.iv_main_bottom_bar_bookmark_after);
         mMoreAfterIv = findViewById(R.id.iv_main_bottom_bar_more_after);
+        receiver = new MyReceiver();
+        // 注册广播接受者
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.zhh.android");//要接收的广播
+        registerReceiver(receiver, intentFilter);//注册接收者
     }
     String isload=null;
     @Override
@@ -543,5 +551,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         } else {
             App.getInstance().exit();
         }
+    }
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updata2();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //取消注册
+        unregisterReceiver(receiver);
     }
 }

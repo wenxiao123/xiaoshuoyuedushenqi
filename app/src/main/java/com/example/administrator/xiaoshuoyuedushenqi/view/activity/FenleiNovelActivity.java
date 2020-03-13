@@ -53,6 +53,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
     private List<String> mTypeTextList = new ArrayList<>();
     private List<NovalInfo> novalInfos = new ArrayList<>();
     private NovelAdapter mNovelAdapter;
+
     @Override
     protected void doBeforeSetContentView() {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -79,16 +80,16 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
         mBackIv.setOnClickListener(this);
         mTitleTv = findViewById(R.id.tv_all_novel_title);
         mNovelListRv = findViewById(R.id.rv_all_novel_novel_list);
-        enhanceTabLayout=findViewById(R.id.tv_fenlei_tab_layout);
-        mTypeTextList=strings2List(new String[] {Constant.CATEGORY_TYPE_HOT_TEXT, Constant.CATEGORY_TYPE_NEW_TEXT, Constant.CATEGORY_TYPE_REPUTATION_TEXT,
+        enhanceTabLayout = findViewById(R.id.tv_fenlei_tab_layout);
+        mTypeTextList = strings2List(new String[]{Constant.CATEGORY_TYPE_HOT_TEXT, Constant.CATEGORY_TYPE_NEW_TEXT, Constant.CATEGORY_TYPE_REPUTATION_TEXT,
                 Constant.CATEGORY_TYPE_OVER_TEXT});
-        for(int i=0;i<mTypeTextList.size();i++){
+        for (int i = 0; i < mTypeTextList.size(); i++) {
             enhanceTabLayout.addTab(mTypeTextList.get(i));
         }
         enhanceTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                requestNovels(false,tab.getPosition());
+                requestNovels(false, tab.getPosition());
             }
 
             @Override
@@ -101,7 +102,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
 
             }
         });
-        mNovelListRv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        mNovelListRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mNovelListRv.addOnScrollListener(new LoadMoreScrollListener(new LoadMoreScrollListener.LoadMore() {
             @Override
             public void loadMore() {
@@ -138,6 +139,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
         }
         return list;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void doAfterInit() {
@@ -159,7 +161,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
     /**
      * 请求小说信息
      */
-    private void requestNovels(boolean showProgressBar,int stype) {
+    private void requestNovels(boolean showProgressBar, int stype) {
         RequestCNData requestCNData = new RequestCNData();
 
         mPresenter.getNovels(requestCNData);
@@ -236,15 +238,23 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
 
     @Override
     public void getNovelsSuccess(List<NovalInfo> dataList) {
-        mNovelAdapter=new NovelAdapter(this, dataList, new BasePagingLoadAdapter.LoadMoreListener() {
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
+        mNovelAdapter = new NovelAdapter(this, dataList, new BasePagingLoadAdapter.LoadMoreListener() {
             @Override
             public void loadMore() {
-
+                requestNovels(true);
             }
         }, new NovelAdapter.NovelListener() {
             @Override
-            public void clickItem(String novelName) {
-
+            public void clickItem(int positon) {
+                if (mRefreshSrv.isRefreshing()) {
+                    return;
+                }
+                Intent intent = new Intent(FenleiNovelActivity.this, NovelIntroActivity.class);
+                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                intent.putExtra("pid", positon + "");
+                startActivity(intent);
             }
         });
         mNovelListRv.setAdapter(mNovelAdapter);

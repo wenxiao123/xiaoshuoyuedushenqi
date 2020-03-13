@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search;
 
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +76,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         mHistoryListFv.setLayoutManager(layoutManager);
         mHistoryListFv.setAdapter(mHistoryAdapter);
+        mHistoryListFv.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         bookhotAdapter=new BookhotAdapter(getContext(),mContentList);
         recyclerView_hot_book.setAdapter(bookhotAdapter);
 

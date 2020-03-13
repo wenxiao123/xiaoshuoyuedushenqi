@@ -48,7 +48,6 @@ public class FileUtil {
         } catch (Exception e) {
             Toast.makeText(activity, "选择出错了", Toast.LENGTH_SHORT).show();
         }
-        Log.e("qqq", "uri2FilePath: "+filePath);
         return filePath;
     }
 

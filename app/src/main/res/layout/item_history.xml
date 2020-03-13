@@ -3,19 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
    >
     <ImageView
         android:layout_gravity="center_vertical"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:src="@mipmap/wj"/>
     <TextView
+        android:layout_marginLeft="5dp"
         android:id="@+id/tv_item_history_content"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/item_history_text"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:padding="5dp"
         android:clickable="true"
         android:focusable="true"

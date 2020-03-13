@@ -13,9 +13,12 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.EpubData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.OpfData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EpubUtils;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
@@ -27,6 +30,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 /**
  * @author WX
@@ -73,24 +79,79 @@ public class ReadModel implements IReadContract.Model {
     }
 
     @Override
-    public void getDetailedChapterData(String url) {
-        OkhttpUtil.getRequest(url, new OkhttpCall() {
+    public void getDetailedChapterData(String id) {
+        String url = UrlObtainer.GetUrl() + "api/index/Books_Info";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id", id)
+//                .add("uid", id)
+//                .add("weigh", id)
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                DetailedChapterBean bean = mGson.fromJson(json, DetailedChapterBean.class);
-                if (bean.getCode() != 0) {
-                    mPresenter.getDetailedChapterDataError("未找到相关数据");
-                    return;
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        if(jsonObject.isNull("data")){
+                            mPresenter.getDetailedChapterDataError("请求数据失败");
+                        }else {
+                            JSONObject object = jsonObject.getJSONObject("data");
+                            String title = object.getString("title");
+                            String content = object.getString("content");
+                            String id=object.getString("weigh");
+                            DetailedChapterData data = new DetailedChapterData(title,
+                                    content);
+                            data.setId(id);
+                            mPresenter.getDetailedChapterDataSuccess(data);
+                        }
+                    } else {
+                        mPresenter.getDetailedChapterDataError("请求数据失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                StringBuilder contentBuilder = new StringBuilder();
-                contentBuilder.append("    ");
-                for (String s : bean.getContent()) {
-                    contentBuilder.append(s);
-                    contentBuilder.append("\n");
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getDetailedChapterDataError(errorMsg);
+            }
+        });
+    }
+
+    @Override
+    public void getDetailedChapterData(String bookid, String id) {
+        String url = UrlObtainer.GetUrl() + "api/index/Books_Info";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("uid", bookid)
+                .add("weigh", id)
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        if(jsonObject.isNull("data")){
+                            mPresenter.getDetailedChapterDataError("请求数据失败");
+                        }else {
+                            JSONObject object = jsonObject.getJSONObject("data");
+                            String title = object.getString("title");
+                            String content = object.getString("content");
+                            String id=object.getString("weigh");
+                            DetailedChapterData data = new DetailedChapterData(title,
+                                    content);
+                            data.setId(id);
+                            mPresenter.getDetailedChapterDataSuccess(data);
+                        }
+                    } else {
+                        mPresenter.getDetailedChapterDataError("请求数据失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                DetailedChapterData data = new DetailedChapterData(bean.getNum(),
-                        contentBuilder.toString());
-                mPresenter.getDetailedChapterDataSuccess(data);
             }
 
             @Override
@@ -140,7 +201,7 @@ public class ReadModel implements IReadContract.Model {
                 }
 
                 final String finalError = error;
-                final String text =  builder == null? "" : builder.toString();
+                final String text = builder == null ? "" : builder.toString();
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
@@ -234,7 +295,7 @@ public class ReadModel implements IReadContract.Model {
         Log.d(TAG, "getEpubChapterData: filePath = " + filePath);
         List<EpubData> dataList = new ArrayList<>();
         try {
-           dataList = EpubUtils.getEpubData(parentPath, filePath);
+            dataList = EpubUtils.getEpubData(parentPath, filePath);
         } catch (IOException e) {
             e.printStackTrace();
             new Handler(Looper.getMainLooper()).post(new Runnable() {

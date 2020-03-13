@@ -5,6 +5,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.constract.ISearchResultCont
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovelsSourceBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.NovelSourceData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.httpUrlUtil.HttpUrlRequest;
 import com.example.administrator.xiaoshuoyuedushenqi.httpUrlUtil.HttpUrlRequestBuilder;
 import com.example.administrator.xiaoshuoyuedushenqi.httpUrlUtil.Request;
 import com.example.administrator.xiaoshuoyuedushenqi.httpUrlUtil.Response;
@@ -12,6 +13,9 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 /**
  * @author WX

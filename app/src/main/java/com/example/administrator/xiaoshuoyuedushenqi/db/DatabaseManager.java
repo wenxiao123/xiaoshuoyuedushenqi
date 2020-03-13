@@ -94,8 +94,11 @@ public class DatabaseManager {
      * 插入一条书架书籍数据
      */
     public void insertBookshelfNovel(BookshelfNovelDbData dbData) {
+        Log.e("AAA", "insertBookshelfNovel: "+dbData );
         ContentValues values = new ContentValues();
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovelUrl());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_WIGH,dbData.getWeight());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_ID, dbData.getChapterid());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_NAME, dbData.getName());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_COVER, dbData.getCover());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX, dbData.getChapterIndex());
@@ -103,6 +106,24 @@ public class DatabaseManager {
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_TYPE, dbData.getType());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION, dbData.getSecondPosition());
         mDb.insert(Constant.TABLE_BOOKSHELF_NOVEL, null, values);
+    }
+    /**
+     * 插入一条书架书籍数据
+     */
+    public void updataBookshelfNovel(BookshelfNovelDbData dbData,String novelUrl) {
+        ContentValues values = new ContentValues();
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovelUrl());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_ID, dbData.getChapterid());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_WIGH,dbData.getWeight());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NAME, dbData.getName());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_COVER, dbData.getCover());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX, dbData.getChapterIndex());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_POSITION, dbData.getPosition());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_TYPE, dbData.getType());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION, dbData.getSecondPosition());
+        mDb.update(Constant.TABLE_BOOKSHELF_NOVEL,values,
+                Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?",
+                new String[]{novelUrl});
     }
 
     /**
@@ -136,23 +157,26 @@ public class DatabaseManager {
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_NAME));
                 String cover = cursor.getString(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_COVER));
+                String chperid = cursor.getString(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_ID));
                 int chapterIndex = cursor.getInt(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX));
                 int position = cursor.getInt(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_POSITION));
                 int type = cursor.getInt(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_TYPE));
+                int weight = cursor.getInt(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_WIGH));
                 int secondPosition = cursor.getInt(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION));
                 res.add(new BookshelfNovelDbData(novelUrl, name, cover,
-                            chapterIndex, position, type, secondPosition));
+                            chapterIndex, position, type, secondPosition,chperid,weight));
             } while (cursor.moveToPrevious());
         }
         cursor.close();
 
         return res;
     }
-
     /**
      * 查询所有书架书签信息
      */
@@ -196,6 +220,8 @@ public class DatabaseManager {
                 Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?",
                 new String[]{novelUrl});
     }
+
+
 
     /**
      * 根据书签 url 删除一条书架书籍数据集

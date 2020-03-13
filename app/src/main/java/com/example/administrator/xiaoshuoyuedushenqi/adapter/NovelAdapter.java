@@ -35,7 +35,7 @@ public class NovelAdapter extends BasePagingLoadAdapter<NovalInfo> {
     }
 
     public interface NovelListener {
-        void clickItem(String novelName);
+        void clickItem(int novelName);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class NovelAdapter extends BasePagingLoadAdapter<NovalInfo> {
         novelViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.clickItem(mList.get(position).getTitle());
+                mListener.clickItem(mList.get(position).getId());
             }
         });
         novelViewHolder.cata.setText(" | "+mList.get(position).getCategory_name());

@@ -1,6 +1,9 @@
 package com.example.administrator.xiaoshuoyuedushenqi.constract;
 
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
+
+import java.util.List;
 
 /**
  * @author WX
@@ -8,16 +11,16 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
  */
 public interface ICatalogContract {
     interface View {
-        void getCatalogDataSuccess(CatalogData catalogData);
+        void getCatalogDataSuccess(List<Cataloginfo> catalogData);
         void getCatalogDataError(String errorMsg);
     }
     interface Presenter {
-        void getCatalogDataSuccess(CatalogData catalogData);
+        void getCatalogDataSuccess(List<Cataloginfo> catalogData);
         void getCatalogDataError(String errorMsg);
 
-        void getCatalogData(String url);
+        void getCatalogData(String url,int posion);
     }
     interface Model {
-        void getCatalogData(String url);    // 获取目录信息
+        void getCatalogData(String url,int posion);    // 获取目录信息
     }
 }

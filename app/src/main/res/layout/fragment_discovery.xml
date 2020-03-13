@@ -9,8 +9,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/red"
+        android:layout_height="110dp"
+        android:background="@drawable/background_grint"
         android:orientation="horizontal">
 
         <ImageView
@@ -29,9 +29,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="35dp"
             android:text="精选"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:textSize="19sp" />
+            android:textSize="24sp" />
 
 <!--        <com.example.administrator.xiaoshuoyuedushenqi.rewrite.TabLayout-->
 <!--            -->

@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.httpUrlUtil;
 
+import okhttp3.RequestBody;
+
 /**
  * @author WX
  * Created on 2020/2/18
@@ -9,7 +11,7 @@ public class Request {
     HttpUrlRequest.METHOD_TYPE methodType; // 请求方式（"GET", "POST" 等）
     int connectTimeout;
     int readTimeout;
-
+    RequestBody body;
     private Request() {}
 
     public static class Builder {
@@ -17,6 +19,7 @@ public class Request {
         private HttpUrlRequest.METHOD_TYPE mMethodType = HttpUrlRequest.METHOD_TYPE.GET;
         private int mConnectTimeout = 8 * 1000;
         private int mReadTimeout = 8 * 1000;
+        RequestBody body;
 
         public Builder setUrl(String url) {
             this.mUrl = url;
@@ -33,6 +36,11 @@ public class Request {
             return this;
         }
 
+        public Builder setRequestBody(RequestBody body) {
+            this.body = body;
+            return this;
+        }
+
         public Builder setReadTimeout(int readTimeout) {
             this.mReadTimeout = readTimeout;
             return this;
@@ -44,7 +52,7 @@ public class Request {
             request.methodType = this.mMethodType;
             request.connectTimeout = this.mConnectTimeout;
             request.readTimeout = this.mReadTimeout;
-
+            request.body=this.body;
             return request;
         }
     }

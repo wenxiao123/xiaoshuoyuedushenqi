@@ -29,18 +29,18 @@
                 android:layout_width="@dimen/novel_intro_top_navi_bar_height"
                 android:layout_height="@dimen/novel_intro_top_navi_bar_height"
                 android:layout_marginTop="20dp"
-                android:padding="13dp"
+                android:padding="15dp"
                 android:src="@drawable/novel_intro_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/iv_novel_intro_menu"
-                android:layout_width="@dimen/novel_intro_top_navi_bar_height"
-                android:layout_height="@dimen/novel_intro_top_navi_bar_height"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="20dp"
-                android:padding="9dp"
-                android:src="@drawable/novel_intro_menu"
+                android:padding="10dp"
+                android:src="@mipmap/icon_share"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,10 +48,11 @@
 
             <ImageView
                 android:id="@+id/iv_novel_intro_novel_cover"
-                android:layout_width="110dp"
-                android:layout_height="140dp"
+                android:layout_width="125dp"
+                android:layout_height="160dp"
                 android:layout_marginRight="20dp"
                 android:scaleType="fitXY"
+                android:padding="10dp"
                 android:src="@drawable/default_cover"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_novel_intro_menu" />
@@ -64,9 +65,10 @@
                 android:ellipsize="end"
                 android:maxLength="10"
                 android:maxLines="1"
+                android:textStyle="bold"
                 android:text="@string/item_novel_source_name"
                 android:textColor="@color/novel_intro_novel_name_text"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_novel_intro_back" />
 
@@ -75,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 android:ellipsize="end"
                 android:maxLength="10"
                 android:maxLines="1"
@@ -85,23 +87,60 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_name" />
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/tv_novel_intro_novel_web_site"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="55dp"
                 android:layout_marginEnd="30dp"
-                android:ellipsize="end"
-                android:gravity="start"
-                android:maxLength="20"
-                android:maxLines="1"
-                android:text="@string/item_novel_source_web_site"
-                android:textColor="@color/novel_intro_novel_web_site_text"
-                android:textSize="14sp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_author" />
+                app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_author" >
+            <TextView
+                android:id="@+id/tv_catalog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:text="奇幻玄幻"
+                android:textColor="@color/novel_intro_novel_author_text"
+                android:textSize="14sp"/>
+                <View
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/novel_intro_novel_author_text"/>
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_fonts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLength="10"
+                    android:maxLines="1"
+                    android:text="230万字"
+                    android:textColor="@color/novel_intro_novel_author_text"
+                    android:textSize="14sp"/>
+                <View
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/novel_intro_novel_author_text"/>
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLength="10"
+                    android:maxLines="1"
+                    android:text="连载中"
+                    android:textColor="@color/novel_intro_novel_author_text"
+                    android:textSize="14sp"/>
+            </LinearLayout>
 
             <View
                 android:id="@+id/v_novel_intro_line_between_cover_and_introduce"
@@ -120,12 +159,13 @@
                 android:id="@+id/tv_novel_intro_novel_introduce"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/novel_intro_margin_start_and_end"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="@dimen/novel_intro_margin_start_and_end"
                 android:maxLines="3"
                 android:text="@string/item_novel_source_introduce"
-                android:textSize="14sp"
+                android:textSize="15sp"
+                android:textColor="#161823"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/v_novel_intro_line_between_cover_and_introduce" />
@@ -156,32 +196,66 @@
 
             <TextView
                 android:id="@+id/tv_novel_intro_catalog"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/selector_novel_intro_catalog_bg"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="start|center"
-                android:paddingStart="@dimen/novel_intro_margin_start_and_end"
-                android:paddingEnd="@dimen/novel_intro_margin_start_and_end"
+                android:paddingStart="10dp"
+                android:paddingEnd="5dp"
                 android:text="@string/novel_intro_catalog"
                 android:textColor="@color/novel_intro_catalog_text"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/v_novel_intro_separate_line" />
-
+            <TextView
+                android:id="@+id/tv_new_catalog"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/selector_novel_intro_catalog_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:maxLength="15"
+                android:gravity="start|center"
+                android:paddingStart="10dp"
+                android:paddingEnd="5dp"
+                android:text="@string/novel_intro_catalog"
+                android:textColor="@color/novel_intro_catalog_text"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/tv_novel_intro_catalog"
+                app:layout_constraintTop_toBottomOf="@id/v_novel_intro_separate_line" />
             <ImageView
-                android:layout_width="@dimen/novel_intro_catalog_height"
-                android:layout_height="@dimen/novel_intro_catalog_height"
-                android:padding="15dp"
+                android:id="@+id/iv_more"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:padding="0dp"
+                android:layout_marginRight="10dp"
                 android:src="@drawable/novel_intro_catalog_next"
                 android:tint="@color/gray_6c"
                 app:layout_constraintBottom_toBottomOf="@id/tv_novel_intro_catalog"
-                app:layout_constraintEnd_toEndOf="@id/tv_novel_intro_catalog"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_novel_intro_catalog" />
-
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/selector_novel_intro_catalog_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:maxLength="12"
+                android:ellipsize="end"
+                android:gravity="start|center"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/novel_intro_catalog"
+                android:textColor="@color/red_aa"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@id/iv_more"
+                app:layout_constraintTop_toBottomOf="@id/v_novel_intro_separate_line" />
             <!-- separate -->
             <View
                 android:id="@+id/v_novel_intro_separate_line2"
@@ -249,7 +323,7 @@
     <RelativeLayout
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:background="@color/white"
         >
         <View
@@ -257,6 +331,7 @@
             android:layout_height="1dp"
             android:background="@drawable/eve"/>
         <RelativeLayout
+            android:id="@+id/rel_book_load"
             android:layout_marginLeft="20dp"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
@@ -268,27 +343,29 @@
                 android:layout_height="20dp"
                 android:src="@mipmap/txt_load"/>
             <TextView
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/iv_load"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:text="全本缓存"/>
         </RelativeLayout>
         <TextView
+            android:id="@+id/tv_begain_read"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:textSize="14sp"
-            android:background="@drawable/bachground_yellow"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:textSize="16sp"
+            android:background="@drawable/bachground_yellow2"
             android:text="开始阅读"/>
         <RelativeLayout
+            android:id="@+id/rel_book_add"
             android:layout_marginRight="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -301,12 +378,13 @@
                 android:layout_height="20dp"
                 android:src="@mipmap/add_bookshelf"/>
             <TextView
-                android:layout_marginLeft="10dp"
+                android:id="@+id/tv_book_add"
+                android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/iv_upload"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:text="加入书架"/>
         </RelativeLayout>
     </RelativeLayout>

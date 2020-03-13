@@ -12,6 +12,51 @@ public class BookshelfNovelDbData {
     private int position;
     private int type;
     private int secondPosition;
+    private String Chapterid;
+    private int weight;
+
+    public BookshelfNovelDbData(String novelUrl, String name, String cover, int chapterIndex, int position, int type, int secondPosition, String chapterid, int weight) {
+        this.novelUrl = novelUrl;
+        this.name = name;
+        this.cover = cover;
+        this.chapterIndex = chapterIndex;
+        this.position = position;
+        this.type = type;
+        this.secondPosition = secondPosition;
+        Chapterid = chapterid;
+        this.weight = weight;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+        return "BookshelfNovelDbData{" +
+                "novelUrl='" + novelUrl + '\'' +
+                ", name='" + name + '\'' +
+                ", cover='" + cover + '\'' +
+                ", chapterIndex=" + chapterIndex +
+                ", position=" + position +
+                ", type=" + type +
+                ", secondPosition=" + secondPosition +
+                ", Chapterid='" + Chapterid + '\'' +
+                ", weight=" + weight +
+                '}';
+    }
+
+    public String getChapterid() {
+        return Chapterid;
+    }
+
+    public void setChapterid(String chapterid) {
+        Chapterid = chapterid;
+    }
 
     public BookshelfNovelDbData(String novelUrl, String name, String cover,
                                 int chapterIndex, int position, int type) {
@@ -85,16 +130,4 @@ public class BookshelfNovelDbData {
         this.secondPosition = secondPosition;
     }
 
-    @Override
-    public String toString() {
-        return "BookshelfNovelDbData{" +
-                "novelUrl='" + novelUrl + '\'' +
-                ", name='" + name + '\'' +
-                ", cover='" + cover + '\'' +
-                ", chapterIndex=" + chapterIndex +
-                ", position=" + position +
-                ", type=" + type +
-                ", secondPosition=" + secondPosition +
-                '}';
-    }
 }

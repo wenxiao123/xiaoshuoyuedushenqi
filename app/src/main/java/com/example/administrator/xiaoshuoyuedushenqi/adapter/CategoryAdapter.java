@@ -1,9 +1,11 @@
 package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FenleiNovelActivity;
 
 import java.util.List;
 
@@ -22,9 +26,7 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>{
 
     private Context mContext;
-    private List<String> mCategoryNameList;
-    private List<String> mMoreList;
-    private List<DiscoveryNovelData> mNovelDataList;
+    private List<CategoryNovels> mNovelDataList;
     private CategoryListener mListener;
 
     public interface CategoryListener {
@@ -32,12 +34,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         void clickMore(int position);
     }
 
-    public CategoryAdapter(Context mContext, List<String> mCategoryNameList,
-                           List<String> mMoreList, List<DiscoveryNovelData> mNovelDataList,
+    public CategoryAdapter(Context mContext, List<CategoryNovels> mNovelDataList,
                            CategoryListener mListener) {
         this.mContext = mContext;
-        this.mCategoryNameList = mCategoryNameList;
-        this.mMoreList = mMoreList;
         this.mNovelDataList = mNovelDataList;
         this.mListener = mListener;
     }
@@ -50,15 +49,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder categoryViewHolder, final int i) {
-        categoryViewHolder.categoryName.setText(mCategoryNameList.get(i));
-        categoryViewHolder.moreTv.setText(mMoreList.get(i));
-        categoryViewHolder.novelList.setLayoutManager(new GridLayoutManager(mContext, 3));
-        CategoryNovelAdapter adapter = new CategoryNovelAdapter(mContext,
-                mNovelDataList.get(i).getCoverUrlList(), mNovelDataList.get(i).getNovelNameList());
-        adapter.setOnCategoryNovelListener(new CategoryNovelAdapter.CategoryNovelListener() {
+        categoryViewHolder.categoryName.setText(mNovelDataList.get(i).getTitle());
+        categoryViewHolder.moreTv.setText("更多");
+        categoryViewHolder.moreTv.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void clickItem(String novelName) {
-                mListener.clickNovel(novelName);
+            public void onClick(View view) {
+                mContext.startActivity(new Intent(mContext, FenleiNovelActivity.class));
+            }
+        });
+        categoryViewHolder.novelList.setLayoutManager(new GridLayoutManager(mContext, 4));
+        CategoryzyAdapter adapter = new CategoryzyAdapter(mContext,
+                mNovelDataList.get(i).getData_list());
+        adapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
+            @Override
+            public void clickItem(int novelName) {
+
             }
         });
         categoryViewHolder.novelList.setAdapter(adapter);
@@ -79,7 +84,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
-        return mCategoryNameList.size();
+        return mNovelDataList.size();
     }
 
     class CategoryViewHolder extends RecyclerView.ViewHolder {

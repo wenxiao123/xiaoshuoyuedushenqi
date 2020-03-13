@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -51,15 +52,30 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     protected void initData() {
-        mFragmentList.add(new PressFragment());
-        mFragmentList.add(new MaleFragment());
-        mFragmentList.add(new FemaleFragment());
-        mFragmentList.add(new PressFragment());
+        MaleFragment maleFragment1=new MaleFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("data",1);
+        maleFragment1.setArguments(bundle);
+        mFragmentList.add(maleFragment1);
+
+        MaleFragment maleFragment2=new MaleFragment();
+        Bundle bundle2 = new Bundle();
+        bundle2.putInt("data",2);
+        maleFragment2.setArguments(bundle2);
+        mFragmentList.add(maleFragment2);
+
+        MaleFragment maleFragment3=new MaleFragment();
+        Bundle bundle3 = new Bundle();
+        bundle3.putInt("data",3);
+        maleFragment3.setArguments(bundle3);
+        mFragmentList.add(maleFragment3);
+
+        //mFragmentList.add(new PressFragment());
 
         mPageTitleList.add(getString(R.string.discovery_select));
         mPageTitleList.add(getString(R.string.discovery_male));
         mPageTitleList.add(getString(R.string.discovery_female));
-        mPageTitleList.add(getString(R.string.discovery_press));
+        //mPageTitleList.add(getString(R.string.discovery_press));
     }
 
     int select_position=0;

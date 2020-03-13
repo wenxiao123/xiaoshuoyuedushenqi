@@ -26,6 +26,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.ICatalogContract;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Chapter;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
@@ -570,7 +571,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
      * 获取目录数据成功
      */
     @Override
-    public void getCatalogDataSuccess(CatalogData catalogData) {
+    public void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
         mIsRefreshing = false;
         mProgressBar.setVisibility(View.GONE);
         mErrorPageTv.setVisibility(View.GONE);
@@ -580,8 +581,12 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
             mErrorPageTv.setVisibility(View.VISIBLE);
             return;
         }
-        mChapterNameList = catalogData.getChapterNameList();
-        mChapterUrlList = catalogData.getChapterUrlList();
+        mChapterNameList.clear();
+        mChapterUrlList.clear();
+        for(int i=0;i<catalogData.size();i++){
+            mChapterNameList.add(catalogData.get(i).getTitle());
+            mChapterUrlList.add(catalogData.get(i).getReurl());
+        }
         if (mIsReverse) {   // 如果是倒序显示的话需要先倒置
             Collections.reverse(mChapterNameList);
             Collections.reverse(mChapterUrlList);

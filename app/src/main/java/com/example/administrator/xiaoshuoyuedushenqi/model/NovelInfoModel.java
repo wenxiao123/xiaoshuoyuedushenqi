@@ -6,6 +6,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IAllNovelContract;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.NovelInfoContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovelsBean;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.ANNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.RequestCNData;
@@ -14,9 +15,16 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -38,26 +46,32 @@ public class NovelInfoModel implements NovelInfoContract.Model {
      * 获取小说信息
      */
     @Override
-    public void getNovels(final RequestCNData requestCNData) {
-        String url = UrlObtainer.getCategoryNovels(requestCNData.getGender(), requestCNData.getMajor(),
-                requestCNData.getMinor(), requestCNData.getType(),
-                requestCNData.getStart(), requestCNData.getNum());
-        OkhttpUtil.getRequest(url, new OkhttpCall() {
+    public void getNovels(final String  id) {
+        String url = UrlObtainer.GetUrl()+"api/index/Book_data";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id", id)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                CategoryNovelsBean bean = mGson.fromJson(json, CategoryNovelsBean.class);
-                boolean isToEnd = false;
-                if (bean.getTotal() <= requestCNData.getStart() + Constant.NOVEL_PAGE_NUM - 1) {
-                    isToEnd = true;
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        Noval_details noval_details=mGson.fromJson(object.toString(),Noval_details.class);
+                        JSONArray jsonArray=object.getJSONArray("run_list");
+                        List<Noval_details> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),Noval_details.class));
+                        }
+                        mPresenter.getNovelsSuccess(noval_details,novalDetailsList);
+                    }else {
+                        mPresenter.getNovelsError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                List<ANNovelData> dataList = new ArrayList<>();
-                List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
-                for (int i = 0; i < Math.min(books.size(), requestCNData.getNum()); i++) {
-                    dataList.add(new ANNovelData(books.get(i).getTitle(), books.get(i).getAuthor(),
-                            books.get(i).getShortIntro(),
-                            "http://statics.zhuishushenqi.com" + books.get(i).getCover()));
-                }
-                mPresenter.getNovelsSuccess(dataList, isToEnd);
             }
 
             @Override
