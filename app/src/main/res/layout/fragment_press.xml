@@ -91,7 +91,7 @@
                 android:textSize="@dimen/item_category_more_size" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_male_hot_rank_recycler_view"
+                android:id="@+id/rv_male_hot_rank_recycler_view1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_male_hot_rank_title"

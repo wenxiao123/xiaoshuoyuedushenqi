@@ -21,6 +21,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryNovelAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryinfoAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.HotRankAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseTabFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
@@ -79,11 +80,12 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mMoreList.add("更多玄幻小说");
         mMoreList.add("更多都市小说");
         mMoreList.add("更多武侠小说");
+
     }
 
     @Override
     protected void initView() {
-        mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view);
+        mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view1);
 //        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
 //        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
 //        mHotRankRv.setLayoutManager(manager);
@@ -165,7 +167,13 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
             container.removeView((View) instantiateItem(container,position));
         }
     }
+    private void initAdapter() {
+        CategoryinfoAdapter adapter = new CategoryinfoAdapter(getContext(),
+                mNovelDataList);
+        mHotRankRv.setAdapter(adapter);
+    }
 
+    List<CategoryNovels> novelNameList = new ArrayList<>();
     @Override
     protected void doInOnCreate() {
 //        mIsCreatedView = true;
@@ -220,9 +228,10 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         if (novelNameList.isEmpty()) {
             return;
         }
+        this.novelNameList = novelNameList;
         if (mHotRankAdapter == null) {
             mHotRankNovelNameList = novelNameList;
-//            initHotRankAdapter();
+            initCategoryAdapter();
         } else {
             mHotRankNovelNameList.clear();
             mHotRankNovelNameList.addAll(novelNameList);
@@ -251,12 +260,13 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         }
         if (mCategoryAdapter == null) {
             mNovelDataList = dataList;
-            initCategoryAdapter();
+            initAdapter();
         } else {
             mNovelDataList.clear();
             mNovelDataList.addAll(dataList);
             mCategoryAdapter.notifyDataSetChanged();
         }
+
         rel_click_more.setVisibility(View.VISIBLE);
         rel_click_more.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,6 +298,56 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
     }
 
     private void initCategoryAdapter() {
+        mCategoryAdapter = new CategoryAdapter(getActivity(),
+                novelNameList,
+                new CategoryAdapter.CategoryListener() {
+                    @Override
+                    public void clickNovel(String novelName) {
+                        if (mRefreshSrv.isRefreshing()) {
+                            return;
+                        }
+                        if (!NetUtil.hasInternet(getActivity())) {
+                            showShortToast("当前无网络，请检查网络后重试");
+                            return;
+                        }
+                        // 跳转到该小说的搜索结果页
+                        Intent intent = new Intent(getActivity(), SearchActivity.class);
+                        intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+                        startActivity(intent);
+                    }
 
+                    @Override
+                    public void clickMore(int position) {
+                        if (mRefreshSrv.isRefreshing()) {
+                            return;
+                        }
+                        if (!NetUtil.hasInternet(getActivity())) {
+                            showShortToast("当前无网络，请检查网络后重试");
+                            return;
+                        }
+                        int gender = 1;
+                        String major;
+                        switch (position) {
+                            case 0:
+                                major = Constant.CATEGORY_MAJOR_GDYQ;
+                                break;
+                            case 1:
+                                major = Constant.CATEGORY_MAJOR_XDYQ;
+                                break;
+                            case 2:
+                                major = Constant.CATEGORY_MAJOR_QCXY;
+                                break;
+                            default:
+                                major = Constant.CATEGORY_MAJOR_GDYQ;
+                                break;
+                        }
+                        // 跳转到全部小说页面
+                        Intent intent = new Intent(getActivity(), AllNovelActivity.class);
+                        intent.putExtra(AllNovelActivity.KEY_GENDER, gender);   // 性别
+                        intent.putExtra(AllNovelActivity.KEY_MAJOR, major);     // 一级分类
+                        startActivity(intent);
+                    }
+                });
+        mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
 }
