@@ -106,7 +106,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rv_male_hot_rank_recycler_view"
+                android:layout_below="@id/rv_male_hot_rank_recycler_view1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black"
@@ -131,7 +131,7 @@
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_male_category_novel_list"
+                android:id="@+id/rv_male_category_novel_list2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/click_more"

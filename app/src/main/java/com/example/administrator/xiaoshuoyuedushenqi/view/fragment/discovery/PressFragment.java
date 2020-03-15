@@ -66,12 +66,15 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
     private boolean mIsLoadedData = false;
     private boolean mIsCreatedView = false;
     private RelativeLayout rel_click_more;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_press;
     }
+
     private UltraViewPager mViewPager4;
     private UIndicator uIndicator4;
+
     @Override
     protected void initData() {
         mCategoryNameList.add("热血玄幻");
@@ -90,10 +93,10 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 //        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
 //        mHotRankRv.setLayoutManager(manager);
         mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        mCategoryNovelRv = getActivity().findViewById(R.id.rv_male_category_novel_list);
+        mCategoryNovelRv = getActivity().findViewById(R.id.rv_male_category_novel_list2);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        rel_click_more=getActivity().findViewById(R.id.click_more);
+        rel_click_more = getActivity().findViewById(R.id.click_more);
         mProgressBar = getActivity().findViewById(R.id.pb_male);
 
         mRefreshSrv = getActivity().findViewById(R.id.srv_press_refresh);
@@ -110,7 +113,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
                 }, 500);
             }
         });
-        frameLayout_banner=getActivity().findViewById(R.id.banner);
+        frameLayout_banner = getActivity().findViewById(R.id.banner);
         mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager4);
 
         uIndicator4 = getActivity().findViewById(R.id.indicator);
@@ -149,7 +152,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             //View view = views.get(position);
-            ImageView imageView=new ImageView(getContext());
+            ImageView imageView = new ImageView(getContext());
             SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
@@ -164,9 +167,10 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) instantiateItem(container,position));
+            container.removeView((View) instantiateItem(container, position));
         }
     }
+
     private void initAdapter() {
         CategoryinfoAdapter adapter = new CategoryinfoAdapter(getContext(),
                 mNovelDataList);
@@ -174,15 +178,13 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
     }
 
     List<CategoryNovels> novelNameList = new ArrayList<>();
+
     @Override
     protected void doInOnCreate() {
-//        mIsCreatedView = true;
-//        if (mIsVisited && !mIsLoadedData) {
-            requestUpdate();
-            mProgressBar.setVisibility(View.VISIBLE);
-            frameLayout_banner.setVisibility(View.GONE);
-            mIsLoadedData = true;
-      //  }
+        requestUpdate();
+        mProgressBar.setVisibility(View.VISIBLE);
+        frameLayout_banner.setVisibility(View.GONE);
+        mIsLoadedData = true;
     }
 
 //    @Override
