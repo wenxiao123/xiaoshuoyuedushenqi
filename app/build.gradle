@@ -61,6 +61,7 @@ dependencies {
     implementation files('libs/pinyin4j-2.5.0.jar')
     implementation project(':hwtxtreaderlib')
     implementation project(':indicator')
+    implementation 'com.jude:rollviewpager:1.4.6'
     implementation 'com.github.fingerth:FingerthAndroidUtils:1.0.3'
     implementation 'q.rorbin:VerticalTabLayout:1.2.5'
 }

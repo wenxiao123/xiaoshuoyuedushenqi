@@ -118,9 +118,14 @@
 
 
     <android.support.v4.view.ViewPager
+        android:visibility="gone"
         android:id="@+id/vp_discovery_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never" />
-
+    <FrameLayout
+        android:id="@+id/fv_main_fragment_container1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 </LinearLayout>

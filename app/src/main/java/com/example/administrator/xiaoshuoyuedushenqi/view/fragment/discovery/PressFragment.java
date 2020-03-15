@@ -109,11 +109,11 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
             }
         });
         frameLayout_banner=getActivity().findViewById(R.id.banner);
-        mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager);
+        mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager4);
 
         uIndicator4 = getActivity().findViewById(R.id.indicator);
-        DemoPagerAdapter mAdapter4 = new DemoPagerAdapter(getList());
-        mViewPager4.setAdapter(mAdapter4);
+        DemoPagerAdapter mAdapter = new DemoPagerAdapter(getList());
+        mViewPager4.setAdapter(mAdapter);
         uIndicator4.attachToViewPager(mViewPager4.getViewPager());
     }
 
@@ -168,32 +168,32 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
     @Override
     protected void doInOnCreate() {
-        mIsCreatedView = true;
-        if (mIsVisited && !mIsLoadedData) {
+//        mIsCreatedView = true;
+//        if (mIsVisited && !mIsLoadedData) {
             requestUpdate();
             mProgressBar.setVisibility(View.VISIBLE);
             frameLayout_banner.setVisibility(View.GONE);
             mIsLoadedData = true;
-        }
+      //  }
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            mIsVisited = true;
-        }
-        if (mIsVisited && !mIsLoadedData && mIsCreatedView) {
-            requestUpdate();
-            mProgressBar.setVisibility(View.VISIBLE);
-            frameLayout_banner.setVisibility(View.GONE);
-            mIsLoadedData = true;
-        }
-    }
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            mIsVisited = true;
+//        }
+//        if (mIsVisited && !mIsLoadedData && mIsCreatedView) {
+//            requestUpdate();
+//            mProgressBar.setVisibility(View.VISIBLE);
+//            frameLayout_banner.setVisibility(View.GONE);
+//            mIsLoadedData = true;
+//        }
+//    }
 
     private void requestUpdate() {
-        mPresenter.getHotRankData("1");
-        mPresenter.getCategoryNovels("1");
+        mPresenter.getHotRankData("2");
+        mPresenter.getCategoryNovels("2");
     }
 
     @Override

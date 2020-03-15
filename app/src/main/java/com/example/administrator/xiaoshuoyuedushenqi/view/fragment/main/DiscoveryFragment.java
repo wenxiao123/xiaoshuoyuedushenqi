@@ -1,7 +1,10 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -13,9 +16,14 @@ import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.NormalViewPagerAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.MoreIntoEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
+import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MainActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.FemaleFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.MaleFragment;
@@ -88,29 +96,29 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
         mTabLayout = getActivity().findViewById(R.id.tv_discovery_tab_layout);
         // TabLayout + ViewPager
-        mViewPager = getActivity().findViewById(R.id.vp_discovery_view_pager);
-        // 在 Fragment 中只能使用 getChildFragmentManager() 获取 FragmentManager 来处理子 Fragment
-        mViewPager.setAdapter(new NormalViewPagerAdapter(getChildFragmentManager(),
-                mFragmentList, mPageTitleList));
-        // 缓存左右两侧的两个页面（很重要！！！，不设置这个切换到前两个的时候就会重新加载数据）
-        mViewPager.setOffscreenPageLimit(2);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                select_position=i;
-                mTabLayout.getmTabLayout().getTabAt(i).select();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
+//        mViewPager = getActivity().findViewById(R.id.vp_discovery_view_pager);
+//        // 在 Fragment 中只能使用 getChildFragmentManager() 获取 FragmentManager 来处理子 Fragment
+//        mViewPager.setAdapter(new NormalViewPagerAdapter(getChildFragmentManager(),
+//                mFragmentList, mPageTitleList));
+//        // 缓存左右两侧的两个页面（很重要！！！，不设置这个切换到前两个的时候就会重新加载数据）
+//        mViewPager.setOffscreenPageLimit(2);
+//        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int i, float v, int i1) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int i) {
+//                select_position=i;
+//                mTabLayout.getmTabLayout().getTabAt(i).select();
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int i) {
+//
+//            }
+//        });
         for(int i=0;i<mPageTitleList.size();i++){
             mTabLayout.addTab(mPageTitleList.get(i));
         }
@@ -120,9 +128,84 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 //                setScale(0, DiscoveryPageTransformer.MAX_SCALE);
 //            }
 //        });
-        mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.getmTabLayout().getTabAt(0).select();
+        //mTabLayout.setupWithViewPager(mViewPager);
+        //mTabLayout.getmTabLayout().getTabAt(0).select();
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                changeFragment(tab.getPosition()+1);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        changeFragment(1);
 //        mViewPager.setPageTransformer(false, new DiscoveryPageTransformer(mTabLayout.getmTabLayout()));
+    }
+    private FragmentManager mFragmentManager ;
+    Fragment mCurrFragment;
+    private Fragment mBookshelfFragment;//书架
+    private Fragment mDiscoveryFragment;//发现
+    private Fragment mBookstorFragment;//发现
+    public void changeFragment(int i) {
+        MainActivity mainActivity= (MainActivity) getActivity();
+        mFragmentManager =mainActivity.getSupportFragmentManager();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        Fragment showFragment = null;
+        switch (i) {
+            case 1:
+                if (mBookshelfFragment == null) {
+                    MaleFragment maleFragment=new MaleFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("data",1);
+                    maleFragment.setArguments(bundle);
+                    mBookshelfFragment = maleFragment;
+                    ft.add(R.id.fv_main_fragment_container1, mBookshelfFragment);
+                }
+                showFragment = mBookshelfFragment;
+                break;
+            case 2:
+                if (mDiscoveryFragment == null) {
+                    PressFragment maleFragment=new PressFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("data",2);
+                    maleFragment.setArguments(bundle);
+                    mDiscoveryFragment = maleFragment;
+                    ft.add(R.id.fv_main_fragment_container1, mDiscoveryFragment);
+                }
+                showFragment = mDiscoveryFragment;
+                break;
+                case 3:
+                if (mBookstorFragment == null) {
+                    MaleFragment maleFragment=new MaleFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("data",3);
+                    maleFragment.setArguments(bundle);
+                    mBookstorFragment = maleFragment;
+                    ft.add(R.id.fv_main_fragment_container1, mBookstorFragment);
+                }
+                showFragment = mBookstorFragment;
+                break;
+            default:
+                break;
+        }
+        // 隐藏当前的 Fragment，显示新的 Fragment
+        if (mCurrFragment != null) {
+            ft.hide(mCurrFragment);
+        }
+        if (showFragment != null) {
+            ft.show(showFragment);
+        }
+        mCurrFragment = showFragment;
+
+        ft.commit();
     }
 
     @Override

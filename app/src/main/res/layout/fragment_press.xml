@@ -22,7 +22,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.tmall.ultraviewpager.UltraViewPager
-                    android:id="@+id/ultra_viewpager"
+                    android:id="@+id/ultra_viewpager4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"

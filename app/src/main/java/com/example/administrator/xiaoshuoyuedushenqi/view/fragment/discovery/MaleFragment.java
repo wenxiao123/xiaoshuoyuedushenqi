@@ -2,6 +2,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -41,6 +43,10 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
 
+import com.jude.rollviewpager.OnItemClickListener;
+import com.jude.rollviewpager.RollPagerView;
+import com.jude.rollviewpager.adapter.LoopPagerAdapter;
+import com.jude.rollviewpager.hintview.ColorPointHintView;
 import com.tmall.ultraviewpager.UltraViewPager;
 import com.wzh.viewpager.indicator.UIndicator;
 
@@ -85,6 +91,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private UltraViewPager mViewPager4;
     private UIndicator uIndicator4;
     int mess;
+
     @Override
     protected void initData() {
         mCategoryNameList.add("热血玄幻");
@@ -93,13 +100,15 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         mMoreList.add("更多玄幻小说");
         mMoreList.add("更多都市小说");
         mMoreList.add("更多武侠小说");
-        Bundle bundle =this.getArguments();//得到从Activity传来的数据
-        if(bundle!=null){
+        Bundle bundle = this.getArguments();//得到从Activity传来的数据
+        if (bundle != null) {
             mess = bundle.getInt("data");
         }
 
     }
-    DemoPagerAdapter mAdapter4;
+
+    //private RollPagerView rollPagerView;
+
     @Override
     protected void initView() {
         mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view);
@@ -128,24 +137,22 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager);
 
         uIndicator4 = getActivity().findViewById(R.id.indicator4);
-        mAdapter4 = new DemoPagerAdapter(getList());
-        mViewPager4.setAdapter(mAdapter4);
+        DemoPagerAdapter mAdapter = new DemoPagerAdapter(getList());
+        mViewPager4.setAdapter(mAdapter);
         uIndicator4.attachToViewPager(mViewPager4.getViewPager());
     }
 
     public List<String> getList() {
         List<String> list = new ArrayList<>();
-        if(mess==1) {
-            list.add("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2324525330,735217211&fm=26&gp=0.jpg");
-            list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=599f980a65f0504e8a4b5ba8" +
-                    "aa1467d8&imgtype=0&src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F00%2F00%2F07%2F095780b22836645.jpg");
-        }else {
-            list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=1a38d9fd56edff5397da03f150312dc1&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Fe668b9fa8c1dd23e9cc39f0796eee9ab16de303b7129-NtiFlA_fw658");
-            list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=51a2a1f3111997801803bdca4b8d36da&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F059e265ab33640251cbf8eae08ea64ee53dcec21339cc-kNnnqu_fw658");
-        }
+        list.add("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2324525330,735217211&fm=26&gp=0.jpg");
+        list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=599f980a65f0504e8a4b5ba8" +
+                "aa1467d8&imgtype=0&src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F00%2F00%2F07%2F095780b22836645.jpg");
+
+        list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=1a38d9fd56edff5397da03f150312dc1&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Fe668b9fa8c1dd23e9cc39f0796eee9ab16de303b7129-NtiFlA_fw658");
+        list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=51a2a1f3111997801803bdca4b8d36da&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F059e265ab33640251cbf8eae08ea64ee53dcec21339cc-kNnnqu_fw658");
+
         return list;
     }
-
 
     public class DemoPagerAdapter extends PagerAdapter {
         private List<String> views;
@@ -188,32 +195,16 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void doInOnCreate() {
-        mIsCreatedView = true;
-        if (mIsVisited && !mIsLoadedData) {
             requestUpdate();
             mProgressBar.setVisibility(View.VISIBLE);
             frameLayout_banner.setVisibility(View.GONE);
             mIsLoadedData = true;
-        }
-    }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            mIsVisited = true;
-        }
-        if (mIsVisited && !mIsLoadedData && mIsCreatedView) {
-            requestUpdate();
-            mProgressBar.setVisibility(View.VISIBLE);
-            frameLayout_banner.setVisibility(View.GONE);
-            mIsLoadedData = true;
-        }
     }
 
     private void requestUpdate() {
-        mPresenter.getHotRankData(mess+"");
-        mPresenter.getCategoryNovels(mess+"");
+        mPresenter.getHotRankData(mess + "");
+        mPresenter.getCategoryNovels(mess + "");
     }
 
     @Override

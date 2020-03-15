@@ -2,6 +2,7 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/srv_male_refresh"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -28,7 +29,12 @@
                     android:background="@android:color/darker_gray"
                     app:upv_autoscroll="3000"
                     app:upv_infiniteloop="true" />
-
+                <!--<com.jude.rollviewpager.RollPagerView-->
+                    <!--android:id="@+id/roll"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="100dp"-->
+                    <!--android:background="@drawable/bachground_white"-->
+                    <!--app:rollviewpager_play_delay="5000"/>-->
                 <com.wzh.viewpager.indicator.UIndicator
                     android:id="@+id/indicator4"
                     android:layout_width="40dp"
