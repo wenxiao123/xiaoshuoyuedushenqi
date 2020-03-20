@@ -1131,7 +1131,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         set_textstyle.startAnimation(bottomAnim);
         set_textstyle.setVisibility(View.VISIBLE);
     }
-
+    List<TextStyle> textStyles = new ArrayList<>();;
     private void post_textStyle() {
         Gson mGson = new Gson();
         String url = UrlObtainer.GetUrl() + "api/index/get_wordes";
@@ -1146,7 +1146,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     if (code.equals("1")) {
                         JSONObject object = jsonObject.getJSONObject("data");
                         JSONArray jsonArray = object.getJSONArray("data");
-                        List<TextStyle> textStyles = new ArrayList<>();
+                        textStyles.clear();
                         textStyles.add(new TextStyle("系统字体", true));
                         for (int i = 0; i < jsonArray.length(); i++) {
                             String name = jsonArray.getJSONObject(i).getString("name");
@@ -1198,7 +1198,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         });
 
     }
-
+    public void listText(){
+        for(int z=0;z<textStyles.size();z++){
+            isLoad(textStyles.get(z),textStyles.get(z).getName());
+        }
+    }
     boolean isLoad(TextStyle style, String textStyle) {
         File file = new File(Constant.FONT_ADRESS + "/Font/");
         File[] subFile = file.listFiles();

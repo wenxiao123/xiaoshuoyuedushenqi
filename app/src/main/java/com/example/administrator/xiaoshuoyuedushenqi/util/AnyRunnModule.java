@@ -17,6 +17,7 @@ import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.common.RequestEnum;
 import com.arialyy.aria.core.task.DownloadTask;
 import com.arialyy.aria.util.CommonUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadActivity;
 
 import java.io.File;
 
@@ -92,6 +93,9 @@ public class AnyRunnModule {
         Log.d(TAG, "ok");
         textView.setVisibility(View.GONE);
         SpUtil.saveTextStyle(mUrl);
+        if(mContext!=null){
+            ((ReadActivity)mContext).listText();
+        }
     }
 
 
