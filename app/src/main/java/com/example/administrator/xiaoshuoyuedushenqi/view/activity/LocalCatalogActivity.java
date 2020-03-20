@@ -1,18 +1,17 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.google.android.material.tabs.TabLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,7 +28,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Chapter;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.IChapter;
@@ -94,7 +92,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
 
     @Override
     protected void doBeforeSetContentView() {
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);   //隐藏标题栏
+        StatusBarUtil.setTranslucentStatus(this);
         mDbManager = DatabaseManager.getInstance();
     }
 
@@ -541,7 +539,6 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         }
 
     }
-
     private void findContents(List<String> paraList) {
         //字符串匹配模式
         String patternString = "第\\S{2,4}\\s\\S{2,}";

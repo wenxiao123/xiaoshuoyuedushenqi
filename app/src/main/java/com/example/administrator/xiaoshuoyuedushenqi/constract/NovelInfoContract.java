@@ -8,7 +8,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.RequestCNData;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public interface NovelInfoContract {

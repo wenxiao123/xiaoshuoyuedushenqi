@@ -5,7 +5,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.NovelSourceData
 /**
  * 小说介绍页面初始化数据
  *
- * @author WX
+ * @author
  * Created on 2019/11/16
  */
 public class NovelIntroInitEvent {

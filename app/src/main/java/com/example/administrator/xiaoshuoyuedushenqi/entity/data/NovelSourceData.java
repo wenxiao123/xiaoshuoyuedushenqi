@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/9
  */
 public class NovelSourceData {

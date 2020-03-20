@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/26
  */
 public class BookshelfNovelDbData {
@@ -14,18 +14,49 @@ public class BookshelfNovelDbData {
     private int secondPosition;
     private String Chapterid;
     private int weight;
+    private String status;
 
-    public BookshelfNovelDbData(String novelUrl, String name, String cover, int chapterIndex, int position, int type, int secondPosition, String chapterid, int weight) {
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public BookshelfNovelDbData(String novelUrl, String name, String cover, int position, int type, int secondPosition, String chapterid, int weight, String status) {
         this.novelUrl = novelUrl;
         this.name = name;
         this.cover = cover;
-        this.chapterIndex = chapterIndex;
         this.position = position;
         this.type = type;
         this.secondPosition = secondPosition;
         Chapterid = chapterid;
         this.weight = weight;
+        this.status=status;
     }
+    public BookshelfNovelDbData(String novelUrl, String name, String cover, int position, int type, int secondPosition, String chapterid, String status) {
+        this.novelUrl = novelUrl;
+        this.name = name;
+        this.cover = cover;
+        this.position = position;
+        this.type = type;
+        this.secondPosition = secondPosition;
+        Chapterid = chapterid;
+        this.status=status;
+    }
+    public BookshelfNovelDbData(String novelUrl, String name, String cover, int position, int type, int secondPosition, String chapterid, int weight) {
+        this.novelUrl = novelUrl;
+        this.name = name;
+        this.cover = cover;
+        this.position = position;
+        this.type = type;
+        this.secondPosition = secondPosition;
+        Chapterid = chapterid;
+        this.weight = weight;
+        this.status=status;
+    }
+
 
     public int getWeight() {
         return weight;
@@ -72,6 +103,15 @@ public class BookshelfNovelDbData {
         this.position = position;
         this.type = type;
         this.secondPosition = secondPosition;
+    }
+
+    public BookshelfNovelDbData(String novelUrl, String name, String cover, int type,int weight,String status) {
+        this.novelUrl = novelUrl;
+        this.name = name;
+        this.cover = cover;
+        this.type = type;
+        this.weight = weight;
+        this.status=status;
     }
 
     public String getNovelUrl() {

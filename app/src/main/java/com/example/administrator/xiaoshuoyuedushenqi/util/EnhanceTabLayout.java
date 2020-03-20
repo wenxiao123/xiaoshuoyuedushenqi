@@ -6,11 +6,11 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,14 +104,10 @@ public class EnhanceTabLayout extends FrameLayout {
                     View indicator = view.findViewById(R.id.tab_item_indicator);
                     if (i == tab.getPosition()) { // 选中状态
                         text.setTextColor(mSelectTextColor);
-                        text.setScaleX(1.3f);
-                        text.setScaleY(1.3f);
                         text.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                         //indicator.setBackgroundColor(mSelectIndicatorColor);
                         indicator.setVisibility(View.VISIBLE);
                     } else {// 未选中状态
-                        text.setScaleX(1f);
-                        text.setScaleY(1f);
                         text.setTypeface(Typeface.DEFAULT);
                         text.setTextColor(mUnSelectTextColor);
                         indicator.setVisibility(View.INVISIBLE);

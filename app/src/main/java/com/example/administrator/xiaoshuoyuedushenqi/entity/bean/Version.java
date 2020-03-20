@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.bean;
 import cn.bmob.v3.BmobObject;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/1/3
  */
 public class Version extends BmobObject {

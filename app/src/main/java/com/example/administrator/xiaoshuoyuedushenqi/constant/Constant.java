@@ -1,12 +1,14 @@
 package com.example.administrator.xiaoshuoyuedushenqi.constant;
 
+import android.os.Environment;
+
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public class Constant {
@@ -57,6 +59,8 @@ public class Constant {
     public static final String TABLE_HISTORY_WORD = "TABLE_HISTORY_WORD";   // 搜索词
     // 书架书籍表
     public static final String TABLE_BOOKSHELF_NOVEL = "TABLE_BOOKSHELF_NOVEL";
+    // 书架阅读记录表
+    public static final String TABLE_READCORDE_NOVEL = "TABLE_READCORDE_NOVEL";
     // 书架书籍表
     public static final String TABLE_LINE_BOOKSHELF_NOVEL = "TABLE_LINE_BOOKSHELF_NOVEL";
     // 书籍书签表
@@ -66,7 +70,11 @@ public class Constant {
     public static final String TABLE_BOOKMARK_ID = "TABLE_BOOKMARK_ID"; // 小说 URL（主键）
     public static final String TABLE_BOOKSHELF_NOVEL_NAME = "TABLE_BOOKSHELF_NOVEL_NAME"; // 小说名
     public static final String TABLE_BOOKSHELF_NOVEL_WIGH = "TABLE_BOOKSHELF_NOVEL_WIGH"; // 小说名
-    public static final String TABLE_BOOKSHELF_NOVEL_ID = "TABLE_BOOKSHELF_NOVEL_ID"; // 小说名
+    public static final String TABLE_BOOKSHELF_STATUS = "TABLE_BOOKSHELF_STATUS"; //
+    public static final String TABLE_BOOKSHELF_IS_CHE = "TABLE_BOOKSHELF_IS_CHE"; // chapter_name
+    public static final String TABLE_BOOKSHELF_CHAPTER_NAME="TABLE_BOOKSHELF_CHAPTER_NAME";
+    public static final String TABLE_BOOKSHELF_AUTHOR="TABLE_BOOKSHELF_AUTHOR";
+    public static final String TABLE_BOOKSHELF_NOVEL_ID = "TABLE_BOOKSHELF_NOVEL_ID"; //
     public static final String TABLE_BOOKSHELF_NOVEL_COVER = "TABLE_BOOKSHELF_NOVEL_COVER"; // 小说封面
     public static final String TABLE_BOOKSHELF_NOVEL_CONTENT = "TABLE_BOOKSHELF_NOVEL_CONTENT"; // 书签内容
     // 章节索引：网络小说和本地 epub 小说为目录索引，本地 txt 小说无需该属性
@@ -83,7 +91,7 @@ public class Constant {
 
     /* 文件存储 */
     public static final String EPUB_SAVE_PATH = App.getContext().getFilesDir() + "/epubFile";
-
+    public static final  String FONT_ADRESS= Environment.getExternalStorageDirectory() + "/" + "NovalReader";
     /* 分类小说相关 */
     // gender
     public static final String CATEGORY_GENDER_MALE = "male";   // 男生
@@ -106,7 +114,7 @@ public class Constant {
     // major（男生）
     public static final String CATEGORY_MAJOR_XH = "玄幻";
     public static final String CATEGORY_MAJOR_QH = "奇幻";
-    public static final String CATEGORY_MAJOR_WX = "武侠";
+    public static final String CATEGORY_MAJOR_  = "武侠";
     public static final String CATEGORY_MAJOR_XX = "仙侠";
     public static final String CATEGORY_MAJOR_DS = "都市";
     public static final String CATEGORY_MAJOR_ZC = "职场";
@@ -124,7 +132,7 @@ public class Constant {
     public static final String CATEGORY_MAJOR_QCXY = "青春校园";
     public static final String CATEGORY_MAJOR_CA = "纯爱";
     public static final String CATEGORY_MAJOR_XHQH = "玄幻奇幻";
-    public static final String CATEGORY_MAJOR_WXXX = "武侠仙侠";
+    public static final String CATEGORY_MAJOR = "武侠仙侠";
     // major（出版）
     public static final String CATEGORY_MAJOR_CBXS = "出版小说";
     public static final String CATEGORY_MAJOR_ZJMZ = "传记名著";

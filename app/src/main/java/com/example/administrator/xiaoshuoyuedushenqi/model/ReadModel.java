@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IReadContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CatalogBean;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.DetailedChapterBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DetailedChapterData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.EpubData;
@@ -17,10 +18,12 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EpubUtils;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +38,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/25
  */
 public class ReadModel implements IReadContract.Model {
@@ -89,6 +92,7 @@ public class ReadModel implements IReadContract.Model {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("XXX", "getDetailedChapterDataSuccess: "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -97,12 +101,11 @@ public class ReadModel implements IReadContract.Model {
                             mPresenter.getDetailedChapterDataError("请求数据失败");
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
-                            String title = object.getString("title");
-                            String content = object.getString("content");
-                            String id=object.getString("weigh");
-                            DetailedChapterData data = new DetailedChapterData(title,
-                                    content);
-                            data.setId(id);
+//                            String title = object.getString("title");
+//                            String content = object.getString("content");
+//                            String weight=object.getString("weigh");
+//                            String id=object.getString("id");
+                            DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
                             mPresenter.getDetailedChapterDataSuccess(data);
                         }
                     } else {
@@ -138,12 +141,11 @@ public class ReadModel implements IReadContract.Model {
                             mPresenter.getDetailedChapterDataError("请求数据失败");
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
-                            String title = object.getString("title");
-                            String content = object.getString("content");
-                            String id=object.getString("weigh");
-                            DetailedChapterData data = new DetailedChapterData(title,
-                                    content);
-                            data.setId(id);
+//                            String title = object.getString("title");
+//                            String content = object.getString("content");
+//                            String weight=object.getString("weigh");
+//                            String id=object.getString("id");
+                            DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
                             mPresenter.getDetailedChapterDataSuccess(data);
                         }
                     } else {
@@ -163,6 +165,7 @@ public class ReadModel implements IReadContract.Model {
 
     @Override
     public void loadTxt(final String filePath) {
+        Log.e("AAA", "loadTxt: "+filePath);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -171,7 +174,8 @@ public class ReadModel implements IReadContract.Model {
                 StringBuilder builder = null;
                 String error = "";
                 try {
-                    br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "gbk"));
+                    br =new BufferedReader(
+                            new InputStreamReader(new FileInputStream(file), getCharset(filePath)));
                     builder = new StringBuilder();
                     String str;
                     while ((str = br.readLine()) != null) {
@@ -215,7 +219,78 @@ public class ReadModel implements IReadContract.Model {
             }
         }).start();
     }
+    /**
+     * 获取文件编码
+     *
+     * @param filePath
+     * @return
+     */
+    public static String getCharset(String filePath) {
+        BufferedInputStream bis = null;
+        String charset = "GBK";
+        byte[] first3Bytes = new byte[3];
+        try {
+            boolean checked = false;
+            bis = new BufferedInputStream(new FileInputStream(filePath));
+            bis.mark(0);
+            int read = bis.read(first3Bytes, 0, 3);
+            if (read == -1)
+                return charset;
+            if (first3Bytes[0] == (byte) 0xFF && first3Bytes[1] == (byte) 0xFE) {
+                charset = "UTF-16LE";
+                checked = true;
+            } else if (first3Bytes[0] == (byte) 0xFE
+                    && first3Bytes[1] == (byte) 0xFF) {
+                charset = "UTF-16BE";
+                checked = true;
+            } else if (first3Bytes[0] == (byte) 0xEF
+                    && first3Bytes[1] == (byte) 0xBB
+                    && first3Bytes[2] == (byte) 0xBF) {
+                charset = "UTF-8";
+                checked = true;
+            }
+            bis.mark(0);
+            if (!checked) {
+                while ((read = bis.read()) != -1) {
+                    if (read >= 0xF0)
+                        break;
+                    if (0x80 <= read && read <= 0xBF) // 单独出现BF以下的，也算是GBK
+                        break;
+                    if (0xC0 <= read && read <= 0xDF) {
+                        read = bis.read();
+                        if (0x80 <= read && read <= 0xBF) // 双字节 (0xC0 - 0xDF)
+                            // (0x80 - 0xBF),也可能在GB编码内
+                            continue;
+                        else
+                            break;
+                    } else if (0xE0 <= read && read <= 0xEF) {// 也有可能出错，但是几率较小
+                        read = bis.read();
+                        if (0x80 <= read && read <= 0xBF) {
+                            read = bis.read();
+                            if (0x80 <= read && read <= 0xBF) {
+                                charset = "UTF-8";
+                                break;
+                            } else
+                                break;
+                        } else
+                            break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
+        return charset;
+    }
     /**
      * 从 epub 文件中读取到 Opf 文件信息
      *
@@ -311,6 +386,69 @@ public class ReadModel implements IReadContract.Model {
             @Override
             public void run() {
                 mPresenter.getEpubChapterDataSuccess(finalDataList);
+            }
+        });
+    }
+
+    @Override
+    public void setReadRecord(String token, String novel_id, String chapter_id) {
+        String url = UrlObtainer.GetUrl()+"api/lookbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("novel_id", novel_id)
+                .add("chapter_id", chapter_id)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        String message=jsonObject.getString("msg");
+                        mPresenter.getReadRecordSuccess(message);
+                    }else {
+                        mPresenter.getReadRecordError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getReadRecordError(errorMsg);
+            }
+        });
+    }
+
+    @Override
+    public void setBookshelfadd(String token, String novel_id) {
+        String url = UrlObtainer.GetUrl()+"api/Userbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("novel_id", novel_id)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        String message=jsonObject.getString("msg");
+                        //mPresenter.getReadRecordSuccess(message);
+                    }else {
+                        mPresenter.getReadRecordError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getReadRecordError(errorMsg);
             }
         });
     }

@@ -26,7 +26,7 @@ import java.util.List;
 
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/29
  */
 public class RealPageView extends PageView{
@@ -181,11 +181,11 @@ public class RealPageView extends PageView{
         drawableCLowerRight = new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors);
         drawableCLowerRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
     }
-    public int getmSype() {
+    public String getmSype() {
         return mSype;
     }
 
-    public void setmSype(int mSype) {
+    public void setmSype(String mSype) {
         this.mSype = mSype;
         // hashMap 缓存作废
         mFirstPosMap.clear();
@@ -200,7 +200,11 @@ public class RealPageView extends PageView{
         Canvas mCanvas = new Canvas(mContentABitmap);
         mCanvas.drawPath(getPathDefault(), mBgPaint);
         if (mType == TYPE_TXT) {
-            drawText(mCanvas, mPaint,mSype);
+            if(mSype!=null&&!mSype.equals("")){
+                drawText(mCanvas, mPaint,mSype);
+            }else {
+                drawText(mCanvas, mPaint);
+            }
             mHasBitmapB = mNextPosition < mContent.length();
         } else if (mType == TYPE_EPUB) {
             drawEpub(mCanvas, mPaint);
@@ -224,7 +228,11 @@ public class RealPageView extends PageView{
         mCanvas = new Canvas(mContentCBitmap);
         mCanvas.drawPath(getPathDefault(), mBackBgPaint);
         if (mType == TYPE_TXT) {
-            drawText(mCanvas, mBackPaint,mSype);
+            if(mSype!=null&&!mSype.equals("")){
+                drawText(mCanvas, mPaint,mSype);
+            }else {
+                drawText(mCanvas, mPaint);
+            }
         } else if (mType == TYPE_EPUB) {
             drawEpub(mCanvas, mBackPaint);
         }

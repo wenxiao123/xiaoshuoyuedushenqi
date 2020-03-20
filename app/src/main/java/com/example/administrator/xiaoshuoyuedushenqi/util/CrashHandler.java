@@ -4,7 +4,7 @@ import android.os.Process;
 import android.util.Log;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/28
  */
 public class CrashHandler implements Thread.UncaughtExceptionHandler {

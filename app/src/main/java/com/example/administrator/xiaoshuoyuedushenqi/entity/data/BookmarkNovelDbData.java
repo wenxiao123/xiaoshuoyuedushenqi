@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/26
  */
 public class BookmarkNovelDbData {
@@ -12,14 +12,18 @@ public class BookmarkNovelDbData {
     private int position;
     private int type;
     private String time;
+    private String Chapterid;
 
-    public BookmarkNovelDbData(String novelUrl, String name, String content,
-                               float chapterIndex, int position, int type) {
-        this(novelUrl, name, content, chapterIndex, position, type, "");
+    public String getChapterid() {
+        return Chapterid;
+    }
+
+    public void setChapterid(String chapterid) {
+        Chapterid = chapterid;
     }
 
     public BookmarkNovelDbData(String novelUrl, String name, String content, float chapterIndex,
-                               int position, int type, String time) {
+                               int position, int type, String time, String Chapterid) {
         this.novelUrl = novelUrl;
         this.name = name;
         this.content = content;
@@ -27,6 +31,7 @@ public class BookmarkNovelDbData {
         this.position = position;
         this.type = type;
         this.time = time;
+        this.Chapterid = Chapterid;
     }
 
     public String getNovelUrl() {
@@ -87,14 +92,15 @@ public class BookmarkNovelDbData {
 
     @Override
     public String toString() {
-        return "BookshelfNovelDbData{" +
+        return "BookmarkNovelDbData{" +
                 "novelUrl='" + novelUrl + '\'' +
                 ", name='" + name + '\'' +
                 ", content='" + content + '\'' +
                 ", chapterIndex=" + chapterIndex +
                 ", position=" + position +
                 ", type=" + type +
-                ", secondPosition=" + time +
+                ", time='" + time + '\'' +
+                ", Chapterid='" + Chapterid + '\'' +
                 '}';
     }
 }

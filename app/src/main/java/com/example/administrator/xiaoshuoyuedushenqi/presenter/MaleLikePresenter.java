@@ -8,7 +8,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.MaleLikeModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public class MaleLikePresenter extends BasePresenter<IMaleLikeContract.View>

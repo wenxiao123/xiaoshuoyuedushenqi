@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/25
  */
 public class PageView extends View {
@@ -38,7 +38,7 @@ public class PageView extends View {
     protected Paint mPaint;
     protected float mTextSize;      // 字体大小
     protected float mRowSpace;     // 行距
-    protected int mSype;
+    protected String mSype;
     protected PageViewListener mListener;
     private boolean mIsShowContent = true;  // 是否显示文本内容
     // TYPE_TXT 为绘制普通文本（网络小说和本地 txt），TYPE_EPUB 为绘制 epub 文本（本地 epub）
@@ -181,30 +181,24 @@ public class PageView extends View {
         }
     }
 
-    protected void drawText(Canvas canvas, Paint textPaint,int z) {
+    protected void drawText(Canvas canvas, Paint textPaint,String path) {
         textPaint.setTextSize(mTextSize);
         //从asset 读取字体
         AssetManager mgr = getContext().getAssets();
-//根据路径得到Typeface
+       //根据路径得到Typeface
         Typeface tf;
-        if(z==0) {
-            //tf = Typeface.createFromAsset(mgr, "font/fzkatong.ttf");
-            String path=Environment.getExternalStorageDirectory().toString()+"/SPM/fzkatong.ttf";
             File  file = new File(path);
             if(file.exists()){
                 file.getParentFile().mkdirs();
             }
             tf=Typeface.createFromFile(file);
-        }else if(z==1) {
-            tf = Typeface.createFromAsset(mgr, "font/qihei.ttf");
-        }else {
-            String path=Environment.getExternalStorageDirectory().toString()+"/SPM/方正华隶.ttf";
-            File  file = new File(path);
-            if(file.exists()){
-                file.getParentFile().mkdirs();
-            }
-            tf=Typeface.createFromFile(file);
-        }
+        textPaint.setTypeface(tf);
+        drawText(canvas, textPaint, mTextSize + getPaddingTop());
+        mFirstPosMap.put(mPageIndex, mPosition);
+    }
+    protected void drawText(Canvas canvas, Paint textPaint) {
+        textPaint.setTextSize(mTextSize);
+        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
         textPaint.setTypeface(tf);
         drawText(canvas, textPaint, mTextSize + getPaddingTop());
         mFirstPosMap.put(mPageIndex, mPosition);
@@ -212,6 +206,8 @@ public class PageView extends View {
 
     protected void drawTextB(Canvas canvas, Paint textPaint) {
         textPaint.setTextSize(mTextSize);
+        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+        textPaint.setTypeface(tf);
         drawTextB(canvas, textPaint, mTextSize + getPaddingTop());
     }
 
@@ -225,6 +221,8 @@ public class PageView extends View {
             posRecord = mSecondPos;
             content = mEpubDataList.get(mFirstPos).getData();
         }
+        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+        textPaint.setTypeface(tf);
         posRecord = drawTextImpl(canvas,textPaint,currY, content, posRecord);
 
         // 更新相关变量
@@ -251,6 +249,8 @@ public class PageView extends View {
             posRecord = mNextSecondPos;
             content = mEpubDataList.get(mNextFirstPos).getData();
         }
+        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+        textPaint.setTypeface(tf);
         posRecord = drawTextImpl(canvas,textPaint,currY, content, posRecord);
     }
 
@@ -565,12 +565,12 @@ public class PageView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 // 根据离开时的位置进行不同操作
-                float rawX = event.getRawX();
+                float ra  = event.getRawX();
                 float screenWidth = ScreenUtil.getScreenWidth();
-                if (rawX <= 0.35f * screenWidth) {
+                if (ra  <= 0.35f * screenWidth) {
                     // 上一页
                     pre();
-                } else if (rawX >= 0.65f * screenWidth) {
+                } else if (ra  >= 0.65f * screenWidth) {
                     // 下一页
                     next();
                 } else {

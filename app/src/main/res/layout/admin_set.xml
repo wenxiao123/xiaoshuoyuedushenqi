@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bookshelf_multi_delete_bar_bg"
+    android:background="@color/background_color"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/red">
+        android:background="@drawable/background_grint">
         <ImageView
             android:id="@+id/back"
             android:layout_alignParentBottom="true"
@@ -23,28 +23,29 @@
             android:text="设置"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="19sp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
     <!-- top -->
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_part1"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_part2"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_part3"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
@@ -257,7 +258,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/v_more_about" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -309,6 +310,18 @@
                 android:text="取消"/>
 
         </LinearLayout>
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:id="@+id/exit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="13dp"
+            android:paddingBottom="13dp"
+            android:textSize="16sp"
+            android:textColor="@color/red_aa"
+            android:background="@color/white"
+            android:text="退出登录"/>
     </RelativeLayout>
 
 </LinearLayout>

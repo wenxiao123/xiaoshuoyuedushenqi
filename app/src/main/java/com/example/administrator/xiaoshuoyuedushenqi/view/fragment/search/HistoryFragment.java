@@ -1,9 +1,9 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search;
 
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,19 +15,30 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.SearchUpdateInputEvent;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.widget.FlowLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.LineBreakLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+
 /**
- * @author WX
+ * @author
  * Created on 2019/11/9
  */
 public class HistoryFragment extends BaseFragment implements View.OnClickListener{
@@ -53,7 +64,44 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         mManager = DatabaseManager.getInstance();
         mContentList = mManager.queryAllHistory();
     }
+    List<Wheel> wheelList;
+    void postHotbook(){
+        Gson mGson=new Gson();
+        String url = UrlObtainer.GetUrl() + "api/index/book_name";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("limit", 7+"")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        JSONArray jsonArray=object.getJSONArray("data");
+                         wheelList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            wheelList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),Wheel.class));
+                        }
+                        initAdapter(wheelList);
+                    }else {
 
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
+    }
+   void initAdapter(List<Wheel> wheelList){
+       lineBreakLayout.setLables(wheelList, true);
+   }
     @Override
     protected void initView() {
         mHistoryListFv = getActivity().findViewById(R.id.fv_history_history_list);
@@ -77,8 +125,6 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         mHistoryListFv.setLayoutManager(layoutManager);
         mHistoryListFv.setAdapter(mHistoryAdapter);
         mHistoryListFv.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        bookhotAdapter=new BookhotAdapter(getContext(),mContentList);
-        recyclerView_hot_book.setAdapter(bookhotAdapter);
 
         // 设置最多显示的行数
         //mHistoryListFv.setMaxLines(MAX_LINES);
@@ -101,12 +147,11 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
             delect_all.setVisibility(View.VISIBLE);
         }
         lineBreakLayout=getActivity().findViewById(R.id.lineBreak);
-        lineBreakLayout.setLables(mContentList, true);
     }
 
     @Override
     protected void doInOnCreate() {
-
+        postHotbook();
     }
 
     @Override

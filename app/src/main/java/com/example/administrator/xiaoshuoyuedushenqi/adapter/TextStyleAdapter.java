@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,21 +15,32 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.arialyy.annotations.Download;
+import com.arialyy.aria.core.Aria;
+import com.arialyy.aria.core.task.DownloadTask;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
-import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.TextStyle;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.AnyRunnModule;
+import com.example.administrator.xiaoshuoyuedushenqi.util.FileDowned;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 /**
- * @author WX
- * Created on 2019/12/21
+ * @author Created on 2019/12/21
  */
 public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.ScreenViewHolder> implements View.OnClickListener {
 
     private Context mContext;
-    private String[] mContentList;
-    private int position=0;
+    private List<TextStyle> textStyles;
+    private int position = 0;
 
     public void setPosition(int position) {
         this.position = position;
@@ -49,11 +62,12 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
     public interface ScreenListener {
         void clickItem(int position);
     }
-
-    public TextStyleAdapter(Context mContext, String[] mContentList
-                           ) {
+    AnyRunnModule anyRunnModule;
+    public TextStyleAdapter(Context mContext, List<TextStyle> textStyles
+    ) {
         this.mContext = mContext;
-        this.mContentList = mContentList;
+        this.textStyles = textStyles;
+        anyRunnModule=new AnyRunnModule(mContext);
     }
 
     @NonNull
@@ -62,30 +76,35 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
         return new ScreenViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_textstyle, null));
     }
 
+    String url;
+
     @Override
     public void onBindViewHolder(@NonNull ScreenViewHolder screenViewHolder, final int i) {
-        screenViewHolder.text.setText(mContentList[i]);
-        if(position==i){
+        screenViewHolder.text.setText(textStyles.get(i).getName());
+        if (position == i) {
             screenViewHolder.img.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             screenViewHolder.img.setVisibility(View.GONE);
         }
-        //从asset 读取字体
-        AssetManager mgr = mContext.getAssets();
-        Typeface tf;
-        if(i==0) {
-            tf = Typeface.createFromAsset(mgr, "font/fzkatong.ttf");
-        }else  if(i==1) {
-            tf = Typeface.createFromAsset(mgr, "font/qihei.ttf");
-        }else {
-            String path= Environment.getExternalStorageDirectory().toString()+"/SPM/方正华隶.ttf";
-            File file = new File(path);
-            if(file.exists()){
-                file.getParentFile().mkdirs();
-            }
-            tf=Typeface.createFromFile(file);
+        if (textStyles.get(i).isLoad() == true) {
+            screenViewHolder.txt.setVisibility(View.GONE);
+        } else {
+            screenViewHolder.txt.setVisibility(View.VISIBLE);
+            screenViewHolder.img.setVisibility(View.GONE);
         }
-        screenViewHolder.text.setTypeface(tf);
+
+        screenViewHolder.txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                url=UrlObtainer.GetUrl() + textStyles.get(i).getUrl();
+//                long taskId = Aria.download(mContext)
+//                        .load(UrlObtainer.GetUrl() + textStyles.get(i).getUrl())     //读取下载地址
+//                        .setFilePath(path + textStyles.get(i).getName()+".ttf") //设置文件保存的完整路径
+//                        .create();   //创建并启动下载
+                Log.e("AAA", "onClick: "+UrlObtainer.GetUrl() + textStyles.get(i).getUrl());
+                anyRunnModule.start(url,path + textStyles.get(i).getName()+".ttf",screenViewHolder.txt);
+            }
+        });
         screenViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,18 +113,23 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
         });
     }
 
+    String path = Constant.FONT_ADRESS + "/Font/";
+
     @Override
     public int getItemCount() {
-        return mContentList.length;
+        return textStyles.size();
     }
 
     class ScreenViewHolder extends RecyclerView.ViewHolder {
-        TextView text;
+        TextView text, txt;
         ImageView img;
+
         public ScreenViewHolder(@NonNull View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.tv_item_screen_text);
-            img=itemView.findViewById(R.id.img);
+            img = itemView.findViewById(R.id.img);
+            txt = itemView.findViewById(R.id.txt);
         }
     }
+
 }

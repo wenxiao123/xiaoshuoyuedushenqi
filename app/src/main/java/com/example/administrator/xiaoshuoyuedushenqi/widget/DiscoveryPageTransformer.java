@@ -1,8 +1,8 @@
 package com.example.administrator.xiaoshuoyuedushenqi.widget;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -11,7 +11,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.rewrite.TabLayout;
 import java.util.HashMap;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/2
  */
 public class DiscoveryPageTransformer implements ViewPager.PageTransformer {

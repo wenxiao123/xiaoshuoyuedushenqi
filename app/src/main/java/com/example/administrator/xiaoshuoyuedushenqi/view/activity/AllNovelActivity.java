@@ -1,10 +1,9 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
-import android.content.Intent;
 import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -18,7 +17,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.adapter.EmptyAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.NovelAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.ScreenAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
-import com.example.administrator.xiaoshuoyuedushenqi.base.BasePagingLoadAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IAllNovelContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.ANNovelData;
@@ -124,7 +122,7 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     private void initMapAndList() {
         mMinorMap.put(Constant.CATEGORY_MAJOR_XH, strings2List(new String[] {"东方玄幻","异界大陆","异界争霸","远古神话"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_QH, strings2List(new String[] {"西方奇幻","亡灵异族","魔法校园"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_WX, strings2List(new String[] {"传统武侠","新派武侠","国术武侠"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_ , strings2List(new String[] {"传统武侠","新派武侠","国术武侠"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_XX, strings2List(new String[] {"古典仙侠","幻想修仙","现代修仙","洪荒封神"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_DS, strings2List(new String[] {"都市生活","异术超能","青春校园"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_ZC, strings2List(new String[] {"娱乐明星","商场职场"}));
@@ -138,15 +136,15 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         mMinorMap.put(Constant.CATEGORY_MAJOR_GDYQ, strings2List(new String[] {"穿越时空","古典架空","宫闱宅斗","经商种田"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_XDYQ, strings2List(new String[] {"豪门总裁","都市生活","婚恋情感","异术超能"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_XHQH, strings2List(new String[] {"玄幻异世","奇幻魔法"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_WXXX, strings2List(new String[] {"仙侠"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_XX, strings2List(new String[] {"仙侠"}));
 
         mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_XH, Constant.CATEGORY_MAJOR_QH,
-                Constant.CATEGORY_MAJOR_WX, Constant.CATEGORY_MAJOR_XX, Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_ZC,
+                Constant.CATEGORY_MAJOR_ , Constant.CATEGORY_MAJOR_XX, Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_ZC,
                 Constant.CATEGORY_MAJOR_LS, Constant.CATEGORY_MAJOR_JS, Constant.CATEGORY_MAJOR_YX, Constant.CATEGORY_MAJOR_JJ,
                 Constant.CATEGORY_MAJOR_KH, Constant.CATEGORY_MAJOR_LY, Constant.CATEGORY_MAJOR_TR, Constant.CATEGORY_MAJOR_QXS}));
         mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_GDYQ, Constant.CATEGORY_MAJOR_XDYQ,
                 Constant.CATEGORY_MAJOR_QCXY, Constant.CATEGORY_MAJOR_XHQH,
-                Constant.CATEGORY_MAJOR_WXXX}));
+                Constant.CATEGORY_MAJOR_XX}));
         mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_CBXS, Constant.CATEGORY_MAJOR_ZJMZ,
                 Constant.CATEGORY_MAJOR_CGLZ, Constant.CATEGORY_MAJOR_RWSK, Constant.CATEGORY_MAJOR_JGLC, Constant.CATEGORY_MAJOR_SHSS,
                 Constant.CATEGORY_MAJOR_YEJK, Constant.CATEGORY_MAJOR_QCYQ, Constant.CATEGORY_MAJOR_WWYB, Constant.CATEGORY_MAJOR_ZZJS}));

@@ -1,6 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +22,7 @@ public class LineBreakLayout extends ViewGroup {
     /**
      * 所有标签
      */
-    private List<String> lables;
+    private List<Wheel> lables;
     /**
      * 选中标签
      */
@@ -50,7 +53,7 @@ public class LineBreakLayout extends ViewGroup {
      * @param lables 标签集合
      * @param add 是否追加
      */
-    public void setLables(List<String> lables, boolean add){
+    public void setLables(List<Wheel> lables, boolean add){
         if(this.lables == null){
             this.lables = new ArrayList<>();
         }
@@ -62,10 +65,19 @@ public class LineBreakLayout extends ViewGroup {
         }
         if(lables!=null && lables.size()>0){
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            for (final String lable : lables) {
+            for (final Wheel lable : lables) {
                 //获取标签布局
                 final TextView tv = (TextView) inflater.inflate(R.layout.item_lable, null);
-                tv.setText(lable);
+                tv.setText(lable.getTitle());
+                tv.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                        // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                        intent.putExtra("pid", lable.getId() + "");
+                        getContext().startActivity(intent);
+                    }
+                });
                 //设置选中效果
 //                if (lableSelected.contains(lable)) {
 //                    //选中

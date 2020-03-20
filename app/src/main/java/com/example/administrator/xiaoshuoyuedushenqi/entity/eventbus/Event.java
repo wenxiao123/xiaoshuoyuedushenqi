@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/19
  */
 public class Event<T> {

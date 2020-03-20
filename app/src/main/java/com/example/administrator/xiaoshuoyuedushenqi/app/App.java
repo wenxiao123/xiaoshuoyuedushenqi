@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
+import com.arialyy.aria.core.Aria;
 import com.example.administrator.xiaoshuoyuedushenqi.util.CrashHandler;
 
 import java.util.LinkedList;
@@ -13,22 +16,23 @@ import cn.bmob.v3.Bmob;
 import cn.bmob.v3.update.BmobUpdateAgent;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/28
  */
 public class App extends Application {
 
     private static Context context;
-
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
     @Override
     public void onCreate() {
         super.onCreate();
         // 为应用设置异常处理
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init();
-
         context = getApplicationContext();
-
+        Aria.init(this);
 //        Bmob.initialize(this, "ce63bdbbd4197409b82920b0835a42eb");
 //        BmobUpdateAgent.setUpdateCheckConfig(false);
     }

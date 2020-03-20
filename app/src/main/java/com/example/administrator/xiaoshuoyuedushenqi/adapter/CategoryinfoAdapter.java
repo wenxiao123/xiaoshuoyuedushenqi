@@ -1,8 +1,9 @@
 package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapter.CategoryNovelViewHolder> {
@@ -50,8 +51,14 @@ public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CategoryNovelViewHolder categoryNovelViewHolder, final int i) {
+        String url;
+        if(novalDetails.get(i).getPic().contains("http")){
+            url=novalDetails.get(i).getPic();
+        }else {
+            url=UrlObtainer.GetUrl() +novalDetails.get(i).getPic();
+        }
         Glide.with(mContext)
-                .load(UrlObtainer.GetUrl()+novalDetails.get(i).getPic())
+                .load(url)
                 .apply(new RequestOptions()
                     .placeholder(R.drawable.cover_place_holder)
                     .error(R.drawable.cover_error))
@@ -63,6 +70,7 @@ public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapte
             }
         });
         categoryNovelViewHolder.name.setText(novalDetails.get(i).getTitle());
+        categoryNovelViewHolder.author.setText(novalDetails.get(i).getAuthor());
     }
 
     @Override
@@ -72,12 +80,13 @@ public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapte
 
     class CategoryNovelViewHolder extends RecyclerView.ViewHolder {
         ImageView cover;
-        TextView name;
+        TextView name,author;
 
         public CategoryNovelViewHolder(@NonNull View itemView) {
             super(itemView);
             cover = itemView.findViewById(R.id.iv_item_category_novel_cover);
             name = itemView.findViewById(R.id.tv_item_category_novel_name);
+            author=itemView.findViewById(R.id.tv_item_category_author);
         }
     }
 }

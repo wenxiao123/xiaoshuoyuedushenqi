@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/red"
+        android:background="@drawable/background_grint"
         android:orientation="horizontal">
 
         <ImageView
@@ -103,7 +103,7 @@
     <!--android:overScrollMode="never"/>-->
 
     <!--</android.support.v4.widget.SwipeRefreshLayout>-->
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_discovery_view_pager1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

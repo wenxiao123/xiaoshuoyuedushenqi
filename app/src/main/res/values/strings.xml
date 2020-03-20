@@ -101,6 +101,6 @@
     <string name="more_check_update">检查更新</string>
     <string name="more_version">v1.0.0</string>
     <string name="more_clear">清理缓存</string>
-    <string name="more_cache_size">7MB</string>
+    <string name="more_cache_size">0MB</string>
     <string name="more_about">关于</string>
 </resources>

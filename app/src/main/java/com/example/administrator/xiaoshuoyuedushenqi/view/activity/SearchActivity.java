@@ -2,24 +2,22 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookhotAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
@@ -38,7 +36,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/8
  */
 public class SearchActivity extends BaseActivity implements View.OnClickListener{
@@ -57,7 +55,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private FragmentManager mFragmentManager = getSupportFragmentManager();
     private boolean mIsShowSearchResFg = false;     // 是否正在显示搜索结果 Fragment
     private String mLastSearch = "";        // 记录上一搜索词
-    private RecyclerView search_recyler;
     private DatabaseManager mManager;   // 数据库管理类
 
     @Override
@@ -83,7 +80,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initView() {
-        search_recyler=findViewById(R.id.search_recyler);
         mBackIv = findViewById(R.id.iv_search_back);
         mBackIv.setOnClickListener(this);
         mSearchBarEt = findViewById(R.id.et_search_search_bar);
@@ -248,15 +244,18 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
      * 第一次进入搜索页面时，显示历史搜索 Fragment
      */
     private void showSearchFg(String stringContent) {
-        if (mSearchFragment == null) {
+//        if (mSearchFragment == null) {
             mSearchFragment = SearchFragment.newInstance(stringContent);
-        }else {
-            return;
-        }
+//        }else {
+//            return;
+//        }
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.add(R.id.fv_search_container, mSearchFragment);
         if (mHistoryFragment != null) {
             ft.hide(mHistoryFragment);
+        }
+        if (mSearchResultFragment != null) {
+            ft.hide(mSearchResultFragment);
         }
         ft.show(mSearchFragment);
         ft.commit();
@@ -272,7 +271,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         mSearchResultFragment = SearchResultFragment.newInstance(
                 mSearchBarEt.getText().toString());
         FragmentTransaction ft = mFragmentManager.beginTransaction();
-        ft.add(R.id.fv_search_container, mSearchResultFragment);
+        ft.add(R.id.fv_search_container, mSearchResultFragment,"tag");
         if (mHistoryFragment != null) {
             ft.hide(mHistoryFragment);
         }

@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import android.content.Intent;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -8,19 +10,28 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.constract.ILoginContract;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.presenter.LoginPresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.OvalImageView;
 
 import org.w3c.dom.Text;
 
 import java.util.regex.Pattern;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity<LoginPresenter> implements ILoginContract.View {
     EditText et_mobile_phone,et_vertical;
-    TextView tv_notice,tv_login;
+    TextView tv_notice,tv_login,tv_verification;
     ImageView img_select;
+    OvalImageView img_title;
+    private TimeCount time;
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -32,23 +43,38 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
-    protected BasePresenter getPresenter() {
-        return null;
+    protected LoginPresenter getPresenter() {
+        return new LoginPresenter();
     }
 
     @Override
     protected void initData() {
-
+        time = new TimeCount(60000, 1000);
     }
     boolean isChecked;
     @Override
     protected void initView() {
+        img_title=findViewById(R.id.img_title);
+        Glide.with(this)
+                .load(R.mipmap.admin)
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.cover_place_holder)
+                        .error(R.drawable.cover_error))
+                .into(img_title);
         findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             finish();
         }
     });
+        tv_verification=findViewById(R.id.tv_verification);
+        tv_verification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                time.start();
+                mPresenter.getVertical();
+            }
+        });
         et_mobile_phone=findViewById(R.id.et_login_phone);
         et_mobile_phone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -65,6 +91,9 @@ public class LoginActivity extends BaseActivity {
                }
                if(charSequence.length()==0){
                    tv_notice.setVisibility(View.GONE);
+                   tv_verification.setBackground(getResources().getDrawable(R.drawable.bachground_ash));
+               }else {
+                   tv_verification.setBackground(getResources().getDrawable(R.drawable.bachground_yellow_light));
                }
                if(charSequence.length()>0&&!et_vertical.getText().toString().trim().equals("")){
                    tv_login.setBackground(getResources().getDrawable(R.drawable.bachground_yellow_light));
@@ -101,8 +130,10 @@ public class LoginActivity extends BaseActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(charSequence.length()>0&&!et_mobile_phone.getText().toString().trim().equals("")){
                     tv_login.setBackground(getResources().getDrawable(R.drawable.bachground_yellow_light));
+                    tv_verification.setClickable(true);
                 }else {
                     tv_login.setBackground(getResources().getDrawable(R.drawable.bachground_ash));
+                    tv_verification.setClickable(false);
                 }
             }
 
@@ -123,6 +154,16 @@ public class LoginActivity extends BaseActivity {
                 }else {
                     isChecked=false;
                     img_select.setImageResource(R.mipmap.sys_select);
+                }
+            }
+        });
+        tv_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isChecked) {
+                    mPresenter.getLogin(et_mobile_phone.getText().toString(), et_vertical.getText().toString());
+                }else {
+                     showShortToast("请先同意用户协议与隐私条款");
                 }
             }
         });
@@ -150,6 +191,55 @@ public class LoginActivity extends BaseActivity {
         Pattern p = Pattern.compile(regex);
         return p.matches(regex, input);//如果不是号码，则返回false，是号码则返回true
 
+    }
+
+    @Override
+    public void getVerticalSuccess(String code) {
+        showShortToast(code);
+    }
+
+    @Override
+    public void getVerticalError(String errorMsg) {
+        showShortToast(errorMsg);
+    }
+
+    @Override
+    public void getLoginSuccess(Login_admin loginAdminl) {
+        SpUtil.saveObject(this,loginAdminl);
+        if(loginAdminl!=null){
+           startActivity(new Intent(this,MainActivity.class));
+        }
+        //Login_admin login_admin= (Login_admin) SpUtil.readObject(this);
+        //Log.e("AAA", "getLoginSuccess: "+login_admin);
+    }
+
+    @Override
+    public void getLoginError(String errorMsg) {
+        showShortToast(errorMsg);
+    }
+
+    class TimeCount extends CountDownTimer {
+
+        public TimeCount(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            tv_verification.setBackground(getResources().getDrawable(R.drawable.bachground_ash));
+            //btnGetcode.setBackgroundColor(Color.parseColor("#B6B6D8"));
+            tv_verification.setClickable(false);
+            tv_verification.setText("获取验证码 "+millisUntilFinished / 1000 +" s");
+        }
+
+        @Override
+        public void onFinish() {
+            tv_verification.setText("重新获取");
+            tv_verification.setClickable(true);
+            tv_verification.setBackground(getResources().getDrawable(R.drawable.bachground_yellow_light));
+            //btnGetcode.setBackgroundColor(Color.parseColor("#4EB84A"));
+
+        }
     }
     @Override
     protected boolean isRegisterEventBus() {

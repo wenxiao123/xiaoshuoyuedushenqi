@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.httpUrlUtil;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/24
  */
 public interface Response {

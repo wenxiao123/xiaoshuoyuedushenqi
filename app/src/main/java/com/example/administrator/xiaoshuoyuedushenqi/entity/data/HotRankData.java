@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 热门排行数据
  *
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public class HotRankData {

@@ -5,7 +5,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Catagorys;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public interface IMaleLikeContract {

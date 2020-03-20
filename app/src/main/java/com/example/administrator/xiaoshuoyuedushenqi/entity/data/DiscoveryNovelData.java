@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 发现页小说数据
  *
- * @author WX
+ * @author
  * Created on 2019/12/20
  */
 public class DiscoveryNovelData {

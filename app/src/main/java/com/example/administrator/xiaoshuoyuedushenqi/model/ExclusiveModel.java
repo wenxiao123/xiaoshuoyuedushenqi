@@ -6,23 +6,33 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IExclusiveContract;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleContract;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovelsBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.HotRankBean;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+
 /**
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
-public class ExclusiveModel extends BasePresenter implements IExclusiveContract.Model {
+public class ExclusiveModel  implements IExclusiveContract.Model {
     private static final String TAG = "MaleModel";
     private static final int RANK_NOVEL_NUM = 3;     // 每个排行榜展示的小说数
 
@@ -34,65 +44,155 @@ public class ExclusiveModel extends BasePresenter implements IExclusiveContract.
     }
 
     /**
+     * 获取热门榜单信息
+     */
+    @Override
+    public void getHotRankData(String id) {
+        String url = UrlObtainer.GetUrl()+"api/Rmlist/Lan_list";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("type", id)
+                .add("sort", "3")
+                .add("limit", "4")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        List<CategoryNovels> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),CategoryNovels.class));
+                        }
+                        mPresenter.getHotRankDataSuccess(novalDetailsList);
+                    }else {
+                        mPresenter.getHotRankDataError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getHotRankDataError(errorMsg);
+            }
+        });
+    }
+
+    @Override
+    public void getNewRankData(String id) {
+        String url = UrlObtainer.GetUrl()+"api/Rmlist/New_List";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("type", id)
+                .add("limit", "4")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        JSONArray jsonArray=object.getJSONArray("data");
+                        List<Noval_details> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),Noval_details.class));
+                        }
+                        mPresenter.getNewDataSuccess(novalDetailsList);
+                    }else {
+                        mPresenter.getNewDataError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getNewDataError(errorMsg);
+            }
+        });
+    }
+
+    /**
      * 获取发现页的分类小说数据
      */
     @Override
-    public void getCategoryNovels() {
-        final List<DiscoveryNovelData> dataList = new ArrayList<>();
-        final int[] finishCount = {0};
-        final int n = 3;  // 类别数
-        final int num = 6;    // 获取条数（最终得到的可能多于 6 条）
-        List<String> majorList = Arrays.asList(Constant.CATEGORY_MAJOR_XH,
-                Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_WX);
-        for (int i = 0; i < n; i++) {
-            String url = UrlObtainer.getCategoryNovels(Constant.CATEGORY_GENDER_MALE,
-                    majorList.get(i), num);
-            dataList.add(null);
-            final int finalI = i;
-            OkhttpUtil.getRequest(url, new OkhttpCall() {
-                @Override
-                public void onResponse(String json) {   // 得到 json 数据
-                    finishCount[0]++;
-                    CategoryNovelsBean bean = mGson.fromJson(json, CategoryNovelsBean.class);
-                    if (bean.isOk()) {
-                        DiscoveryNovelData discoveryNovelData = new DiscoveryNovelData();
-                        List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
-                        List<String> novelNameList = new ArrayList<>();
-                        List<String> coverUrlList = new ArrayList<>();
-                        for (int j = 0; j < Math.min(books.size(), num); j++) {
-                            novelNameList.add(books.get(j).getTitle());
-                            coverUrlList.add("http://statics.zhuishushenqi.com" + books.get(j).getCover());
+    public void getCategoryNovels(String id) {
+        String url = UrlObtainer.GetUrl()+"api/Rmlist/Rem_List";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("type", id)
+                .add("sort", "3")
+                .add("limit", "4")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        JSONArray jsonArray=object.getJSONArray("data");
+                        List<Noval_details> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),Noval_details.class));
                         }
-                        discoveryNovelData.setNovelNameList(novelNameList);
-                        discoveryNovelData.setCoverUrlList(coverUrlList);
-                        dataList.set(finalI, discoveryNovelData);
+                        mPresenter.getCategoryNovelsSuccess(novalDetailsList);
+                    }else {
+                        mPresenter.getCategoryNovelsError("请求错误");
                     }
-                    if (finishCount[0] == n) {
-                        boolean hasFinished = true;
-                        for (int j = 0; j < n; j++) {
-                            if (dataList.get(j) == null) {
-                                hasFinished = false;
-                                mPresenter.getCategoryNovelsError("获取分类小说失败");
-                                break;
-                            }
-                        }
-                        if (hasFinished) {
-                            mPresenter.getCategoryNovelsSuccess(dataList);
-                        }
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                @Override
-                public void onFailure(String errorMsg) {
-                    finishCount[0]++;
-                    Log.d(TAG, "getCategoryNovels onFailure: " + errorMsg);
-                    if (finishCount[0] == n) {
-                        mPresenter.getCategoryNovelsError("获取分类小说失败");
-                    }
-                }
-            });
-        }
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getCategoryNovelsError(errorMsg);
+            }
+        });
     }
 
+    @Override
+    public void getCategoryNovels2(String id) {
+        String url = UrlObtainer.GetUrl()+"api/Rmlist/Rem_List";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("type", id)
+                .add("sort", "1")
+                .add("limit", "4")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        JSONArray jsonArray=object.getJSONArray("data");
+                        List<Noval_details> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),Noval_details.class));
+                        }
+                        mPresenter.getCategoryNovels2Success(novalDetailsList);
+                    }else {
+                        mPresenter.getCategoryNovels2Error("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getCategoryNovels2Error(errorMsg);
+            }
+        });
+    }
 
 }

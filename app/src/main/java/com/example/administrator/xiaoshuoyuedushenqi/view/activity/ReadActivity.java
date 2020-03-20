@@ -6,21 +6,20 @@ import android.database.ContentObserver;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -29,7 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.TextStyleAdapter;
@@ -38,6 +36,10 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IReadContract;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.TextStyle;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DetailedChapterData;
@@ -47,6 +49,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.OpfData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.EpubCatalogInitEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.ReadPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EpubUtils;
@@ -54,14 +58,17 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ScreenUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.BookshelfFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.PageView;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.RealPageView;
+import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,11 +77,13 @@ import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+
 /**
  * 小说阅读界面
  *
- * @author WX
- * Created on 2019/11/25
+ * @author Created on 2019/11/25
  */
 public class ReadActivity extends BaseActivity<ReadPresenter>
         implements IReadContract.View, View.OnClickListener {
@@ -83,6 +92,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     public static final String KEY_NOVEL_URL = "read_key_novel_url";
     public static final String KEY_CHPATER_ID = "chpter_id";
+    public static final String KEY_SERIALIZE = "serialize";
+    public static final String KEY_AUTHOR = "author";
+    public static final String KEY_ZJ_ID = "ZJ_id";
     public static final String KEY_NAME = "read_key_name";
     public static final String KEY_COVER = "read_key_cover";
     public static final String KEY_CHAPTER_INDEX = "read_key_chapter_index";
@@ -126,8 +138,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     private TextView mDecreaseFontIv;
     private TextView mIncreaseFontIv;
-    private TextView mDecreaseRowSpaceIv;
-    private TextView mIncreaseRowSpaceIv;
+    private ImageView mDecreaseRowSpaceIv;
+    private ImageView mIncreaseRowSpaceIv;
     private ImageView tv_autoread;
     private RecyclerView ts_recyle;
     private View mTheme0;
@@ -182,17 +194,21 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private float mTextSize;    // 字体大小
     private float mRowSpace;    // 行距
     private int mTheme;         // 阅读主题
-    private int mStyle;         // 字体样式
+    private String mStyle;         // 字体样式
     private float mBrightness;  // 屏幕亮度，为 -1 时表示系统亮度
     private boolean mIsNightMode;           // 是否为夜间模式
     private int mTurnType;      // 翻页模式：0 为正常，1 为仿真
-    private String[] strings = {"方正卡通","方正旗黑","方正华隶"};
+    private String[] strings = {"方正卡通", "方正旗黑", "方正华隶"};
     private float mMinTextSize = 36f;
     private float mMaxTextSize = 76f;
     private float mMinRowSpace = 0f;
     private float mMaxRowSpace = 48f;
     private int chpter_id;
     private int first_read;
+    private int serialize;
+    private Login_admin login_admin;
+    private String zj_id;
+    private TextView tv_jainju;
     // 监听系统亮度的变化
     private ContentObserver mBrightnessObserver = new ContentObserver(new Handler()) {
         @Override
@@ -222,15 +238,20 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         return new ReadPresenter();
     }
 
+    String mAuthor = "";
+
     @Override
     protected void initData() {
         // 从前一个活动传来
-        chpter_id=getIntent().getIntExtra(KEY_CHPATER_ID,1);
-        first_read=getIntent().getIntExtra("first_read",0);
+        mAuthor = getIntent().getStringExtra(KEY_AUTHOR);
+        chpter_id = getIntent().getIntExtra(KEY_CHPATER_ID, 1);
+        zj_id = getIntent().getStringExtra(KEY_ZJ_ID);
+        first_read = getIntent().getIntExtra("first_read", 0);
         mNovelUrl = getIntent().getStringExtra(KEY_NOVEL_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
-        weigh=getIntent().getIntExtra("weigh",0);
+        weigh = getIntent().getIntExtra("weigh", 0);
+        serialize = getIntent().getIntExtra(KEY_SERIALIZE, 0);
         //mChapterIndex = getIntent().getIntExtra(KEY_CHAPTER_INDEX, 0);
         mCatalog_posotion = getIntent().getIntExtra(Catalog_start_Position, 0);
         mPosition = getIntent().getIntExtra(KEY_POSITION, 0);
@@ -249,12 +270,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
         // 其他
         mDbManager = DatabaseManager.getInstance();
+        login_admin = (Login_admin) SpUtil.readObject(this);
     }
 
     boolean isChecked = false;
 
     @Override
     protected void initView() {
+        tv_jainju = findViewById(R.id.tv_jainju);
+        tv_jainju.setText(mRowSpace + "");
         mTopSettingBarRv = findViewById(R.id.rv_read_top_bar);
         mBottomBarCv = findViewById(R.id.cv_read_bottom_bar);
         mBrightnessBarCv = findViewById(R.id.cv_read_brightness_bar);
@@ -379,6 +403,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     isChecked = true;
                 }
             }
+
+
         });
 
         mMenuIv = findViewById(R.id.iv_read_menu);
@@ -399,6 +425,31 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mCatalogTv.setOnClickListener(this);
         mBrightnessTv = findViewById(R.id.tv_read_brightness);
         sys_select = findViewById(R.id.sys_select);
+        sys_select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isChecked) {
+                    // 变为系统亮度
+                    mIsSystemBrightness = true;
+                    mBrightness = -1f;
+                    // 将屏幕亮度设置为系统亮度
+                    ScreenUtil.setWindowBrightness(ReadActivity.this,
+                            (float) ScreenUtil.getSystemBrightness() / ScreenUtil.getBrightnessMax());
+                    //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_red));
+                    sys_select.setImageResource(R.mipmap.sys_selected);
+                    isChecked = false;
+                } else {
+                    // 变为自定义亮度
+                    mIsSystemBrightness = false;
+                    // 将屏幕亮度设置为自定义亮度
+                    mBrightness = (float) mBrightnessProcessSb.getProgress() / 100;
+                    ScreenUtil.setWindowBrightness(ReadActivity.this, mBrightness);
+                    //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_cricyle));
+                    sys_select.setImageResource(R.mipmap.sys_select);
+                    isChecked = true;
+                }
+            }
+        });
         mBrightnessTv.setOnClickListener(this);
         mDayAndNightModeTv = findViewById(R.id.tv_read_day_and_night_mode);
         mDayAndNightModeTv.setOnClickListener(this);
@@ -576,12 +627,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         if (mType == 0) {
             // 先通过小说 url 获取所有章节 url 信息
             //mPresenter.getChapterList(mid);
-            if(first_read==0){
-            mPresenter.getDetailedChapterData(chpter_id+"");
-            }else if(first_read==1){
-                mPresenter.getDetailedChapterData(mNovelUrl+"",1+"");
-            }else if(first_read==2){
-                mPresenter.getDetailedChapterData(mNovelUrl+"",chpter_id+"");
+            if (first_read == 0) {
+                mPresenter.getDetailedChapterData(zj_id + "");
+            } else if (first_read == 1) {
+                mPresenter.getDetailedChapterData(mNovelUrl + "", 1 + "");
+            } else if (first_read == 2) {
+                mPresenter.getDetailedChapterData(mNovelUrl + "", chpter_id + "");
             }
         } else if (mType == 1) {
             // 通过 FilePath 读取本地小说
@@ -590,22 +641,22 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             // 先根据 filePath 获得 OpfData
             mPresenter.getOpfData(mNovelUrl);
         }
-        TextStyleAdapter textStyleAdapter = new TextStyleAdapter(this, strings);
-        ts_recyle.setAdapter(textStyleAdapter);
-        textStyleAdapter.setmListener(new TextStyleAdapter.ScreenListener() {
-            @Override
-            public void clickItem(int position) {
-                if (position == 0) {
-                    tv_textstyle.setText("方正卡通");
-                } else {
-                    tv_textstyle.setText("方正旗黑");
-                }
-                textStyleAdapter.setPosition(position);
-                textStyleAdapter.notifyDataSetChanged();
-                mPageView.setmSype(position);
-                mStyle=position;
-            }
-        });
+//        TextStyleAdapter textStyleAdapter = new TextStyleAdapter(this, strings);
+//        ts_recyle.setAdapter(textStyleAdapter);
+//        textStyleAdapter.setmListener(new TextStyleAdapter.ScreenListener() {
+//            @Override
+//            public void clickItem(int position) {
+//                if (position == 0) {
+//                    tv_textstyle.setText("方正卡通");
+//                } else {
+//                    tv_textstyle.setText("方正旗黑");
+//                }
+//                textStyleAdapter.setPosition(position);
+//                textStyleAdapter.notifyDataSetChanged();
+//                mPageView.setmSype(position);
+//                mStyle = position;
+//            }
+//        });
         if (mBrightness == -1f) {    // 系统亮度
             //mSystemBrightnessSw.setChecked(true);
             //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_red));
@@ -624,13 +675,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             dayMode();
         }
         tv_textsize.setText((int) mTextSize + "");
-        if (mStyle == 1) {
-            tv_textstyle.setText("方正旗黑");
+        File file = new File(mStyle);
+        if (!mStyle.equals("")) {
+            tv_textstyle.setText(file.getName().replace(".ttf", ""));
         } else {
-            tv_textstyle.setText("方正卡通");
+            tv_textstyle.setText("系统字体");
         }
-        textStyleAdapter.setPosition(mStyle);
-        textStyleAdapter.notifyDataSetChanged();
+
+//        textStyleAdapter.setPosition(mStyle);
+//        textStyleAdapter.notifyDataSetChanged();
         // 监听系统亮度的变化
         getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS),
@@ -651,24 +704,27 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
                         mCover, mChapterIndex, mPageView.getPosition(), mType);
                 mDbManager.insertBookshelfNovel(dbData);
-            }else if (mType == 0) {
-                if(!mDbManager.isExistInBookshelfNovel(mNovelUrl + "")) {
+            } else if (mType == 0) {
+                if (!mDbManager.isExistInBookshelfNovel(mNovelUrl + "")) {
                     BookshelfNovelDbData dbData;
-                        dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
-                                mCover, mChapterIndex, (int) Float.parseFloat(mNovelProgress.replace("%", "")), mType, mPageView.getSecondPos(), mChapterIndex + "",weigh);
+                    dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
+                            mCover, mPageView.getPosition(), mType, mPageView.getSecondPos(), mChapterIndex + "", weigh, serialize + "");
 
                     mDbManager.insertBookshelfNovel(dbData);
-                    //Log.e("sss1", "onDestroy: "+dbData);
-                }else {
+                    Noval_Readcored noval_readcored = new Noval_Readcored(mNovelUrl + "", id + "", serialize + " ", mName, mAuthor, mCover, 0 + "", mTitle, weigh + "");
+                    mDbManager.insertReadCordeNovel(noval_readcored, mType + "");
+
+                } else {
                     BookshelfNovelDbData dbData;
-                        dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
-                                mCover, mChapterIndex, (int) Float.parseFloat(mNovelProgress.replace("%", "")), mType, mPageView.getSecondPos(), mChapterIndex + "",weigh);
-                        mDbManager.updataBookshelfNovel(dbData,mNovelUrl+"");
-
-//                    BookshelfNovelDbData dbData = new BookshelfNovelDbData(mid+"", mName,
-//                            mCover, mChapterIndex, (int)Float.parseFloat(mNovelProgress.replace("%","")), mType, mPageView.getSecondPos(),mChapterIndex+" ");
-
-                    //Log.e("sss2", "onDestroy: "+dbData);
+                    dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
+                            mCover, mPageView.getPosition(), mType, mPageView.getSecondPos(), mChapterIndex + "", weigh);
+                    mDbManager.updataBookshelfNovel(dbData, mNovelUrl + "");
+                    Noval_Readcored noval_readcored = new Noval_Readcored(mNovelUrl + "", id + "", mName, mCover, 0 + "", mTitle, weigh + "");
+                    mDbManager.updataReadCordeNovel(noval_readcored, mType + "", mNovelUrl + "");
+                }
+                if (login_admin != null) {
+                    mPresenter.setReadRecord(login_admin.getToken(), mNovelUrl, id + "");
+                    mPresenter.setBookshelfadd(login_admin.getToken(), mNovelUrl);
                 }
             } else if (mType == 2) {
                 BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
@@ -694,6 +750,37 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         getContentResolver().unregisterContentObserver(mBrightnessObserver);
     }
 
+    public void setBookshelfadd(String token, String novel_id) {
+        String url = UrlObtainer.GetUrl() + "api/Userbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("novel_id", novel_id)
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        String message = jsonObject.getString("msg");
+                        //mPresenter.(message);
+                    } else {
+                        //mPresenter.getReadRecordError("请求错误");
+                        getChapterUrlListError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                getChapterUrlListError("请求错误");
+                //mPresenter.getReadRecordError(errorMsg);
+            }
+        });
+    }
 
     @Override
     protected boolean isRegisterEventBus() {
@@ -736,7 +823,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     String webContent;
     String webName;
-    String id;
+    String mTitle;
+    String id, weight;
+
     /**
      * 获取具体章节信息成功
      */
@@ -747,17 +836,19 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             mStateTv.setText("获取不到相关数据，请查看其他章节");
             return;
         }
-        id=data.getId();
-        mChapterIndex=Integer.parseInt(id);
-        webContent=data.getContent();
-        webName=data.getName();
+        id = data.getId();
+        weight = data.getWeigh();
+        mTitle = data.getTitle();
+        mChapterIndex = Integer.parseInt(weight);
+        webContent = data.getContent();
+        webName = data.getTitle();
         mStateTv.setVisibility(View.GONE);
-        if(mCatalog==1){ //
+        if (mCatalog == 1) { //
             mPageView.initDrawText(data.getContent(), mCatalog_posotion);
-        }else {
+        } else {
             mPageView.initDrawText(data.getContent(), mPosition);
         }
-        mNovelTitleTv.setText(data.getName());
+        mNovelTitleTv.setText(data.getTitle());
         updateChapterProgress();
     }
 
@@ -867,7 +958,19 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mIsLoadingChapter = false;
         mStateTv.setText("读取失败");
     }
+
+    @Override
+    public void getReadRecordSuccess(String message) {
+
+    }
+
+    @Override
+    public void getReadRecordError(String errorMsg) {
+
+    }
+
     int weigh;
+
     /**
      * 点击上一页/下一页后加载具体章节
      */
@@ -875,15 +978,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         if (mIsLoadingChapter) {    // 已经在加载了
             return;
         }
-        Log.e("AAA", "showChapter: "+mChapterIndex);
+        Log.e("AAA", "showChapter: " + mChapterIndex);
         if (mType == 0) {   // 显示网络小说
-            if (mChapterIndex>=weigh) {
+            if (mChapterIndex >= weigh) {
                 showShortToast("当前显示为最后一章");
                 return;
-            } else if(mChapterIndex==0){
-               showShortToast("当前显示为第一章");
+            } else if (mChapterIndex == 0) {
+                showShortToast("当前显示为第一章");
                 return;
-            }else {
+            } else {
                 mPosition = 0;     // 归零
                 mPageView.clear();              // 清除当前文字
                 mStateTv.setVisibility(View.VISIBLE);
@@ -892,7 +995,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mPresenter.getDetailedChapterData(mNovelUrl,mChapterIndex+"");
+                        mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
                     }
                 }, 200);
             }
@@ -1021,11 +1124,95 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      * 显示亮度栏
      */
     private void showTextstyle() {
+        post_textStyle();
         mIsShowtextstyle = true;
         Animation bottomAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_enter);
         set_textstyle.startAnimation(bottomAnim);
         set_textstyle.setVisibility(View.VISIBLE);
+    }
+
+    private void post_textStyle() {
+        Gson mGson = new Gson();
+        String url = UrlObtainer.GetUrl() + "api/index/get_wordes";
+        RequestBody requestBody = new FormBody.Builder()
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        JSONObject object = jsonObject.getJSONObject("data");
+                        JSONArray jsonArray = object.getJSONArray("data");
+                        List<TextStyle> textStyles = new ArrayList<>();
+                        textStyles.add(new TextStyle("系统字体", true));
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String name = jsonArray.getJSONObject(i).getString("name");
+                            TextStyle style = mGson.fromJson(jsonArray.getJSONObject(i).toString(), TextStyle.class);
+                            style.setLoad(isLoad(style, name));
+                            textStyles.add(style);
+                        }
+                        initTextStyle(textStyles);
+                    } else {
+                        showShortToast("请求失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
+    }
+
+    void initTextStyle(List<TextStyle> textStyles) {
+        File file = new File(mStyle);
+        int w = 0;
+        for (int z = 0; z < textStyles.size(); z++) {
+            if (file.getName().contains(textStyles.get(z).getName())) {
+                w = z;
+                break;
+            }
+        }
+        TextStyleAdapter textStyleAdapter = new TextStyleAdapter(this, textStyles);
+        textStyleAdapter.setPosition(w);
+        ts_recyle.setAdapter(textStyleAdapter);
+        textStyleAdapter.setmListener(new TextStyleAdapter.ScreenListener() {
+            @Override
+            public void clickItem(int position) {
+                textStyleAdapter.setPosition(position);
+                if(textStyles.get(position).getUrl()==null){
+                    mStyle=null;
+                }else {
+                    mStyle = textStyles.get(position).getUrl();
+                }
+                Log.e("ZZZ", "clickItem: "+mStyle);
+                mPageView.setmSype(mStyle);
+                textStyleAdapter.notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    boolean isLoad(TextStyle style, String textStyle) {
+        File file = new File(Constant.FONT_ADRESS + "/Font/");
+        File[] subFile = file.listFiles();
+        for (int iFileLength = 0; iFileLength < subFile.length; iFileLength++) {
+            // 判断是否为文件夹
+            if (!subFile[iFileLength].isDirectory()) {
+                String filename = subFile[iFileLength].getName().replace(".ttf", "");
+                if (filename.equals(textStyle)) {
+                    style.setUrl(subFile[iFileLength].getPath());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -1170,7 +1357,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     intent.putExtra(CatalogActivity.KEY_URL, mNovelUrl);    // 传递当前小说的 url
                     intent.putExtra(CatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
                     intent.putExtra(CatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
-                    intent.putExtra("weigh",weigh);
+                    intent.putExtra("weigh", weigh);
                     startActivity(intent);
                 } else if (mType == 1) {
                     // 跳转到目录页面，并且将自己的引用传递给它
@@ -1181,7 +1368,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     intent.putExtra("file_path", mNovelUrl);    // 传递当前小说的 url
                     intent.putExtra(LocalCatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
                     intent.putExtra(LocalCatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
-                    intent.putExtra(LocalCatalogActivity.KEY_POSTION,mPageView.getPosition());
+                    intent.putExtra(LocalCatalogActivity.KEY_POSTION, mPageView.getPosition());
                     startActivity(intent);
                 } else if (mType == 2) {
                     // 跳转到 epub 目录界面
@@ -1241,6 +1428,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
                 mRowSpace--;
                 mPageView.setRowSpace(mRowSpace);
+                tv_jainju.setText(mRowSpace + "");
                 break;
             case R.id.iv_read_increase_row_space:
                 if (mRowSpace == mMaxRowSpace) {
@@ -1248,6 +1436,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
                 mRowSpace++;
                 mPageView.setRowSpace(mRowSpace);
+                tv_jainju.setText(mRowSpace + "");
                 break;
             case R.id.v_read_theme_0:
                 if (!mIsNightMode && mTheme == 0) {
@@ -1340,18 +1529,19 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             Date t = new Date();
                             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             BookmarkNovelDbData dbData = new BookmarkNovelDbData(mNovelUrl, mName,
-                                    mNovelContent.substring(mPageView.getPosition(), mPageView.getPosition() + 23), Float.parseFloat(progress) / 100, mPageView.getPosition(), mType, df.format(t));
+                                    mNovelContent.substring(mPageView.getPosition(), mPageView.getPosition() + 23), Float.parseFloat(progress) / 100, mPageView.getPosition(), mType, df.format(t), mChapterIndex + "");
                             mDbManager.insertBookmarkNovel(dbData);
                         } else if (mType == 2) {
                             BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
                                     mCover, mChapterIndex, mPageView.getFirstPos(), mType, mPageView.getSecondPos());
                             mDbManager.insertBookshelfNovel(dbData);
-                        }else if (mType == 0) {
+                        } else if (mType == 0) {
+                            Log.e(TAG, "onItemClick: " + mChapterIndex + "");
                             String progress = mNovelProgressTv.getText().toString().substring(0, mNovelProgressTv.getText().length() - 1);
                             Date t = new Date();
                             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             BookmarkNovelDbData dbData = new BookmarkNovelDbData(mNovelUrl, webName,
-                                    webContent.substring(mPageView.getPosition(), mPageView.getPosition() + 23), mChapterIndex, mPageView.getPosition(), mType, df.format(t));
+                                    webContent.substring(mPageView.getPosition(), mPageView.getPosition() + 23), mChapterIndex, mPageView.getPosition(), mType, df.format(t), mChapterIndex + "");
                             mDbManager.insertBookmarkNovel(dbData);
                         }
                         showShortToast("书签已添加");

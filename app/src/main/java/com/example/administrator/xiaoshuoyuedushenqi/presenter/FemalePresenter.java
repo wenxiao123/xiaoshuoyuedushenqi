@@ -8,7 +8,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.FemaleModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/8
  */
 public class FemalePresenter extends BasePresenter<IFemaleContract.View>

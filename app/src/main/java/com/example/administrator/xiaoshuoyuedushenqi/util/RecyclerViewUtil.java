@@ -1,9 +1,9 @@
 package com.example.administrator.xiaoshuoyuedushenqi.util;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/28
  */
 public class RecyclerViewUtil {

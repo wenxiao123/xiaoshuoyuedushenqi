@@ -4,8 +4,8 @@
 
     <!-- 表示shape的四个角的角度。只适用于矩形shape，这里的角度是指圆角的程度 -->
     <corners
-        android:topLeftRadius="20dp"
-        android:topRightRadius="20dp"/>
+        android:topLeftRadius="15dp"
+        android:topRightRadius="15dp"/>
 
     <!-- 这个标签表示纯色填充，通过android:color即可指定shape中填充的颜色 -->
     <solid android:color="#ffffff" />

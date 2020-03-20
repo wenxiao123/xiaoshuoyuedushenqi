@@ -6,7 +6,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/17
  */
 public interface ICatalogContract {

@@ -8,6 +8,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovelsBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.HotRankBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
@@ -26,7 +27,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public class MaleModel implements IMaleContract.Model {
@@ -78,6 +79,42 @@ public class MaleModel implements IMaleContract.Model {
         });
     }
 
+    @Override
+    public void getNewRankData(String id) {
+        String url = UrlObtainer.GetUrl()+"api/Rmlist/New_List";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("type", id)
+                .add("limit", "4")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        JSONArray jsonArray=object.getJSONArray("data");
+                        List<Noval_details> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),Noval_details.class));
+                        }
+                        mPresenter.getNewDataSuccess(novalDetailsList);
+                    }else {
+                        mPresenter.getNewDataError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getNewDataError(errorMsg);
+            }
+        });
+    }
+
     /**
      * 获取发现页的分类小说数据
      */
@@ -113,6 +150,41 @@ public class MaleModel implements IMaleContract.Model {
             @Override
             public void onFailure(String errorMsg) {
                 mPresenter.getCategoryNovelsError(errorMsg);
+            }
+        });
+    }
+
+    @Override
+    public void getListImage(String type) {
+        String url = UrlObtainer.GetUrl()+"api/Rmlist/Get_Wheel";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("type", type)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        JSONArray jsonArray=object.getJSONArray("data");
+                        List<Wheel> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),Wheel.class));
+                        }
+                        mPresenter.getListImageSuccess(novalDetailsList);
+                    }else {
+                        mPresenter.getListImageError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getListImageError(errorMsg);
             }
         });
     }

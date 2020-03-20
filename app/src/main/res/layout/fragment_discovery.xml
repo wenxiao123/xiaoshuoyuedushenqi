@@ -117,7 +117,7 @@
     <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:visibility="gone"
         android:id="@+id/vp_discovery_view_pager"
         android:layout_width="match_parent"

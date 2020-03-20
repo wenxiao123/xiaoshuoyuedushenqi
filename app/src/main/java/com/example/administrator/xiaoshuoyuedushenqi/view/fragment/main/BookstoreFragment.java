@@ -1,18 +1,16 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.NormalViewPagerAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
-import com.example.administrator.xiaoshuoyuedushenqi.rewrite.TabLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
@@ -20,16 +18,12 @@ import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivit
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore.ExclusivelistGFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore.FemaleLikeFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore.MaleLikeFragment;
-import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.FemaleFragment;
-import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.MaleFragment;
-import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.PressFragment;
-import com.example.administrator.xiaoshuoyuedushenqi.widget.DiscoveryPageTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/20
  */
 public class BookstoreFragment extends BaseFragment implements View.OnClickListener{

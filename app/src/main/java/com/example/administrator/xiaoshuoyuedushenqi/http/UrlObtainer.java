@@ -1,13 +1,11 @@
 package com.example.administrator.xiaoshuoyuedushenqi.http;
 
-import android.support.annotation.NonNull;
-
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 
 /**
  * 获取相应的 url
  *
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public class UrlObtainer {

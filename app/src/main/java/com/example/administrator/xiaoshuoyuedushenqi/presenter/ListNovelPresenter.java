@@ -12,7 +12,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.ListNovelModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class ListNovelPresenter extends BasePresenter<IListNovelContract.View>
@@ -40,7 +40,7 @@ public class ListNovelPresenter extends BasePresenter<IListNovelContract.View>
     }
 
     @Override
-    public void getNovels(RequestCNData requestCNData) {
-        mModel.getNovels(requestCNData);
+    public void getNovels(String id,String type) {
+        mModel.getNovels(id,type);
     }
 }

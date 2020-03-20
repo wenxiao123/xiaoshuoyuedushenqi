@@ -13,17 +13,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -38,7 +37,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.MoreIntoEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.BookshelfFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.BookstoreFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.DiscoveryFragment;
@@ -480,22 +478,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         ft.commit();
     }
-
-    private FragmentTransaction switchFragment(Fragment targetFragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (!targetFragment.isAdded()) {
-            //绗竴娆′娇鐢╯witchFragment()鏃禼urrentFragment涓簄ull锛屾墍浠ヨ鍒ゆ柇涓€涓?
-            if (mCurrFragment != null) {
-                transaction.hide(mCurrFragment);
-            }
-            transaction.add(R.id.fv_main_fragment_container, targetFragment,targetFragment.getClass().getName());
-        } else {
-            transaction .hide(mCurrFragment).show(targetFragment);
-        }
-        mCurrFragment = targetFragment;
-        return transaction;
-    }
-
     /**
      * 检查权限
      */

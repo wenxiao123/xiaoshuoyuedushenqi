@@ -1,19 +1,24 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.NovelResultAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.NovelSourceAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
+import com.example.administrator.xiaoshuoyuedushenqi.base.BasePagingLoadAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.ISearchResultContract;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.NovelSourceData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.NovelIntroInitEvent;
@@ -24,7 +29,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroAct
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/9
  */
 public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
@@ -36,10 +41,10 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
     private RecyclerView mNovelSourceRv;
     private TextView mNoneTv;       // 没有找到相关小说时显示
 
-    private NovelSourceAdapter mNovelSourceAdapter;
+    private NovelResultAdapter mNovelSourceAdapter;
 
     private String mSearchContent;  // 搜索内容
-    private List<NovelSourceData> mNovelSourceDataList; // 小说源列表
+    private List<NovalInfo> mNovelSourceDataList; // 小说源列表
 
     @Override
     protected int getLayoutId() {
@@ -94,7 +99,7 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
     }
 
     @Override
-    public void getNovelsSourceSuccess(List<NovelSourceData> novelSourceDataList) {
+    public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
         mNoneTv.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         // 列表显示小说源
@@ -119,17 +124,17 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
             return;
         }
 
-        mNovelSourceAdapter = new NovelSourceAdapter(getActivity(), mNovelSourceDataList);
-        mNovelSourceAdapter.setOnNovelSourceListener(new NovelSourceAdapter.NovelSourceListener() {
+        mNovelSourceAdapter = new NovelResultAdapter(getActivity(), mNovelSourceDataList, new BasePagingLoadAdapter.LoadMoreListener() {
             @Override
-            public void clickItem(int position) {
-                if (mNovelSourceDataList.isEmpty()) {
-                    return;
-                }
-                Event<NovelIntroInitEvent> event = new Event<>(EventBusCode.NOVEL_INTRO_INIT,
-                        new NovelIntroInitEvent(mNovelSourceDataList.get(position)));
-                EventBusUtil.sendStickyEvent(event);
-                jump2Activity(NovelIntroActivity.class);
+            public void loadMore() {
+
+            }
+        }, new NovelResultAdapter.NovelListener() {
+            @Override
+            public void clickItem(int novelName) {
+                Intent intent=new Intent(getContext(),NovelIntroActivity.class);
+                intent.putExtra("pid",novelName+"");
+                getContext().startActivity(intent);
             }
         });
         mNovelSourceRv.setAdapter(mNovelSourceAdapter);

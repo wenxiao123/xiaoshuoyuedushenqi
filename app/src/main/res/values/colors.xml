@@ -7,6 +7,9 @@
     <color name="yellow">#FA5F4B</color>
     <color name="red_aa">#FA5F4B</color>
     <color name="red_a2">#FF4D89</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="background_color">#F7F8F9</color>
     <color name="colorAccent">@android:color/holo_blue_light</color>
 
     <!-- app -->
@@ -59,8 +62,9 @@
 
     <!-- item_novel_source -->
     <color name="item_novel_source_name">#222222</color>
+    <color name="text_color">#9FA2B3</color>
     <color name="item_novel_source_author">#666666</color>
-    <color name="item_novel_source_introduce">#666666</color>
+    <color name="item_novel_source_introduce">#717380</color>
     <color name="item_novel_source_web_size">#999999</color>
 
     <!-- item_history -->

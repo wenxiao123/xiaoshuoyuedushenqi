@@ -1,13 +1,13 @@
 package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/4
  */
 public class NormalViewPagerAdapter extends FragmentPagerAdapter {

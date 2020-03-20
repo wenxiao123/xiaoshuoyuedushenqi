@@ -2,7 +2,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.base;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/12
  */
 public abstract class BaseDialog2 extends Dialog {

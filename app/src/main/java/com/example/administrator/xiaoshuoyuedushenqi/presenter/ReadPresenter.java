@@ -10,7 +10,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.ReadModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/25
  */
 public class ReadPresenter extends BasePresenter<IReadContract.View>
@@ -93,6 +93,20 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     }
 
     @Override
+    public void getReadRecordSuccess(String message) {
+        if (isAttachView()) {
+            getMvpView().getReadRecordSuccess(message);
+        }
+    }
+
+    @Override
+    public void getReadRecordError(String errorMsg) {
+        if (isAttachView()) {
+            getMvpView().getReadRecordError(errorMsg);
+        }
+    }
+
+    @Override
     public void getChapterList(String url) {
         mModel.getChapterList(url);
     }
@@ -120,5 +134,15 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     @Override
     public void getEpubChapterData(String parentPath, String filePath) {
         mModel.getEpubChapterData(parentPath, filePath);
+    }
+
+    @Override
+    public void setReadRecord(String token, String novel_id, String chapter_id) {
+       mModel.setReadRecord(token,novel_id,chapter_id);
+    }
+
+    @Override
+    public void setBookshelfadd(String token, String novel_id) {
+        mModel.setBookshelfadd(token,novel_id);
     }
 }

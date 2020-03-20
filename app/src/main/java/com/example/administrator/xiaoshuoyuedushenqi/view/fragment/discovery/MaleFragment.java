@@ -1,27 +1,22 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,36 +24,32 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryAdapter;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryNovelAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryinfoAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryzyAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.HotRankAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseTabFragment;
-import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MalePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.RankingActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
 
-import com.jude.rollviewpager.OnItemClickListener;
-import com.jude.rollviewpager.RollPagerView;
-import com.jude.rollviewpager.adapter.LoopPagerAdapter;
-import com.jude.rollviewpager.hintview.ColorPointHintView;
 import com.tmall.ultraviewpager.UltraViewPager;
 import com.wzh.viewpager.indicator.UIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 /**
  * 发现页面的男生页
  *
- * @author WX
+ * @author
  * Created on 2019/11/4
  */
 public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMaleContract.View {
@@ -67,6 +58,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     private RecyclerView mHotRankRv;
     private RecyclerView mCategoryNovelRv;
+    private RecyclerView mNewRv;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mRefreshSrv;
     private FrameLayout frameLayout_banner;
@@ -91,7 +83,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private UltraViewPager mViewPager4;
     private UIndicator uIndicator4;
     int mess;
-
+    private TextView tv_hot_more;
+    private TextView tv_item_new_more;
     @Override
     protected void initData() {
         mCategoryNameList.add("热血玄幻");
@@ -111,10 +104,41 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void initView() {
+        tv_hot_more=getActivity().findViewById(R.id.tv_male_category_more);
+        tv_hot_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type",1);
+                intent.putExtra("new_or_hot",1);
+                getContext().startActivity(intent);
+            }
+        });
+        getActivity().findViewById(R.id.iv_item_category_more).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type",1);
+                intent.putExtra("new_or_hot",1);
+                getContext().startActivity(intent);
+            }
+        });
+        tv_item_new_more=getActivity().findViewById(R.id.tv_item_new_more);
+        tv_item_new_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type",1);
+                intent.putExtra("new_or_hot",2);
+                getContext().startActivity(intent);
+            }
+        });
         mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view);
         mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mCategoryNovelRv = getActivity().findViewById(R.id.rv_male_category_novel_list);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mNewRv=getActivity().findViewById(R.id.rv_male_new_novel_list);
+        mNewRv.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
         rel_click_more = getActivity().findViewById(R.id.click_more);
         mProgressBar = getActivity().findViewById(R.id.pb_male);
@@ -137,9 +161,9 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager);
 
         uIndicator4 = getActivity().findViewById(R.id.indicator4);
-        DemoPagerAdapter mAdapter = new DemoPagerAdapter(getList());
-        mViewPager4.setAdapter(mAdapter);
-        uIndicator4.attachToViewPager(mViewPager4.getViewPager());
+//        DemoPagerAdapter mAdapter = new DemoPagerAdapter(getList());
+//        mViewPager4.setAdapter(mAdapter);
+//        uIndicator4.attachToViewPager(mViewPager4.getViewPager());
     }
 
     public List<String> getList() {
@@ -155,9 +179,9 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     }
 
     public class DemoPagerAdapter extends PagerAdapter {
-        private List<String> views;
+        private List<Wheel> views;
 
-        public DemoPagerAdapter(List<String> views) {
+        public DemoPagerAdapter(List<Wheel> views) {
             this.views = views;
         }
 
@@ -181,9 +205,21 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
                     imageView.setBackground(resource);
                 }
             };
-            Glide.with(getContext()).load(views.get(position))
+            Glide.with(getContext()).load(UrlObtainer.GetUrl()+views.get(position).getPicpath())
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.cover_place_holder)
+                            .error(R.mipmap.admin))
                     .into(simpleTarget);
             container.addView(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                    intent.putExtra("pid", views.get(position).getId() + "");
+                    startActivity(intent);
+                }
+            });
             return imageView;
         }
 
@@ -197,14 +233,16 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     protected void doInOnCreate() {
             requestUpdate();
             mProgressBar.setVisibility(View.VISIBLE);
-            frameLayout_banner.setVisibility(View.GONE);
-            mIsLoadedData = true;
+        frameLayout_banner.setVisibility(View.GONE);
+        mIsLoadedData = true;
 
     }
 
     private void requestUpdate() {
         mPresenter.getHotRankData(mess + "");
         mPresenter.getCategoryNovels(mess + "");
+        mPresenter.getNewRankData(mess + "");
+        mPresenter.getListImage(mess + "");
     }
 
     @Override
@@ -221,7 +259,6 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     protected int getPosition() {
         return 1;
     }
-
     private void initCategoryAdapter() {
         mCategoryAdapter = new CategoryAdapter(getActivity(),
                 novelNameList,
@@ -250,39 +287,69 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
                             showShortToast("当前无网络，请检查网络后重试");
                             return;
                         }
-                        int gender = 1;
-                        String major;
-                        switch (position) {
-                            case 0:
-                                major = Constant.CATEGORY_MAJOR_GDYQ;
-                                break;
-                            case 1:
-                                major = Constant.CATEGORY_MAJOR_XDYQ;
-                                break;
-                            case 2:
-                                major = Constant.CATEGORY_MAJOR_QCXY;
-                                break;
-                            default:
-                                major = Constant.CATEGORY_MAJOR_GDYQ;
-                                break;
-                        }
-                        // 跳转到全部小说页面
-                        Intent intent = new Intent(getActivity(), AllNovelActivity.class);
-                        intent.putExtra(AllNovelActivity.KEY_GENDER, gender);   // 性别
-                        intent.putExtra(AllNovelActivity.KEY_MAJOR, major);     // 一级分类
+                        Intent intent = new Intent(getContext(), RankingActivity.class);
+                        intent.putExtra("type", 1);
+                        intent.putExtra("new_or_hot", 3);
+                        intent.putExtra("category_id", novelNameList.get(position).getId());
                         startActivity(intent);
                     }
                 });
+        mCategoryAdapter.setType(1);
         mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
 
     private void initAdapter() {
         CategoryinfoAdapter adapter = new CategoryinfoAdapter(getContext(),
                 mNovelDataList);
+        adapter.setOnCategoryNovelListener(new CategoryinfoAdapter.CategoryNovelListener() {
+            @Override
+            public void clickItem(int novelName) {
+                Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                intent.putExtra("pid", mNovelDataList.get(novelName).getId() + "");
+                startActivity(intent);
+            }
+        });
         mHotRankRv.setAdapter(adapter);
+    }
+    private void initnewAdapter() {
+        CategoryzyAdapter adapter = new CategoryzyAdapter(getContext(),
+                noval_detailsList);
+        adapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
+            @Override
+            public void clickItem(int novelName) {
+                Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                intent.putExtra("pid", noval_detailsList.get(novelName).getId() + "");
+                startActivity(intent);
+            }
+        });
+        mNewRv.setAdapter(adapter);
     }
 
     List<CategoryNovels> novelNameList = new ArrayList<>();
+    List<Noval_details> noval_detailsList = new ArrayList<>();
+
+    @Override
+    public void getNewDataSuccess(List<Noval_details> novelNameList) {
+        if (novelNameList.isEmpty()) {
+            return;
+        }
+        noval_detailsList = novelNameList;
+        if (mHotRankAdapter == null) {
+            noval_detailsList = novelNameList;
+            initnewAdapter();
+        } else {
+            noval_detailsList.clear();
+            noval_detailsList.addAll(novelNameList);
+            mHotRankAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void getNewDataError(String errorMsg) {
+
+    }
 
     /**
      * 获取热门排行榜数据成功
@@ -335,10 +402,10 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         rel_click_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AllNovelActivity.class);
-                intent.putExtra(AllNovelActivity.KEY_GENDER, 0);   // 性别
-                intent.putExtra(AllNovelActivity.KEY_MAJOR, Constant.CATEGORY_MAJOR_WX);     // 一级分类
-                startActivity(intent);
+                Intent intent=new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type",1);
+                intent.putExtra("new_or_hot",1);
+                getContext().startActivity(intent);
             }
         });
     }
@@ -351,6 +418,22 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         frameLayout_banner.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void getListImageSuccess(List<Wheel> novalDetailsList) {
+        if(novalDetailsList.size()==0){
+            return;
+        }else {
+            DemoPagerAdapter mAdapter = new DemoPagerAdapter(novalDetailsList);
+            mViewPager4.setAdapter(mAdapter);
+            uIndicator4.attachToViewPager(mViewPager4.getViewPager());
+        }
+    }
+
+    @Override
+    public void getListImageError(String errorMsg) {
+
     }
 
     private void jump2Search(String name) {

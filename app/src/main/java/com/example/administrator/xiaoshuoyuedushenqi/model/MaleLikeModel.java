@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public class MaleLikeModel implements IMaleLikeContract.Model {

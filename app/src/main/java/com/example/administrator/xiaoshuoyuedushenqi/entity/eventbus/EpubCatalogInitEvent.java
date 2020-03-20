@@ -7,7 +7,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadActivity;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/14
  */
 public class EpubCatalogInitEvent {

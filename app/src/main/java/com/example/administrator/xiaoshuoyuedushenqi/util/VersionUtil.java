@@ -5,7 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/1/3
  */
 public class VersionUtil {

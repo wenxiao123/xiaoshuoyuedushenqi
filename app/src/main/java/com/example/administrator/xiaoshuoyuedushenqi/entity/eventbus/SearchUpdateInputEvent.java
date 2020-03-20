@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus;
 /**
  * 搜索页面更新输入
  *
- * @author WX
+ * @author
  * Created on 2019/11/12
  */
 public class SearchUpdateInputEvent {

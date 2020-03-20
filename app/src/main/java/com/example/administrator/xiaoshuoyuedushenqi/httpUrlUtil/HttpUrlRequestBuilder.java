@@ -4,7 +4,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/24
  */
 public class HttpUrlRequestBuilder {

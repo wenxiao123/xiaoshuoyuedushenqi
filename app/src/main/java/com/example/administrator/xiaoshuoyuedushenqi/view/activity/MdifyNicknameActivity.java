@@ -1,45 +1,34 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.MainSetAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 public class MdifyNicknameActivity extends BaseActivity {
     EditText et_nickname;
     ImageView iv_close;
-    TextView tv_message;
+    TextView tv_message,tv_sure;
+    Login_admin login_admin;
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -57,15 +46,22 @@ public class MdifyNicknameActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        login_admin= (Login_admin) SpUtil.readObject(this);
     }
 
 
     @Override
     protected void initView() {
+        tv_sure=findViewById(R.id.tv_sure);
         et_nickname=findViewById(R.id.et_search_search_bar);
         iv_close=findViewById(R.id.iv_search_delete_search_text);
         tv_message=findViewById(R.id.txt_notice);
+        tv_sure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postModify("nickname",et_nickname.getText().toString());
+            }
+        });
     }
 
 
@@ -100,7 +96,35 @@ public class MdifyNicknameActivity extends BaseActivity {
             }
         });
     }
+    public void postModify(String nickname,String name) {
+        String url = UrlObtainer.GetUrl()+"api/user/profile";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", login_admin.getToken())
+                .add(nickname, name)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        showShortToast("修改成功");
+                        finish();
+                    }else {
+                        showShortToast("修改失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

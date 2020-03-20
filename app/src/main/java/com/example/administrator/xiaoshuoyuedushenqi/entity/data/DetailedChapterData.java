@@ -1,13 +1,30 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/25
  */
 public class DetailedChapterData {
-    private String name;    // 章节名
+    private String title;    // 章节名
     private String content; // 章节内容
     private String id;
+    private String weigh;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getWeigh() {
+        return weigh;
+    }
+
+    public void setWeigh(String weigh) {
+        this.weigh = weigh;
+    }
 
     public String getId() {
         return id;
@@ -17,18 +34,6 @@ public class DetailedChapterData {
         this.id = id;
     }
 
-    public DetailedChapterData(String name, String content) {
-        this.name = name;
-        this.content = content;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getContent() {
         return content;
@@ -41,8 +46,9 @@ public class DetailedChapterData {
     @Override
     public String toString() {
         return "DetailedChapterData{" +
-                "name='" + name + '\'' +
-                ", content='" + content + '\'' +
+                "name='" + title + '\'' +
+                ", id='" + id + '\'' +
+                ", weigh='" + weigh + '\'' +
                 '}';
     }
 }

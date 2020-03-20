@@ -9,7 +9,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.CatalogModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/17
  */
 public class CatalogPresenter extends BasePresenter<ICatalogContract.View>

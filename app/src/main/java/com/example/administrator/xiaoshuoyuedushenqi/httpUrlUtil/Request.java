@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.httpUrlUtil;
 import okhttp3.RequestBody;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/18
  */
 public class Request {

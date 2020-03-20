@@ -22,8 +22,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class ListNovelModel implements IListNovelContract.Model {
@@ -40,9 +43,13 @@ public class ListNovelModel implements IListNovelContract.Model {
      * 获取小说信息
      */
     @Override
-    public void getNovels(final RequestCNData requestCNData) {
-
-        OkhttpUtil.getRequest(UrlObtainer.GetUrl()+"api/index/Book_List", new OkhttpCall() {
+    public void getNovels(String id,String type) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("category_id", id)
+                .add("order", type)
+                .add("limit", "4")
+                .build();
+        OkhttpUtil.getpostRequest(UrlObtainer.GetUrl()+"api/index/Book_List",requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 try {

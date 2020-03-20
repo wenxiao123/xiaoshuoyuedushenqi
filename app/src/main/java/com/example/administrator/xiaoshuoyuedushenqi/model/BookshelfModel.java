@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/12
  */
 public class BookshelfModel implements IBookshelfContract.Model {

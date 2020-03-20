@@ -1,40 +1,62 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.MainRecyleAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Version;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.MarketTools;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.VersionUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AdminSetActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FeedbackActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.LoginActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SuishizhuanxianjinActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/20
  */
 public class MoreFragment extends BaseFragment implements View.OnClickListener {
@@ -48,13 +70,14 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     MainRecyleAdapter mainRecyleAdapter1;
     MainRecyleAdapter mainRecyleAdapter2;
     MainRecyleAdapter mainRecyleAdapter3;
+    ImageView iv_title;
     RecyclerView recyclerView1, recyclerView2, recyclerView3;
     String[] strings1={"随时赚现金","给个五星好评","意见反馈","分享给好友"};
-    int[] ints1={R.mipmap.bookmark,R.mipmap.bookmark,R.mipmap.bookmark,R.mipmap.bookmark};
+    int[] ints1={R.mipmap.img_more1,R.mipmap.img_more2,R.mipmap.img_more3,R.mipmap.img_more4};
     String[] strings2={"夜间模式"};
-    int[] ints2={R.mipmap.bookmark};
+    int[] ints2={R.mipmap.img_more5};
     String[] strings3={"阅读记录","设置"};
-    int[] ints3={R.mipmap.bookmark,R.mipmap.bookmark};
+    int[] ints3={R.mipmap.img_more6,R.mipmap.img_more7};
     @Override
     protected void doInOnCreate() {
         StatusBarUtil.setTranslucentStatus(getActivity());
@@ -64,8 +87,13 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         mainRecyleAdapter1.setOnCatalogListener(new MainRecyleAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
+                if(login_admin==null){
+                  showShortToast("你还未登录，请先登录");
+                  return;
+                }
                 switch (position){
                     case 0:
+                        getContext().startActivity(new Intent(getContext(), SuishizhuanxianjinActivity.class));
                         break;
                     case 1:
 //                        MarketTools.getTools().startMarket(Context mContext);//打开应用市场，打开当前安装应用的手机应用市场
@@ -78,7 +106,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
                         break;
                     case 3:
                         final ShareDialog tipDialog = new ShareDialog.Builder(getActivity())
-                                .setContent("是否清除缓存")
+                                .setContent("www.baidu.com")
                                 .setCancel("下次再说")
                                 .setEnsure("去分享")
                                 .setOnClickListener(new ShareDialog.OnClickListener() {
@@ -104,8 +132,20 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         mainRecyleAdapter2.setOnCatalogListener(new MainRecyleAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
+                if(login_admin==null){
+                    showShortToast("你还未登录，请先登录");
+                    return;
+                }
                 switch (position){
                     case 0:
+                        if(isNight){
+                            isNight=false;
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        }else {
+                            isNight=true;
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        }
+                        getActivity().recreate();
                         break;
                 }
             }
@@ -116,8 +156,13 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         mainRecyleAdapter3.setOnCatalogListener(new MainRecyleAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
+                if(login_admin==null){
+                    showShortToast("你还未登录，请先登录");
+                    return;
+                }
                 switch (position){
                     case 0:
+                        getContext().startActivity(new Intent(getContext(), ReadrecoderActivity.class));
                         break;
                     case 1:
                         getContext().startActivity(new Intent(getContext(), AdminSetActivity.class));
@@ -126,17 +171,24 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
             }
         });
     }
-
+    boolean isNight;
+    TextView tv_name,tv_content;
+    RelativeLayout relativeLayout;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_more;
     }
 
+    Login_admin login_admin;
     @Override
     protected void initData() {
-
+        login_admin= (Login_admin) SpUtil.readObject(getContext());
+        if(login_admin!=null) {
+            postMessage();
+        }
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void initView() {
         mCheckUpdateV = getActivity().findViewById(R.id.v_more_check_update);
@@ -160,7 +212,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
 
         recyclerView3= getActivity().findViewById(R.id.recycle_part3);
         recyclerView3.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.VERTICAL,false));
-        getActivity().findViewById(R.id.rel_login).setOnClickListener(new View.OnClickListener() {
+        relativeLayout=getActivity().findViewById(R.id.rel_login);
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getContext().startActivity(new Intent(getContext(), LoginActivity.class));
@@ -261,5 +314,54 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(login_admin!=null){
+                relativeLayout.setClickable(false);
+                iv_title=getActivity().findViewById(R.id.title_img);
+                tv_name=getActivity().findViewById(R.id.tv_name);
+                tv_content=getActivity().findViewById(R.id.tv_content);
+                Glide.with(getActivity())
+                        .load(UrlObtainer.GetUrl()+login_admin.getAvatar())
+                        .apply(new RequestOptions()
+                                .placeholder(R.mipmap.admin)
+                                .error(R.mipmap.admin))
+                        .into(iv_title);
+                tv_content.setVisibility(View.GONE);
+                tv_name.setText(login_admin.getNickname());
+            }
+        }
+    };
+    void postMessage(){
+        String url = UrlObtainer.GetUrl()+"api/user/index";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", login_admin.getToken())
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                Log.e("asd", "onResponse: "+000);
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        login_admin= (Login_admin) SpUtil.readObject(getContext());
+                    }else if(code.equals("100")){
+                        login_admin=null;
+                        SpUtil.saveObject(getContext(),null);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                handler.sendEmptyMessage(1);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
     }
 }

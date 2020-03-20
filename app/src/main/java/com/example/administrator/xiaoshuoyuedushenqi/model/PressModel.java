@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/22
  */
 public class PressModel implements IPressContract.Model {

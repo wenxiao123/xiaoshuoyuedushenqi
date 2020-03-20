@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.http;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/17
  */
 public interface OkhttpCall {

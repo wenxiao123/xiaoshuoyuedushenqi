@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.epub;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/13
  */
 public class EpubTocItem {

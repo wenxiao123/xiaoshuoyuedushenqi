@@ -7,7 +7,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.RequestCNData;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public interface IListNovelContract {
@@ -19,9 +19,9 @@ public interface IListNovelContract {
         void getNovelsSuccess(List<NovalInfo> dataList);
         void getNovelsError(String errorMsg);
 
-        void getNovels(RequestCNData requestCNData);    // 获取小说信息
+        void getNovels(String id,String type);    // 获取小说信息
     }
     interface Model {
-        void getNovels(RequestCNData requestCNData);    // 获取小说信息
+        void getNovels(String id,String type);    // 获取小说信息
     }
 }

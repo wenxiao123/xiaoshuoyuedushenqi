@@ -4,7 +4,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.bean;
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.IChapter;
 
 /*
-* create by wx
+* create by
 * 2020-2-28
 */
 public class Chapter implements IChapter {

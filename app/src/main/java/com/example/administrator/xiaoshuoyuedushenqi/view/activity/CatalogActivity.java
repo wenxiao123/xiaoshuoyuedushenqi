@@ -2,9 +2,11 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.google.android.material.tabs.TabLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -22,15 +24,11 @@ import com.example.administrator.xiaoshuoyuedushenqi.constract.ICatalogContract;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent;
-import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.CatalogPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
-import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -39,8 +37,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CatalogActivity extends BaseActivity<CatalogPresenter>
         implements ICatalogContract.View, View.OnClickListener {
@@ -50,7 +46,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     public static final String KEY_URL = "catalog_key_url";
     public static final String KEY_NAME = "catalog_key_name";
     public static final String KEY_COVER = "catalog_key_cover";
-
+    public static final String KEY_SERIALIZE = "serialize";
+    public static final String KEY_AUTHOR = "author";
     private ImageView mBackIv;
     private ImageView mRefreshIv;
     private TextView mChapterCountTv;
@@ -64,6 +61,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     private String mUrl;
     private String mName;
     private String mCover;
+    private String mAuthor;
     int weigh;
     /*
      * 如果是在 ReadActivity 通过点击目录跳转过来，那么持有该 ReadActivity 的引用，
@@ -80,7 +78,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
 
     @Override
     protected void doBeforeSetContentView() {
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);   //隐藏标题栏
+        StatusBarUtil.setTranslucentStatus(this);
         mDbManager = DatabaseManager.getInstance();
     }
 
@@ -93,9 +91,11 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     protected CatalogPresenter getPresenter() {
         return new CatalogPresenter();
     }
-
+    int serialize;
     @Override
     protected void initData() {
+        serialize = getIntent().getIntExtra(KEY_SERIALIZE, 0);
+        mAuthor=getIntent().getStringExtra(KEY_AUTHOR);
         mUrl = getIntent().getStringExtra(KEY_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
@@ -177,7 +177,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     return;
                 }
                 // 点击 item，跳转到相应小说阅读页
-                Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
+              /*  Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
                 // 小说 url（本地小说为 filePath），参数类型为 String
                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
                 // 小说名，参数类型为 String
@@ -192,6 +192,22 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 // 开始阅读的章节索引，参数类型为 int（非必需，不传的话默认为 0）
                 intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, (int) bookmarkNovelDbDatas.get(position).getChapterIndex());
                 intent.putExtra(ReadActivity.Catalog_start_Position, bookmarkNovelDbDatas.get(position).getPosition());
+                startActivity(intent);*/
+                // 点击 item，跳转到相应小说阅读页
+                String s_id=bookmarkNovelDbDatas.get(position).getChapterid();
+                Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
+                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
+                intent.putExtra(ReadActivity.KEY_CHPATER_ID, Integer.parseInt(s_id));
+                intent.putExtra(ReadActivity.KEY_NAME, mName);
+                intent.putExtra("first_read",2);
+                intent.putExtra("weigh",weigh);//
+                intent.putExtra(ReadActivity.KEY_COVER, mCover);
+                intent.putExtra(ReadActivity.KEY_SERIALIZE,serialize);
+                intent.putExtra(ReadActivity.KEY_AUTHOR,mAuthor);
+                intent.putExtra(ReadActivity.KEY_POSITION, bookmarkNovelDbDatas.get(position).getPosition());
+                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
+                intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 // 跳转后活动结束
                 if (mReadActivity != null) {

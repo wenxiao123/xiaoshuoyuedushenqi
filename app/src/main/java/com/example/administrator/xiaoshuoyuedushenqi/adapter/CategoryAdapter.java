@@ -2,10 +2,10 @@ package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,23 +14,30 @@ import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FenleiNovelActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
 
 import java.util.List;
+import java.util.Random;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>{
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private Context mContext;
     private List<CategoryNovels> mNovelDataList;
     private CategoryListener mListener;
+    int type=1;
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public interface CategoryListener {
         void clickNovel(String novelName);
+
         void clickMore(int position);
     }
 
@@ -49,7 +56,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder categoryViewHolder, final int i) {
-        categoryViewHolder.categoryName.setText(mNovelDataList.get(i).getTitle());
+        if(type==6) {
+            categoryViewHolder.categoryName.setText(mNovelDataList.get(i).getTitle()+"榜");
+        }
         categoryViewHolder.moreTv.setText("更多");
         categoryViewHolder.moreTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +72,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         adapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
             @Override
             public void clickItem(int novelName) {
-
+                Intent intent = new Intent(mContext, NovelIntroActivity.class);
+                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                intent.putExtra("pid", mNovelDataList.get(i).getData_list().get(novelName).getId() + "");
+                mContext.startActivity(intent);
             }
         });
         categoryViewHolder.novelList.setAdapter(adapter);
@@ -80,6 +92,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 mListener.clickMore(i);
             }
         });
+        Random myRandom = new Random();
+        int ranColor = 0xff000000 | myRandom.nextInt(0x00ffffff);
+        categoryViewHolder.colorv.setBackgroundColor(ranColor);
     }
 
     @Override
@@ -91,6 +106,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         TextView categoryName;
         TextView moreTv;
         ImageView moreIv;
+        View colorv;
         RecyclerView novelList;
 
         public CategoryViewHolder(@NonNull View itemView) {
@@ -99,6 +115,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             moreTv = itemView.findViewById(R.id.tv_item_category_more);
             moreIv = itemView.findViewById(R.id.iv_item_category_more);
             novelList = itemView.findViewById(R.id.rv_item_category_novel_list);
+            colorv = itemView.findViewById(R.id.color);
         }
     }
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minHeight="190dp"
-    android:paddingStart="10dp">
+    android:paddingStart="10dp"
+    android:paddingBottom="9dp">
 
     <ImageView
         android:id="@+id/iv_item_category_novel_cover"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_width="95dp"
+        android:layout_height="130dp"
         android:src="@drawable/default_cover"
         android:scaleType="fitXY"/>
 
@@ -22,6 +22,18 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/item_category_novel_name"
         android:textSize="14sp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+    <TextView
+        android:id="@+id/tv_item_category_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_item_category_novel_name"
+        android:text="@string/item_category_novel_name"
+        android:layout_centerHorizontal="true"
+        android:textColor="#9FA2B3"
+        android:textSize="12sp"
         android:gravity="center"
         android:maxLines="1"
         android:ellipsize="end"/>

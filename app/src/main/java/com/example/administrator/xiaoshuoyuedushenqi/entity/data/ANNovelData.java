@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 /**
  * AllNovel 页面的小说信息
  *
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class ANNovelData {

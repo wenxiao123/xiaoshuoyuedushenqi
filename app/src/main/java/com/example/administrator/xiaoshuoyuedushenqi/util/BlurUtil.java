@@ -8,7 +8,7 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
 /**
- * @author WX WX
+ * @author
  * Created on 2019/11/13
  */
 public class BlurUtil {

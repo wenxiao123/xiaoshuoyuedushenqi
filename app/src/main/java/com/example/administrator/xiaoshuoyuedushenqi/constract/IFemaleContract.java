@@ -5,7 +5,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelD
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/8
  */
 public interface IFemaleContract {

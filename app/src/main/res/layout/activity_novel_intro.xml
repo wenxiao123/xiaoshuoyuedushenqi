@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -222,7 +222,7 @@
                 android:gravity="start|center"
                 android:paddingStart="10dp"
                 android:paddingEnd="5dp"
-                android:text="@string/novel_intro_catalog"
+                android:text=""
                 android:textColor="@color/novel_intro_catalog_text"
                 android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@id/tv_novel_intro_catalog"
@@ -251,7 +251,7 @@
                 android:gravity="start|center"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:text="@string/novel_intro_catalog"
+                android:text=""
                 android:textColor="@color/red_aa"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@id/iv_more"
@@ -308,7 +308,7 @@
                         android:textSize="13sp" />
                 </RelativeLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycle_book"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -318,8 +318,8 @@
                     android:layout_marginBottom="50dp"/>
             </RelativeLayout>
 
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v4.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
     <RelativeLayout
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
@@ -338,12 +338,14 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/iv_load"
+                android:layout_marginRight="5dp"
                 android:layout_centerVertical="true"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@mipmap/txt_load"/>
             <TextView
-                android:layout_marginLeft="5dp"
+                android:id="@+id/tv_che"
+                android:gravity="center_vertical|left"
                 android:layout_toRightOf="@id/iv_load"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
@@ -380,6 +382,7 @@
             <TextView
                 android:id="@+id/tv_book_add"
                 android:layout_marginLeft="5dp"
+                android:gravity="center"
                 android:layout_toRightOf="@id/iv_upload"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"

@@ -6,7 +6,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.OpfData;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/12
  */
 public interface IBookshelfContract {

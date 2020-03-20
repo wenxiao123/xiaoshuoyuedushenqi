@@ -3,13 +3,10 @@ package com.example.administrator.xiaoshuoyuedushenqi.model;
 import android.util.Log;
 
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
-import com.example.administrator.xiaoshuoyuedushenqi.constract.IAllNovelContract;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.NovelInfoContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovelsBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.ANNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.RequestCNData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
@@ -26,10 +23,8 @@ import java.util.List;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
-import static android.support.constraint.Constraints.TAG;
-
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class NovelInfoModel implements NovelInfoContract.Model {
@@ -47,13 +42,16 @@ public class NovelInfoModel implements NovelInfoContract.Model {
      */
     @Override
     public void getNovels(final String  id) {
+        Log.e("qqq", "getNovels: "+id);
         String url = UrlObtainer.GetUrl()+"api/index/Book_data";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id)
+                .add("limit", "6")
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -88,7 +86,7 @@ public class NovelInfoModel implements NovelInfoContract.Model {
         final int n = 3;  // 类别数
         final int num = 6;    // 获取条数（最终得到的可能多于 6 条）
         List<String> majorList = Arrays.asList(Constant.CATEGORY_MAJOR_XH,
-                Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_WX);
+                Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_ );
         for (int i = 0; i < n; i++) {
             String url = UrlObtainer.getCategoryNovels(Constant.CATEGORY_GENDER_MALE,
                     majorList.get(i), num);
@@ -130,7 +128,7 @@ public class NovelInfoModel implements NovelInfoContract.Model {
                 @Override
                 public void onFailure(String errorMsg) {
                     finishCount[0]++;
-                    Log.d(TAG, "getCategoryNovels onFailure: " + errorMsg);
+                    Log.d("qq", "getCategoryNovels onFailure: " + errorMsg);
                     if (finishCount[0] == n) {
                         mPresenter.getCategoryNovelsError("获取分类小说失败");
                     }

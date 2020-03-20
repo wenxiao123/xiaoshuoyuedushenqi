@@ -2,9 +2,8 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookstoreAdapter;
@@ -15,7 +14,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.presenter.MaleLikePresenter
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FenleiNovelActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import q.rorbin.verticaltablayout.VerticalTabLayout;
@@ -98,7 +96,9 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
         bookstoreAdapter=new BookstoreAdapter(getContext(),catagorys, new BookstoreAdapter.BookshelfNovelListener() {
             @Override
             public void clickItem(int position) {
-                getActivity().startActivity(new Intent(getActivity(), FenleiNovelActivity.class));
+                Intent intent=new Intent(getActivity(), FenleiNovelActivity.class);
+                intent.putExtra("category_id",catagorys.get(position).getId());
+                getActivity().startActivity(intent);
             }
 
             @Override

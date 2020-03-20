@@ -1,7 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -14,14 +13,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
  * 圆形的ImageView
  * Created by fucaijin on 2018/6/30.
  */
 
-public class OvalImageView extends android.support.v7.widget.AppCompatImageView {
+public class OvalImageView extends androidx.appcompat.widget.AppCompatImageView {
     private Paint mPaintBitmap = new Paint(Paint.ANTI_ALIAS_FLAG);//抗锯齿
     private Bitmap mRawBitmap;
     private BitmapShader mShader;

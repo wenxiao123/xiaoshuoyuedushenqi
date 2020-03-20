@@ -9,7 +9,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.AllNovelModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class AllNovelPresenter extends BasePresenter<IAllNovelContract.View>

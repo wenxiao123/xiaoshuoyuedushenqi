@@ -26,7 +26,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/17
  */
 public class CatalogModel implements ICatalogContract.Model {

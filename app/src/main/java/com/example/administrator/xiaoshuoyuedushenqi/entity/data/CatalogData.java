@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/17
  */
 public class CatalogData {

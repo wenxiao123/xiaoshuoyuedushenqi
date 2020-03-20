@@ -8,7 +8,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.PressModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/22
  */
 public class PressPresenter extends BasePresenter<IPressContract.View>

@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadActivity;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/5
  */
 public class HoldReadActivityEvent {

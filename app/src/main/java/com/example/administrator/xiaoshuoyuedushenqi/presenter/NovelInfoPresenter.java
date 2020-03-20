@@ -13,7 +13,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.NovelInfoModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class NovelInfoPresenter extends BasePresenter<NovelInfoContract.View>

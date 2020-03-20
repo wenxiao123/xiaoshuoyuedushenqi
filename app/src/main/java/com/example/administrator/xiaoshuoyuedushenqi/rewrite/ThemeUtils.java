@@ -19,10 +19,12 @@ package com.example.administrator.xiaoshuoyuedushenqi.rewrite;
 import android.content.Context;
 import android.content.res.TypedArray;
 
+import com.example.administrator.xiaoshuoyuedushenqi.R;
+
 class ThemeUtils {
 
     private static final int[] APPCOMPAT_CHECK_ATTRS = {
-            android.support.v7.appcompat.R.attr.colorPrimary
+            R.attr.colorPrimary
     };
 
     static void checkAppCompatTheme(Context context) {

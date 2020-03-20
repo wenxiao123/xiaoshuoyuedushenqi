@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/8
  */
 public class FemaleModel implements IFemaleContract.Model {

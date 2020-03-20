@@ -1,25 +1,22 @@
 package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.NovelSourceData;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/9
  */
 public class NovelSearchAdapter extends
@@ -28,7 +25,7 @@ public class NovelSearchAdapter extends
     private static final String TAG = "NovelSourceAdapter";
 
     private Context mContext;
-    private List<String> mNovelSourceDataList;
+    private List<Wheel> mNovelSourceDataList;
     private NovelSourceListener mListener;
     private String name_search;
     public void setOnNovelSourceListener(NovelSourceListener listener) {
@@ -39,7 +36,7 @@ public class NovelSearchAdapter extends
         void clickItem(int position);
     }
 
-    public NovelSearchAdapter(Context mContext, List<String> mNovelSourceDataList,String content) {
+    public NovelSearchAdapter(Context mContext, List<Wheel> mNovelSourceDataList,String content) {
         this.mContext = mContext;
         this.mNovelSourceDataList = mNovelSourceDataList;
         name_search=content;
@@ -54,9 +51,9 @@ public class NovelSearchAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, final int i) {
-        novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i));
+        novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getTitle());
         if(name_search!=null&&!name_search.equals("")) {
-            setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i), name_search, mContext.getResources().getColor(R.color.red_aa));
+            setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i).getTitle(), name_search, mContext.getResources().getColor(R.color.red_aa));
         }
         novelSourceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

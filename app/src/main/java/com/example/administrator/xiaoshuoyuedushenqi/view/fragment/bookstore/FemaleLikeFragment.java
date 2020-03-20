@@ -2,8 +2,8 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookstoreAdapter;

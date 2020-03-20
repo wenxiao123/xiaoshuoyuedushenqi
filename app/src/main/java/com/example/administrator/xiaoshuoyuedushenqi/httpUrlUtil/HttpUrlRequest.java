@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.concurrent.Executor;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/18
  */
 public class HttpUrlRequest {

@@ -12,18 +12,17 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
-import com.example.administrator.xiaoshuoyuedushenqi.base.BaseDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseDialog2;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/12
  */
 public class ShareDialog extends BaseDialog2 implements View.OnClickListener{
@@ -61,7 +60,7 @@ public class ShareDialog extends BaseDialog2 implements View.OnClickListener{
         TextView cancel = view.findViewById(R.id.tv_dialog_tip_cancel);
         cancel.setText(mCancel);
         cancel.setOnClickListener(this);
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.default_cover); // 先从资源中把背景图获取出来
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.img_share); // 先从资源中把背景图获取出来
         Bitmap roundBitmap = getRoundCornerImage(bitmap, 10, HalfType.TOP); // 将图片的上半部分圆弧化。
         ImageView image =view.findViewById(R.id.img);
         Drawable dw = new BitmapDrawable(getContext().getResources(),roundBitmap);
@@ -77,7 +76,7 @@ public class ShareDialog extends BaseDialog2 implements View.OnClickListener{
 
     @Override
     protected float getHeightScale() {
-        return 0.5f;
+        return 0.53f;
     }
 
     @Override

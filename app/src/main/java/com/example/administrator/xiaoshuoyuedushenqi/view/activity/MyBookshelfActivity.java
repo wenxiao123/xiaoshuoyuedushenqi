@@ -1,42 +1,41 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.content.Intent;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookshelfNovelsAdapter;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.SortAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.FileInfo;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.Delet_book_show;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.BookshelfPresenter;
-import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.PinyinUtils;
-import com.example.administrator.xiaoshuoyuedushenqi.util.SDCardHelper;
-import com.example.administrator.xiaoshuoyuedushenqi.util.SideBar;
-import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
+import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.Serializable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 public class MyBookshelfActivity extends BaseActivity implements Delet_book_show, View.OnClickListener {
     private RecyclerView mBookshelfNovelsRv;
@@ -65,9 +64,84 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                 }
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
             }
+            if(dataList.size()==0&&login_admin!=null){
+                queryallBook(login_admin.getToken());
+            }
         }
     };
+    Login_admin login_admin;
+    List<Noval_Readcored> noval_readcoreds=new ArrayList<>();
+    private void queryallBook(String token){
+        Gson mGson=new Gson();
+        String url = UrlObtainer.GetUrl() + "api/Userbook/index";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("page", 1+"")
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        if(jsonObject.isNull("data")){
+                            showShortToast("请求数据失败");
+                        }else {
+                            JSONObject object = jsonObject.getJSONObject("data");
+                            JSONArray jsonArray=object.getJSONArray("data");
+                            if(jsonArray.length()==0){
+                                return;
+                            }
+                            mDataList1.clear();
+                            for(int i=0;i<jsonArray.length();i++){
+                                //String novelUrl, String name, String cover,  int position, int type, int secondPosition, String chapterid, int weight
+                                noval_readcoreds.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(), Noval_Readcored.class));
+                                mDataList1.add(new BookshelfNovelDbData(noval_readcoreds.get(i).getNovel_id(),noval_readcoreds.get(i).getTitle(),noval_readcoreds.get(i).getPic()
+                                        ,0,0,0,noval_readcoreds.get(i).getChapter_id(),noval_readcoreds.get(i).getSerialize()));
+                            }
+                            queryAllBookSuccess2(mDataList1);
+                        }
+                    } else {
+                        showShortToast("请求数据失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
+    }
+    public void queryAllBookSuccess2(List<BookshelfNovelDbData> dataList) {
+        if (mBookshelfNovelsAdapter == null) {
+            mDataList = dataList;
+            mCheckedList.clear();
+            for (int i = 0; i < mDataList.size(); i++) {
+                mCheckedList.add(false);
+            }
+            initAdapter();
+            if (mIsDeleting) {
+                return;
+            }
+            //mBookshelfNovelsAdapter.setIsMultiDelete(true);
+            mBookshelfNovelsRv.setAdapter(mBookshelfNovelsAdapter);
+        } else {
+            mDataList.clear();
+            mDataList.addAll(dataList);
+            mCheckedList.clear();
+            for (int i = 0; i < mDataList.size(); i++) {
+                mCheckedList.add(false);
+            }
+            mBookshelfNovelsAdapter.notifyDataSetChanged();
+        }
+        if(dataList.size()==0){
+
+        }
+    }
     private void initAdapter() {
         mBookshelfNovelsAdapter = new BookshelfNovelsAdapter(this, mDataList, mCheckedList,
                 new BookshelfNovelsAdapter.BookshelfNovelListener() {
@@ -88,11 +162,11 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     }
 
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
+    private List<BookshelfNovelDbData> mDataList1 = new ArrayList<>();
     private List<Boolean> mCheckedList = new ArrayList<>();
     private BookshelfNovelsAdapter mBookshelfNovelsAdapter;
     private boolean mIsDeleting = false;
     private LinearLayout rv_bookshelf_multi_delete_bar;
-
     @Override
     protected void doBeforeSetContentView() {
         bookshelfPresenter.queryAllBook();
@@ -113,6 +187,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     @Override
     protected void initData() {
         mDbManager = DatabaseManager.getInstance();
+        login_admin= (Login_admin) SpUtil.readObject(this);
     }
 
     /**
@@ -125,7 +200,39 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         mBookshelfNovelsAdapter.setIsMultiDelete(false);
         mBookshelfNovelsAdapter.notifyDataSetChanged();
     }
+    public void delectBookshelfadd(String token, String novel_id) {
+        String url = UrlObtainer.GetUrl()+"api/Userbook/del";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("novel_id", novel_id)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                Log.e("www", "onResponse: "+json);
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        String message=jsonObject.getString("msg");
+                        //mPresenter.(message);
+                        //showShortToast("删除成功");
+                    }else {
+                        //mPresenter.getReadRecordError("请求错误");
+                        showShortToast("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast("请求错误");
+                //mPresenter.getReadRecordError(errorMsg);
+            }
+        });
+    }
     /**
      * 多选删除
      */
@@ -135,6 +242,10 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
             if (mCheckedList.get(i)) {
                 // 从数据库中删除该小说
                 mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
+                Log.e("WWW", "multiDelete: "+mDataList.get(i).getNovelUrl());
+                if(login_admin!=null&&mDataList.get(i).getType()==0){
+                    delectBookshelfadd(login_admin.getToken(),mDataList.get(i).getNovelUrl());
+                }
                 mDataList.remove(i);
             }
         }

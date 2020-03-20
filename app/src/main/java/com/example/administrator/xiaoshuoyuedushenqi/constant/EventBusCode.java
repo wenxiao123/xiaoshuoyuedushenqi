@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.constant;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/12
  */
 public class EventBusCode {

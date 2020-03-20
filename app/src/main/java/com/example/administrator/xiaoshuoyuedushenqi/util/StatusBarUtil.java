@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/28
  */
 public class StatusBarUtil {

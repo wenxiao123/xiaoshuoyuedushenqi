@@ -3,40 +3,30 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.TabLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.RequiresApi;
+import com.google.android.material.tabs.TabLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.EmptyAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.NovelAdapter;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.ScreenAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePagingLoadAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
-import com.example.administrator.xiaoshuoyuedushenqi.constract.IAllNovelContract;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IListNovelContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.ANNovelData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.RequestCNData;
-import com.example.administrator.xiaoshuoyuedushenqi.presenter.AllNovelPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.ListNovelPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.LoadMoreScrollListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
@@ -53,10 +43,10 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
     private List<String> mTypeTextList = new ArrayList<>();
     private List<NovalInfo> novalInfos = new ArrayList<>();
     private NovelAdapter mNovelAdapter;
-
+    int category_id;
     @Override
     protected void doBeforeSetContentView() {
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        StatusBarUtil.setTranslucentStatus(this);
     }
 
     @Override
@@ -71,8 +61,9 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
 
     @Override
     protected void initData() {
+        category_id=getIntent().getIntExtra("category_id",1);
     }
-
+    int SelectPosition;
 
     @Override
     protected void initView() {
@@ -89,7 +80,8 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
         enhanceTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                requestNovels(false, tab.getPosition());
+                requestNovels();
+                SelectPosition=tab.getPosition();
             }
 
             @Override
@@ -124,7 +116,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
                     @Override
                     public void run() {
                         // 请求小说信息
-                        requestNovels(false);
+                        requestNovels();
                     }
                 }, 500);
             }
@@ -143,28 +135,17 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void doAfterInit() {
-        StatusBarUtil.setDarkColorStatusBar(this);
-        getWindow().setStatusBarColor(getResources().getColor(R.color.all_novel_top_bar_bg));
+//        StatusBarUtil.setDarkColorStatusBar(this);
+//        getWindow().setStatusBarColor(getResources().getColor(R.color.all_novel_top_bar_bg));
         // 请求小说信息
-        requestNovels(true);
+        requestNovels();
     }
 
     /**
      * 请求小说信息
      */
-    private void requestNovels(boolean showProgressBar) {
-        RequestCNData requestCNData = new RequestCNData();
-
-        mPresenter.getNovels(requestCNData);
-    }
-
-    /**
-     * 请求小说信息
-     */
-    private void requestNovels(boolean showProgressBar, int stype) {
-        RequestCNData requestCNData = new RequestCNData();
-
-        mPresenter.getNovels(requestCNData);
+    private void requestNovels() {
+        mPresenter.getNovels(category_id+"",SelectPosition+"");
     }
 
     @Override
@@ -180,7 +161,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
                 break;
             case R.id.tv_all_novel_screen_ensure:
                 // 查找小说信息
-                requestNovels(true);
+                requestNovels();
                 break;
             default:
                 break;
@@ -243,7 +224,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
         mNovelAdapter = new NovelAdapter(this, dataList, new BasePagingLoadAdapter.LoadMoreListener() {
             @Override
             public void loadMore() {
-                requestNovels(true);
+                requestNovels();
             }
         }, new NovelAdapter.NovelListener() {
             @Override
@@ -258,6 +239,12 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
             }
         });
         mNovelListRv.setAdapter(mNovelAdapter);
+        if(SelectPosition==2){
+            mNovelAdapter.setRating(true);
+        }else {
+            mNovelAdapter.setRating(false);
+        }
+        mNovelAdapter.notifyDataSetChanged();
     }
 
     /**

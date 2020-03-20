@@ -6,7 +6,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/8
  */
 public class EditTextUtil {

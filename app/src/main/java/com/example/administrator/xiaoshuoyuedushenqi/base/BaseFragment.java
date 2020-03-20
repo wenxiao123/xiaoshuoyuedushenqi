@@ -2,9 +2,9 @@ package com.example.administrator.xiaoshuoyuedushenqi.base;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/20
  */
 public abstract class BaseFragment<V extends BasePresenter> extends Fragment {

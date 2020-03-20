@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 /**
  * 请求分类小说所需的参数
  *
- * @author WX
+ * @author
  * Created on 2019/12/21
  */
 public class RequestCNData {

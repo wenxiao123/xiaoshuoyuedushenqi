@@ -12,12 +12,25 @@ import android.widget.TextView;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+
 public class FeedbackActivity extends BaseActivity {
-    EditText et_nickname;
-    TextView iv_close,tv_notice2,tv_notice1;
+    EditText et_nickname, et_password;
+    TextView iv_close, tv_notice2, tv_notice1;
     TextView tv_message;
+    Login_admin login_admin;
+
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -35,17 +48,24 @@ public class FeedbackActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        login_admin = (Login_admin) SpUtil.readObject(this);
     }
 
 
     @Override
     protected void initView() {
-        et_nickname=findViewById(R.id.et_search_search_bar);
-        iv_close=findViewById(R.id.iv_search_delete_search_text);
-        tv_message=findViewById(R.id.txt_notice);
-        tv_notice2=findViewById(R.id.tv_notice2);
-        tv_notice1=findViewById(R.id.tv_notice1);
+        et_nickname = findViewById(R.id.et_search_search_bar);
+        et_password = findViewById(R.id.et_mobile_phone);
+        iv_close = findViewById(R.id.iv_search_delete_search_text);
+        tv_message = findViewById(R.id.txt_notice);
+        tv_notice2 = findViewById(R.id.tv_notice2);
+        tv_notice1 = findViewById(R.id.tv_notice1);
+        findViewById(R.id.tv_feed).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postExit();
+            }
+        });
     }
 
 
@@ -63,7 +83,7 @@ public class FeedbackActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                iv_close.setText(charSequence.length()+"/"+300);
+                iv_close.setText(charSequence.length() + "/" + 300);
             }
 
             @Override
@@ -77,12 +97,50 @@ public class FeedbackActivity extends BaseActivity {
                 et_nickname.setText("");
             }
         });
+        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    public void postExit() {
+        String url = UrlObtainer.GetUrl() + "api/user/contact";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", login_admin.getToken())
+                .add("contact", et_password.getText().toString())
+                .add("text", et_nickname.getText().toString())
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        String msg=jsonObject.getString("msg");
+                        showShortToast(msg);
+                        finish();
+                    } else {
+                        showShortToast("提交失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
     }
 
     @Override

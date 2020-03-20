@@ -1,13 +1,13 @@
 package com.example.administrator.xiaoshuoyuedushenqi.widget;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 
 /**
- * @author WX
+ * @author
  * Created on 2018/12/10
  */
 public class LoadMoreScrollListener extends RecyclerView.OnScrollListener {

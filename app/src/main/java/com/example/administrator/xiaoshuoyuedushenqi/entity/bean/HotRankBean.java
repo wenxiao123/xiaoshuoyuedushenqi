@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.bean;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/6
  */
 public class HotRankBean {
@@ -67,7 +67,7 @@ public class HotRankBean {
         private boolean isSub;
         private boolean collapse;
         @com.google.gson.annotations.SerializedName("new")
-        private boolean newX;
+        private boolean ne ;
         private String gender;
         private int priority;
         private String id;
@@ -170,12 +170,12 @@ public class HotRankBean {
             this.collapse = collapse;
         }
 
-        public boolean isNewX() {
-            return newX;
+        public boolean isNe () {
+            return ne ;
         }
 
-        public void setNewX(boolean newX) {
-            this.newX = newX;
+        public void setNe (boolean ne ) {
+            this.ne  = ne ;
         }
 
         public String getGender() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+    <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +8,8 @@
         android:padding="5dp"
         android:id="@+id/bookshelf_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent2"
+        android:layout_height="70dp"
+        android:background="@drawable/background_grint"
         android:orientation="horizontal">
         <ImageView
             android:id="@+id/back"
@@ -17,19 +17,20 @@
             android:layout_height="30dp"
             android:padding="2dp"
             android:src="@drawable/all_novel_back"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="28dp"/>
         <TextView
             android:layout_alignParentRight="true"
-            android:id="@+id/iv_bookshelf_more"
+            android:id="@+id/iv_clear_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
             android:text="清空"
             android:textColor="@color/item_hot_rank_rank_bg"
             android:textSize="15sp"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="28dp"/>
         <TextView
-            android:layout_centerInParent="true"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
             android:id="@+id/tv_bookshelf_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,8 +39,24 @@
             android:textSize="18sp"
             android:gravity="center" />
     </RelativeLayout>
-    <FrameLayout
-        android:id="@+id/fv_search_container"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/bookshelf_title"
+        android:id="@+id/srv_male_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        android:layout_height="wrap_content">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_readcord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <ProgressBar
+        android:id="@+id/pb_male"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="200dp"
+        android:indeterminateTint="@color/progress_bar"
+        android:visibility="gone" />
+</RelativeLayout>

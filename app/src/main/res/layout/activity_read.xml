@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -138,7 +138,7 @@
 
     <!-- bottom bar -->
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cv_read_bottom_bar"
         android:layout_width="0dp"
         android:layout_height="150dp"
@@ -287,7 +287,7 @@
             app:layout_constraintStart_toEndOf="@id/tv_read_day_and_night_mode"
             app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -392,7 +392,7 @@
         </LinearLayout>
         <!-- list -->
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_catalog_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -548,7 +548,7 @@
                 android:paddingTop="5dp"
                 android:paddingRight="25dp"
                 android:paddingBottom="5dp"
-                android:text="Aa-"
+                android:text="A-"
                 android:textColor="@color/red"
                 android:textSize="16sp" />
 
@@ -577,7 +577,7 @@
                 android:paddingTop="5dp"
                 android:paddingRight="25dp"
                 android:paddingBottom="5dp"
-                android:text="Aa+"
+                android:text="A+"
                 android:textColor="@color/red"
                 android:textSize="16sp" />
 
@@ -637,9 +637,11 @@
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/shape_read_theme_grey_selected">
 
-                <TextView
+                <ImageView
                     android:id="@+id/iv_read_decrease_row_space"
                     android:layout_width="0dp"
+                    android:scaleX="0.6"
+                    android:scaleY="0.8"
                     android:layout_height="match_parent"
                     android:layout_weight="0.35"
                     android:gravity="center"
@@ -647,9 +649,8 @@
                     android:paddingTop="2dp"
                     android:paddingRight="13dp"
                     android:paddingBottom="2dp"
-                    android:text="-"
-                    android:textColor="@color/red"
-                    android:textSize="22sp" />
+                    android:src="@mipmap/jian_hang"
+                     />
 
                 <View
                     android:layout_width="1dp"
@@ -657,6 +658,7 @@
                     android:background="@color/read_catalog_progress_text" />
 
                 <TextView
+                    android:id="@+id/tv_jainju"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="1dp"
@@ -675,7 +677,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/read_catalog_progress_text" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/iv_read_increase_row_space"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -685,9 +687,7 @@
                     android:paddingTop="2dp"
                     android:paddingRight="13dp"
                     android:paddingBottom="2dp"
-                    android:text="+"
-                    android:textColor="@color/red"
-                    android:textSize="22sp" />
+                    android:src="@mipmap/add_hang" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -713,6 +713,7 @@
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:tint="@color/red_aa"
                 android:src="@mipmap/kaiguan_close" />
         </RelativeLayout>
         <!-- second -->
@@ -778,9 +779,8 @@
         android:background="@drawable/bachground_halfcricyle"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone"
         android:orientation="vertical"
-
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -791,8 +791,8 @@
             android:padding="10dp">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:rotation="90"
                 android:src="@drawable/bookshelf_add"
                 android:tint="@color/cardview_dark_background" />
@@ -808,10 +808,14 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="0.1dp"
             android:background="@color/gray_a3" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/background_vertival" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ts_recyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -819,4 +823,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

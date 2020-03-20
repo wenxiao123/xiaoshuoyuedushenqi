@@ -1,8 +1,8 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,62 +10,51 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.loader.content.CursorLoader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.MainRecyleAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.MainSetAdapter;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.SortAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
-import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.FileInfo;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtils;
-import com.example.administrator.xiaoshuoyuedushenqi.util.PinyinUtils;
-import com.example.administrator.xiaoshuoyuedushenqi.util.RecycleViewDivider;
-import com.example.administrator.xiaoshuoyuedushenqi.util.SDCardHelper;
-import com.example.administrator.xiaoshuoyuedushenqi.util.SideBar;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.widget.TakePhotosDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
-import com.fingerth.supdialogutils.SYSDiaLogUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class AdminSetActivity extends BaseActivity {
     MainSetAdapter mainRecyleAdapter1;
@@ -78,7 +67,8 @@ public class AdminSetActivity extends BaseActivity {
     String[] ints2 = {"v 1.0.0", ""};
     String[] strings3 = {"清理缓存"};
     String[] ints3 = {"0.00"};
-
+    Login_admin login_admin;
+    TextView exit;
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -96,13 +86,14 @@ public class AdminSetActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        login_admin= (Login_admin) SpUtil.readObject(this);
     }
 
     LinearLayout mSettingBarCv;
 
     String img_name;
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void initView() {
         recyclerView1 = findViewById(R.id.recycle_part1);
@@ -115,7 +106,29 @@ public class AdminSetActivity extends BaseActivity {
         recyclerView3.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
 
         mSettingBarCv = findViewById(R.id.cv_read_setting_bar);
+        exit=findViewById(R.id.exit);
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final TipDialog tipDialog = new TipDialog.Builder(AdminSetActivity.this)
+                        .setContent("是否清除缓存")
+                        .setCancel("否")
+                        .setEnsure("是")
+                        .setOnClickListener(new TipDialog.OnClickListener() {
+                            @Override
+                            public void clickEnsure() {
+                                postExit();
+                            }
 
+                            @Override
+                            public void clickCancel() {
+
+                            }
+                        })
+                        .build();
+                tipDialog.show();
+            }
+        });
         TextView camera = findViewById(R.id.camera);
         TextView picture = findViewById(R.id.picture);
         TextView consle = findViewById(R.id.consle);
@@ -163,6 +176,7 @@ public class AdminSetActivity extends BaseActivity {
                 this, R.anim.read_setting_bottom_enter);
         mSettingBarCv.startAnimation(bottomAnim);
         mSettingBarCv.setVisibility(View.VISIBLE);
+        exit.setVisibility(View.GONE);
     }
 
     /**
@@ -180,6 +194,7 @@ public class AdminSetActivity extends BaseActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 mSettingBarCv.setVisibility(View.GONE);
+                exit.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -262,6 +277,9 @@ public class AdminSetActivity extends BaseActivity {
                 final String path = getRealPathFromURI(uri);
                 File file = new File(path);
                 img_name = "img" + System.currentTimeMillis() + "";
+                Log.e("AAA", "onActivityResult: "+file.getPath());
+                uploadpost2(file);
+                //upload(file.getPath());
             }
             if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "取消操作", Toast.LENGTH_LONG).show();
@@ -278,6 +296,9 @@ public class AdminSetActivity extends BaseActivity {
                     }
                     String path = saveBitmap(AdminSetActivity.this, thumbnail);
                     File file = new File(path);
+                    Log.e("AAA", "onActivityResult: "+file.getName());
+                    uploadpost2(file);
+                    //upload(file.getPath());
                 }
             }
             if (resultCode == RESULT_CANCELED) {
@@ -288,6 +309,100 @@ public class AdminSetActivity extends BaseActivity {
         }
     }
 
+    public void postModify(String nickname,String name) {
+        String url = UrlObtainer.GetUrl()+"api/user/profile";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", login_admin.getToken())
+                .add(nickname, name)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                       showShortToast("修改成功");
+                    }else {
+                        showShortToast("修改失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
+    }
+
+    public void postExit() {
+        String url = UrlObtainer.GetUrl()+"api/user/logout";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", login_admin.getToken())
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        SpUtil.saveObject(AdminSetActivity.this,null);
+                        startActivity(new Intent(AdminSetActivity.this,LoginActivity.class));
+                    }else {
+                        showShortToast("退出失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
+    }
+
+    void uploadpost2(File file){
+        if(login_admin!=null){
+            RequestBody fileBody = RequestBody.create(MediaType.parse("*/*"), file);
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), fileBody)
+                    .addFormDataPart("token", login_admin.getToken())
+                    .build();
+
+            String url = UrlObtainer.GetUrl() + "api/index/upload";
+            OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+                @Override
+                public void onResponse(String json) {
+                    try {
+                        JSONObject jsonObject=new JSONObject(json);
+                        String code=jsonObject.getString("code");
+                        if(code.equals("1")){
+                            JSONObject object=jsonObject.getJSONObject("data");
+                            String path=object.getString("path");
+                            postModify("avatar",path);
+                        }else {
+                            showShortToast("上传失败");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(String errorMsg) {
+                    showShortToast(errorMsg);
+                }
+            });
+        }
+
+    }
     private static final String SD_PATH = "/sdcard/xsb/pic/";
 
     public String saveBitmap(Context context, Bitmap mBitmap) {

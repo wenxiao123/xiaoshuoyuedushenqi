@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.base;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/19
  */
 public class BasePresenter<V> {

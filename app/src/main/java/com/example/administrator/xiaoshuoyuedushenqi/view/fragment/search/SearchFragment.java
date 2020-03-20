@@ -1,33 +1,30 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.NovelSearchAdapter;
-import com.example.administrator.xiaoshuoyuedushenqi.adapter.NovelSourceAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
-import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
-import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.ISearchResultContract;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.NovelSourceData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.NovelIntroInitEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.SearchResultPresenter;
-import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/9
  */
 public class SearchFragment extends BaseFragment<SearchResultPresenter>
@@ -39,7 +36,7 @@ public class SearchFragment extends BaseFragment<SearchResultPresenter>
     private NovelSearchAdapter mNovelSourceAdapter;
 
     private String mSearchContent;  // 搜索内容
-    private List<String> mNovelSourceDataList=new ArrayList<>(); // 小说源列表
+    private List<Wheel> mNovelSourceDataList=new ArrayList<>(); // 小说源列表
 
     @Override
     protected int getLayoutId() {
@@ -92,11 +89,11 @@ public class SearchFragment extends BaseFragment<SearchResultPresenter>
     }
 
     @Override
-    public void getNovelsSourceSuccess(List<NovelSourceData> novelSourceDataList) {
+    public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
         // 列表显示小说源
         for(int i=0;i<novelSourceDataList.size();i++){
-            if(novelSourceDataList.get(i).getName()!=null) {
-                mNovelSourceDataList.add(novelSourceDataList.get(i).getName());
+            if(novelSourceDataList.get(i).getTitle()!=null) {
+                mNovelSourceDataList.add(new Wheel(novelSourceDataList.get(i).getId(),novelSourceDataList.get(i).getPic(),novelSourceDataList.get(i).getTitle()));
             }
         }
         initAdapter();
@@ -126,6 +123,10 @@ public class SearchFragment extends BaseFragment<SearchResultPresenter>
 //                        new NovelIntroInitEvent(mNovelSourceDataList.get(position)));
 //                EventBusUtil.sendStickyEvent(event);
 //                jump2Activity(NovelIntroActivity.class);
+                Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                intent.putExtra("pid", mNovelSourceDataList.get(position).getId() + "");
+                startActivity(intent);
             }
         });
         mNovelSourceRv.setAdapter(mNovelSourceAdapter);

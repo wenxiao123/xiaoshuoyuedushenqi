@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/11/10
  */
 public class ScreenUtil {

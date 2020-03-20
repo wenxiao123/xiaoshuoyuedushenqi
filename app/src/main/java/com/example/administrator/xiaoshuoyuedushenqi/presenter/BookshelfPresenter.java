@@ -9,7 +9,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.model.BookshelfModel;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/12
  */
 public class BookshelfPresenter extends BasePresenter<IBookshelfContract.View>

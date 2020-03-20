@@ -3,17 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bookshelf_multi_delete_bar_bg"
+    android:background="@color/background_color"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/red">
+        android:background="@drawable/background_grint">
         <ImageView
             android:id="@+id/back"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/all_novel_back"/>
@@ -23,10 +24,23 @@
             android:text="修改昵称"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="19sp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
             android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/tv_sure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="确认"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
     <!-- top -->
 <FrameLayout
@@ -40,7 +54,7 @@
         android:paddingLeft="10dp"
         android:background="@color/white"
         android:hint="请输入昵称"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:textCursorDrawable="@drawable/search_cursor"
         android:singleLine="true" />
 
@@ -49,6 +63,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:visibility="gone"
+        android:tint="#DCDCDC"
         android:layout_gravity="center_vertical|right"
         android:src="@drawable/search_delete_search_text"
         android:padding="9dp" />
@@ -59,17 +74,6 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/red"
+        android:textColor="@color/red_aa"
         android:text="昵称可以是中英文、数字的任意组合，只能修改一次"/>
-
-    <Button
-        android:layout_marginTop="20dp"
-        android:id="@+id/btn_sure"
-        android:padding="5dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:background="@drawable/bachground_black"
-        android:text="确认修改"/>
 </LinearLayout>

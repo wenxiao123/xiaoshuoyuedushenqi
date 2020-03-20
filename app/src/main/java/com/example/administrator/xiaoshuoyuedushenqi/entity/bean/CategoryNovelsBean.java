@@ -3,7 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.entity.bean;
 import java.util.List;
 
 /**
- * @author WX
+ * @author
  * Created on 2019/12/20
  */
 public class CategoryNovelsBean {

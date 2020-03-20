@@ -2,17 +2,15 @@ package com.example.administrator.xiaoshuoyuedushenqi.base;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil2;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 
 /**
- * @author WX
+ * @author
  * Created on 2020/2/19
  */
 public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity {

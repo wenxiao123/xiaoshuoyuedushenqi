@@ -7,16 +7,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/red">
+        android:background="@drawable/background_grint">
 
         <ImageView
             android:id="@+id/img_close"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:src="@mipmap/login_close" />
+            android:layout_marginBottom="12dp"
+            android:background="@mipmap/login_close" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,11 +31,12 @@
     </RelativeLayout>
 
     <com.example.administrator.xiaoshuoyuedushenqi.widget.OvalImageView
+        android:id="@+id/img_title"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/admin" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,7 +50,8 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:padding="5dp"
+            android:scaleY="0.9"
+            android:scaleX="0.9"
             android:src="@mipmap/phone_number" />
 
         <TextView
@@ -57,16 +59,25 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="+86"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
         <ImageView
-            android:layout_width="16dp"
-            android:layout_height="20dp"
-            android:padding="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
             android:layout_gravity="center_vertical"
-            android:rotation="180"
-            android:src="@drawable/all_novel_back"
+            android:background="@mipmap/right_back"
             android:tint="@color/gray" />
+
+        <View
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="0.9dp"
+            android:layout_height="24dp"
+            android:background="#CECED9" />
 
         <EditText
             android:id="@+id/et_login_phone"
@@ -74,12 +85,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            android:textSize="14sp"
-            android:inputType="number"
-            android:textCursorDrawable="@drawable/search_cursor"
-            android:singleLine="true"
             android:hint="请输入手机号"
-           />
+            android:inputType="number"
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/search_cursor"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <View
@@ -89,15 +99,17 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="50dp"
         android:background="@color/gray_a3" />
+
     <TextView
         android:id="@+id/tv_notice_phone"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
         android:layout_gravity="center_vertical"
+        android:layout_marginLeft="50dp"
         android:text="请输入正确的手机号"
-        android:textColor="@color/red" />
+        android:textColor="@color/red"
+        android:visibility="gone" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -114,7 +126,8 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:padding="5dp"
+                android:scaleY="0.9"
+                android:scaleX="0.9"
                 android:src="@mipmap/yanzhengma" />
 
             <EditText
@@ -123,14 +136,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="@null"
-                android:textSize="14sp"
-                android:textCursorDrawable="@drawable/search_cursor"
-                android:singleLine="true"
                 android:hint="请输入验证码"
-                />
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/search_cursor"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_verification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
@@ -141,9 +154,9 @@
             android:paddingTop="5dp"
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
-            android:textSize="13sp"
             android:text="获取验证码"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="13sp" />
     </FrameLayout>
 
     <View
@@ -162,12 +175,12 @@
         android:layout_marginTop="30dp"
         android:layout_marginRight="50dp"
         android:background="@drawable/bachground_ash"
-        android:text="登录"
-        android:textSize="16sp"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
         android:gravity="center"
-        android:textColor="@color/white"/>
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="登录"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -191,7 +204,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="《用户协议》"
-            android:textColor="@color/color_main_bottom_bar_text_after" />
+            android:textColor="@color/red_aa" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -202,7 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="《隐私条款》"
-            android:textColor="@color/color_main_bottom_bar_text_after" />
+            android:textColor="@color/red_aa" />
     </LinearLayout>
 
 </LinearLayout>
