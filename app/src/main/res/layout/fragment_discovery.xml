@@ -15,13 +15,13 @@
 
         <ImageView
             android:id="@+id/iv_discovery_search_icon"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:tint="@color/white"
             android:layout_alignParentRight="true"
             android:layout_marginTop="35dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/discovery_search_icon" />
+            android:src="@mipmap/sousuo" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,8 +29,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="35dp"
             android:text="精选"
+            android:textStyle="bold"
             android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
 <!--        <com.example.administrator.xiaoshuoyuedushenqi.rewrite.TabLayout-->
 <!--            -->
@@ -56,7 +57,7 @@
             app:tabTextColor="#E6E4E4"
             app:tab_Mode="mode_fixed"
             app:tabSelectTextColor="@color/white"
-            app:tabTextSize="7sp"
+            app:tabTextSize="@dimen/sp_16"
             >
 
         </com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout>

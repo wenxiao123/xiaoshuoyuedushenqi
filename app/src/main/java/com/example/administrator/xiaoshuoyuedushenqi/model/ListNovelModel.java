@@ -43,15 +43,19 @@ public class ListNovelModel implements IListNovelContract.Model {
      * 获取小说信息
      */
     @Override
-    public void getNovels(String id,String type) {
+    public void getNovels(String id,String type,String z) {
         RequestBody requestBody = new FormBody.Builder()
+                .add("type", 1+"")
+                .add("sort", 3+"")
+                .add("page", z)
                 .add("category_id", id)
                 .add("order", type)
-                .add("limit", "4")
+                .add("limit", "8")
                 .build();
         OkhttpUtil.getpostRequest(UrlObtainer.GetUrl()+"api/index/Book_List",requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                //Log.e("qqq", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject (json);
                     String code=jsonObject.getString("code");

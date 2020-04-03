@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/srv_press_refresh"
     android:fitsSystemWindows="true"
+    android:background="@color/background_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -71,7 +72,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@id/iv_male_hot_rank_title"
                 android:text="@string/male_hot_rank_title"
-                android:textColor="@color/male_hot_rank_title"
+                android:textColor="@color/black"
                 android:textSize="18sp" />
 
             <ImageView
@@ -92,7 +93,7 @@
                 android:layout_toLeftOf="@id/iv_press_category_more"
                 android:gravity="center"
                 android:text="@string/more_top_text"
-                android:textColor="@color/item_category_more"
+                android:textColor="@color/gray_a3"
                 android:textSize="@dimen/item_category_more_size" />
             <RelativeLayout
                 android:id="@+id/rv_new_title"
@@ -101,11 +102,11 @@
                 android:layout_height="50dp">
                 <View
                     android:layout_marginLeft="10dp"
-                    android:layout_width="4dp"
+                    android:layout_width="3dp"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="20dp"
                     android:background="@color/red_aa"/>
                 <TextView
                     android:id="@+id/tv_item_category_category_name"
@@ -114,7 +115,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="20dp"
                     android:text="新书快递"
-                    android:textColor="@color/item_category_category_name"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:gravity="center"/>
                 <ImageView
@@ -131,12 +132,12 @@
                     android:layout_height="@dimen/item_category_second_height"
                     android:layout_toLeftOf="@id/iv_item_new_more"
                     android:text="更多"
-                    android:textColor="@color/item_category_more"
+                    android:textColor="@color/gray_a3"
                     android:textSize="@dimen/item_category_more_size"
                     android:gravity="center"/>
             </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_male_hot_rank_recycler_view1"
+                android:id="@+id/rv_male_hot_rank_recycler_view11"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_male_hot_rank_title"
@@ -151,7 +152,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rv_male_hot_rank_recycler_view1"
+                android:layout_below="@id/rv_male_hot_rank_recycler_view11"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black"
@@ -182,7 +183,7 @@
                 android:layout_below="@id/rv_new_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view1" />
+                app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view11" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_press_category_novel_list"
                 android:layout_width="match_parent"
@@ -191,7 +192,7 @@
                 android:layout_marginTop="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view1" />
+                app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view11" />
 
             <ProgressBar
                 android:id="@+id/pb_press"

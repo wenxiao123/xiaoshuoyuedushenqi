@@ -11,11 +11,12 @@
         android:layout_height="70dp"
         android:background="@drawable/background_grint">
         <ImageView
-            android:id="@+id/back"
+            android:id="@+id/back2"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/all_novel_back"/>
         <TextView
             android:layout_width="wrap_content"

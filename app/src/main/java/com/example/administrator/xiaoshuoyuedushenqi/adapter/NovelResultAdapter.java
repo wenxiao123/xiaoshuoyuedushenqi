@@ -1,6 +1,8 @@
 package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,24 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePagingLoadAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
+import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 /**
  * @author
@@ -32,6 +48,8 @@ public class NovelResultAdapter extends BasePagingLoadAdapter<NovalInfo> {
                               LoadMoreListener loadMoreListener, NovelListener novelListener) {
         super(mContext, mList, loadMoreListener);
         mListener = novelListener;
+        databaseManager= DatabaseManager.getInstance();
+        login_admin = (Login_admin) SpUtil.readObject(mContext);
     }
     boolean isRating;
 
@@ -52,15 +70,22 @@ public class NovelResultAdapter extends BasePagingLoadAdapter<NovalInfo> {
     protected RecyclerView.ViewHolder setItemViewHolder(ViewGroup parent, int viewType) {
         return new NovelViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_novel_result, null));
     }
-
+    DatabaseManager databaseManager;
+    private Login_admin login_admin;
     @Override
     protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
         NovelViewHolder novelViewHolder = (NovelViewHolder) holder;
         novelViewHolder.title.setText(mList.get(position).getTitle());
         novelViewHolder.author.setText(mList.get(position).getAuthor());
         novelViewHolder.shortInfo.setText(mList.get(position).getContent());
+        String href;
+        if(mList.get(position).getPic().contains("http")){
+            href=mList.get(position).getPic();
+        }else {
+            href=UrlObtainer.GetUrl()+mList.get(position).getPic();
+        }
         Glide.with(mContext)
-                .load(UrlObtainer.GetUrl()+mList.get(position).getPic())
+                .load(href)
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.cover_place_holder)
                         .error(R.drawable.cover_error))
@@ -81,11 +106,48 @@ public class NovelResultAdapter extends BasePagingLoadAdapter<NovalInfo> {
         novelViewHolder.tv_item_bookshelf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                BookshelfNovelDbData dbData;
+                dbData = new BookshelfNovelDbData(mList.get(position).getId() + "", mList.get(position).getTitle(),
+                        mList.get(position).getPic(), 1, 0, 0, 1+"", 10, mList.get(position).getSerialize() + "");
+                databaseManager.insertOrUpdateBook(dbData);
+                Intent intent_recever = new Intent("com.zhh.android");
+                mContext.sendBroadcast(intent_recever);
+                if(login_admin!=null){
+                    setBookshelfadd(login_admin.getToken(),mList.get(position).getId() + "");
+                }
+                ((Activity)mContext).finish();
             }
         });
     }
+    public void setBookshelfadd(String token, String novel_id) {
+        String url = UrlObtainer.GetUrl()+"api/Userbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("novel_id", novel_id)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        String message=jsonObject.getString("msg");
+                        //mPresenter.getReadRecordSuccess(message);
+                    }else {
+                        ToastUtil.showToast(mContext,"请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onFailure(String errorMsg) {
+                ToastUtil.showToast(mContext,errorMsg);
+            }
+        });
+    }
     class NovelViewHolder extends RecyclerView.ViewHolder {
         ImageView cover;
         TextView title,tv_item_bookshelf;

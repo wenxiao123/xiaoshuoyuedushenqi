@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +69,14 @@ public class BookstoreAdapter extends RecyclerView.Adapter {
                 contentViewHolder.cover1.setBackground(resource);
             }
         };
-        Glide.with(mContext).load(UrlObtainer.GetUrl()+mDataList.get(i).getIcon()).apply(new RequestOptions()
+        String href;
+        if(mDataList.get(i).getIcon().contains("http")){
+            href=mDataList.get(i).getIcon();
+        }else {
+            href=UrlObtainer.GetUrl()+mDataList.get(i).getIcon();
+        }
+        //Log.e("zzz", "onBindViewHolder: "+href);
+        Glide.with(mContext).load(href).apply(new RequestOptions()
                 .placeholder(R.drawable.cover_place_holder)
                 .error(R.drawable.cover_error))
                 //.into(simpleTarget);

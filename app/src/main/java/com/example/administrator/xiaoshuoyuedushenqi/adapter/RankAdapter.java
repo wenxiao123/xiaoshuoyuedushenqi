@@ -3,6 +3,8 @@ package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,35 +25,33 @@ import java.util.List;
  * @author
  * Created on 2019/12/21
  */
-public class RankAdapter extends BasePagingLoadAdapter<Noval_details> {
+public class RankAdapter extends RecyclerView.Adapter<RankAdapter.NovelViewHolder> {
 
-    private NovelListener mListener;
-
-    public RankAdapter(Context mContext, List<Noval_details> mList,
-                       LoadMoreListener loadMoreListener, NovelListener novelListener) {
-        super(mContext, mList, loadMoreListener);
-        mListener = novelListener;
+    private Context mContext;
+    List<Noval_details> mList;
+    CatalogListener mListener;
+    public RankAdapter(Context mContext, List<Noval_details> mList) {
+      this.mContext=mContext;
+      this.mList=mList;
+    }
+    public interface CatalogListener {
+        void clickItem(int position);
     }
 
-    public interface NovelListener {
-        void clickItem(int novelName);
-    }
 
+    public void setOnCatalogListener(CatalogListener listener) {
+        mListener = listener;
+    }
+    @NonNull
     @Override
-    protected int getPageCount() {
-        return Constant.NOVEL_PAGE_NUM;
-    }
-
-    @Override
-    protected RecyclerView.ViewHolder setItemViewHolder(ViewGroup parent, int viewType) {
+    public NovelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new NovelViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_novel, null));
     }
 
     @Override
-    protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull NovelViewHolder holder, int position) {
         NovelViewHolder novelViewHolder = (NovelViewHolder) holder;
         novelViewHolder.title.setText(mList.get(position).getTitle());
-        novelViewHolder.author.setText(mList.get(position).getAuthor());
         novelViewHolder.shortInfo.setText(mList.get(position).getContent());
         if(position==0){
             novelViewHolder.iv_rank.setVisibility(View.VISIBLE);
@@ -80,8 +80,14 @@ public class RankAdapter extends BasePagingLoadAdapter<Noval_details> {
         }else {
             novelViewHolder.iv_rank.setVisibility(View.GONE);
         }
+        String href;
+        if(mList.get(position).getPic().contains("http")){
+            href=mList.get(position).getPic();
+        }else {
+            href=UrlObtainer.GetUrl()+mList.get(position).getPic();
+        }
         Glide.with(mContext)
-                .load(UrlObtainer.GetUrl()+mList.get(position).getPic())
+                .load(href)
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.cover_place_holder)
                         .error(R.drawable.cover_error))
@@ -92,8 +98,19 @@ public class RankAdapter extends BasePagingLoadAdapter<Noval_details> {
                 mListener.clickItem(mList.get(position).getId());
             }
         });
-        novelViewHolder.cata.setText(" | "+mList.get(position).getCategory_name());
+        novelViewHolder.author.setText(mList.get(position).getCategory_name());
+        novelViewHolder.cata.setText(" | "+mList.get(position).getAuthor());
         novelViewHolder.tv_item_rating.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    public interface NovelListener {
+        void clickItem(int novelName);
     }
 
     class NovelViewHolder extends RecyclerView.ViewHolder {

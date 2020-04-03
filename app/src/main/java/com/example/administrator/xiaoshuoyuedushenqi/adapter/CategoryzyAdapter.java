@@ -50,8 +50,14 @@ public class CategoryzyAdapter extends RecyclerView.Adapter<CategoryzyAdapter.Ca
 
     @Override
     public void onBindViewHolder(@NonNull CategoryNovelViewHolder categoryNovelViewHolder, final int i) {
+        String href;
+        if(novalDetails.get(i).getPic().contains("http")){
+            href=novalDetails.get(i).getPic();
+        }else {
+            href=UrlObtainer.GetUrl()+novalDetails.get(i).getPic();
+        }
         Glide.with(mContext)
-                .load(UrlObtainer.GetUrl()+novalDetails.get(i).getPic())
+                .load(href)
                 .apply(new RequestOptions()
                     .placeholder(R.drawable.cover_place_holder)
                     .error(R.drawable.cover_error))

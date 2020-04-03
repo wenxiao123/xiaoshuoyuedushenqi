@@ -92,7 +92,7 @@ public class ReadModel implements IReadContract.Model {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("XXX", "getDetailedChapterDataSuccess: "+json);
+                //Log.e("XXX", "getDetailedChapterDataSuccess: "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -133,6 +133,7 @@ public class ReadModel implements IReadContract.Model {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -165,7 +166,6 @@ public class ReadModel implements IReadContract.Model {
 
     @Override
     public void loadTxt(final String filePath) {
-        Log.e("AAA", "loadTxt: "+filePath);
         new Thread(new Runnable() {
             @Override
             public void run() {

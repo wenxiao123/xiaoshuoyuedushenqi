@@ -26,7 +26,7 @@
         android:text="@string/search_result_none"
         android:textColor="@color/search_result_none_text"
         android:textSize="20sp"
-        android:background="@color/search_result_none_bg"
+        android:background="@color/background_color"
         android:gravity="center|top"
         android:layout_marginTop="100dp"
         android:visibility="gone"/>

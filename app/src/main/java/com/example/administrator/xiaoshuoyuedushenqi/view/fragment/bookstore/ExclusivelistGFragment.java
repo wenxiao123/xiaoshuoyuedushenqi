@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -95,21 +96,22 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
                 Intent intent=new Intent(getContext(), RankingActivity.class);
                 intent.putExtra("type",1);
                 intent.putExtra("new_or_hot",2);
+                intent.putExtra("sort",3);
                 getContext().startActivity(intent);
             }
         });
         recyclerView1 = getActivity().findViewById(R.id.rv_male_new_novel_list1);
-        recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false));
+        recyclerView1.setLayoutManager(new GridLayoutManager(getActivity(),4));
         recyclerView2 = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view1);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false));
+        recyclerView2.setLayoutManager(new GridLayoutManager(getActivity(),4));
         recyclerView3 = getActivity().findViewById(R.id.rv_new_hot_rank_recycler_view1);
-        recyclerView3.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false));
+        recyclerView3.setLayoutManager(new GridLayoutManager(getActivity(),4));
         recyclerView4 = getActivity().findViewById(R.id.rv_male_category_novel_list1);
         recyclerView4.setLayoutManager(new LinearLayoutManager(getActivity()));
         mProgressBar = getActivity().findViewById(R.id.pb_male);
 
-        mRefreshSrv = getActivity().findViewById(R.id.srv_male_refresh);
-        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.colorAccent));   //设置颜色
+        mRefreshSrv = getActivity().findViewById(R.id.srv_male_refresh1);
+        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.red_aa));   //设置颜色
         mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -135,6 +137,14 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
         mPresenter.getCategoryNovels(1 + "");
         mPresenter.getCategoryNovels2(1 + "");
         mPresenter.getNewRankData(1 + "");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(mRefreshSrv.isRefreshing()) {
+                    mRefreshSrv.setRefreshing(false);
+                }
+            }
+        }, 3000);
     }
 
     @Override
@@ -150,10 +160,13 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
 
     @Override
     public void getNewDataSuccess(List<Noval_details> novelNameList) {
+       // Log.e("AAA", "getNewDataSuccess: "+novelNameList.size());
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         if (novelNameList.isEmpty()) {
             return;
         }
-        noval_detailsList = novelNameList;
+        //noval_detailsList = novelNameList;
         if (mHotRankAdapter == null) {
             noval_detailsList = novelNameList;
             initnewAdapter();
@@ -170,10 +183,12 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
         mHotRankAdapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
             @Override
             public void clickItem(int novelName) {
-                Intent intent = new Intent(getContext(), NovelIntroActivity.class);
-                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-                intent.putExtra("pid", noval_detailsList.get(novelName).getId() + "");
-                startActivity(intent);
+                if(noval_detailsList.size()>0) {
+                    Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                    intent.putExtra("pid", noval_detailsList.get(novelName).getId() + "");
+                    startActivity(intent);
+                }
             }
         });
         recyclerView1.setAdapter(mHotRankAdapter);
@@ -181,22 +196,27 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
 
     @Override
     public void getNewDataError(String errorMsg) {
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         showShortToast(errorMsg);
     }
-    private List<CategoryNovels> mHotRankNovelNameList;
+    private List<CategoryNovels> mHotRankNovelNameList=new ArrayList<>();
     @Override
     public void getHotRankDataSuccess(List<CategoryNovels> novelNameList) {
+       // Log.e("QQQ", "getHotRankDataSuccess: "+novelNameList.size());
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         if (novelNameList.isEmpty()) {
             return;
         }
-        this.novelNameList = novelNameList;
-        if (mHotRankAdapter == null) {
-            mHotRankNovelNameList = novelNameList;
+        //this.novelNameList = novelNameList;
+        if (mCategoryAdapter == null) {
+           this.novelNameList = novelNameList;
             initCategoryAdapter();
         } else {
-            mHotRankNovelNameList.clear();
-            mHotRankNovelNameList.addAll(novelNameList);
-            mHotRankAdapter.notifyDataSetChanged();
+            this.novelNameList.clear();
+            this.novelNameList.addAll(novelNameList);
+            mCategoryAdapter.notifyDataSetChanged();
         }
     }
     private void initCategoryAdapter() {
@@ -239,7 +259,9 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
     }
     @Override
     public void getHotRankDataError(String errorMsg) {
-
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
+        showShortToast(errorMsg);
     }
 
     @Override
@@ -298,6 +320,8 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
 
     @Override
     public void getCategoryNovels2Success(List<Noval_details> dataList) {
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         if (dataList.isEmpty()) {
             return;
         }
@@ -313,6 +337,7 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
 
     @Override
     public void getCategoryNovels2Error(String errorMsg) {
-
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
     }
 }

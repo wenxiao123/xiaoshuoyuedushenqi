@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.RequiresApi;
+
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.RankAdapter;
 import com.google.android.material.tabs.TabLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,8 +28,15 @@ import com.example.administrator.xiaoshuoyuedushenqi.presenter.ListNovelPresente
 import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.LoadMoreScrollListener;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
@@ -38,12 +48,14 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
     private TextView mTitleTv;
     private RecyclerView mNovelListRv;
     private ProgressBar mProgressBar;
-    private SwipeRefreshLayout mRefreshSrv;
+    private RefreshLayout mRefreshSrv;
     private EnhanceTabLayout enhanceTabLayout;
     private List<String> mTypeTextList = new ArrayList<>();
     private List<NovalInfo> novalInfos = new ArrayList<>();
     private NovelAdapter mNovelAdapter;
     int category_id;
+    TextView tv_all_novel_title;
+    String title;
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -62,11 +74,14 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
     @Override
     protected void initData() {
         category_id=getIntent().getIntExtra("category_id",1);
+        title=getIntent().getStringExtra("category_name");
     }
-    int SelectPosition;
+    int SelectPosition=1;
 
     @Override
     protected void initView() {
+        tv_all_novel_title=findViewById(R.id.tv_all_novel_title);
+        tv_all_novel_title.setText(title);
         mBackIv = findViewById(R.id.iv_all_novel_back);
         mBackIv.setOnClickListener(this);
         mTitleTv = findViewById(R.id.tv_all_novel_title);
@@ -80,8 +95,10 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
         enhanceTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                requestNovels();
+                isRefresh=true;
+                z=1;
                 SelectPosition=tab.getPosition();
+                requestNovels();
             }
 
             @Override
@@ -107,23 +124,36 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
 
 
         mRefreshSrv = findViewById(R.id.srv_all_novel_refresh);
-        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.colorAccent));   //设置颜色
-        mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshSrv.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
-                //刷新时的操作
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 请求小说信息
-                        requestNovels();
-                    }
-                }, 500);
+            public void onRefresh(RefreshLayout refreshlayout) {
+                z=1;
+                isRefresh=true;
+                requestNovels();
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                //refreshlayout.finishLoadMore(false);
             }
         });
+        mRefreshSrv.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                z++;
+                requestNovels();
+                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+                // refreshlayout.finishLoadMore(false);
+            }
+        });
+        ClassicsHeader classicsHeader=new ClassicsHeader(this);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(new Date());
+        classicsHeader.setLastUpdateText("最后更新:"+dateString);
+        //refreshLayout.setRefreshHeader(new BezierRadarHeader(getContext()).setEnableHorizontalDrag(true));
+        mRefreshSrv.setRefreshHeader(classicsHeader);
+        //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
+        mRefreshSrv.setRefreshFooter(new ClassicsFooter(this));
 
     }
-
+    boolean isRefresh;
     private List<String> strings2List(String[] strings) {
         List<String> list = new ArrayList<>();
         for (String s : strings) {
@@ -145,7 +175,7 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
      * 请求小说信息
      */
     private void requestNovels() {
-        mPresenter.getNovels(category_id+"",SelectPosition+"");
+        mPresenter.getNovels(category_id+"",SelectPosition+"",z+"");
     }
 
     @Override
@@ -168,93 +198,71 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
         }
     }
 
-//    /**
-//     * 获取小说信息成功
-//     */
-//    @Override
-//    public void getNovelsSuccess(List<ANNovelData> dataList, boolean isEnd) {
-//        mProgressBar.setVisibility(View.GONE);
-//        mRefreshSrv.setRefreshing(false);
-//
-////        // 更新列表数据
-////        if (mIsLoadingMore) {   // 加载更多
-////            mDataList.addAll(dataList);
-////            if (isEnd) {
-////                mNovelAdapter.setLastedStatus();
-////            }
-////            mNovelAdapter.updateList();
-////            mIsLoadingMore = false;
-////        } else {    // 第一次加载
-////            if (mNovelAdapter == null) {
-////                novalInfos = dataList;
-////                mNovelAdapter = new NovelAdapter(this, novalInfos,
-////                        new BasePagingLoadAdapter.LoadMoreListener() {
-////                            @Override
-////                            public void loadMore() {
-////
-////                                requestNovels(true);
-////                            }
-////                        },
-////                        new NovelAdapter.NovelListener() {
-////                            @Override
-////                            public void clickItem(String novelName) {
-////                                if (mRefreshSrv.isRefreshing()) {
-////                                    return;
-////                                }
-////
-////                                Intent intent = new Intent(FenleiNovelActivity.this, SearchActivity.class);
-////                                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-////                                intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
-////                                startActivity(intent);
-////                            }
-////                        });
-////                mNovelListRv.setAdapter(mNovelAdapter);
-////            } else {
-////                mDataList.clear();
-////                mDataList.addAll(dataList);
-////                mNovelAdapter.notifyDataSetChanged();
-////            }
-////        }
-//    }
-
     @Override
     public void getNovelsSuccess(List<NovalInfo> dataList) {
         mProgressBar.setVisibility(View.GONE);
-        mRefreshSrv.setRefreshing(false);
-        mNovelAdapter = new NovelAdapter(this, dataList, new BasePagingLoadAdapter.LoadMoreListener() {
-            @Override
-            public void loadMore() {
-                requestNovels();
+//        mNovelAdapter = new NovelAdapter(this, dataList);
+//        mNovelListRv.setAdapter(mNovelAdapter);
+//        if(SelectPosition==2){
+//            mNovelAdapter.setRating(true);
+//        }else {
+//            mNovelAdapter.setRating(false);
+//        }
+//        mNovelAdapter.notifyDataSetChanged();
+//        mNovelAdapter.setOnCatalogListener(new RankAdapter.CatalogListener() {
+//            @Override
+//            public void clickItem(int position) {
+//                Intent intent = new Intent(FenleiNovelActivity.this, NovelIntroActivity.class);
+//                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+//                intent.putExtra("pid", position + "");
+//                startActivity(intent);
+//            }
+//        });
+        if (dataList.isEmpty()) {
+            return;
+        }
+        if(isRefresh){
+            novalInfos.clear();
+            isRefresh=false;
+            mNovelAdapter=null;
+        }
+        novalInfos.addAll(dataList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        int last=linearLayoutManager.findLastVisibleItemPosition();
+        if (mNovelAdapter == null) {
+            //recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+            mNovelAdapter = new NovelAdapter(this, dataList);
+            mNovelListRv.setLayoutManager(linearLayoutManager);
+            mNovelListRv.setAdapter(mNovelAdapter);
+            if(SelectPosition==2){
+                mNovelAdapter.setRating(true);
             }
-        }, new NovelAdapter.NovelListener() {
+            mNovelListRv.setFocusableInTouchMode(false);
+            mNovelListRv.setScrollingTouchSlop(last);
+        } else {
+            if(SelectPosition==2){
+                mNovelAdapter.setRating(true);
+            }
+            //mNovelAdapter.notifyDataSetChanged();
+            mNovelAdapter.notifyItemChanged(last,0);
+        }
+                mNovelAdapter.setOnCatalogListener(new RankAdapter.CatalogListener() {
             @Override
-            public void clickItem(int positon) {
-                if (mRefreshSrv.isRefreshing()) {
-                    return;
-                }
+            public void clickItem(int position) {
                 Intent intent = new Intent(FenleiNovelActivity.this, NovelIntroActivity.class);
                 // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-                intent.putExtra("pid", positon + "");
+                intent.putExtra("pid", position + "");
                 startActivity(intent);
             }
         });
-        mNovelListRv.setAdapter(mNovelAdapter);
-        if(SelectPosition==2){
-            mNovelAdapter.setRating(true);
-        }else {
-            mNovelAdapter.setRating(false);
-        }
-        mNovelAdapter.notifyDataSetChanged();
     }
-
+    int z=1;
     /**
      * 获取小说信息失败
      */
     @Override
     public void getNovelsError(String errorMsg) {
         mProgressBar.setVisibility(View.GONE);
-        mRefreshSrv.setRefreshing(false);
-
     }
 
 }

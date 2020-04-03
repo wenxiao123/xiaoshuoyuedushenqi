@@ -2,13 +2,19 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.content.Intent;
 import android.os.Handler;
+
+import com.example.administrator.xiaoshuoyuedushenqi.widget.LoadMoreScrollListener;
 import com.google.android.material.tabs.TabLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.RankAdapter;
@@ -19,14 +25,22 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.RankPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RankingActivity extends BaseActivity<RankPresenter> implements IRankContract.View {
     private EnhanceTabLayout mTabLayout;
+    private ImageView mSearchView;
     private ProgressBar mProgressBar;
-    private SwipeRefreshLayout mRefreshSrv;
+    private RefreshLayout mRefreshSrv;
     private RecyclerView recyclerView;
 
     @Override
@@ -48,18 +62,31 @@ public class RankingActivity extends BaseActivity<RankPresenter> implements IRan
     int new_or_hot;
     int sort;
     int category_id;
-
+    int z=1;
     @Override
     protected void initData() {
         type = getIntent().getIntExtra("type", 1);
         new_or_hot = getIntent().getIntExtra("new_or_hot", 1);
         sort = getIntent().getIntExtra("sort", 1);
         category_id = getIntent().getIntExtra("category_id", 1);
-
     }
-
+    /**
+     * 跳转到活动
+     *
+     * @param activity 新活动.class
+     */
+    protected void jump2Activity(Class activity) {
+        startActivity(new Intent(RankingActivity.this, activity));
+    }
     @Override
     protected void initView() {
+        mSearchView = findViewById(R.id.iv_discovery_search_icon1);
+        mSearchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                jump2Activity(SearchActivity.class);
+            }
+        });
         mTabLayout = findViewById(R.id.tv_fenlei_tab_layout);
         List<String> mTypeTextList = strings2List(new String[]{"周榜", "月榜", "总榜"});
         for (int i = 0; i < mTypeTextList.size(); i++) {
@@ -69,7 +96,10 @@ public class RankingActivity extends BaseActivity<RankPresenter> implements IRan
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 //requestNovels(false, tab.getPosition());
-                mPresenter.getRankData(type + "", new_or_hot + "",(sort+tab.getPosition())+ "", category_id + "");
+                isRefresh=true;
+                z=1;
+                //Log.e("zzz", "onTabSelected: "+type + " "+new_or_hot + " "+(tab.getPosition()+1)+ " "+category_id + " "+z+" ");
+                mPresenter.getRankData(type + "", new_or_hot + "",(tab.getPosition()+1)+ "", category_id + "",z+" ");
             }
 
             @Override
@@ -82,27 +112,37 @@ public class RankingActivity extends BaseActivity<RankPresenter> implements IRan
 
             }
         });
-        recyclerView = findViewById(R.id.rv_all_novel_novel_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        recyclerView = findViewById(R.id.rv_novel_novel_list);
+        mProgressBar = findViewById(R.id.pb_novel);
 
-        mProgressBar = findViewById(R.id.pb_all_novel);
-
-        mRefreshSrv = findViewById(R.id.srv_all_novel_refresh);
-        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.colorAccent));   //设置颜色
-        mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshSrv = findViewById(R.id.srv_novel_refresh);
+        mRefreshSrv.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
-                //刷新时的操作
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //requestUpdate();
-                        mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "");
-                    }
-                }, 500);
+            public void onRefresh(RefreshLayout refreshlayout) {
+                z=1;
+                isRefresh=true;
+                mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "",z+" ");
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                //refreshlayout.finishLoadMore(false);
             }
         });
+        mRefreshSrv.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                z++;
+                mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "",z+" ");
+                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+                // refreshlayout.finishLoadMore(false);
+            }
+        });
+        ClassicsHeader classicsHeader=new ClassicsHeader(this);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(new Date());
+        classicsHeader.setLastUpdateText("最后更新:"+dateString);
+        //refreshLayout.setRefreshHeader(new BezierRadarHeader(getContext()).setEnableHorizontalDrag(true));
+        mRefreshSrv.setRefreshHeader(classicsHeader);
+        //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
+        mRefreshSrv.setRefreshFooter(new ClassicsFooter(this));
         findViewById(R.id.iv_all_novel_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,7 +161,7 @@ public class RankingActivity extends BaseActivity<RankPresenter> implements IRan
 
     @Override
     protected void doAfterInit() {
-        mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "");
+        mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "",z+" ");
     }
 
     @Override
@@ -131,35 +171,41 @@ public class RankingActivity extends BaseActivity<RankPresenter> implements IRan
 
     List<Noval_details> noval_detailsList = new ArrayList<>();
     private RankAdapter mNovelAdapter;
-
+    boolean isRefresh;
     @Override
     public void getDataSuccess(List<Noval_details> novelNameList) {
         mProgressBar.setVisibility(View.GONE);
-        mRefreshSrv.setRefreshing(false);
         if (novelNameList.isEmpty()) {
             return;
         }
+        if(isRefresh){
+            noval_detailsList.clear();
+            isRefresh=false;
+            mNovelAdapter=null;
+        }
+        noval_detailsList.addAll(novelNameList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        int last=linearLayoutManager.findLastVisibleItemPosition();
         if (mNovelAdapter == null) {
             noval_detailsList = novelNameList;
+            recyclerView.setLayoutManager(linearLayoutManager);
+            //recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
             initAdapter();
+            recyclerView.setFocusableInTouchMode(false);
+            recyclerView.setScrollingTouchSlop(last);
         } else {
-            noval_detailsList.clear();
-            noval_detailsList.addAll(novelNameList);
-            mNovelAdapter.notifyDataSetChanged();
+            //mNovelAdapter.notifyDataSetChanged();
+            mNovelAdapter.notifyItemChanged(last,0);
         }
     }
 
     private void initAdapter() {
-        mNovelAdapter = new RankAdapter(this, noval_detailsList, new BasePagingLoadAdapter.LoadMoreListener() {
+        mNovelAdapter = new RankAdapter(this, noval_detailsList);
+        mNovelAdapter.setOnCatalogListener(new RankAdapter.CatalogListener() {
             @Override
-            public void loadMore() {
-
-            }
-        }, new RankAdapter.NovelListener() {
-            @Override
-            public void clickItem(int novelName) {
+            public void clickItem(int position) {
                 Intent intent=new Intent(RankingActivity.this,NovelIntroActivity.class);
-                intent.putExtra("pid",novelName+"");
+                intent.putExtra("pid",position+"");
                 startActivity(intent);
             }
         });

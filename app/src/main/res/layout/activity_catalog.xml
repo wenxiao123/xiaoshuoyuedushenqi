@@ -4,194 +4,197 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/catalog_bg">
-<RelativeLayout
-    android:id="@+id/rel_title"
-    android:layout_width="match_parent"
-    android:layout_height="130dp"
-    app:layout_constraintStart_toStartOf="parent"
-    android:background="@drawable/background_grint"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent">
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:paddingTop="28dp"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:text="@string/catalog_title"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:gravity="center_horizontal"/>
-    <TextView
-        android:layout_marginTop="5dp"
-        android:layout_below="@id/title"
-        android:id="@+id/tv_catalog_chapter_count"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:gravity="center"/>
-    <ImageView
-        android:layout_marginTop="35dp"
-        android:layout_marginRight="10dp"
-        android:id="@+id/paixu"
-        android:layout_alignParentRight="true"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:src="@mipmap/jiangxu"/>
-    <ImageView
-        android:layout_marginTop="35dp"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/paixu"
-        android:id="@+id/shuaxin"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:tint="@color/white"
-        android:src="@mipmap/shauxin"/>
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/tabbar"
-        android:layout_alignParentBottom="true"
+
+    <RelativeLayout
+        android:id="@+id/rel_title"
         android:layout_width="match_parent"
-        android:layout_height="47dp"
-        >
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/tv_mulu"
-                android:layout_width="match_parent"
-                android:layout_height="43dp"
-                android:paddingStart="30dp"
-                android:paddingEnd="30dp"
-                android:text="目录"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:gravity="center"
-                android:background="@drawable/selector_catalog_chapter_order_bg"
-                android:clickable="true"
-                android:focusable="true"
-                />
-            <View
-                android:id="@+id/m_line"
-                android:layout_gravity="center"
-                android:layout_width="30dp"
-                android:layout_height="3dp"
-                android:background="@color/color_main_bottom_bar_text_after"/>
-        </LinearLayout>
+        android:layout_height="130dp"
+        android:background="@drawable/background_grint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:paddingTop="28dp"
+            android:text="@string/catalog_title"
+            android:maxEms="10"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_catalog_chapter_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/paixu"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="35dp"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/jiangxu" />
+
+        <ImageView
+            android:id="@+id/shuaxin"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/paixu"
+            android:src="@mipmap/shauxin"
+            android:tint="@color/white" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/tv_book_mark"
-                android:layout_width="match_parent"
-                android:layout_height="43dp"
-                android:paddingStart="30dp"
-                android:paddingEnd="30dp"
-                android:text="书签"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:gravity="center"
-                android:background="@drawable/selector_catalog_chapter_order_bg"
-                android:clickable="true"
-                android:focusable="true"
-                />
-            <View
-                android:id="@+id/s_line"
-                android:visibility="gone"
-                android:layout_gravity="center"
-                android:layout_width="30dp"
-                android:layout_height="3dp"
-                android:background="@color/color_main_bottom_bar_text_after"/>
-        </LinearLayout>
-    </LinearLayout>
-    <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
-        android:id="@+id/enhance_tab_layout"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="47dp"
-        app:tabIndicatorHeight="2dp"
-        app:tabIndicatorWidth="30dp"
-        app:tabTextColor="#E6E4E4"
-        app:tab_Mode="mode_fixed"
-        app:tabSelectTextColor="@color/white"
-        app:tabTextSize="7sp"
-        >
+            android:id="@+id/tabbar"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
 
-    </com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout>
-</RelativeLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_mulu"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:background="@drawable/selector_catalog_chapter_order_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:text="目录"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <View
+                    android:id="@+id/m_line"
+                    android:layout_width="30dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center"
+                    android:background="@color/color_main_bottom_bar_text_after" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_book_mark"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:background="@drawable/selector_catalog_chapter_order_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:text="书签"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <View
+                    android:id="@+id/s_line"
+                    android:layout_width="30dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center"
+                    android:background="@color/color_main_bottom_bar_text_after"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
+            android:id="@+id/enhance_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_alignParentBottom="true"
+            app:tabIndicatorHeight="2dp"
+            app:tabIndicatorWidth="30dp"
+            app:tabSelectTextColor="@color/white"
+            app:tabTextColor="#E6E4E4"
+            app:tabTextSize="@dimen/sp_16"
+            app:tab_Mode="mode_fixed">
+
+        </com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout>
+    </RelativeLayout>
     <!-- top bar -->
     <ImageView
-        android:layout_marginTop="35dp"
         android:id="@+id/iv_catalog_back"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="35dp"
         android:background="@drawable/selector_catalog_back_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/all_novel_back"
         android:clickable="true"
-        android:focusable="true"/>
+        android:focusable="true"
+        android:src="@drawable/all_novel_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- second bar -->
 
 
-
-
-
     <!-- separator -->
     <!-- list -->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rel_title">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_catalog_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rel_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:overScrollMode="never"
-        android:layout_marginBottom="50dp"
-        android:scrollbars="vertical"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_book_mark_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rel_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:overScrollMode="never"
-        android:visibility="gone"
-        android:scrollbars="vertical"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_catalog_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_book_mark_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:visibility="gone" />
+        </RelativeLayout>
     <!-- error page -->
 
     <TextView
         android:id="@+id/tv_catalog_error_page"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_catalog_back"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/catalog_error_page_bg"
+        android:gravity="center|top"
+        android:paddingStart="50dp"
+        android:paddingTop="100dp"
+        android:paddingEnd="50dp"
         android:text="@string/catalog_error_text"
         android:textColor="@color/catalog_error_page_text"
         android:textSize="20sp"
-        android:gravity="center|top"
-        android:paddingStart="50dp"
-        android:paddingEnd="50dp"
-        android:paddingTop="100dp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_catalog_back" />
 
     <!-- progress bar -->
 
@@ -200,10 +203,10 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminateTint="@color/progress_bar"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:indeterminateTint="@color/progress_bar" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

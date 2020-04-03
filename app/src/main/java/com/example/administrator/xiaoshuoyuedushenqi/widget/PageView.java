@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Environment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -36,7 +37,7 @@ public class PageView extends View {
     public static final boolean IS_TEST = false;    // 是否进行单独测试
 
     protected Paint mPaint;
-    protected float mTextSize;      // 字体大小
+    protected float mTextSize=31;      // 字体大小
     protected float mRowSpace;     // 行距
     protected String mSype;
     protected PageViewListener mListener;
@@ -74,7 +75,8 @@ public class PageView extends View {
         void pre();     // 显示上一章节
         void nextPage();   // 下一页
         void prePage();   // 上一页
-        void showOrHideSettingBar();  // 弹出或隐藏设置栏
+        void showOrHideSettingBar();
+        boolean isshowSettingBar(); // 弹出或隐藏设置栏
     }
 
     public void setPageViewListener(PageViewListener listener) {
@@ -183,31 +185,50 @@ public class PageView extends View {
 
     protected void drawText(Canvas canvas, Paint textPaint,String path) {
         textPaint.setTextSize(mTextSize);
-        //从asset 读取字体
-        AssetManager mgr = getContext().getAssets();
        //根据路径得到Typeface
-        Typeface tf;
-            File  file = new File(path);
-            if(file.exists()){
+        if(path!=null&&!path.equals("")) {
+            Typeface tf;
+            File file = new File(path);
+            if (!file.exists()) {
                 file.getParentFile().mkdirs();
             }
-            tf=Typeface.createFromFile(file);
+            if(file.exists()) {
+                tf = Typeface.createFromFile(file);
+                textPaint.setTypeface(tf);
+            }
+        }else {
+        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
         textPaint.setTypeface(tf);
+        }
         drawText(canvas, textPaint, mTextSize + getPaddingTop());
         mFirstPosMap.put(mPageIndex, mPosition);
     }
     protected void drawText(Canvas canvas, Paint textPaint) {
         textPaint.setTextSize(mTextSize);
-        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
-        textPaint.setTypeface(tf);
+//        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+//        textPaint.setTypeface(tf);
         drawText(canvas, textPaint, mTextSize + getPaddingTop());
         mFirstPosMap.put(mPageIndex, mPosition);
     }
 
     protected void drawTextB(Canvas canvas, Paint textPaint) {
         textPaint.setTextSize(mTextSize);
-        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
-        textPaint.setTypeface(tf);
+//        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+//        textPaint.setTypeface(tf);
+        drawTextB(canvas, textPaint, mTextSize + getPaddingTop());
+    }
+    protected void drawTextB(Canvas canvas, Paint textPaint,String path) {
+        textPaint.setTextSize(mTextSize);
+        //根据路径得到Typeface
+        Typeface tf;
+        File  file = new File(path);
+        if(!file.exists()){
+            file.getParentFile().mkdirs();
+        }
+        if(file.exists()) {
+            tf = Typeface.createFromFile(file);
+            textPaint.setTypeface(tf);
+        }
         drawTextB(canvas, textPaint, mTextSize + getPaddingTop());
     }
 
@@ -221,8 +242,8 @@ public class PageView extends View {
             posRecord = mSecondPos;
             content = mEpubDataList.get(mFirstPos).getData();
         }
-        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
-        textPaint.setTypeface(tf);
+//        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+//        textPaint.setTypeface(tf);
         posRecord = drawTextImpl(canvas,textPaint,currY, content, posRecord);
 
         // 更新相关变量
@@ -249,8 +270,8 @@ public class PageView extends View {
             posRecord = mNextSecondPos;
             content = mEpubDataList.get(mNextFirstPos).getData();
         }
-        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
-        textPaint.setTypeface(tf);
+//        Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+//        textPaint.setTypeface(tf);
         posRecord = drawTextImpl(canvas,textPaint,currY, content, posRecord);
     }
 
@@ -572,7 +593,7 @@ public class PageView extends View {
                     pre();
                 } else if (ra  >= 0.65f * screenWidth) {
                     // 下一页
-                    next();
+                        next();
                 } else {
                     // 弹出或隐藏菜单
                     mListener.showOrHideSettingBar();
@@ -604,6 +625,7 @@ public class PageView extends View {
             }
         }
         mListener.nextPage();
+
         mPageIndex++;
 
         if (IS_TEST) {

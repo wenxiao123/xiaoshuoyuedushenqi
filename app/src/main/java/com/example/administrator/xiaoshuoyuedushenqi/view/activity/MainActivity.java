@@ -35,7 +35,9 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.MoreIntoEvent;
+import com.example.administrator.xiaoshuoyuedushenqi.service.CacheService;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.BookshelfFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.BookstoreFragment;
@@ -132,6 +134,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         registerReceiver(receiver, intentFilter);//注册接收者
     }
     String isload=null;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void doAfterInit() {
         if (getSavedInstanceState() != null) {
@@ -161,7 +164,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         // 检查权限
         checkPermission();
         Intent intent=getIntent();
-        isload=intent.getStringExtra("islaod");
+        isload=intent.getStringExtra("islaod");//
         personBean= (PersonBean) intent.getSerializableExtra("personBean");
         if(isload!=null&&isload.equals("1")){
             if(personBean!=null){
@@ -170,6 +173,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }else if(isload!=null&&isload.equals("2")){
             updata2();
         }
+        String is_naghit=intent.getStringExtra("is_naghit");
+        if(is_naghit!=null&&is_naghit.equals("2")){
+            mBookshelfBeforeIv.setVisibility(View.VISIBLE);
+            mBookshelfAfterIv.setVisibility(View.INVISIBLE);
+            mDiscoveryBeforeIv.setVisibility(View.VISIBLE);
+            mDiscoveryAfterIv.setVisibility(View.INVISIBLE);
+            mBookMarkBefore.setVisibility(View.VISIBLE);
+            mBookMarkAfter.setVisibility(View.INVISIBLE);
+            mMoreAfterIv.setVisibility(View.VISIBLE);
+            mMoreBeforeIv.setVisibility(View.INVISIBLE);
+            changeFragment(FG_MORE);
+        }
+        App.init(this);
+        boolean isNight= SpUtil.getIsNightMode();
+        App.updateNightMode(isNight);
     }
 
     @Override
@@ -538,6 +556,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public void onReceive(Context context, Intent intent) {
             updata2();
+//            Intent i = new Intent(MainActivity.this, CacheService.class);
+//            MainActivity.this.stopService(i);
         }
     }
 

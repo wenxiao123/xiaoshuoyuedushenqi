@@ -2,9 +2,12 @@ package com.example.administrator.xiaoshuoyuedushenqi.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +21,11 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelD
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.Delet_book_show;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 /**
- * @author
- * Created on 2020/2/28
+ * @author Created on 2020/2/28
  */
 public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
     private static final String TAG = "BookshelfNovelsAdapter";
@@ -33,8 +36,10 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
     private BookshelfNovelListener mListener;
     private boolean mIsMultiDelete = false;   // 是否正在进行多选删除
     Delet_book_show show;
+
     public interface BookshelfNovelListener {
         void clickItem(int position);
+
         void longClick(int position);
     }
 
@@ -52,7 +57,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
         this.mDataList = mDataList;
         this.mCheckedList = mCheckedList;
         this.mListener = mListener;
-        this.show=show;
+        this.show = show;
     }
 
     @NonNull
@@ -71,15 +76,17 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             // 先设置 CheckBox 的状态，解决 RecyclerView 对 CheckBox 的复用所造成的影响
             if (mCheckedList.get(i)) {
                 contentViewHolder.checkBox.setImageResource(R.mipmap.sys_selected);
-                contentViewHolder.cover.setAlpha(0.5f);
+                contentViewHolder.iv_cover.setVisibility(View.VISIBLE);
             } else {
-                contentViewHolder.cover.setAlpha(1f);
                 contentViewHolder.checkBox.setImageResource(R.mipmap.sys_select);
+                contentViewHolder.iv_cover.setVisibility(View.GONE);
             }
         } else {
+            contentViewHolder.iv_cover.setVisibility(View.GONE);
+            //contentViewHolder.v_background.setVisibility(View.GONE);
             contentViewHolder.checkBox.setVisibility(View.GONE);
         }
-        if(mDataList.get(i).getName()!=null) {
+        if (mDataList.get(i).getName() != null) {
             String name = mDataList.get(i).getName().replace(".txt", "");
             contentViewHolder.name.setText(name);
         }
@@ -88,19 +95,20 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                     .load(mDataList.get(i).getCover())
                     .apply(new RequestOptions()
 //                           .placeholder(R.drawable.cover_place_holder)
-                           .error(R.drawable.cover_error))
-                    .into(contentViewHolder.cover);
-            contentViewHolder.img_add.setVisibility(View.GONE);
-        } else if (mDataList.get(i).getType() == 1){    // 本地 txt 小说
-            Glide.with(mContext)
-                    .load(R.drawable.local_txt)
-                    .apply(new RequestOptions()
-//                           .placeholder(R.drawable.cover_place_holder)
                             .error(R.drawable.cover_error))
                     .into(contentViewHolder.cover);
             contentViewHolder.img_add.setVisibility(View.GONE);
-            //contentViewHolder.cover.setImageResource(R.drawable.local_txt);
+            contentViewHolder.tv_status.setVisibility(View.VISIBLE);
+            contentViewHolder.tv_position.setVisibility(View.VISIBLE);
+        } else if (mDataList.get(i).getType() == 1) {    // 本地 txt 小说\
+            Glide.with(mContext)
+                    .load(mDataList.get(i).getCover())
+                    .apply(new RequestOptions()
+                            .error(R.drawable.local_txt))
+                    .into(contentViewHolder.cover);
             contentViewHolder.img_add.setVisibility(View.GONE);
+            contentViewHolder.tv_status.setVisibility(View.VISIBLE);
+            contentViewHolder.tv_position.setVisibility(View.VISIBLE);
         } else if (mDataList.get(i).getType() == 2) {   // 本地 epub 小说
             if (mDataList.get(i).getCover().equals("")) {
                 contentViewHolder.cover.setImageResource(R.drawable.local_epub);
@@ -114,42 +122,93 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                 }
             }
             contentViewHolder.img_add.setVisibility(View.GONE);
-        }else if(mDataList.get(i).getType() == -1){
+            contentViewHolder.tv_status.setVisibility(View.VISIBLE);
+            contentViewHolder.tv_position.setVisibility(View.VISIBLE);
+        } else if (mDataList.get(i).getType() == -1) {
             Glide.with(mContext)
                     .load(R.drawable.grey)
                     .apply(new RequestOptions()
-//                           .placeholder(R.drawable.cover_place_holder)
                             .error(R.drawable.cover_error))
                     .into(contentViewHolder.cover);
-            //contentViewHolder.cover.setBackgroundResource(R.drawable.bachground_line);
             contentViewHolder.img_add.setVisibility(View.VISIBLE);
+            contentViewHolder.tv_status.setVisibility(View.GONE);
+            contentViewHolder.tv_position.setVisibility(View.GONE);
         }
 
         contentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mIsMultiDelete) {
-                    if (contentViewHolder.cover.getAlpha()==0.5f) {
+                    if (mCheckedList.get(i) == true) {
                         contentViewHolder.checkBox.setImageResource(R.mipmap.sys_select);
-                        contentViewHolder.cover.setAlpha(1f);
+                        //contentViewHolder.cover.setAlpha(1f);
+                        contentViewHolder.iv_cover.setVisibility(View.GONE);
                         mCheckedList.set(i, false);
                     } else {
+                        contentViewHolder.iv_cover.setVisibility(View.VISIBLE);
                         contentViewHolder.checkBox.setImageResource(R.mipmap.sys_selected);
-                        contentViewHolder.cover.setAlpha(0.5f);
+                        //contentViewHolder.cover.setAlpha(0.5f);
                         mCheckedList.set(i, true);
                     }
-                    int z=0;
-                    for(int i=0;i<mCheckedList.size();i++){
-                       if(mCheckedList.get(i)==true){
-                           z++;
-                       }
+                    int z = 0;
+                    for (int i = 0; i < mCheckedList.size(); i++) {
+                        if (mCheckedList.get(i) == true) {
+                            z++;
+                        }
                     }
-                     show.show(z);
+                    show.show(z);
                 } else {
                     mListener.clickItem(i);
                 }
             }
         });
+
+        if (mDataList.get(i).getStatus() == null || mDataList.get(i).getStatus().equals("1")) {
+            contentViewHolder.tv_status.setText("完结");
+        } else {
+            contentViewHolder.tv_status.setText("连载");
+        }
+
+        if (mDataList.get(i).getType() == 1 && mDataList.get(i).getSecondPosition() != 0) {
+            float chpid = mDataList.get(i).getPosition();
+            float wight = mDataList.get(i).getSecondPosition();
+            float prent = (chpid / wight) * 100;
+            NumberFormat nf = NumberFormat.getNumberInstance();
+            nf.setMaximumFractionDigits(2);
+            if(mDataList.get(i).getSecondPosition()>2) {
+                contentViewHolder.tv_position.setText(nf.format(prent) + "%");
+            }else {
+                contentViewHolder.tv_position.setText("未读");
+            }
+//            NumberFormat nf = NumberFormat.getNumberInstance();
+//            nf.setMaximumFractionDigits(2);
+//            float p = Float.parseFloat(progress.replace("%", "")) / 100;
+//            if(weigh!=0) {
+//                float v = (((float) mChapterIndex / (float) weigh) * 100 + p * (1 / weigh));
+//                mNovelProgressTv.setText(nf.format(v) + "%");
+//            }else {
+//                mNovelProgressTv.setText(0 + "%");
+//            }
+        } else {
+            contentViewHolder.tv_position.setText(0 + "%");
+        }
+        if (mDataList.get(i).getType() == 0) {
+            if (mDataList.get(i).getChapterid() == null || mDataList.get(i).getWeight() == 0) {
+                contentViewHolder.tv_position.setText("未读");
+            } else {
+                NumberFormat nf = NumberFormat.getNumberInstance();
+                nf.setMaximumFractionDigits(2);
+                int chpid = Integer.parseInt(mDataList.get(i).getChapterid());
+                int wight = mDataList.get(i).getWeight();
+                Log.e("TAG", "onBindViewHolder: " + chpid + " " + wight+" "+mDataList.get(i).getPosition());
+                float prent = ((float) chpid / (float) wight) * 100;
+                if (chpid != 1) {
+                    contentViewHolder.tv_position.setText(nf.format(prent) + "%");
+                } else {
+                    contentViewHolder.tv_position.setText("未读");
+                }
+            }
+        }
 
         contentViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -174,16 +233,19 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
     }
 
     class ContentViewHolder extends RecyclerView.ViewHolder {
-        ImageView checkBox;
-        ImageView cover,img_add;
-        TextView name;
+        ImageView checkBox, iv_cover;
+        ImageView cover, img_add;
+        TextView name, tv_status, tv_position;
 
         public ContentViewHolder(@NonNull View itemView) {
             super(itemView);
+            iv_cover = itemView.findViewById(R.id.iv_cover);
             checkBox = itemView.findViewById(R.id.cb_item_bookshelf_novel_checked);
             cover = itemView.findViewById(R.id.iv_item_bookshelf_novel_cover);
-            img_add=itemView.findViewById(R.id.img_add);
+            img_add = itemView.findViewById(R.id.img_add);
             name = itemView.findViewById(R.id.tv_item_bookshelf_novel_name);
+            tv_status = itemView.findViewById(R.id.tv_status);
+            tv_position = itemView.findViewById(R.id.tv_position);
         }
     }
 

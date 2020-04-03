@@ -109,10 +109,10 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         mHistoryAdapter = new HistoryAdapter(getActivity(), mContentList);
         mHistoryAdapter.setOnHistoryAdapterListener(new HistoryAdapter.HistoryAdapterListener() {
             @Override
-            public void clickWord(String word) {
+            public void clickWord(int word) {
                 // 通知 SearchActivity 进行搜索
                 Event<SearchUpdateInputEvent> event = new Event<>(EventBusCode.SEARCH_UPDATE_INPUT,
-                        new SearchUpdateInputEvent(word));
+                        new SearchUpdateInputEvent(mContentList.get(word)));
                 EventBusUtil.sendEvent(event);
             }
         });

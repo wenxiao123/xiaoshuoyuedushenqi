@@ -6,7 +6,9 @@
     <color name="red">#e60606</color>
     <color name="yellow">#FA5F4B</color>
     <color name="red_aa">#FA5F4B</color>
+    <color name="blue">#9C6CFE</color>
     <color name="red_a2">#FF4D89</color>
+    <color name="grey_a1">#9FA2B3</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="background_color">#F7F8F9</color>
@@ -80,7 +82,7 @@
     <color name="color_tip_content">#888888</color>
     <color name="color_tip_choice">#222222</color>
     <color name="color_tip_line">#cccccc</color>
-    <color name="color_tip_bg">#f1f1f1</color>
+    <color name="color_tip_bg">#ffffff</color>
 
     <!-- test -->
     <color name="test_fore_ground">#aa111111</color>
@@ -117,7 +119,7 @@
 
     <!-- item_bookshelf_novel -->
     <color name="item_bookshelf_novel_name_bg">#93B6DC</color>
-    <color name="item_bookshelf_novel_name_text">#222222</color>
+    <color name="item_bookshelf_novel_name_text">#43444B</color>
 
     <!-- read -->
     <color name="read_setting_bg">#2B211F</color>

@@ -7,19 +7,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.tmall.ultraviewpager.UltraViewPagerAdapter;
 
-/**
- * @Author: wenzhihao
- * @Time: 2019/5/19
- * @Description: 通用ViewPager指示器
- */
+
 public class UIndicator extends View implements ViewPager.OnPageChangeListener {
 
     private static final String TAG = "UIndicator";

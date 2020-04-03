@@ -3,12 +3,18 @@ package com.example.administrator.xiaoshuoyuedushenqi.app;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.arialyy.aria.core.Aria;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.util.CrashHandler;
+import com.tencent.bugly.crashreport.CrashReport;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,9 +28,16 @@ import cn.bmob.v3.update.BmobUpdateAgent;
 public class App extends Application {
 
     private static Context context;
-    static {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    List<Cataloginfo> catalogDataAll=new ArrayList<>();
+
+    public List<Cataloginfo> getCatalogDataAll() {
+        return catalogDataAll;
     }
+
+    public void setCatalogDataAll(List<Cataloginfo> catalogDataAll) {
+        this.catalogDataAll = catalogDataAll;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -35,6 +48,12 @@ public class App extends Application {
         Aria.init(this);
 //        Bmob.initialize(this, "ce63bdbbd4197409b82920b0835a42eb");
 //        BmobUpdateAgent.setUpdateCheckConfig(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                CrashReport.initCrashReport(getApplicationContext(), "cc93699e71", false);
+            }
+        }).start();
     }
 
     public static Context getContext() {
@@ -69,6 +88,21 @@ public class App extends Application {
         if ((index = activityList.indexOf(acti)) != -1) {
             activityList.remove(index).finish();
         }
+    }
+    private static Resources sRes;
+    public static void init(Context context) {
+        sRes = context.getResources();
+    }
+    /**
+     * 切换 夜间模式
+     * @param on true 夜间， false  日间
+     */
+    public static void updateNightMode(boolean on) {
+        DisplayMetrics dm = sRes.getDisplayMetrics();
+        Configuration config = sRes.getConfiguration();
+        config.uiMode &= ~Configuration.UI_MODE_NIGHT_MASK;
+        config.uiMode |= on ? Configuration.UI_MODE_NIGHT_YES : Configuration.UI_MODE_NIGHT_NO;
+        sRes.updateConfiguration(config, dm);
     }
 
 }

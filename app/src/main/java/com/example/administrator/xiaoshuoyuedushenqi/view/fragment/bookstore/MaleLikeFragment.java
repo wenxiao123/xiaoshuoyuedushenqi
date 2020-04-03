@@ -1,7 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore;
 
 import android.content.Intent;
-import android.graphics.Color;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,17 +12,19 @@ import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleLikeContract
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Catagorys;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MaleLikePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FenleiNovelActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.VerticalTabLayout1;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import q.rorbin.verticaltablayout.VerticalTabLayout;
 import q.rorbin.verticaltablayout.adapter.TabAdapter;
+//import q.rorbin.verticaltablayout.widget.QTabView;
 import q.rorbin.verticaltablayout.widget.QTabView;
 import q.rorbin.verticaltablayout.widget.TabView;
 
 public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements IMaleLikeContract.View {
-    VerticalTabLayout verticalTabLayout;
+    VerticalTabLayout1 verticalTabLayout;
     List<Catagorys> dataList = new ArrayList<>();
     List<Catagorys> catagorys=new ArrayList<>();
     RecyclerView recyclerView;
@@ -39,9 +41,8 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
     @Override
     protected void initView() {
         verticalTabLayout = getActivity().findViewById(R.id.tablayout);
-
         verticalTabLayout.addTab(new QTabView(getActivity()));
-        verticalTabLayout.addOnTabSelectedListener(new VerticalTabLayout.OnTabSelectedListener() {
+        verticalTabLayout.addOnTabSelectedListener(new VerticalTabLayout1.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabView tab, int position) {
                 getDataList(getPosition(titles.get(position)));
@@ -98,6 +99,7 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
             public void clickItem(int position) {
                 Intent intent=new Intent(getActivity(), FenleiNovelActivity.class);
                 intent.putExtra("category_id",catagorys.get(position).getId());
+                intent.putExtra("category_name",catagorys.get(position).getTitle());
                 getActivity().startActivity(intent);
             }
 
@@ -113,7 +115,7 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
         this.dataList = dataList;
         int z = 0;
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getTitle().equals("男生")) {
+            if (dataList.get(i).getId()==1) {
                 z = dataList.get(i).getId();
                 break;
             }
@@ -143,11 +145,12 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
 
             @Override
             public QTabView.TabTitle getTitle(int position) {
-                return new QTabView.TabTitle.Builder()
+                QTabView.TabTitle tabTitle=new QTabView.TabTitle.Builder()
                         .setContent(titles.get(position))
-                        .setTextColor(getContext().getResources().getColor(R.color.red_aa), Color.LTGRAY)
+                        .setTextColor(getContext().getResources().getColor(R.color.red_aa), getContext().getResources().getColor(R.color.grey_a1))
                         .setTextSize(16)
                         .build();
+                return tabTitle;
             }
 
             @Override
@@ -155,7 +158,8 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
                 return R.color.white;
             }
         });
-
+        getDataList(getPosition(titles.get(0)));
+        initBookstore();
     }
 
     @Override

@@ -53,6 +53,7 @@ public class ReadcoredModel implements IReakcoredContract.Model {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+               // Log.e("QQQ", "onResponse: "+page+" "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -98,6 +99,9 @@ public class ReadcoredModel implements IReakcoredContract.Model {
     }
     @Override
     public void getDelectReadcoredData(String token, String novel_id) {
+        if(novel_id==null){
+            return;
+        }
         String url = UrlObtainer.GetUrl()+"api/Lookbook/del";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
@@ -106,7 +110,6 @@ public class ReadcoredModel implements IReakcoredContract.Model {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("AAA", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");

@@ -9,6 +9,22 @@ public class DetailedChapterData {
     private String content; // 章节内容
     private String id;
     private String weigh;
+    private int max_num;
+
+    public int getMax_num() {
+        return max_num;
+    }
+
+    public void setMax_num(int max_num) {
+        this.max_num = max_num;
+    }
+
+    public DetailedChapterData(String title, String content, String id, String weigh) {
+        this.title = title;
+        this.content = content;
+        this.id = id;
+        this.weigh = weigh;
+    }
 
     public String getTitle() {
         return title;

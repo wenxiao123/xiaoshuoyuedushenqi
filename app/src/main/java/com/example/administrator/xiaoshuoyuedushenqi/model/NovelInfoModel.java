@@ -42,16 +42,14 @@ public class NovelInfoModel implements NovelInfoContract.Model {
      */
     @Override
     public void getNovels(final String  id) {
-        Log.e("qqq", "getNovels: "+id);
         String url = UrlObtainer.GetUrl()+"api/index/Book_data";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id)
-                .add("limit", "6")
+                .add("limit", "8")
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");

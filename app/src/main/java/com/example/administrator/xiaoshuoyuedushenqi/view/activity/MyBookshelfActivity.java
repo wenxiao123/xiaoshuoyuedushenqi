@@ -24,6 +24,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.Delet_book_show;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.BookshelfPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.gson.Gson;
 
@@ -170,6 +171,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     @Override
     protected void doBeforeSetContentView() {
         bookshelfPresenter.queryAllBook();
+        StatusBarUtil.setTranslucentStatus(this);
     }
 
     @Override
@@ -209,7 +211,6 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("www", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -242,9 +243,11 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
             if (mCheckedList.get(i)) {
                 // 从数据库中删除该小说
                 mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
-                Log.e("WWW", "multiDelete: "+mDataList.get(i).getNovelUrl());
-                if(login_admin!=null&&mDataList.get(i).getType()==0){
-                    delectBookshelfadd(login_admin.getToken(),mDataList.get(i).getNovelUrl());
+                if(login_admin!=null){
+//                    BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(mDataList.get(i).getNovelUrl());
+//                    if(bookshelfNovelDbData!=null) {
+                        delectBookshelfadd(login_admin.getToken(), mDataList.get(i).getNovelUrl());
+//                    }
                 }
                 mDataList.remove(i);
             }
@@ -284,6 +287,12 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         iv_bookshelf_more.setOnClickListener(this);
 
         rv_bookshelf_multi_delete_bar=findViewById(R.id.rv_bookshelf_multi_delete_bar);
+        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -304,19 +313,28 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
             mDeleteTv.setText("删除");
         }
     }
-
+    boolean is_allselect;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_bookshelf_multi_delete_select_all:
                 // 全选
-                int num=0;
-                for (int i = 0; i < mCheckedList.size(); i++) {
-                    mCheckedList.set(i, true);
-                    num++;
-                }
-                if(num!=0) {
-                    mDeleteTv.setText("删除(" + num + ")");
+                if(!is_allselect) {
+                    is_allselect=true;
+                    int num = 0;
+                    for (int i = 0; i < mCheckedList.size(); i++) {
+                        mCheckedList.set(i, true);
+                        num++;
+                    }
+                    if (num != 0) {
+                        mDeleteTv.setText("删除(" + num + ")");
+                    }
+                }else {
+                   is_allselect=false;
+                    for (int i = 0; i < mCheckedList.size(); i++) {
+                        mCheckedList.set(i, false);
+                    }
+                    mDeleteTv.setText("删除");
                 }
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
                 break;

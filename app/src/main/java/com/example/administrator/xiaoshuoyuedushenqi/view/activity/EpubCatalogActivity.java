@@ -68,7 +68,7 @@ public class EpubCatalogActivity extends BaseActivity implements View.OnClickLis
 
         mListRv = findViewById(R.id.rv_epub_catalog_list);
         mListRv.setLayoutManager(new LinearLayoutManager(this));
-        CatalogAdapter adapter = new CatalogAdapter(this, mChapterNameList);
+        CatalogAdapter adapter = new CatalogAdapter(this, null);
         adapter.setOnCatalogListener(new CatalogAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {

@@ -201,6 +201,7 @@
             android:text="登陆及同意" />
 
         <TextView
+            android:id="@+id/tv_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="《用户协议》"
@@ -212,6 +213,7 @@
             android:text="和" />
 
         <TextView
+            android:id="@+id/tv_yinsi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="《隐私条款》"

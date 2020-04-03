@@ -85,7 +85,7 @@ public class AnyRunnModule {
     }
 
     @Download.onTaskFail void taskFail(DownloadTask task) {
-        Log.d(TAG, "fail"+task.getKey());
+        //Log.d(TAG, "fail"+task.getKey());
         checkPemission();
     }
 
@@ -96,6 +96,8 @@ public class AnyRunnModule {
         if(mContext!=null){
             ((ReadActivity)mContext).listText();
         }
+        unRegister();
+
     }
 
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/search_bg">
+    android:background="@color/background_color">
     
     <!-- search bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/top"
+        android:background="@color/white"
         android:paddingBottom="5dp"
         >
     <ImageView
@@ -85,10 +86,27 @@
             android:padding="2dp"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_search_result_novel_source_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:scrollbars="none"
+        android:overScrollMode="never"/>
     <!-- fragment container -->
     <FrameLayout
         android:id="@+id/fv_search_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/tv_search_result_none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/search_result_none"
+        android:textColor="@color/search_result_none_text"
+        android:textSize="20sp"
+        android:background="@color/background_color"
+        android:gravity="center|top"
+        android:visibility="gone"/>
 </LinearLayout>

@@ -20,7 +20,7 @@
         android:layout_below="@id/iv_item_category_novel_cover"
         android:text="@string/item_category_novel_name"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/item_category_novel_name"
+        android:textColor="@color/black"
         android:textSize="14sp"
         android:gravity="center"
         android:maxLines="1"

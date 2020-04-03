@@ -4,13 +4,16 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.loader.content.CursorLoader;
@@ -18,10 +21,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +37,16 @@ import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.MainSetAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
+import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.FileSizeUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
@@ -69,6 +81,8 @@ public class AdminSetActivity extends BaseActivity {
     String[] ints3 = {"0.00"};
     Login_admin login_admin;
     TextView exit;
+    DatabaseManager manager;
+
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -86,10 +100,22 @@ public class AdminSetActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        login_admin= (Login_admin) SpUtil.readObject(this);
+        login_admin = (Login_admin) SpUtil.readObject(this);
+        manager = DatabaseManager.getInstance();
     }
 
     LinearLayout mSettingBarCv;
+
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha
+     */
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
 
     String img_name;
 
@@ -106,12 +132,12 @@ public class AdminSetActivity extends BaseActivity {
         recyclerView3.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
 
         mSettingBarCv = findViewById(R.id.cv_read_setting_bar);
-        exit=findViewById(R.id.exit);
+        exit = findViewById(R.id.exit);
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final TipDialog tipDialog = new TipDialog.Builder(AdminSetActivity.this)
-                        .setContent("是否清除缓存")
+                        .setContent("是否退出登录？")
                         .setCancel("否")
                         .setEnsure("是")
                         .setOnClickListener(new TipDialog.OnClickListener() {
@@ -166,6 +192,12 @@ public class AdminSetActivity extends BaseActivity {
                 hideSettingBar();
             }
         });
+        findViewById(R.id.back2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     /**
@@ -177,6 +209,7 @@ public class AdminSetActivity extends BaseActivity {
         mSettingBarCv.startAnimation(bottomAnim);
         mSettingBarCv.setVisibility(View.VISIBLE);
         exit.setVisibility(View.GONE);
+        backgroundAlpha(0.5f);
     }
 
     /**
@@ -195,6 +228,7 @@ public class AdminSetActivity extends BaseActivity {
             public void onAnimationEnd(Animation animation) {
                 mSettingBarCv.setVisibility(View.GONE);
                 exit.setVisibility(View.VISIBLE);
+                backgroundAlpha(1f);
             }
 
             @Override
@@ -205,6 +239,70 @@ public class AdminSetActivity extends BaseActivity {
         mSettingBarCv.startAnimation(bottomExitAnim);
     }
 
+    private void showPupowindpw(View parent) {
+        exit.setVisibility(View.GONE);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.popu_camera, null);
+        TextView tv_camera = view.findViewById(R.id.camera);
+        TextView tv_pivture = view.findViewById(R.id.picture);
+        final PopupWindow popupWindow = new PopupWindow(view, (int) (parent.getWidth()), ViewGroup.LayoutParams.WRAP_CONTENT);
+        // 使其聚集,可点击
+        tv_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                img_name = "img" + System.currentTimeMillis() + "";
+                if (Build.VERSION.SDK_INT >= 23) {
+                    int checkCallPhonePermission = ContextCompat.checkSelfPermission(AdminSetActivity.this, Manifest.permission.CAMERA);
+                    if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(AdminSetActivity.this, new String[]{Manifest.permission.CAMERA}, 3);
+                        return;
+                    } else {
+                        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //系统常量， 启动相机的关键
+                        startActivityForResult(openCameraIntent, 3); // 参数常量为自定义的request code, 在取返回结果时有用
+                    }
+                } else {
+                    Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //系统常量， 启动相机的关键
+                    startActivityForResult(openCameraIntent, 3); // 参数常量为自定义的request code, 在取返回结果时有用
+                }
+                popupWindow.dismiss();
+            }
+        });
+        TextView consle = view.findViewById(R.id.consle);
+        consle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+        tv_pivture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, 2);
+            }
+        });
+        popupWindow.setFocusable(false);
+        popupWindow.setAnimationStyle(R.style.dialog_animation);
+        // 设置允许在外点击消失
+        popupWindow.setOutsideTouchable(true);
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        backgroundAlpha(0.5f);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        popupWindow.showAtLocation(view, Gravity.LEFT | Gravity.BOTTOM, 0, -location[1]);
+        //popupWindow.showAsDropDown(parent, (int) (parent.getWidth() * 0.7), 35);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                exit.setVisibility(View.VISIBLE);
+                backgroundAlpha(1f);
+            }
+        });
+    }
+
     @Override
     protected void doAfterInit() {
         mainRecyleAdapter1 = new MainSetAdapter(this, ints1, strings1);
@@ -213,16 +311,22 @@ public class AdminSetActivity extends BaseActivity {
         mainRecyleAdapter1.setOnCatalogListener(new MainSetAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
-                switch (position) {
-                    case 0:
-                        showSettingBar();
-                        break;
-                    case 1:
-                        startActivity(new Intent(AdminSetActivity.this,MdifyNicknameActivity.class));
-                        break;
+                if (login_admin == null) {
+                    startActivity(new Intent(AdminSetActivity.this, LoginActivity.class));
+                } else {
+                    switch (position) {
+                        case 0:
+                            //showSettingBar();
+                            showPupowindpw(recyclerView3);
+                            break;
+                        case 1:
+                            startActivity(new Intent(AdminSetActivity.this, MdifyNicknameActivity.class));
+                            break;
+                    }
                 }
             }
         });
+        ints2[0] = "v " + getVersionName(this);
         mainRecyleAdapter2 = new MainSetAdapter(this, ints2, strings2);
         recyclerView2.setAdapter(mainRecyleAdapter2);
 
@@ -232,9 +336,16 @@ public class AdminSetActivity extends BaseActivity {
                 switch (position) {
                     case 0:
                         break;
+                    case 1:
+                        Intent intent = new Intent(AdminSetActivity.this, WebActivity.class);
+                        intent.putExtra("type", "1");
+                        intent.putExtra("title", "免责声明");
+                        startActivity(intent);
+                        break;
                 }
             }
         });
+        ints3[0] = FileSizeUtil.getFileOrFilesSize(Constant.BOOK_ADRESS, FileSizeUtil.SIZETYPE_MB) + " MB";
         mainRecyleAdapter3 = new MainSetAdapter(this, ints3, strings3);
         recyclerView3.setAdapter(mainRecyleAdapter3);
 
@@ -250,7 +361,52 @@ public class AdminSetActivity extends BaseActivity {
                                 .setOnClickListener(new TipDialog.OnClickListener() {
                                     @Override
                                     public void clickEnsure() {
-                                        FileUtil.clearLocalCache();
+                                        //showShortToast("暂未开放");
+                                        File file = new File(Constant.BOOK_ADRESS);
+                                        file.delete();
+                                        ints3[0] = "0 MB";
+                                        mainRecyleAdapter3.notifyDataSetChanged();
+                                        File[] subFile = file.listFiles();
+                                        if (subFile != null && subFile.length > 0) {
+                                            for (int iFileLength = 0; iFileLength < subFile.length; iFileLength++) {
+                                                // 判断是否为文件夹
+                                                if (!subFile[iFileLength].isDirectory()) {
+                                                    String filename = subFile[iFileLength].getName();
+                                                    if (filename.contains(".txt")) {
+//                                                        if(manager.isExistInBookshelfNovel(subFile[iFileLength].getPath())){
+//                                                            BookshelfNovelDbData dbData=manager.selectBookshelfNovel(subFile[iFileLength].getPath());
+//                                                           // Log.e("QQQ", "clickEnsure: "+dbData);
+//                                                            String url=dbData.getNovelUrl();
+//                                                            if(dbData.getFuben_id()!=null){
+//                                                                dbData.setType(0);
+//                                                                dbData.setNovelUrl(dbData.getFuben_id());
+//                                                                manager.updataBookshelfNovel(dbData,url);
+//                                                            }else {
+//                                                                manager.deleteBookReadcoderNovel(url);
+//                                                            }
+//                                                            Intent intent_recever = new Intent("com.zhh.android");
+//                                                            sendBroadcast(intent_recever);
+//                                                        }
+                                                        List<BookshelfNovelDbData> novelDbDataList = manager.queryAllBookshelfNovel();
+                                                        for (int i = 0; i < novelDbDataList.size(); i++) {
+                                                            if (subFile[iFileLength].getPath().equals(novelDbDataList.get(i).getFuben_id())) {
+                                                                BookshelfNovelDbData bookshelfNovelDbData = novelDbDataList.get(i);
+                                                                bookshelfNovelDbData.setFuben_id("");
+                                                                bookshelfNovelDbData.setType(0);
+                                                                if(bookshelfNovelDbData.getChapterid()==null||bookshelfNovelDbData.getChapterid().equals("0")){
+                                                                    bookshelfNovelDbData.setChapterid("1");
+                                                                }
+                                                                manager.insertOrUpdateBook(bookshelfNovelDbData);
+                                                            }
+                                                        }
+                                                        Intent intent_recever = new Intent("com.zhh.android");
+                                                        sendBroadcast(intent_recever);
+                                                        subFile[iFileLength].delete();
+
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
 
                                     @Override
@@ -264,6 +420,9 @@ public class AdminSetActivity extends BaseActivity {
                 }
             }
         });
+        if (login_admin == null) {
+            exit.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -277,7 +436,6 @@ public class AdminSetActivity extends BaseActivity {
                 final String path = getRealPathFromURI(uri);
                 File file = new File(path);
                 img_name = "img" + System.currentTimeMillis() + "";
-                Log.e("AAA", "onActivityResult: "+file.getPath());
                 uploadpost2(file);
                 //upload(file.getPath());
             }
@@ -296,7 +454,6 @@ public class AdminSetActivity extends BaseActivity {
                     }
                     String path = saveBitmap(AdminSetActivity.this, thumbnail);
                     File file = new File(path);
-                    Log.e("AAA", "onActivityResult: "+file.getName());
                     uploadpost2(file);
                     //upload(file.getPath());
                 }
@@ -305,25 +462,25 @@ public class AdminSetActivity extends BaseActivity {
                 Toast.makeText(this, "取消操作", Toast.LENGTH_LONG).show();
                 return;
             }
-           hideSettingBar();
+            hideSettingBar();
         }
     }
 
-    public void postModify(String nickname,String name) {
-        String url = UrlObtainer.GetUrl()+"api/user/profile";
+    public void postModify(String nickname, String name) {
+        String url = UrlObtainer.GetUrl() + "api/user/profile";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", login_admin.getToken())
                 .add(nickname, name)
                 .build();
-        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 try {
-                    JSONObject jsonObject=new JSONObject(json);
-                    String code=jsonObject.getString("code");
-                    if(code.equals("1")){
-                       showShortToast("修改成功");
-                    }else {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        showShortToast("修改成功");
+                    } else {
                         showShortToast("修改失败");
                     }
                 } catch (JSONException e) {
@@ -339,20 +496,20 @@ public class AdminSetActivity extends BaseActivity {
     }
 
     public void postExit() {
-        String url = UrlObtainer.GetUrl()+"api/user/logout";
+        String url = UrlObtainer.GetUrl() + "api/user/logout";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", login_admin.getToken())
                 .build();
-        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 try {
-                    JSONObject jsonObject=new JSONObject(json);
-                    String code=jsonObject.getString("code");
-                    if(code.equals("1")){
-                        SpUtil.saveObject(AdminSetActivity.this,null);
-                        startActivity(new Intent(AdminSetActivity.this,LoginActivity.class));
-                    }else {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        SpUtil.saveObject(AdminSetActivity.this, null);
+                        startActivity(new Intent(AdminSetActivity.this, LoginActivity.class));
+                    } else {
                         showShortToast("退出失败");
                     }
                 } catch (JSONException e) {
@@ -367,8 +524,8 @@ public class AdminSetActivity extends BaseActivity {
         });
     }
 
-    void uploadpost2(File file){
-        if(login_admin!=null){
+    void uploadpost2(File file) {
+        if (login_admin != null) {
             RequestBody fileBody = RequestBody.create(MediaType.parse("*/*"), file);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
@@ -381,13 +538,13 @@ public class AdminSetActivity extends BaseActivity {
                 @Override
                 public void onResponse(String json) {
                     try {
-                        JSONObject jsonObject=new JSONObject(json);
-                        String code=jsonObject.getString("code");
-                        if(code.equals("1")){
-                            JSONObject object=jsonObject.getJSONObject("data");
-                            String path=object.getString("path");
-                            postModify("avatar",path);
-                        }else {
+                        JSONObject jsonObject = new JSONObject(json);
+                        String code = jsonObject.getString("code");
+                        if (code.equals("1")) {
+                            JSONObject object = jsonObject.getJSONObject("data");
+                            String path = object.getString("path");
+                            postModify("avatar", path);
+                        } else {
                             showShortToast("上传失败");
                         }
                     } catch (JSONException e) {
@@ -403,6 +560,7 @@ public class AdminSetActivity extends BaseActivity {
         }
 
     }
+
     private static final String SD_PATH = "/sdcard/xsb/pic/";
 
     public String saveBitmap(Context context, Bitmap mBitmap) {
@@ -414,7 +572,7 @@ public class AdminSetActivity extends BaseActivity {
         } else {
             savePath = context.getApplicationContext().getFilesDir()
                     .getAbsolutePath()
-                    + "/aaa/";
+                    + "/NovalReader/";
         }
         try {
             filePic = new File(savePath + img_name + ".jpg");
@@ -433,6 +591,46 @@ public class AdminSetActivity extends BaseActivity {
         }
 
         return filePic.getAbsolutePath();
+    }
+
+    public static String getVersionName(Context context) {
+
+        //获取包管理器
+        PackageManager pm = context.getPackageManager();
+        //获取包信息
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), 0);
+            //返回版本号
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    /**
+     * 获取版本号
+     *
+     * @param context 上下文
+     * @return 版本号
+     */
+    public static int getVersionCode(Context context) {
+
+        //获取包管理器
+        PackageManager pm = context.getPackageManager();
+        //获取包信息
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), 0);
+            //返回版本号
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+
     }
 
     private String getRealPathFromURI(Uri contentUri) { //传入图片uri地址

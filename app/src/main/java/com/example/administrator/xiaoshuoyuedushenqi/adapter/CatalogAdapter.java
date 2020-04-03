@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.CatalogV
     private static final String TAG = "CatalogAdapter";
 
     private Context mContext;
-    private List<String> mChapterNameList;
+    private List<Cataloginfo> mChapterNameList;
 
     private CatalogListener mListener;
     public void setPosition(int position) {
@@ -45,7 +46,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.CatalogV
         mListener = listener;
     }
 
-    public CatalogAdapter(Context mContext, List<String> mChapterNameList) {
+    public CatalogAdapter(Context mContext, List<Cataloginfo> mChapterNameList) {
         this.mContext = mContext;
         this.mChapterNameList = mChapterNameList;
     }
@@ -59,7 +60,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.CatalogV
 
     @Override
     public void onBindViewHolder(@NonNull CatalogViewHolder catalogViewHolder, final int i) {
-        catalogViewHolder.chapterName.setText(mChapterNameList.get(i));
+        catalogViewHolder.chapterName.setText(mChapterNameList.get(i).getTitle());
 //        catalogViewHolder.chapterName.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

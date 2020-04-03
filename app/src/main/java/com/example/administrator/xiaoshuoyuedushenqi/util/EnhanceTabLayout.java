@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +75,7 @@ public class EnhanceTabLayout extends FrameLayout {
         mSelectTextColor = typedArray.getColor(R.styleable.EnhanceTabLayout_tabSelectTextColor, context.getResources().getColor(R.color.colorAccent));
         mIndicatorHeight = typedArray.getDimensionPixelSize(R.styleable.EnhanceTabLayout_tabIndicatorHeight, 1);
         mIndicatorWidth = typedArray.getDimensionPixelSize(R.styleable.EnhanceTabLayout_tabIndicatorWidth, 0);
-        mTabTextSize = typedArray.getDimensionPixelSize(R.styleable.EnhanceTabLayout_tabTextSize, 13);
+        mTabTextSize = typedArray.getDimensionPixelSize(R.styleable.EnhanceTabLayout_tabTextSize, 6);
         mTabMode = typedArray.getInt(R.styleable.EnhanceTabLayout_tab_Mode, 2);
         typedArray.recycle();
     }
@@ -234,7 +235,8 @@ public class EnhanceTabLayout extends FrameLayout {
             layoutParams.height = indicatorHeight;
             indicator.setLayoutParams(layoutParams);
         }
-        tabText.setTextSize(textSize);
+        //tabText.setTextSize(textSize);
+        tabText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         tabText.setText(text);
         return view;
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 
 import java.io.ByteArrayInputStream;
@@ -24,7 +25,7 @@ public class SpUtil {
     private static final String KEY_IS_NIGHT_MODE= "key_is_night_mode";  // 是否为夜间模式
     private static final String KEY_TURN_TYPE = "key_turn_type";  // 翻页模式
     private static final String KEY_TEXTSTYLE_TYPE = "key_textstyle";  // 字体模式
-    private static final float DEFAULT_TEXT_SIZE = 30f;
+    private static final float DEFAULT_TEXT_SIZE = App.getContext().getResources().getDimension(R.dimen.dp_15);
     private static final float DEFAULT_ROW_SPACE = 24f;
     private static final int DEFAULT_THEME = 0;
     private static final float DEFAULT_BRIGHTNESS = -1f;

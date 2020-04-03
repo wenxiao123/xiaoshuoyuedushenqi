@@ -11,7 +11,7 @@
         android:layout_height="70dp"
         android:background="@drawable/background_grint">
         <ImageView
-            android:id="@+id/back"
+            android:id="@+id/back1"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
@@ -55,6 +55,7 @@
         android:background="@color/white"
         android:hint="请输入昵称"
         android:textSize="16sp"
+        android:maxLength="8"
         android:textCursorDrawable="@drawable/search_cursor"
         android:singleLine="true" />
 
@@ -75,5 +76,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/red_aa"
-        android:text="昵称可以是中英文、数字的任意组合，只能修改一次"/>
+        android:text="昵称可以是中英文、数字的任意组合"/>
 </LinearLayout>

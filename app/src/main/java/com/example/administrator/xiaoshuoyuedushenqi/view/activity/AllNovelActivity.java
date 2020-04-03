@@ -44,7 +44,6 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mRefreshSrv;
 
-    private View mFrontBgV;
     private RelativeLayout mScreenRv;
     private RecyclerView mGenderRv;
     private RecyclerView mMajorRv;
@@ -79,7 +78,7 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     private List<Boolean> mMinorSelectedList = new ArrayList<>();
     private List<String> mTypeTextList = new ArrayList<>();
     private List<Boolean> mTypeSelectedList = new ArrayList<>();
-    private NovelAdapter mNovelAdapter;
+    //private NovelAdapter mNovelAdapter;
     private List<ANNovelData> mDataList;
     
     private boolean mIsSearching = false;
@@ -363,17 +362,17 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         mNovelListRv.addOnScrollListener(new LoadMoreScrollListener(new LoadMoreScrollListener.LoadMore() {
             @Override
             public void loadMore() {
-                if (mNovelAdapter != null && !mIsToEnd) {
-                    // 加载更多
-                    mNovelAdapter.loadingMore();
-                }
+//                if (mNovelAdapter != null && !mIsToEnd) {
+//                    // 加载更多
+//                    mNovelAdapter.loadingMore();
+//                }
             }
         }));
         mNovelListRv.setAdapter(new EmptyAdapter());
 
         mProgressBar = findViewById(R.id.pb_all_novel);
 
-        mFrontBgV = findViewById(R.id.v_all_novel_front_bg);
+        //mFrontBgV = findViewById(R.id.v_all_novel_front_bg);
         mScreenRv = findViewById(R.id.rv_all_novel_screen);
 
         mGenderRv = findViewById(R.id.rv_all_novel_gender);
@@ -466,9 +465,9 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
             case R.id.iv_all_novel_screen:
                 if (mScreenRv.getVisibility() == View.GONE) {
                     // 展开筛选栏
-                    mFrontBgV.setVisibility(View.VISIBLE);
-                    mFrontBgV.setClickable(true);
-                    mFrontBgV.setFocusable(true);
+//                    mFrontBgV.setVisibility(View.VISIBLE);
+//                    mFrontBgV.setClickable(true);
+//                    mFrontBgV.setFocusable(true);
                     mScreenRv.setVisibility(View.VISIBLE);
                     // 筛选前记录相关变量
                     mTempGender = mGender;
@@ -476,16 +475,16 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
                     mTempMinor = mMinor;
                     mTempType = mType;
                 } else {
-                    mFrontBgV.setVisibility(View.GONE);
+                   // mFrontBgV.setVisibility(View.GONE);
                     mScreenRv.setVisibility(View.GONE);
                 }
                 break;
             case R.id.tv_all_novel_screen_cancel:
-                mFrontBgV.setVisibility(View.GONE);
+               // mFrontBgV.setVisibility(View.GONE);
                 mScreenRv.setVisibility(View.GONE);
                 break;
             case R.id.tv_all_novel_screen_ensure:
-                mFrontBgV.setVisibility(View.GONE);
+               // mFrontBgV.setVisibility(View.GONE);
                 mScreenRv.setVisibility(View.GONE);
                 // 更新相关变量
                 mGender = mTempGender;
@@ -515,12 +514,12 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         if (mIsLoadingMore) {   // 加载更多
             mDataList.addAll(dataList);
             if (isEnd) {
-                mNovelAdapter.setLastedStatus();
+            //    mNovelAdapter.setLastedStatus();
             }
-            mNovelAdapter.updateList();
+           /// mNovelAdapter.updateList();
             mIsLoadingMore = false;
         } else {    // 第一次加载
-            if (mNovelAdapter == null) {
+           // if (mNovelAdapter == null) {
                 mDataList = dataList;
 //                mNovelAdapter = new NovelAdapter(this, mDataList,
 //                        new BasePagingLoadAdapter.LoadMoreListener() {
@@ -547,12 +546,12 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
 //                                startActivity(intent);
 //                            }
 //                        });
-                mNovelListRv.setAdapter(mNovelAdapter);
-            } else {
+               // mNovelListRv.setAdapter(mNovelAdapter);
+           // } else {
                 mDataList.clear();
                 mDataList.addAll(dataList);
-                mNovelAdapter.notifyDataSetChanged();
-            }
+               // mNovelAdapter.notifyDataSetChanged();
+           // }
         }
 
         // 更新标题
@@ -572,7 +571,7 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         showShortToast("加载数据失败");
         Log.d(TAG, "getNovelsError: " + errorMsg);
         if (mIsLoadingMore) {
-            mNovelAdapter.setErrorStatus();
+            //mNovelAdapter.setErrorStatus();
             mIsLoadingMore = false;
         }
     }

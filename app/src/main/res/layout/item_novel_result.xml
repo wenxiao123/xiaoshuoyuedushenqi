@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:maxHeight="150dp"
-    android:minHeight="150dp"
+    android:layout_height="wrap_content"
     android:padding="10dp">
 
     <!-- cover -->
@@ -84,7 +82,7 @@
         android:paddingBottom="6dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/tv_item_novel_short_info"
         android:layout_toRightOf="@id/iv_item_novel_cover"
         android:id="@+id/tv_item_bookshelf"
         android:layout_width="wrap_content"
@@ -96,5 +94,10 @@
         android:maxEms="12"
         android:singleLine="true"
         android:ellipsize="end"/>
-
+<View
+    android:layout_marginTop="@dimen/dp_10"
+    android:layout_below="@id/iv_item_novel_cover"
+    android:layout_width="match_parent"
+    android:layout_height="0.5dp"
+    android:background="@color/white"/>
 </RelativeLayout>

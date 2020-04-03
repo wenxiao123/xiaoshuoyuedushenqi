@@ -1,11 +1,13 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,16 +16,23 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.NovelSearchAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.NovalInfo;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.SearchUpdateInputEvent;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EditTextUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SoftInputUtil;
@@ -31,9 +40,20 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search.HistoryFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search.SearchFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.search.SearchResultFragment;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.bmob.v3.util.V;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 /**
  * @author
@@ -48,7 +68,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private EditText mSearchBarEt;
     private TextView mSearchTv;
     private ImageView mDeleteSearchTextIv;
-
+    private FrameLayout fv_search_container;
     private HistoryFragment mHistoryFragment;
     private SearchFragment mSearchFragment;
     private SearchResultFragment mSearchResultFragment;
@@ -56,7 +76,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private boolean mIsShowSearchResFg = false;     // 是否正在显示搜索结果 Fragment
     private String mLastSearch = "";        // 记录上一搜索词
     private DatabaseManager mManager;   // 数据库管理类
-
+    private RecyclerView mNovelSourceRv;
+    private TextView tv_search_result_none;
+    private NovelSearchAdapter mNovelSourceAdapter;
     @Override
     protected void doBeforeSetContentView() {
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);   //隐藏标题栏
@@ -80,6 +102,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initView() {
+        tv_search_result_none=findViewById(R.id.tv_search_result_none);
+        mNovelSourceRv =findViewById(R.id.rv_search_result_novel_source_list);
+        mNovelSourceRv.setLayoutManager(new LinearLayoutManager(this));
+        fv_search_container=findViewById(R.id.fv_search_container);
         mBackIv = findViewById(R.id.iv_search_back);
         mBackIv.setOnClickListener(this);
         mSearchBarEt = findViewById(R.id.et_search_search_bar);
@@ -95,6 +121,8 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 if (s.length() == 0) {
                     // 隐藏删除 icon
                     mDeleteSearchTextIv.setVisibility(View.GONE);
+                    fv_search_container.setVisibility(View.VISIBLE);
+                    tv_search_result_none.setVisibility(View.GONE);
                     // 如果此时正在显示搜索结果 Fg，移除它
                     if (mIsShowSearchResFg) {
                         removeSearchResFg();
@@ -105,7 +133,12 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     // 显示删除 icon
                     mDeleteSearchTextIv.setVisibility(View.VISIBLE);
                 }
-                showSearchFg(s.toString());
+                mSearchContent=s.toString();
+                //showSearchFg(s.toString());
+                //if(issearch==true) {
+                    getNovelsSource(mSearchContent);
+                    issearch=false;
+                //}
             }
 
             @Override
@@ -133,6 +166,100 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         mDeleteSearchTextIv = findViewById(R.id.iv_search_delete_search_text);
         mDeleteSearchTextIv.setOnClickListener(this);
     }
+    private String mSearchContent;  // 搜索内容
+    private List<Wheel> mNovelSourceDataList=new ArrayList<>(); // 小说源列表
+    public void getNovelsSource(String novelName) {
+        Gson mGson=new Gson();
+        String url = UrlObtainer.GetUrl()+"api/index/book_cke";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("name", novelName)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        JSONArray jsonArray=object.getJSONArray("data");
+                        List<NovalInfo> novalDetailsList=new ArrayList<>();
+                        for(int i=0;i<jsonArray.length();i++){
+                            novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),NovalInfo.class));
+                        }
+                        getNovelsSourceSuccess(novalDetailsList);
+                    }else {
+                       getNovelsSourceError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                getNovelsSourceError(errorMsg);
+            }
+        });
+    }
+
+
+    public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
+        mNovelSourceDataList.clear();
+        if(novelSourceDataList.size()==0){
+//            tv_search_result_none.setVisibility(View.GONE);
+//            mNovelSourceRv.setVisibility(View.VISIBLE);
+            mNovelSourceRv.setVisibility(View.GONE);
+            tv_search_result_none.setVisibility(View.VISIBLE);
+            //mNovelSourceRv.setVisibility(View.GONE);
+        }else {
+           // mNovelSourceRv.setVisibility(View.VISIBLE);
+            mNovelSourceRv.setVisibility(View.VISIBLE);
+            fv_search_container.setVisibility(View.GONE);
+            tv_search_result_none.setVisibility(View.GONE);
+        }
+        // 列表显示小说源
+        for(int i=0;i<novelSourceDataList.size();i++){
+            if(novelSourceDataList.get(i).getTitle()!=null) {
+                mNovelSourceDataList.add(new Wheel(novelSourceDataList.get(i).getId(),novelSourceDataList.get(i).getPic(),novelSourceDataList.get(i).getTitle()));
+            }
+        }
+        initAdapter();
+    }
+
+    public void getNovelsSourceError(String errorMsg) {
+        //tv_search_result_none.setVisibility(View.VISIBLE);
+        mNovelSourceRv.setVisibility(View.GONE);
+        fv_search_container.setVisibility(View.VISIBLE);
+        // 其他错误
+        //  showShortToast(errorMsg);
+
+    }
+
+    private void initAdapter() {
+        if (mNovelSourceDataList == null || mNovelSourceDataList.isEmpty()) {
+            return;
+        }
+
+        mNovelSourceAdapter = new NovelSearchAdapter(this, mNovelSourceDataList,mSearchContent);
+        mNovelSourceAdapter.setOnNovelSourceListener(new NovelSearchAdapter.NovelSourceListener() {
+            @Override
+            public void clickItem(int position) {
+                if (mNovelSourceDataList.isEmpty()) {
+                    return;
+                }
+//                Event<NovelIntroInitEvent> event = new Event<>(EventBusCode.NOVEL_INTRO_INIT,
+//                        new NovelIntroInitEvent(mNovelSourceDataList.get(position)));
+//                EventBusUtil.sendStickyEvent(event);
+//                jump2Activity(NovelIntroActivity.class);
+                Intent intent = new Intent(SearchActivity.this, NovelIntroActivity.class);
+                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                intent.putExtra("pid", mNovelSourceDataList.get(position).getId() + "");
+                startActivity(intent);
+            }
+        });
+        mNovelSourceRv.setAdapter(mNovelSourceAdapter);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -158,7 +285,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     protected boolean isRegisterEventBus() {
         return true;
     }
-
+    boolean issearch=false;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventCome(Event event) {
         switch (event.getCode()) {
@@ -166,6 +293,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 if (event.getData() instanceof SearchUpdateInputEvent) {
                     SearchUpdateInputEvent sEvent = (SearchUpdateInputEvent) event.getData();
                     mSearchBarEt.setText(sEvent.getInput());
+                    //issearch=true;
                     // 进行搜索
                     doSearch();
                 }

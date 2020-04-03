@@ -28,6 +28,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.PinyinUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SDCardHelper;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SideBar;
+import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.fingerth.supdialogutils.SYSDiaLogUtils;
 
 import java.io.File;
@@ -51,6 +52,7 @@ public class BookCataloActivity extends BaseActivity {
     @Override
     protected void doBeforeSetContentView() {
         sdcardList = SDCardHelper.GetStorageList(this);
+        StatusBarUtil.setTranslucentStatus(this);
     }
 
     @Override
@@ -159,7 +161,6 @@ public class BookCataloActivity extends BaseActivity {
                 if(i==-1){
                    finish();
                 }else {
-                Log.e("AAA", "onClick: "+(String) hashMap.get(i)+" "+i);
                 data = getData(getLocalFileInfo(new File((String) hashMap.get(i))));
                 // 数据在放在adapter之前需要排序
                 Collections.sort(data, new PinyinComparator());

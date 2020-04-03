@@ -39,16 +39,19 @@ public class CatalogModel implements ICatalogContract.Model {
     }
 
     @Override
-    public void getCatalogData(String id,int posion) {
+    public void getCatalogData(String id,int posion,int type) {
         String url = UrlObtainer.GetUrl()+"api/index/Books_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id)
+                .add("type", type+"")
                 .add("page",posion+"")
+                .add("limit","50")
                // .add("limit", id)
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {
+               //Log.e("QQQ2", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -63,18 +66,6 @@ public class CatalogModel implements ICatalogContract.Model {
                     }else {
                         mPresenter.getCatalogDataError("请求数据失败");
                     }
-//                    CatalogBean catalogBean = mGson.fromJson(json, CatalogBean.class);
-//                    if (catalogBean.getCode() != 0) {
-//                        mPresenter.getCatalogDataError(Constant.NOT_FOUND_CATALOG_INFO);
-//                        return;
-//                    }
-//                    List<CatalogBean.ListBean> list = catalogBean.getList();
-//                    List<String> chapterNameList = new ArrayList<>();
-//                    List<String> chapterUrlList = new ArrayList<>();
-//                    for (int i = 0; i < list.size(); i++) {
-//                        chapterNameList.add(list.get(i).getNum());
-//                        chapterUrlList.add(list.get(i).getUrl());
-//                    }
 
                 } catch (JsonSyntaxException | JSONException e) {
                     mPresenter.getCatalogDataError(Constant.JSON_ERROR);

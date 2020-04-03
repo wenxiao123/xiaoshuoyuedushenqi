@@ -36,7 +36,7 @@ public class CatalogPresenter extends BasePresenter<ICatalogContract.View>
     }
 
     @Override
-    public void getCatalogData(String id,int posion) {
-        mModel.getCatalogData(id,posion);
+    public void getCatalogData(String id,int posion,int type) {
+        mModel.getCatalogData(id,posion,type);
     }
 }

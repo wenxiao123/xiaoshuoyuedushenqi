@@ -58,6 +58,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder categoryViewHolder, final int i) {
         if(type==6) {
             categoryViewHolder.categoryName.setText(mNovelDataList.get(i).getTitle()+"榜");
+        }else {
+            categoryViewHolder.categoryName.setText(mNovelDataList.get(i).getTitle());
         }
         categoryViewHolder.moreTv.setText("更多");
         categoryViewHolder.moreTv.setOnClickListener(new View.OnClickListener() {

@@ -12,6 +12,15 @@ public class Noval_Readcored {
     String author;
     String  pic;
     String rating;
+    int chapter_count;
+
+    public int getChapter_count() {
+        return chapter_count;
+    }
+
+    public void setChapter_count(int chapter_count) {
+        this.chapter_count = chapter_count;
+    }
 
     public String getId() {
         return id;

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
-    android:layout_height="@dimen/item_bookshelf_novel_height"
-    android:minHeight="@dimen/item_bookshelf_novel_height"
+    android:layout_height="wrap_content"
     android:padding="10dp">
 <FrameLayout
     android:id="@+id/img"
@@ -22,9 +21,16 @@
         android:src="@mipmap/add"
         android:scaleType="fitXY" />
     <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="#000000"
+        android:alpha="0.5"
+        android:scaleType="fitXY" />
+    <ImageView
         android:id="@+id/cb_item_bookshelf_novel_checked"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="bottom|right"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
@@ -34,13 +40,29 @@
     <TextView
         android:id="@+id/tv_item_bookshelf_novel_name"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:text="@string/item_novel_source_name"
         android:textSize="14sp"
         android:gravity="center_horizontal"
-        android:textColor="@color/item_bookshelf_novel_name_text"
-        android:maxLines="2"
+        android:textColor="@color/black"
+        android:maxLines="1"
         android:ellipsize="end"
         android:layout_below="@id/img" />
-
+<TextView
+    android:id="@+id/tv_status"
+    android:layout_below="@id/tv_item_bookshelf_novel_name"
+    android:textColor="@color/gray_a3"
+    android:text="完结"
+    android:textSize="12sp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_alignParentRight="true"
+        android:id="@+id/tv_position"
+        android:layout_below="@id/tv_item_bookshelf_novel_name"
+        android:textColor="@color/gray_a3"
+        android:text="0%"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

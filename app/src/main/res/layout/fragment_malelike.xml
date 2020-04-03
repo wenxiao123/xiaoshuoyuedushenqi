@@ -4,12 +4,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
-    <q.rorbin.verticaltablayout.VerticalTabLayout
+    <LinearLayout
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+    <com.example.administrator.xiaoshuoyuedushenqi.widget.VerticalTabLayout1
         android:id="@+id/tablayout"
         android:layout_marginTop="15dp"
         android:layout_width="80dp"
         android:layout_height="match_parent"
-        android:background="#ffffff"
         app:indicator_color="@color/red_aa"
         app:indicator_width="4dp"
         app:tab_margin="10dp"
@@ -18,6 +21,7 @@
         app:tab_height="50dp"
         android:visibility="visible"
         app:tab_mode="scrollable" />
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/grid_fenlei"
         android:layout_marginLeft="10dp"

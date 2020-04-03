@@ -75,6 +75,7 @@ public class Constant {
     public static final String TABLE_BOOKSHELF_CHAPTER_NAME="TABLE_BOOKSHELF_CHAPTER_NAME";
     public static final String TABLE_BOOKSHELF_AUTHOR="TABLE_BOOKSHELF_AUTHOR";
     public static final String TABLE_BOOKSHELF_NOVEL_ID = "TABLE_BOOKSHELF_NOVEL_ID"; //
+    public static final String TABLE_BOOKSHELF_NOVEL_FUBEN_ID = "TABLE_BOOKSHELF_NOVEL_FUBEN_ID"; //
     public static final String TABLE_BOOKSHELF_NOVEL_COVER = "TABLE_BOOKSHELF_NOVEL_COVER"; // 小说封面
     public static final String TABLE_BOOKSHELF_NOVEL_CONTENT = "TABLE_BOOKSHELF_NOVEL_CONTENT"; // 书签内容
     // 章节索引：网络小说和本地 epub 小说为目录索引，本地 txt 小说无需该属性
@@ -92,6 +93,7 @@ public class Constant {
     /* 文件存储 */
     public static final String EPUB_SAVE_PATH = App.getContext().getFilesDir() + "/epubFile";
     public static final  String FONT_ADRESS= Environment.getExternalStorageDirectory() + "/" + "NovalReader";
+    public static final  String BOOK_ADRESS= Environment.getExternalStorageDirectory() + "/" + "NovalReader/Book";
     /* 分类小说相关 */
     // gender
     public static final String CATEGORY_GENDER_MALE = "male";   // 男生

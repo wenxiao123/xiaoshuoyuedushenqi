@@ -48,7 +48,7 @@ public class LoginModel implements ILoginContract.Model {
                         String data=jsonObject.getString("data");
                         mPresenter.getVerticalSuccess(data);
                     }else {
-                        mPresenter.getVerticalError("请求错误");
+                        mPresenter.getVerticalError("请求失败");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -57,7 +57,7 @@ public class LoginModel implements ILoginContract.Model {
 
             @Override
             public void onFailure(String errorMsg) {
-                mPresenter.getVerticalError(errorMsg);
+                mPresenter.getVerticalError("请求失败");
             }
         });
     }

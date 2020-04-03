@@ -4,6 +4,15 @@ public class Wheel {
     int id;
     String picpath;
     String title;
+    String novel_id;
+
+    public String getNovel_id() {
+        return novel_id;
+    }
+
+    public void setNovel_id(String novel_id) {
+        this.novel_id = novel_id;
+    }
 
     public String getTitle() {
         return title;

@@ -57,6 +57,7 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+               // Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -87,11 +88,14 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
         String url = UrlObtainer.GetUrl()+"api/Rmlist/New_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
+//                .add("sort", id1)
+//                .add("page", z)
                 .add("limit", "4")
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+               // Log.e("QQQ", "onResponse: "+json );
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -123,11 +127,11 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
      */
     @Override
     public void getCategoryNovels(String id) {
-        String url = UrlObtainer.GetUrl()+"api/Rmlist/Rem_List";
+        String url = UrlObtainer.GetUrl()+"api/Rmlist/New_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
                 .add("sort", "3")
-                .add("limit", "4")
+                .add("limit", "8")
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override

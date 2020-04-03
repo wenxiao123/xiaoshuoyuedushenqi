@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -83,7 +84,8 @@ public class FeedbackActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                iv_close.setText(charSequence.length() + "/" + 300);
+                String str1 = "<font color=\"#FA5F4B\">"+charSequence.length()+"</font><font color=\"#9FA2B3\">/300</font>";
+                iv_close.setText(Html.fromHtml(str1));
             }
 
             @Override

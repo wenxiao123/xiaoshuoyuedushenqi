@@ -8,7 +8,6 @@
         android:id="@+id/pv_read_page_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/read_theme_0_bg"
         android:paddingStart="@dimen/read_margin_start"
         android:paddingTop="70dp"
         android:paddingEnd="@dimen/read_margin_start"
@@ -20,7 +19,7 @@
 
     <TextView
         android:id="@+id/tv_read_novel_title"
-        android:layout_width="180dp"
+        android:layout_width="280dp"
         android:layout_height="30dp"
         android:layout_marginStart="@dimen/read_margin_start"
         android:layout_marginTop="30dp"
@@ -28,9 +27,23 @@
         android:gravity="center|start"
         android:maxLines="1"
         android:text="@string/read_novel_title"
-        android:textColor="@color/read_theme_0_text"
+        android:textColor="#707070"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/tv_read_novel_title1"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/read_margin_start"
+        android:layout_marginTop="30dp"
+        android:ellipsize="end"
+        android:gravity="center|end"
+        android:maxLines="1"
+        android:text="@string/read_novel_title"
+        android:textColor="#707070"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -108,6 +121,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tv_website"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -208,7 +222,7 @@
             android:paddingTop="20dp"
             android:tint="@color/gray"
             android:paddingBottom="10dp"
-            android:src="@mipmap/shuaxin"
+            android:src="@mipmap/change_website"
             app:layout_constraintEnd_toStartOf="@id/iv_read_day_and_night_mode"
             app:layout_constraintStart_toEndOf="@id/iv_read_catalog"
             app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
@@ -220,7 +234,7 @@
             android:paddingTop="22dp"
             android:paddingBottom="12dp"
             android:tint="@color/gray"
-            android:src="@drawable/read_night"
+            android:src="@mipmap/icon_night"
             app:layout_constraintEnd_toStartOf="@id/iv_read_setting"
             app:layout_constraintStart_toEndOf="@id/iv_read_brightness"
             app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
@@ -328,7 +342,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="59dp">
@@ -343,7 +356,6 @@
                     android:id="@+id/tv_mulu"
                     android:layout_width="match_parent"
                     android:layout_height="43dp"
-                    android:background="@drawable/selector_catalog_chapter_order_bg"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
@@ -371,7 +383,6 @@
                     android:id="@+id/tv_book_mark"
                     android:layout_width="match_parent"
                     android:layout_height="43dp"
-                    android:background="@drawable/selector_catalog_chapter_order_bg"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
@@ -391,20 +402,54 @@
             </LinearLayout>
         </LinearLayout>
         <!-- list -->
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_catalog_list"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="50dp"
-            android:overScrollMode="never"
-            android:scrollbars="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabbar" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:id="@+id/pb_over"
+                android:layout_gravity="center"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="40dp"
+                android:indeterminateTint="@color/progress_bar"
+                android:visibility="visible" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_catalog_list1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="vertical"
+                />
+            <TextView
+                android:id="@+id/tv_nodata"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="暂无换源章节"/>
+        </FrameLayout>
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_load"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bachground_white"
+        android:visibility="gone"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="缓存中..."
+        android:textColor="@color/red_aa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    </TextView>
 
     <!-- setting bar -->
 
@@ -426,6 +471,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:clickable="true"
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
@@ -459,7 +505,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@id/sys_select"
-                android:src="@drawable/read_brightness_big" />
+                android:src="@mipmap/icon_luminance1" />
 
             <ImageView
                 android:id="@+id/iv_read_brightness_bar_small"
@@ -468,7 +514,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
                 android:padding="0dp"
-                android:src="@drawable/read_brightness_small"
+                android:src="@mipmap/icon_luminance"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -487,7 +533,8 @@
         <!-- first -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="43dp"
+            android:clickable="true"
             android:layout_marginTop="10dp">
 
             <View
@@ -496,6 +543,8 @@
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:background="@drawable/selector_read_theme_0" />
 
             <View
@@ -532,6 +581,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -612,6 +662,7 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
@@ -692,12 +743,13 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -710,11 +762,38 @@
 
             <ImageView
                 android:id="@+id/tv_autoread"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="25dp"
                 android:layout_alignParentRight="true"
-                android:tint="@color/red_aa"
-                android:src="@mipmap/kaiguan_close" />
+                android:src="@mipmap/icon_auto_close" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/tv_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="滚屏速度"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+            <SeekBar
+                android:layout_marginLeft="20dp"
+                android:id="@+id/sb_auto_read_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tv_auto"
+                android:maxHeight="2dp"
+                android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
+                android:thumb="@drawable/shape_read_seek_bar_thumb" />
         </RelativeLayout>
         <!-- second -->
         <!-- third -->
@@ -791,6 +870,7 @@
             android:padding="10dp">
 
             <ImageView
+                android:id="@+id/iv_close"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:rotation="90"

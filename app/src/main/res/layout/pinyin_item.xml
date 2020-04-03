@@ -8,12 +8,12 @@
         android:id="@+id/tv_lv_item_tag"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:background="#ececec"
+        android:background="@color/background_color"
         android:gravity="center_vertical"
         android:paddingLeft="10dip"
         android:text="Z"
         android:textSize="17sp"
-        android:textColor="#000000"
+        android:textColor="@color/black"
         android:visibility="visible" />
 
     <RelativeLayout
@@ -44,7 +44,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/iv_lv_item_head"
             android:layout_marginLeft="15dp"
-            android:textColor="#000000"
+            android:textColor="@color/black"
             android:textSize="15sp"
             android:text="周华健"/>
     </RelativeLayout>

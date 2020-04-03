@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.model;
 
+import android.util.Log;
+
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleContract;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IRankContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
@@ -36,7 +38,7 @@ public class RankModel implements IRankContract.Model {
 
 
     @Override
-    public void getRankData(String id,String type,String id1,String type1) {
+    public void getRankData(String id,String type,String id1,String type1,String z) {
         String url;
         RequestBody requestBody;
         if(type.equals("1")) {
@@ -44,6 +46,7 @@ public class RankModel implements IRankContract.Model {
              requestBody = new FormBody.Builder()
                     .add("type", id)
                     .add("sort", id1)
+                     .add("page", z)
                     .add("limit", "8")
                     .build();
         }else if(type.equals("2")) {
@@ -51,6 +54,7 @@ public class RankModel implements IRankContract.Model {
             requestBody = new FormBody.Builder()
                     .add("type", id)
                     .add("sort", id1)
+                    .add("page", z)
                     .add("limit", "8")
                     .build();
         }else {
@@ -58,14 +62,16 @@ public class RankModel implements IRankContract.Model {
             requestBody = new FormBody.Builder()
                     .add("type", id)
                     .add("sort", id1)
+                    .add("page", z)
                     .add("category_id", type1)
+                    .add("order", 1+"")
                     .add("limit", "8")
                     .build();
         }
-
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+            // Log.e(":QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");

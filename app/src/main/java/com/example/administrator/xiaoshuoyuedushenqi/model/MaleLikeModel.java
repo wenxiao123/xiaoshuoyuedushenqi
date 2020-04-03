@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.model;
 
+import android.util.Log;
+
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleLikeContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Catagorys;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Data;
@@ -33,6 +35,7 @@ public class MaleLikeModel implements IMaleLikeContract.Model {
         OkhttpUtil.getRequest(UrlObtainer.GetUrl()+"api/index/List_Type", new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("ASA", "onResponse: "+json);
                 Data bean = mGson.fromJson(json, Data.class);
                 List<Catagorys> catagorysList =bean.getData();
                 mPresenter.getCategoryNovelsSuccess(catagorysList);

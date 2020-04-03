@@ -13,6 +13,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -53,7 +57,13 @@ public class ShareDialog extends BaseDialog2 implements View.OnClickListener{
     protected View getCustomView() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_share, null);
         TextView content = view.findViewById(R.id.tv_dialog_tip_content);
-        content.setText(mContent);
+        String titl=content.getText().toString()+mContent;
+        //content.setText(mContent);
+        SpannableString ss=new SpannableString(titl);
+        int color=getContext().getResources().getColor(R.color.blue);
+        ForegroundColorSpan colorSpan=new ForegroundColorSpan(color);
+        ss.setSpan(colorSpan,titl.length()-mContent.length(),titl.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        content.setText(ss);
         TextView ensure = view.findViewById(R.id.tv_dialog_tip_ensure);
         ensure.setText(mEnsure);
         ensure.setOnClickListener(this);
@@ -71,12 +81,12 @@ public class ShareDialog extends BaseDialog2 implements View.OnClickListener{
 
     @Override
     protected float getWidthScale() {
-        return 0.8f;
+        return 0.75f;
     }
 
     @Override
     protected float getHeightScale() {
-        return 0.53f;
+        return 0.46f;
     }
 
     @Override

@@ -9,6 +9,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -129,7 +131,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
                 getContext().startActivity(intent);
             }
         });
-        mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view1);
+        mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view11);
         mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mCategoryNovelRv = getActivity().findViewById(R.id.rv_press_category_novel_list);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -140,7 +142,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mProgressBar = getActivity().findViewById(R.id.pb_press);
 
         mRefreshSrv = getActivity().findViewById(R.id.srv_press_refresh);
-        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.colorAccent));   //设置颜色
+        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.red_aa));   //设置颜色
         mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -158,18 +160,6 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
         uIndicator4 = getActivity().findViewById(R.id.indicator);
 
-    }
-
-    public List<String> getList() {
-        List<String> list = new ArrayList<>();
-        list.add("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2324525330,735217211&fm=26&gp=0.jpg");
-        list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=599f980a65f0504e8a4b5ba8" +
-                "aa1467d8&imgtype=0&src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F00%2F00%2F07%2F095780b22836645.jpg");
-
-        list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=1a38d9fd56edff5397da03f150312dc1&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Fe668b9fa8c1dd23e9cc39f0796eee9ab16de303b7129-NtiFlA_fw658");
-        list.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583493412540&di=51a2a1f3111997801803bdca4b8d36da&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F059e265ab33640251cbf8eae08ea64ee53dcec21339cc-kNnnqu_fw658");
-
-        return list;
     }
 
     public class DemoPagerAdapter extends PagerAdapter {
@@ -199,7 +189,13 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
                     imageView.setBackground(resource);
                 }
             };
-            Glide.with(getContext()).load(UrlObtainer.GetUrl()+views.get(position).getPicpath())
+            String href="";
+            if(views.get(position).getPicpath().contains("http")){
+                href=views.get(position).getPicpath();
+            }else {
+                href=UrlObtainer.GetUrl()+views.get(position).getPicpath();
+            }
+            Glide.with(getContext()).load(href)
                     .apply(new RequestOptions()
                             .placeholder(R.drawable.cover_place_holder)
                             .error(R.mipmap.admin))
@@ -210,7 +206,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
                 public void onClick(View view) {
                     Intent intent = new Intent(getContext(), NovelIntroActivity.class);
                     // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-                    intent.putExtra("pid", views.get(position).getId() + "");
+                    intent.putExtra("pid", views.get(position).getNovel_id() + "");
                     startActivity(intent);
                 }
             });
@@ -237,6 +233,14 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mPresenter.getCategoryNovels(mess + "");
         mPresenter.getNewRankData(mess + "");
         mPresenter.getListImage(mess + "");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(mRefreshSrv.isRefreshing()) {
+                    mRefreshSrv.setRefreshing(false);
+                }
+            }
+        }, 3000);
     }
 
     @Override
@@ -253,7 +257,6 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
     protected int getPosition() {
         return 1;
     }
-    CategoryzyAdapter adapter;
     private void initCategoryAdapter() {
         mCategoryAdapter = new CategoryAdapter(getActivity(),
                 novelNameList,
@@ -292,11 +295,11 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mCategoryAdapter.setType(2);
         mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
-
+    CategoryinfoAdapter categoryinfoAdapter;
     private void initAdapter() {
-        CategoryinfoAdapter adapter = new CategoryinfoAdapter(getContext(),
+        categoryinfoAdapter = new CategoryinfoAdapter(getContext(),
                 mNovelDataList);
-        adapter.setOnCategoryNovelListener(new CategoryinfoAdapter.CategoryNovelListener() {
+        categoryinfoAdapter.setOnCategoryNovelListener(new CategoryinfoAdapter.CategoryNovelListener() {
             @Override
             public void clickItem(int novelName) {
                 Intent intent = new Intent(getContext(), NovelIntroActivity.class);
@@ -305,12 +308,13 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
                 startActivity(intent);
             }
         });
-        mHotRankRv.setAdapter(adapter);
+        mHotRankRv.setAdapter(categoryinfoAdapter);
     }
+    CategoryzyAdapter categoryzyAdapter;
     private void initnewAdapter() {
-        CategoryzyAdapter adapter = new CategoryzyAdapter(getContext(),
+        categoryzyAdapter = new CategoryzyAdapter(getContext(),
                 noval_detailsList);
-        adapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
+        categoryzyAdapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
             @Override
             public void clickItem(int novelName) {
                 Intent intent = new Intent(getContext(), NovelIntroActivity.class);
@@ -319,7 +323,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
                 startActivity(intent);
             }
         });
-        mNewRv.setAdapter(adapter);
+        mNewRv.setAdapter(categoryzyAdapter);
     }
 
     List<CategoryNovels> novelNameList = new ArrayList<>();
@@ -327,23 +331,26 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
     @Override
     public void getNewDataSuccess(List<Noval_details> novelNameList) {
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         if (novelNameList.isEmpty()) {
             return;
         }
-        noval_detailsList = novelNameList;
-        if (mHotRankAdapter == null) {
+        //noval_detailsList = novelNameList;
+        if (categoryzyAdapter == null) {
             noval_detailsList = novelNameList;
             initnewAdapter();
         } else {
             noval_detailsList.clear();
             noval_detailsList.addAll(novelNameList);
-            mHotRankAdapter.notifyDataSetChanged();
+            categoryzyAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void getNewDataError(String errorMsg) {
-
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
     }
 
     /**
@@ -351,17 +358,19 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
      */
     @Override
     public void getHotRankDataSuccess(List<CategoryNovels> novelNameList) {
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         if (novelNameList.isEmpty()) {
             return;
         }
-        this.novelNameList = novelNameList;
-        if (mHotRankAdapter == null) {
-            mHotRankNovelNameList = novelNameList;
+        //this.novelNameList = novelNameList;
+        if (mCategoryAdapter == null) {
+            this.novelNameList = novelNameList;
             initCategoryAdapter();
         } else {
-            mHotRankNovelNameList.clear();
-            mHotRankNovelNameList.addAll(novelNameList);
-            mHotRankAdapter.notifyDataSetChanged();
+            this.novelNameList.clear();
+            this.novelNameList.addAll(novelNameList);
+            mCategoryAdapter.notifyDataSetChanged();
         }
     }
 
@@ -370,7 +379,8 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
      */
     @Override
     public void getHotRankDataError(String errorMsg) {
-
+        mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
     }
 
     /**
@@ -378,29 +388,30 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
      */
     @Override
     public void getCategoryNovelsSuccess(List<Noval_details> dataList) {
+       // Log.e("QQQ", "getCategoryNovelsSuccess: "+dataList.size());
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         frameLayout_banner.setVisibility(View.VISIBLE);
         if (dataList.isEmpty()) {
             return;
         }
-        if (mCategoryAdapter == null) {
+        if (categoryinfoAdapter == null) {
             mNovelDataList = dataList;
             initAdapter();
         } else {
             mNovelDataList.clear();
             mNovelDataList.addAll(dataList);
-            mCategoryAdapter.notifyDataSetChanged();
+            categoryinfoAdapter.notifyDataSetChanged();
         }
 
         rel_click_more.setVisibility(View.VISIBLE);
         rel_click_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AllNovelActivity.class);
-                intent.putExtra(AllNovelActivity.KEY_GENDER, 0);   // 性别
-                intent.putExtra(AllNovelActivity.KEY_MAJOR, Constant.CATEGORY_MAJOR_ );     // 一级分类
-                startActivity(intent);
+                Intent intent=new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type",2);
+                intent.putExtra("new_or_hot",1);
+                getContext().startActivity(intent);
             }
         });
     }

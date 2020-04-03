@@ -200,11 +200,11 @@ public class RealPageView extends PageView{
         Canvas mCanvas = new Canvas(mContentABitmap);
         mCanvas.drawPath(getPathDefault(), mBgPaint);
         if (mType == TYPE_TXT) {
-            if(mSype!=null&&!mSype.equals("")){
+//            if(mSype!=null&&!mSype.equals("")){
                 drawText(mCanvas, mPaint,mSype);
-            }else {
-                drawText(mCanvas, mPaint);
-            }
+//            }else {
+//                drawText(mCanvas, mPaint);
+//            }
             mHasBitmapB = mNextPosition < mContent.length();
         } else if (mType == TYPE_EPUB) {
             drawEpub(mCanvas, mPaint);
@@ -219,7 +219,12 @@ public class RealPageView extends PageView{
         mCanvas = new Canvas(mContentBBitmap);
         mCanvas.drawPath(getPathDefault(), mBgPaint);
         if (mType == TYPE_TXT) {
-            drawTextB(mCanvas, mPaint);
+            if(mSype!=null&&!mSype.equals("")){
+                drawTextB(mCanvas, mPaint,mSype);
+            }else {
+                drawTextB(mCanvas, mPaint);
+            }
+           // drawTextB(mCanvas, mPaint,mSype);
         } else if (mType == TYPE_EPUB) {
             drawEpubB(mCanvas, mPaint);
         }
@@ -228,11 +233,11 @@ public class RealPageView extends PageView{
         mCanvas = new Canvas(mContentCBitmap);
         mCanvas.drawPath(getPathDefault(), mBackBgPaint);
         if (mType == TYPE_TXT) {
-            if(mSype!=null&&!mSype.equals("")){
+//            if(mSype!=null&&!mSype.equals("")){
                 drawText(mCanvas, mPaint,mSype);
-            }else {
-                drawText(mCanvas, mPaint);
-            }
+//            }else {
+//                drawText(mCanvas, mPaint);
+//            }
         } else if (mType == TYPE_EPUB) {
             drawEpub(mCanvas, mBackPaint);
         }
@@ -457,7 +462,9 @@ public class RealPageView extends PageView{
                 switch (mCurrStyle) {
                     case LEFT:
                         // 上一页
-                        pre();
+                        if(mListener.isshowSettingBar()!=true) {
+                            pre();
+                        }
                         break;
                     case CENTER:
                         // 弹出或隐藏菜单
@@ -465,7 +472,9 @@ public class RealPageView extends PageView{
                         break;
                     case RIGHT:
                         // 下一页
-                        next();
+                        if(mListener.isshowSettingBar()!=true) {
+                            next();
+                        }
                         break;
                 }
                 break;

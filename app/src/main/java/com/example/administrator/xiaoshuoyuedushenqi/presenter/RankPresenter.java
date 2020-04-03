@@ -38,7 +38,7 @@ public class RankPresenter extends BasePresenter<IRankContract.View>
     }
 
     @Override
-    public void getRankData(String id,String type,String id1,String type1) {
-        mModel.getRankData(id,type,id1,type1);
+    public void getRankData(String id,String type,String id1,String type1,String z) {
+        mModel.getRankData(id,type,id1,type1,z);
     }
 }

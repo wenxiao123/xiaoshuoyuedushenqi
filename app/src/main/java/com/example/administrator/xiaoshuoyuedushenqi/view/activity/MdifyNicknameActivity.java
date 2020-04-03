@@ -62,6 +62,12 @@ public class MdifyNicknameActivity extends BaseActivity {
                 postModify("nickname",et_nickname.getText().toString());
             }
         });
+        findViewById(R.id.back1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
 
@@ -76,6 +82,9 @@ public class MdifyNicknameActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
              if(charSequence.length()>0){
+                 if(charSequence.length()>8){
+                   showShortToast("输入长度限输入8个字符");
+                 }
                  iv_close.setVisibility(View.VISIBLE);
                  tv_message.setVisibility(View.VISIBLE);
              }else{

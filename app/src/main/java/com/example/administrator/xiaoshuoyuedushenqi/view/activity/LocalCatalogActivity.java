@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.CatalogNameAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.android.material.tabs.TabLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,6 +62,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     private static final String ORDER_POSITIVE = "↑正序";
     private static final String ORDER_REVERSE = "↓倒序";
     public static final String KEY_URL = "file_path";
+    public static final String KEY_ID = "key_id";
     public static final String KEY_NAME = "catalog_key_name";
     public static final String KEY_COVER = "catalog_key_cover";
     public static final String KEY_POSTION = "catalog_key_postion";
@@ -70,9 +73,9 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     private RecyclerView mCatalogListRv, mBookMarkListRv;
     private ProgressBar mProgressBar;
     private TextView mErrorPageTv;
-    private CatalogAdapter mCatalogAdapter;
+    private CatalogNameAdapter mCatalogAdapter;
     private BookMarkAdapter bookAdapter;
-    private String file_path, mName, mCover;
+    private String file_path, mName, mCover,pid;
     private int mPosition;
     private ImageView shuaxiniv, paixuiv;
     private DatabaseManager mDbManager;
@@ -138,8 +141,9 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         file_path = getIntent().getStringExtra(KEY_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
+        pid=getIntent().getStringExtra(KEY_ID);
         mPosition = getIntent().getIntExtra(KEY_POSTION, 0);
-        queryBookMarks(file_path);
+        queryBookMarks(pid);
     }
 
     @Override
@@ -211,6 +215,9 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{1,9})[章节卷集部篇回](\\s*)";
 
     private Boolean ReadData(String filePath, IParagraphData paragraphData, List<Chapter> chapters) {
+        if(filePath==null){
+           return false;
+        }
         File file = new File(filePath);
         BufferedReader bufferedReader = null;
         try {
@@ -433,8 +440,8 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     }
 
     private void initAdapter() {
-        mCatalogAdapter = new CatalogAdapter(this, mChapterNameList);
-        mCatalogAdapter.setOnCatalogListener(new CatalogAdapter.CatalogListener() {
+        mCatalogAdapter = new CatalogNameAdapter(this, mChapterNameList);
+        mCatalogAdapter.setOnCatalogListener(new CatalogNameAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
                 if (!NetUtil.hasInternet(LocalCatalogActivity.this)) {
@@ -444,7 +451,9 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                 // 点击 item，跳转到相应小说阅读页
                 Intent intent = new Intent(LocalCatalogActivity.this, ReadActivity.class);
                 // 小说 url（本地小说为 filePath），参数类型为 String
-                intent.putExtra(ReadActivity.KEY_NOVEL_URL, file_path);
+                intent.putExtra(ReadActivity.KEY_NOVEL_URL, pid);
+                // 小说 url（本地小说为 filePath），参数类型为 String
+                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN, file_path);
                 // 小说名，参数类型为 String
                 intent.putExtra(ReadActivity.KEY_NAME, mName);
                 // 小说封面 url，参数类型为 String
@@ -454,6 +463,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                 intent.putExtra(ReadActivity.KEY_TYPE, 1);
                 intent.putExtra(ReadActivity.KEY_IS_CATALOG, 1);
                 intent.putExtra("catalog", (Serializable) mChapterNameList);
+                intent.putExtra("weigh", count);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 // 开始阅读的章节索引，参数类型为 int（非必需，不传的话默认为 0）
                 intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
@@ -487,6 +497,8 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                 Intent intent = new Intent(LocalCatalogActivity.this, ReadActivity.class);
                 // 小说 url（本地小说为 filePath），参数类型为 String
                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, file_path);
+                // 小说 url（本地小说为 filePath），参数类型为 String
+                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN, file_path);
                 // 小说名，参数类型为 String
                 intent.putExtra(ReadActivity.KEY_NAME, mName);
                 // 小说封面 url，参数类型为 String
@@ -494,6 +506,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
 //                 小说类型，0 为网络小说， 1 为本地 txt 小说，2 为本地 epub 小说
 //                 参数类型为 int（非必需，不传的话默认为 0）
                 intent.putExtra(ReadActivity.KEY_TYPE, 1);
+                intent.putExtra("weigh", count);
                 intent.putExtra(ReadActivity.KEY_IS_CATALOG, 1);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 // 开始阅读的章节索引，参数类型为 int（非必需，不传的话默认为 0）
@@ -505,6 +518,32 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     mReadActivity.finish();
                 }
                 finish();
+            }
+        });
+        bookAdapter.setOnCatalogLongListener(new BookMarkAdapter.CatalogLongListener() {
+            @Override
+            public void clickItem(int position) {
+                final TipDialog tipDialog = new TipDialog.Builder(LocalCatalogActivity.this)
+                        .setContent("是否删除书签")
+                        .setCancel("取消")
+                        .setEnsure("确定")
+                        .setOnClickListener(new TipDialog.OnClickListener() {
+                            @Override
+                            public void clickEnsure() {
+                                mDbManager.deleteBookmarkNovel(bookmarkNovelDbDatas.get(position).getTime());
+                                queryBookMarks(pid);
+                                initBookMarkAdapter();
+                                mBookMarkListRv.setAdapter(bookAdapter);
+                            }
+
+                            @Override
+                            public void clickCancel() {
+
+                            }
+                        })
+                        .build();
+                tipDialog.show();
+
             }
         });
     }

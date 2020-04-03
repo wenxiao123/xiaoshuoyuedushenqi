@@ -18,9 +18,9 @@ public interface IRankContract {
         void getDataSuccess(List<Noval_details> novelNameList);
         void getDataError(String errorMsg);
 
-        void getRankData(String id,String type,String id1,String type1);
+        void getRankData(String id,String type,String id1,String type1,String z);
     }
     interface Model {
-        void getRankData(String id,String type,String id1,String type1);
+        void getRankData(String id,String type,String id1,String type1,String z);
     }
 }

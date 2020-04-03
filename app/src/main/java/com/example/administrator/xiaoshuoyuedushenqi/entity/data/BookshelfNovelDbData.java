@@ -14,6 +14,33 @@ public class BookshelfNovelDbData {
     private int secondPosition;
     private String Chapterid;
     private int weight;
+    private String fuben_id;
+
+    public String getFuben_id() {
+        return fuben_id;
+    }
+
+    public void setFuben_id(String fuben_id) {
+        this.fuben_id = fuben_id;
+    }
+
+    @Override
+    public String toString() {
+        return "BookshelfNovelDbData{" +
+                "novelUrl='" + novelUrl + '\'' +
+                ", name='" + name + '\'' +
+                ", cover='" + cover + '\'' +
+                ", chapterIndex=" + chapterIndex +
+                ", position=" + position +
+                ", type=" + type +
+                ", fuben_id=" + fuben_id +
+                ", secondPosition=" + secondPosition +
+                ", Chapterid='" + Chapterid + '\'' +
+                ", weight=" + weight +
+                ", status='" + status + '\'' +
+                '}';
+    }
+
     private String status;
 
     public String getStatus() {
@@ -54,7 +81,6 @@ public class BookshelfNovelDbData {
         this.secondPosition = secondPosition;
         Chapterid = chapterid;
         this.weight = weight;
-        this.status=status;
     }
 
 
@@ -64,21 +90,6 @@ public class BookshelfNovelDbData {
 
     public void setWeight(int weight) {
         this.weight = weight;
-    }
-
-    @Override
-    public String toString() {
-        return "BookshelfNovelDbData{" +
-                "novelUrl='" + novelUrl + '\'' +
-                ", name='" + name + '\'' +
-                ", cover='" + cover + '\'' +
-                ", chapterIndex=" + chapterIndex +
-                ", position=" + position +
-                ", type=" + type +
-                ", secondPosition=" + secondPosition +
-                ", Chapterid='" + Chapterid + '\'' +
-                ", weight=" + weight +
-                '}';
     }
 
     public String getChapterid() {

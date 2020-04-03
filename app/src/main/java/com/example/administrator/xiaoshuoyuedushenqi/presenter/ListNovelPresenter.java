@@ -40,7 +40,7 @@ public class ListNovelPresenter extends BasePresenter<IListNovelContract.View>
     }
 
     @Override
-    public void getNovels(String id,String type) {
-        mModel.getNovels(id,type);
+    public void getNovels(String id,String type,String z) {
+        mModel.getNovels(id,type,z);
     }
 }

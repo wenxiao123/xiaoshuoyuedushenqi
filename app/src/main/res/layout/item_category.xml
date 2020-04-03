@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/discovery_bg">
+    android:background="@color/white">
 
     <View
         android:id="@+id/v_item_category_top_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_category_first_height"
-        android:background="@color/item_category_top_bar"/>
+        android:background="@color/background_color"/>
     <RelativeLayout
         android:id="@+id/rv_title"
         android:layout_below="@id/v_item_category_top_bar"
@@ -17,11 +17,11 @@
     <View
         android:id="@+id/color"
         android:layout_marginLeft="10dp"
-        android:layout_width="4dp"
+        android:layout_width="3dp"
         android:layout_centerVertical="true"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:layout_height="match_parent"
+        android:layout_height="20dp"
         android:background="@color/red"/>
 
     <TextView
@@ -31,7 +31,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
         android:text="@string/item_category_category_name"
-        android:textColor="@color/item_category_category_name"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:gravity="center"/>
 
@@ -50,7 +50,7 @@
         android:layout_height="@dimen/item_category_second_height"
         android:layout_toStartOf="@id/iv_item_category_more"
         android:text="@string/item_category_more"
-        android:textColor="@color/item_category_more"
+        android:textColor="@color/gray_a3"
         android:textSize="@dimen/item_category_more_size"
         android:gravity="center"/>
     </RelativeLayout>

@@ -6,9 +6,12 @@
     <color name="red">#e60606</color>
     <color name="yellow">#FA5F4B</color>
     <color name="red_aa">#FA5F4B</color>
+    <color name="blue">#AA9CC6</color>
     <color name="red_a2">#FF4D89</color>
-    <color name="black">#ffffff</color>
-    <color name="white">#000000</color>
+    <color name="white">#5E5757</color>
+    <color name="grey_a1">#D5D5DA</color>
+    <color name="black">#E8E1E1</color>
+    <color name="background_color">#404449</color>
     <color name="colorAccent">@android:color/holo_blue_light</color>
 
     <!-- app -->
@@ -167,7 +170,7 @@
 
     <!-- item_category_novel -->
     <color name="item_category_novel_name">#1F1F1F</color>
-    
+
     <!-- all_novel -->
     <color name="all_novel_top_bar_bg">@android:color/holo_blue_light</color>
     <color name="all_novel_title_text">#fdfdfd</color>

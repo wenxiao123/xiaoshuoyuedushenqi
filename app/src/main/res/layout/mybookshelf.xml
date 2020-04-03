@@ -8,29 +8,39 @@
     <RelativeLayout
         android:id="@+id/bookshelf_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent2"
+        android:layout_height="70dp"
+        android:background="@drawable/background_grint"
         android:orientation="horizontal"
-        android:padding="5dp">
-
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/back"
+            android:padding="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/all_novel_back"/>
         <TextView
+            android:layout_marginRight="10dp"
+            android:layout_alignParentBottom="true"
             android:id="@+id/iv_bookshelf_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="5dp"
-            android:padding="2dp"
             android:text="编辑"
             android:textColor="@color/item_hot_rank_rank_bg"
-            android:textSize="15sp" />
+            android:textSize="16sp" />
 
         <TextView
+           android:layout_alignParentBottom="true"
             android:id="@+id/tv_bookshelf_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="我的书架"
+            android:textStyle="bold"
             android:textColor="@color/item_hot_rank_rank_bg"
             android:textSize="18sp" />
     </RelativeLayout>

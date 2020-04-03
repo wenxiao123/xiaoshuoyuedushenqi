@@ -9,35 +9,44 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <TextView
-        android:padding="10dp"
+        android:padding="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="分享内容已复制，如果觉得我们的app还不错的话就请推荐给你的好友吧~"
         android:textColor="#43444B"
         android:textSize="14sp"
         android:layout_gravity="center"
-        android:gravity="center" />
+        android:gravity="center_vertical|left" />
     <TextView
-        android:padding="10dp"
+        android:padding="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="发送给好友的复制内容是："
         android:textColor="#43444B"
         android:textSize="14sp"
         android:layout_gravity="center"
-        android:gravity="center" />
+        android:gravity="center_vertical|left" />
     <TextView
-        android:padding="10dp"
+        android:id="@+id/tv_dialog_tip_content"
+        android:padding="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="我发现一个还不错的看书APP，你也可以下载来看看："
         android:textColor="#43444B"
         android:textSize="14sp"
         android:layout_gravity="center"
-        android:gravity="center" />
+        android:gravity="center_vertical|left" />
     <TextView
-        android:id="@+id/tv_dialog_tip_content"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="确定要退出登录？"
@@ -83,5 +92,5 @@
 
 
     </LinearLayout>
-
+    </LinearLayout>
 </LinearLayout>

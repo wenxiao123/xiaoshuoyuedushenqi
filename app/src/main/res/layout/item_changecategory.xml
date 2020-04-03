@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+   >
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/item_history_text"
+        android:textSize="16sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="第四十七章 真正的大人物"
+        android:maxLines="1" />
+    <LinearLayout
+        android:id="@+id/l1"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_updata_time"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="更新于：12小时内"
+            android:textColor="@color/gray_a3"/>
+        <TextView
+            android:id="@+id/tv_total_catagorys"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="共2002章"
+            android:textColor="@color/gray_a3"/>
+    </LinearLayout>
+    <TextView
+        android:layout_below="@id/l1"
+        android:layout_marginTop="7dp"
+        android:id="@+id/tv_laiyuan"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:text="来源："
+        android:textColor="@color/gray_a3"
+        android:maxLines="1" />
+    <View
+        android:layout_below="@id/tv_laiyuan"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/background_color"/>
+</RelativeLayout>

@@ -6,9 +6,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 
 import java.util.List;
 
@@ -16,14 +19,14 @@ import java.util.List;
  * @author
  * Created on 2019/11/11
  */
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>  {
 
     private Context mContext;
     private List<String> mContentList;
     private HistoryAdapterListener mListener;
 
     public interface HistoryAdapterListener {
-        void clickWord(String word);    // 点击历史搜索词语
+        void clickWord(int word);    // 点击历史搜索词语
     }
 
     public void setOnHistoryAdapterListener(HistoryAdapterListener listener) {
@@ -56,17 +59,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, final int position) {
+        HistoryViewHolder historyViewHolder=holder;
         String s = mContentList.get(position);
         // 如果超过 8 个字符，只取前 8 个
         if (s.length() > 8) {
             s = s.substring(0, 8) + "...";
         }
-        holder.content.setText(s);
-        holder.content.setOnClickListener(new View.OnClickListener() {
+        historyViewHolder.content.setText(s);
+        historyViewHolder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.clickWord(mContentList.get(position));
+                    mListener.clickWord(position);
                 }
             }
         });
@@ -79,9 +83,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     class HistoryViewHolder extends RecyclerView.ViewHolder {
         TextView content;
-
+        ImageView img;
         public HistoryViewHolder(View itemView) {
             super(itemView);
+            img= itemView.findViewById(R.id.img);
             content = itemView.findViewById(R.id.tv_item_history_content);
         }
     }

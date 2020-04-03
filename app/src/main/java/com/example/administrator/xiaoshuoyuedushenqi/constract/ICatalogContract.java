@@ -18,9 +18,9 @@ public interface ICatalogContract {
         void getCatalogDataSuccess(List<Cataloginfo> catalogData);
         void getCatalogDataError(String errorMsg);
 
-        void getCatalogData(String url,int posion);
+        void getCatalogData(String url,int posion,int type);
     }
     interface Model {
-        void getCatalogData(String url,int posion);    // 获取目录信息
+        void getCatalogData(String url,int posion,int type);    // 获取目录信息
     }
 }
