@@ -34,6 +34,7 @@ E" />
         <activity android:name=".test.TestActivity"></activity>
         <activity android:name=".view.activity.FenleiNovelActivity"/>
         <activity android:name=".view.activity.SearchActivity"
+            android:launchMode="singleTask"
            />
         <activity android:name=".view.activity.SuishizhuanxianjinActivity"/>
         <activity android:name=".view.activity.RankingActivity"/>
@@ -63,6 +64,7 @@ E" />
         <activity
             android:name=".view.activity.ReadrecoderActivity"
             />
+        <activity android:name=".view.activity.SearchResultActivity"/>
         <activity
             android:name=".view.activity.LocalCatalogActivity"
             />

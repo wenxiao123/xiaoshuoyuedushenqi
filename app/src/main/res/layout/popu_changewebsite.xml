@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/cv_read_brightness_bar"
+android:layout_width="match_parent"
+android:layout_height="350dp"
+android:background="@drawable/bachground_halfcricyle"
+android:clickable="true"
+android:focusable="true"
+android:orientation="vertical"
+android:visibility="visible">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="59dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_mulu"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:text="全本换源"
+            android:textColor="@color/red"
+            android:textSize="15sp" />
+
+        <View
+            android:id="@+id/m_line"
+            android:layout_width="40dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:background="@drawable/red_circyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_book_mark"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:text="单章换源"
+            android:textColor="@color/catalog_chapter_order_text"
+            android:textSize="15sp" />
+
+        <View
+            android:id="@+id/s_line"
+            android:layout_width="40dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:background="@drawable/red_circyle"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>
+<!-- list -->
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ProgressBar
+        android:id="@+id/pb_over"
+        android:layout_gravity="center"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="40dp"
+        android:indeterminateTint="@color/progress_bar"
+        android:visibility="visible" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_catalog_list1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="vertical"
+        />
+    <TextView
+        android:id="@+id/tv_nodata"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="暂无换源章节"/>
+</FrameLayout>
+
+</LinearLayout>

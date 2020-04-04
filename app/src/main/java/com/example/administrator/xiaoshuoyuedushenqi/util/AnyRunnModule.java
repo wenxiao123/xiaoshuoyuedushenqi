@@ -91,13 +91,16 @@ public class AnyRunnModule {
 
     @Download.onTaskComplete void taskComplete(DownloadTask task) {
         Log.d(TAG, "ok");
-        textView.setVisibility(View.GONE);
-        SpUtil.saveTextStyle(mUrl);
-        if(mContext!=null){
-            ((ReadActivity)mContext).listText();
+        if(textView==null){
+         return;
+        }else {
+            textView.setVisibility(View.GONE);
+            SpUtil.saveTextStyle(mUrl);
+            if (mContext != null) {
+                ((ReadActivity) mContext).listText();
+            }
+            unRegister();
         }
-        unRegister();
-
     }
 
 

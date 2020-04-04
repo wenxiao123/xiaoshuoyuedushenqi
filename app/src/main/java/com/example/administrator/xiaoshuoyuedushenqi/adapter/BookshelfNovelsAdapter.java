@@ -200,7 +200,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                 nf.setMaximumFractionDigits(2);
                 int chpid = Integer.parseInt(mDataList.get(i).getChapterid());
                 int wight = mDataList.get(i).getWeight();
-                Log.e("TAG", "onBindViewHolder: " + chpid + " " + wight+" "+mDataList.get(i).getPosition());
+                //Log.e("TAG", "onBindViewHolder: " + chpid + " " + wight+" "+mDataList.get(i).getPosition());
                 float prent = ((float) chpid / (float) wight) * 100;
                 if (chpid != 1) {
                     contentViewHolder.tv_position.setText(nf.format(prent) + "%");

@@ -310,7 +310,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 finish();
                 break;
             case R.id.tv_search_search_text:
-                doSearch();
+                //doSearch();
+                updateHistoryDb(mSearchBarEt.getText().toString());
+                Intent intent=new Intent(this,SearchResultActivity.class);
+                intent.putExtra("searchContent",mSearchBarEt.getText().toString());
+                startActivity(intent);
                 break;
             case R.id.iv_search_delete_search_text:
                 // 删除 EditText 内容
@@ -433,6 +437,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
      * @param word 新输入的词语
      */
     private void updateHistoryDb(String word) {
+        if(word.trim().equals("")){
+            return;
+        }
         mManager.deleteHistory(word);
         mManager.insertHistory(word);
         // 通知历史页面更新历史记录

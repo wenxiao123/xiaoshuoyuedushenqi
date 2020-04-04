@@ -4,10 +4,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookhotAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.HistoryAdapter;
@@ -23,6 +27,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchResultActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.LineBreakLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.gson.Gson;
@@ -111,9 +116,34 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
             @Override
             public void clickWord(int word) {
                 // 通知 SearchActivity 进行搜索
-                Event<SearchUpdateInputEvent> event = new Event<>(EventBusCode.SEARCH_UPDATE_INPUT,
-                        new SearchUpdateInputEvent(mContentList.get(word)));
-                EventBusUtil.sendEvent(event);
+//                Event<SearchUpdateInputEvent> event = new Event<>(EventBusCode.SEARCH_UPDATE_INPUT,
+//                        new SearchUpdateInputEvent(mContentList.get(word)));
+//                EventBusUtil.sendEvent(event);
+                Intent intent=new Intent(getContext(),SearchResultActivity.class);
+                intent.putExtra("searchContent",mContentList.get(word));
+                startActivity(intent);
+            }
+
+            @Override
+            public void longclick(int word) {
+                final TipDialog tipDialog = new TipDialog.Builder(getActivity())
+                        .setContent("是否清除搜索历史？")
+                        .setCancel("否")
+                        .setEnsure("是")
+                        .setOnClickListener(new TipDialog.OnClickListener() {
+                            @Override
+                            public void clickEnsure() {
+                                mManager.deleteHistory(mContentList.get(word));
+                                updateHistory();
+                            }
+
+                            @Override
+                            public void clickCancel() {
+                                //tipDialog.dismiss();
+                            }
+                        })
+                        .build();
+                tipDialog.show();
             }
         });
         delect_all=getActivity().findViewById(R.id.iv_delect_all);
@@ -121,7 +151,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView_hot_book.setLayoutManager(gridLayoutManager);
 
-        LinearLayoutManager layoutManager=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        @SuppressLint("WrongConstant") LinearLayoutManager layoutManager=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         mHistoryListFv.setLayoutManager(layoutManager);
         mHistoryListFv.setAdapter(mHistoryAdapter);
         mHistoryListFv.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));

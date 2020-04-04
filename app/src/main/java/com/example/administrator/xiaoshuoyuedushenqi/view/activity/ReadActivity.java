@@ -1,21 +1,29 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.provider.Settings;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -326,10 +334,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     @Override
     protected void initView() {
-        progressBar = findViewById(R.id.pb_over);
-
-        rv_catalog_list = findViewById(R.id.rv_catalog_list1);
-        rv_catalog_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         tv_nodata=findViewById(R.id.tv_nodata);
         tv_jainju = findViewById(R.id.tv_jainju);
         tv_jainju.setText((int)mRowSpace + "");
@@ -348,13 +352,21 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     nf.setMaximumFractionDigits(2);
                     float p = Float.parseFloat(progress.replace("%", "")) / 100;
                     if(weigh!=0) {
-                        float v = (((float) mChapterIndex / (float) weigh) * 100 + p * (1 / weigh));
+                        float v = (((float) mChapterIndex / (float) weigh) * 100 );//+ p * (1 / weigh));
                         mNovelProgressTv.setText(nf.format(v) + "%");
                     }else {
                         mNovelProgressTv.setText(0 + "%");
                     }
                 } else {
-                    mNovelProgressTv.setText(progress);
+                    float chpid = mPageView.getPosition();
+                    float wight = mNovelContent.length();
+                    float prent = (chpid / wight) * 100;
+                    NumberFormat nf = NumberFormat.getNumberInstance();
+                    nf.setMaximumFractionDigits(2);
+//                    if(mDataList.get(i).getSecondPosition()>2) {
+//                        contentViewHolder.tv_position.setText(nf.format(prent) + "%");
+//                    }
+                    mNovelProgressTv.setText(nf.format(prent) + "%");
                     float p = Float.parseFloat(progress.replace("%", "")) / 100;
                     //Log.e("QQQ", "loadTxtSuccess: "+mPageView.getPosition()+" "+text.length());
                     int o=0;
@@ -596,15 +608,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mSettingTv.setOnClickListener(this);
         tv_website = findViewById(R.id.tv_website);
         tv_website.setText(UrlObtainer.GetUrl());
-        tvCatalog = findViewById(R.id.tv_mulu);
-        tvCatalog.setOnClickListener(this);
-
-        mBookMark = findViewById(R.id.tv_book_mark);
-        mBookMark.setOnClickListener(this);
-
-        s_line = findViewById(R.id.s_line);
-        m_line = findViewById(R.id.m_line);
-
         mNovelProcessSb = findViewById(R.id.sb_read_novel_progress);
         sb_auto_read_progress=findViewById(R.id.sb_auto_read_progress);
         mNovelProcessSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -727,8 +730,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mDecreaseRowSpaceIv.setOnClickListener(this);
         mIncreaseRowSpaceIv = findViewById(R.id.iv_read_increase_row_space);
         tv_autoread = findViewById(R.id.tv_autoread);
-        ts_recyle = findViewById(R.id.ts_recyle);
-        ts_recyle.setLayoutManager(new LinearLayoutManager(this));
+//        ts_recyle = findViewById(R.id.ts_recyle);
+//        ts_recyle.setLayoutManager(new LinearLayoutManager(this));
         mIncreaseRowSpaceIv.setOnClickListener(this);
         mTheme0 = findViewById(R.id.v_read_theme_0);
         mTheme0.setOnClickListener(this);
@@ -769,6 +772,90 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     is_autoRead = false;
                     tv_autoread.setImageResource(R.mipmap.icon_auto_close);
                 }
+            }
+        });
+    }
+    ProgressBar progressBar1;
+    private void showPupowindpwTextStyle(View parent) {
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.popu_textstyle, null);
+        ImageView imageView = view.findViewById(R.id.iv_close);
+        ts_recyle = view.findViewById(R.id.ts_recyle);
+        progressBar1=view.findViewById(R.id.pb_novel);
+        progressBar1.setVisibility(View.VISIBLE);
+        ts_recyle.setLayoutManager(new LinearLayoutManager(this));
+        final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+        post_textStyle();
+        popupWindow.setFocusable(false);
+        popupWindow.setAnimationStyle(R.style.dialog_animation);
+        // 设置允许在外点击消失
+        popupWindow.setOutsideTouchable(true);
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        backgroundAlpha(0.5f);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        popupWindow.showAtLocation(view, Gravity.RIGHT | Gravity.BOTTOM, 0, -location[1]);
+        //popupWindow.showAsDropDown(parent, (int) (parent.getWidth() * 0.7), 35);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1f);
+            }
+        });
+    }
+    PopupWindow popupWindow;
+    @SuppressLint("WrongConstant")
+    private void showPupowindpwChangeWebSite(View parent) {
+        getCategorys(mNovelUrl);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.popu_changewebsite, null);
+        is_all_one = false;
+        s_line = view.findViewById(R.id.s_line);
+        m_line = view.findViewById(R.id.m_line);
+        tvCatalog = view.findViewById(R.id.tv_mulu);
+        tvCatalog.setOnClickListener(this);
+        progressBar =view.findViewById(R.id.pb_over);
+        mBookMark = view.findViewById(R.id.tv_book_mark);
+        mBookMark.setOnClickListener(this);
+        s_line.setVisibility(View.GONE);
+        m_line.setVisibility(View.VISIBLE);
+        mBookMark.setTextColor(getResources().getColor(R.color.catalog_chapter_order_text));
+        tvCatalog.setTextColor(getResources().getColor(R.color.red));
+        if (changeCategoryAdapter != null) {
+            changeCategoryAdapter.setPosition(-1);
+            changeCategoryAdapter.notifyDataSetChanged();
+        }
+        rv_catalog_list =view.findViewById(R.id.rv_catalog_list1);
+        rv_catalog_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        // ts_recyle = view.findViewById(R.id.ts_recyle);
+        progressBar.setVisibility(View.VISIBLE);
+        // ts_recyle.setLayoutManager(new LinearLayoutManager(this));
+        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.dp_230));
+        //post_textStyle();
+        popupWindow.setFocusable(false);
+        popupWindow.setAnimationStyle(R.style.dialog_animation);
+        // 设置允许在外点击消失
+        popupWindow.setOutsideTouchable(true);
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        backgroundAlpha(0.5f);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        popupWindow.showAtLocation(view, Gravity.RIGHT | Gravity.BOTTOM, 0, -location[1]);
+        //popupWindow.showAsDropDown(parent, (int) (parent.getWidth() * 0.7), 35);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1f);
             }
         });
     }
@@ -1520,7 +1607,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 tv_website.setText(categorys_ones.get(word).getUrl());
                 other_website = categorys_ones.get(word).getText();
                 String href = other_website.get(Integer.parseInt(weight) - 1).getChapter_url();
-                weigh = Integer.parseInt(categorys_ones.get(word).getChapter_sum());
+//                weigh = Integer.parseInt(categorys_ones.get(word).getChapter_sum());
+//                mNovelTitleTv1.setText(mChapterIndex+"/"+weigh);
                 reurl=categorys_ones.get(word).getDiv();
                 new Thread(new sendValueToServer(href, weight + "",reurl)).start();
             }
@@ -1534,9 +1622,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
-                    hideBrightnessBar();
-                }
+               // if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+                    //hideBrightnessBar();
+                    if(popupWindow.isShowing()){
+                        popupWindow.dismiss();
+                    }
+               // }
             } else if (msg.what == 2) {
                 if (d < weigh) {
                     new Thread(new LoadRunable(other_website.get(d - 1).getChapter_url())).start();
@@ -1578,6 +1669,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     tv_load.setVisibility(View.GONE);
                     handler.sendEmptyMessage(3);
                 }
+            }else if(msg.what==5){
+                //showPupowindpwTextStyle(mMenuIv);
             }
         }
     };
@@ -1684,7 +1777,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             content = content + link.text();
         }
        // Log.e("QQQ", "Analysisbiquge: "+title+" "+content);
-        getDetailedChapterDataSuccess(new DetailedChapterData(title, content, "", mChapterIndex + ""));
+        getDetailedChapterDataSuccess(new DetailedChapterData(pid,title, content, mChapterIndex + "", weigh));
     }
 
     class LoadRunable implements Runnable {
@@ -1898,16 +1991,16 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     this, R.anim.read_setting_bottom_enter);
             mBrightnessBarCv.startAnimation(bottomAnim);
             mBrightnessBarCv.setVisibility(View.VISIBLE);
-            getCategorys(mNovelUrl);
-            is_all_one = false;
-            s_line.setVisibility(View.GONE);
-            m_line.setVisibility(View.VISIBLE);
-            mBookMark.setTextColor(getResources().getColor(R.color.catalog_chapter_order_text));
-            tvCatalog.setTextColor(getResources().getColor(R.color.red));
-            if (changeCategoryAdapter != null) {
-                changeCategoryAdapter.setPosition(-1);
-                changeCategoryAdapter.notifyDataSetChanged();
-            }
+//            getCategorys(mNovelUrl);
+//            is_all_one = false;
+//            s_line.setVisibility(View.GONE);
+//            m_line.setVisibility(View.VISIBLE);
+//            mBookMark.setTextColor(getResources().getColor(R.color.catalog_chapter_order_text));
+//            tvCatalog.setTextColor(getResources().getColor(R.color.red));
+//            if (changeCategoryAdapter != null) {
+//                changeCategoryAdapter.setPosition(-1);
+//                changeCategoryAdapter.notifyDataSetChanged();
+//            }
         } else {
             showShortToast("非网络小说不支持该功能");
         }
@@ -1953,7 +2046,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         initTextStyle(textStyles);
                     } else {
                         showShortToast("请求失败");
+                        progressBar.setVisibility(View.GONE);
                     }
+                    handler.sendEmptyMessage(5);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1962,11 +2057,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             @Override
             public void onFailure(String errorMsg) {
                 showShortToast(errorMsg);
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
 
     void initTextStyle(List<TextStyle> textStyles) {
+        progressBar1.setVisibility(View.GONE);
         if(mStyle==null){
           return;
         }
@@ -2209,13 +2306,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 // 隐藏上下栏，并显示亮度栏
                 hideBar();
                 hideSettingBar();
-                showTextstyle();
+                //showTextstyle();
+                showPupowindpwTextStyle(mNovelProgressTv);
                 break;
             case R.id.iv_read_brightness:
             case R.id.tv_read_brightness:
                 // 隐藏上下栏，并显示亮度栏
                 hideBar();
-                showBrightnessBar();
+               // showBrightnessBar();
+                showPupowindpwChangeWebSite(mMenuIv);
                 break;
             case R.id.iv_read_day_and_night_mode:
             case R.id.tv_read_day_and_night_mode:

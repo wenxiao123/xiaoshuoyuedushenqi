@@ -27,6 +27,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public interface HistoryAdapterListener {
         void clickWord(int word);    // 点击历史搜索词语
+        void longclick(int word);
     }
 
     public void setOnHistoryAdapterListener(HistoryAdapterListener listener) {
@@ -72,6 +73,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 if (mListener != null) {
                     mListener.clickWord(position);
                 }
+            }
+        });
+        historyViewHolder.content.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mListener != null) {
+                    mListener.longclick(position);
+                }
+                return false;
             }
         });
     }

@@ -19,11 +19,12 @@ public class DetailedChapterData {
         this.max_num = max_num;
     }
 
-    public DetailedChapterData(String title, String content, String id, String weigh) {
+    public DetailedChapterData(String id,String title, String content, String weigh, int max_num) {
         this.title = title;
-        this.content = content;
         this.id = id;
+        this.content = content;
         this.weigh = weigh;
+        this.max_num = max_num;
     }
 
     public String getTitle() {

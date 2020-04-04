@@ -101,7 +101,7 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
     @Override
     public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
         mProgressBar.setVisibility(View.GONE);
-        novelSourceDataList.clear();
+        //novelSourceDataList.clear();
         if(novelSourceDataList.size()==0){
             showShortToast("暂无搜索小说");
             mNoneTv.setVisibility(View.VISIBLE);
