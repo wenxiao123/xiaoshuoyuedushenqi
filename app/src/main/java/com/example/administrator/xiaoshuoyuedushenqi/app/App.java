@@ -3,6 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.app;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
@@ -10,6 +11,7 @@ import android.util.DisplayMetrics;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.arialyy.aria.core.Aria;
+import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.util.CrashHandler;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
@@ -56,8 +58,12 @@ public class App extends Application {
 //        crashHandler.init();
         context = getApplicationContext();
         Aria.init(this);
-        init(getContext());
-        App.updateNightMode(SpUtil.getIsNightMode());
+//        init(getContext());//
+        if(SpUtil.getIsNightMode()==true){
+            AppCompatDelegate.setDefaultNightMode( AppCompatDelegate.MODE_NIGHT_YES );
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
 //        Bmob.initialize(this, "ce63bdbbd4197409b82920b0835a42eb");
 //        BmobUpdateAgent.setUpdateCheckConfig(false);
         new Thread(new Runnable() {

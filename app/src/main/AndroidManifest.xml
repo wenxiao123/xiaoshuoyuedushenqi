@@ -41,8 +41,7 @@ E" />
         <activity android:name=".view.activity.LoginActivity"/>
         <service android:name=".service.CacheService"/>
         <activity
-            android:name=".view.activity.MainActivity"
-            android:theme="@style/AppTheme">
+            android:name=".view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

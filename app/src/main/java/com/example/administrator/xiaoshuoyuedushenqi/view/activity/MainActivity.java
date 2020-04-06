@@ -564,9 +564,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     boolean isNightthod;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        App app= (App) getApplication();
+        //App.init(this);
+        if(app.isNight()==true) {
+            app.setNight(false);
+//            App.updateNightMode(SpUtil.getIsNightMode());
+//            finish();
+            //SpUtil.saveIsNightMode(SpUtil.getIsNightMode());
+            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            Intent intent = new Intent(this, this.getClass());
+            //intent.putExtra("is_naghit", "2");
+            startActivity(intent);
+            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         //取消注册
         unregisterReceiver(receiver);
+        finish();
     }
 }

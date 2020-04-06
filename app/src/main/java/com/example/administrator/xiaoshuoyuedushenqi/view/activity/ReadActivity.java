@@ -385,7 +385,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             break;
                         }
                     }
-                    mNovelTitleTv1.setText(o+"/"+weigh);
+                    mNovelTitleTv1.setText((o+1)+"/"+weigh);
                     mNovelTitleTv.setText(mName+" / "+mChapterNameList.get(o).substring(3));
                 }
             }
@@ -699,38 +699,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                //Log.e("aaa", "onStartTrackingTouch: "+111);
-               // mBrightnessProcessSb.setFocusable(true);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //Log.e("aaa", "onStartTrackingTouch: "+111);
-                //mBrightnessProcessSb.setFocusable(false);
             }
         });
-
-//        mSystemBrightnessSw = findViewById(R.id.sw_read_system_brightness_switch);
-//        mSystemBrightnessSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    // 变为系统亮度
-//                    mIsSystemBrightness = true;
-//                    mBrightness = -1f;
-//                    // 将屏幕亮度设置为系统亮度
-//                    ScreenUtil.setWindowBrightness(ReadActivity.this,
-//                            (float) ScreenUtil.getSystemBrightness() / ScreenUtil.getBrightnessMax());
-//                } else {
-//                    // 变为自定义亮度
-//                    mIsSystemBrightness = false;
-//                    // 将屏幕亮度设置为自定义亮度
-//                    mBrightness = (float) mBrightnessProcessSb.getProgress() / 100;
-//                    ScreenUtil.setWindowBrightness(ReadActivity.this, mBrightness);
-//                }
-//            }
-//        });
-
         mDecreaseFontIv = findViewById(R.id.iv_read_decrease_font);
         mDecreaseFontIv.setOnClickListener(this);
         mIncreaseFontIv = findViewById(R.id.iv_read_increase_font);
@@ -1046,22 +1020,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             // 先根据 filePath 获得 OpfData
             mPresenter.getOpfData(mNovelUrl);
         }
-//        TextStyleAdapter textStyleAdapter = new TextStyleAdapter(this, strings);
-//        ts_recyle.setAdapter(textStyleAdapter);
-//        textStyleAdapter.setmListener(new TextStyleAdapter.ScreenListener() {
-//            @Override
-//            public void clickItem(int position) {
-//                if (position == 0) {
-//                    tv_textstyle.setText("方正卡通");
-//                } else {
-//                    tv_textstyle.setText("方正旗黑");
-//                }
-//                textStyleAdapter.setPosition(position);
-//                textStyleAdapter.notifyDataSetChanged();
-//                mPageView.setmSype(position);
-//                mStyle = position;
-//            }
-//        });
         if (mBrightness == -1f) {    // 系统亮度
             //mSystemBrightnessSw.setChecked(true);
             //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_red));
@@ -1107,57 +1065,23 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 mChapterIndex = mChapterUrlList.size() - 1 - mChapterIndex;
             }
             if (mType == 1) {
-//                if (!mDbManager.isExistInBookshelfNovel(mNovelUrl + "")) {
-//                    BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
-//                            mCover, mPageView.getPosition(), mType, mNovelContent.length(), mChapterIndex + "", serialize + "");
-//                    dbData.setFuben_id(pid);
-//                    dbData.setWeight(weigh);
-//                    Log.e("QQQ1", "onDestroy: "+dbData);
-//                    mDbManager.insertBookshelfNovel(dbData);
-//                } else {
                 BookshelfNovelDbData dbData =mDbManager.selectBookshelfNovel(pid);
                 if(dbData!=null) {
-//                    BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
-//                            mCover, mChapterIndex, mPageView.getPosition(), mType, mNovelContent.length());
-//                    dbData.setFuben_id(pid);
-//                    dbData.setWeight(weigh);
-//                    Log.e("QQQ2", "onDestroy: "+dbData);
-                   // Log.e("QQQ", "onDestroy: "+mPageView.getPosition());
                     dbData.setPosition(mPageView.getPosition());
                     dbData.setSecondPosition(mNovelContent.length());
                     mDbManager.insertOrUpdateBook(dbData);
                 }
-//                }
+
             } else if (mType == 0) {
                 BookshelfNovelDbData dbData =mDbManager.selectBookshelfNovel(pid);
                 if(dbData!=null) {
-//                    BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
-//                            mCover, mChapterIndex, mPageView.getPosition(), mType, mNovelContent.length());
-//                    dbData.setFuben_id(pid);
-//                    dbData.setWeight(weigh);
-//                    Log.e("QQQ2", "onDestroy: "+dbData);
                     dbData.setPosition(mPageView.getPosition());
                     dbData.setChapterid(mChapterIndex + "");
                     dbData.setWeight(weigh);
                     mDbManager.insertOrUpdateBook(dbData);
                 }
-//                if (!mDbManager.isExistInBookshelfNovel(mNovelUrl + "")) {
-//                    BookshelfNovelDbData dbData;
-//                    dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
-//                            mCover, mPageView.getPosition(), mType, mPageView.getSecondPos(), mChapterIndex + "", weigh, serialize + "");
-//                    mDbManager.insertBookshelfNovel(dbData);
-//                    Noval_Readcored noval_readcored = new Noval_Readcored(mNovelUrl + "", id + "", serialize + " ", mName, mAuthor, mCover, 0 + "", mTitle, weigh + "");
-//                    mDbManager.insertReadCordeNovel(noval_readcored, mType + "");
-//                    Log.e("QQQ3", "onDestroy: "+dbData);
-//                } else {
-//                    BookshelfNovelDbData dbData;
-//                    dbData = new BookshelfNovelDbData(mNovelUrl + "", mName,
-//                            mCover, mPageView.getPosition(), mType, mPageView.getSecondPos(), mChapterIndex + "", weigh);
-//                    mDbManager.updataBookshelfNovel(dbData, pid);
-//                    Noval_Readcored noval_readcored = new Noval_Readcored(mNovelUrl + "", id + "", mName, mCover, 0 + "", mTitle, weigh + "");
-//                    mDbManager.updataReadCordeNovel(noval_readcored, mType + "", mNovelUrl + "");
-//                    Log.e("QQQ4", "onDestroy: "+dbData);
-//                }
+                Noval_Readcored noval_readcored=new Noval_Readcored(pid,chpter_id+"",serialize+"",mName,mAuthor,mCover,"1",mTitle,weigh+"");
+                mDbManager.insertReadCordeNovel(noval_readcored,0+"");
                 if (login_admin != null) {
                     mPresenter.setReadRecord(login_admin.getToken(), mNovelUrl, id + "");
                     //mPresenter.setBookshelfadd(login_admin.getToken(), mNovelUrl);
@@ -1339,7 +1263,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         updateChapterProgress();
     }
     private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{1,9})[章节卷集部篇回](\\s*)";
-    List longs = new ArrayList<>();
+    List<Integer> longs = new ArrayList<>();
     int leng = 0;
     private Boolean ReadData(String filePath, IParagraphData paragraphData, List<Chapter> chapters) {
         File file = new File(filePath);
@@ -1664,6 +1588,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 Intent intent_recever = new Intent("com.zhh.android");
                 sendBroadcast(intent_recever);
                 is_load=false;
+                adress=path + mName + ".txt";
+                mPresenter.loadTxt(adress);
+                mCatalog = 1;
+                mCatalog_posotion=mPageView.getPosition();
             } else if (msg.what == 4) {
                 int j = msg.arg1;
                 if (30 * d <= weigh && (j + 1) == 30) {
@@ -2238,7 +2166,21 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 } else if (mType == 2) {
                     preEpub();
                 } else if (mType == 1) {
-
+                    int o=0;
+                    for (int j = 0; j < longs.size(); j++) {
+                        if (mPageView.getPosition() < (int) longs.get(0)) {
+                            o = 0;
+                            break;
+                        } else if (mPageView.getPosition() < (int) longs.get(j)) {
+                            o = j - 1;
+                            break;
+                        }
+                    }
+                    if(o>0) {
+                        mPageView.initDrawText(mNovelContent, longs.get(o - 1));
+                    }else {
+                        showShortToast("this is first");
+                    }
                 }
                 break;
             case R.id.tv_book_mark:
@@ -2270,7 +2212,21 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 } else if (mType == 2) {
                     nextEpub();
                 } else if (mType == 1) {
-
+                    int o=0;
+                    for (int j = 0; j < longs.size(); j++) {
+                        if (mPageView.getPosition() < (int) longs.get(0)) {
+                            o = 0;
+                            break;
+                        } else if (mPageView.getPosition() < (int) longs.get(j)) {
+                            o = j - 1;
+                            break;
+                        }
+                    }
+                    if(o<longs.size()) {
+                        mPageView.initDrawText(mNovelContent, longs.get(o + 1));
+                    }else {
+                        showShortToast("this is last");
+                    }
                 }
                 break;
             case R.id.iv_read_catalog:

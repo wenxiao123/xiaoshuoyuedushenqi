@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.base;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -10,10 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
 
 /**
  * @author
@@ -60,20 +63,21 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onResume() {
         super.onResume();
-        App app= (App) getApplication();
-        App.init(this);
-        if(app.isNight()==true) {
-            app.setNight(false);
-            App.updateNightMode(!SpUtil.getIsNightMode());
-            finish();
-//            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-//                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-//                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-            Intent intent = new Intent(this, this.getClass());
-            //intent.putExtra("is_naghit", "2");
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-        }
+//        App app= (App) getApplication();
+//        App.init(this);
+//        if(app.isNight()==true) {
+//            app.setNight(false);
+//            App.updateNightMode(!SpUtil.getIsNightMode());
+//            finish();
+//            SpUtil.saveIsNightMode(!SpUtil.getIsNightMode());
+////            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+////                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+////                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+//            Intent intent = new Intent(this, this.getClass());
+//            //intent.putExtra("is_naghit", "2");
+//            startActivity(intent);
+//            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
+//        }
     }
     @Override
     protected void onDestroy() {

@@ -154,19 +154,19 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
 //                        final UiModeManager uiModeManager = (UiModeManager)getActivity().getSystemService(Context.UI_MODE_SERVICE);
                         if (isNight==true) {
                             isNight = false;
-                            App.updateNightMode(isNight);
+                           // App.updateNightMode(isNight);
                           //  uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
                         } else {
                             isNight = true;
-                            App.updateNightMode(isNight);
+                           // App.updateNightMode(isNight);
                            // uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
                         }
 //
                         SpUtil.saveIsNightMode(isNight);
-//                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-//                        AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-//                                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                        getActivity().finish();
+                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                        AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+                                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                       // getActivity().finish();
                         Intent intent = new Intent(getActivity(), getActivity().getClass());
                         intent.putExtra("is_naghit", "2");
                         startActivity(intent);

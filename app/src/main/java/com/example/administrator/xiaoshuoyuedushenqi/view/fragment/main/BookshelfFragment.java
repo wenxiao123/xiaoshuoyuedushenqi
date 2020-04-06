@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookshelfNovelsAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IBookshelfContract;
@@ -450,6 +451,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         if (mBookshelfNovelsAdapter != null) {
             //mPresenter.queryAllBook();
         }
+        //App.updateNightMode(!SpUtil.getIsNightMode());
         if (personBean != null) {
             upload(personBean);
             personBean = null;

@@ -4,9 +4,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.appcompat.widget.PopupMenu;
@@ -44,6 +46,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryinfoAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
@@ -743,10 +746,34 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        j++;
-        if (j != 1) {
-            presenter.getNovels(pid);
+        App app = (App) getApplication();
+        App.init(this);
+        if (app.isNight() == true) {
+            app.setNight(false);
+//            App.updateNightMode(!SpUtil.getIsNightMode());
+              finish();
+//            SpUtil.saveIsNightMode(!SpUtil.getIsNightMode());
+//            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+//                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            Intent intent = new Intent(this, this.getClass());
+            intent.putExtra("pid", pid);
+            startActivity(intent);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+           // pid = getIntent().getStringExtra("pid");
+            //presenter.getCategoryNovels();
+//            mDbManager = DatabaseManager.getInstance();
+//            login_admin = (Login_admin) SpUtil.readObject(this);
+        } else {
+            j++;
+            if (j != 1) {
+                presenter.getNovels(pid);
+            }
         }
+
     }
 
     int z = 1;
