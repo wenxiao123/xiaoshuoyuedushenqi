@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="night_textcolor" type="id"></item>
+    <item name="night_drawable" type="id"></item>
+    <item name="night_background" type="id"></item>
+    <item name="night_hinttextcolor" type="id"></item>
+    <item name="night_drawableleft" type="id"></item>
+    <item name="night_imageview" type="id"></item>
+</resources>

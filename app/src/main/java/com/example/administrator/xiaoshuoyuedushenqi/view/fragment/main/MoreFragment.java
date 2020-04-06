@@ -1,12 +1,11 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
-import android.app.UiModeManager;
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatDelegate;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,6 +36,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.GlideCacheUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.MarketTools;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.DayNightManager;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.VersionUtil;
@@ -46,7 +44,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AdminSetActiv
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FeedbackActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.LoginActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
-import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SuishizhuanxianjinActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.gson.Gson;
@@ -55,8 +52,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -67,7 +62,7 @@ import okhttp3.RequestBody;
 /**
  * @author Created on 2020/2/20
  */
-public class MoreFragment extends BaseFragment implements View.OnClickListener {
+public class MoreFragment extends BaseFragment implements View.OnClickListener ,DayNightManager.OnThemeChangeListener{
     private static final String TAG = "MoreFragment";
 
     private View mCheckUpdateV;
@@ -155,21 +150,28 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
                 switch (position) {
                     case 0:
                         App.init(getContext());
-                        if (isNight) {
+                        isNight = SpUtil.getIsNightMode();
+//                        final UiModeManager uiModeManager = (UiModeManager)getActivity().getSystemService(Context.UI_MODE_SERVICE);
+                        if (isNight==true) {
                             isNight = false;
                             App.updateNightMode(isNight);
-                            //uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+                          //  uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
                         } else {
                             isNight = true;
                             App.updateNightMode(isNight);
-                            //uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+                           // uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
                         }
+//
                         SpUtil.saveIsNightMode(isNight);
+//                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//                        AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+//                                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                         getActivity().finish();
                         Intent intent = new Intent(getActivity(), getActivity().getClass());
                         intent.putExtra("is_naghit", "2");
                         startActivity(intent);
-                        getActivity().overridePendingTransition(0, 0);
+                        getActivity().overridePendingTransition( R.anim.activity_in,R.anim.activity_out);
+                       // DayNightManager.getInstance().setNight(isNight);
                         break;
                 }
             }
@@ -405,5 +407,17 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         if (login_admin != null) {
             postMessage();
         }
+//        if (!isNight) {
+//            strings2[0] = "夜间模式";
+//        } else {
+//            strings2[0] = "白天模式";
+//        }
+//        mainRecyleAdapter2 = new MainRecyleAdapter(getContext(), ints2, strings2);
+//        recyclerView2.setAdapter(mainRecyleAdapter2);
+    }
+
+    @Override
+    public void onThemeChanged() {
+
     }
 }

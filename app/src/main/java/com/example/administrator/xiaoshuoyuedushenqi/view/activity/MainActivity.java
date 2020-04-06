@@ -9,12 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -132,11 +134,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.zhh.android");//要接收的广播
         registerReceiver(receiver, intentFilter);//注册接收者
+        isNightthod=SpUtil.getIsNightMode();
     }
     String isload=null;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void doAfterInit() {
+
         if (getSavedInstanceState() != null) {
             // 取出保存的 Fragment，并用 mCurrFragment 记录当前显示的 Fragment
             mBookshelfFragment = mFragmentManager.getFragment(getSavedInstanceState(), KEY_BOOKSHELF_FG);
@@ -185,9 +189,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             mMoreBeforeIv.setVisibility(View.INVISIBLE);
             changeFragment(FG_MORE);
         }
-        App.init(this);
-        boolean isNight= SpUtil.getIsNightMode();
-        App.updateNightMode(isNight);
     }
 
     @Override
@@ -309,22 +310,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void checked(){
         // 如果已经点击了该菜单项，无视该操作
-        if (mBookMarkAfter.getVisibility() == View.VISIBLE) {
+        if (mDiscoveryAfterIv.getVisibility() == View.VISIBLE) {
             return;
         }
         // 在开启当前菜单项的动画前，先切换其他菜单项的 icon
         mBookshelfBeforeIv.setVisibility(View.VISIBLE);
         mBookshelfAfterIv.setVisibility(View.INVISIBLE);
-        mDiscoveryBeforeIv.setVisibility(View.VISIBLE);
-        mDiscoveryAfterIv.setVisibility(View.INVISIBLE);
         mMoreBeforeIv.setVisibility(View.VISIBLE);
         mMoreAfterIv.setVisibility(View.INVISIBLE);
+        mBookMarkBefore.setVisibility(View.VISIBLE);
+        mBookMarkAfter.setVisibility(View.INVISIBLE);
         // 开启当前菜单项的动画
-        initBookmarkShowAnim();
-        mBookMarkAfter.setVisibility(View.VISIBLE);
-        mBookmarkAnim.start();
+        initDiscoveryShowAnim();
+        mDiscoveryAfterIv.setVisibility(View.VISIBLE);
+        mDiscoveryAnim.start();
         // 切换 Fragment
-        changeFragment(FG_BOOKMARK);
+        changeFragment(FG_DISCOVERY);
     }
     /**
      * 初始化“书架”图标的显示动画
@@ -560,6 +561,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 //            MainActivity.this.stopService(i);
         }
     }
+    boolean isNightthod;
 
     @Override
     protected void onDestroy() {

@@ -427,7 +427,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 refresh();
                 break;
             case R.id.paixu:
-                Log.e("QQQ", "onClick: "+isRefresh);
+              //  Log.e("QQQ", "onClick: "+isRefresh);
                 if(catalogDataAll.size()>0){
                     isRefresh=true;
                 }else {

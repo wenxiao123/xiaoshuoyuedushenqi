@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -284,6 +286,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         return new ReadPresenter();
     }
 
+    /**
+     *
+     */
     String mAuthor = "";
     String adress = "";
     App app;
@@ -317,8 +322,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mStyle = SpUtil.getTextStyle();
         mBrightness = SpUtil.getBrightness();
         mIsNightMode = SpUtil.getIsNightMode();
+       // Log.e("qqq1", "initData: "+mIsNightMode);
         mTurnType = SpUtil.getTurnType();
-
         // 其他
         mDbManager = DatabaseManager.getInstance();
         login_admin = (Login_admin) SpUtil.readObject(this);
@@ -334,6 +339,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     @Override
     protected void initView() {
+        App.init(this);
         tv_nodata=findViewById(R.id.tv_nodata);
         tv_jainju = findViewById(R.id.tv_jainju);
         tv_jainju.setText((int)mRowSpace + "");
@@ -500,6 +506,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 break;
         }
         mPageView.setBackgroundColor(bgColor);
+        if(mIsNightMode==true){
+            mPageView.setBackgroundColor(getResources().getColor(R.color.read_night_mode_back_bg));
+        }
         tv_textsize = findViewById(R.id.tv_textsize);
         mNovelTitleTv = findViewById(R.id.tv_read_novel_title);
         mNovelTitleTv1 = findViewById(R.id.tv_read_novel_title1);
@@ -1018,7 +1027,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     @Override
     protected void doAfterInit() {
-        Log.e("QQQ", "doAfterInit: "+mNovelUrl+" "+chpter_id);
+       // Log.e("QQQ", "doAfterInit: "+mNovelUrl+" "+chpter_id);
         if (mType == 0) {
             // 先通过小说 url 获取所有章节 url 信息
             //mPresenter.getChapterList(mid);
@@ -1064,8 +1073,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             sys_select.setImageResource(R.mipmap.sys_select);
             ScreenUtil.setWindowBrightness(this, mBrightness);
         }
-
-        if (mIsNightMode) { // 夜间模式
+       // Log.e("QQQ", "initData: "+mIsNightMode);
+        if (mIsNightMode==true) { // 夜间模式
             nightMode();
         } else {    // 日间模式
             dayMode();
@@ -1170,10 +1179,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         SpUtil.saveRowSpace(mRowSpace);
         SpUtil.saveTheme(mTheme);
         SpUtil.saveBrightness(mBrightness);
-        SpUtil.saveIsNightMode(mIsNightMode);
         SpUtil.saveTurnType(mTurnType);
-
-        // 解除监听
+        SpUtil.saveIsNightMode(mIsNightMode);
         getContentResolver().unregisterContentObserver(mBrightnessObserver);
     }
 
@@ -2324,6 +2331,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     dayMode();
                 }
                 hideBar();
+                app.setNight(true);
                 break;
             case R.id.iv_read_setting:
             case R.id.tv_read_setting:

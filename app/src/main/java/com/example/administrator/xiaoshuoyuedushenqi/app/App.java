@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.arialyy.aria.core.Aria;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.util.CrashHandler;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
@@ -29,6 +30,15 @@ public class App extends Application {
 
     private static Context context;
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
+    boolean isNight;
+
+    public boolean isNight() {
+        return isNight;
+    }
+
+    public void setNight(boolean night) {
+        isNight = night;
+    }
 
     public List<Cataloginfo> getCatalogDataAll() {
         return catalogDataAll;
@@ -46,6 +56,8 @@ public class App extends Application {
 //        crashHandler.init();
         context = getApplicationContext();
         Aria.init(this);
+        init(getContext());
+        App.updateNightMode(SpUtil.getIsNightMode());
 //        Bmob.initialize(this, "ce63bdbbd4197409b82920b0835a42eb");
 //        BmobUpdateAgent.setUpdateCheckConfig(false);
         new Thread(new Runnable() {

@@ -76,7 +76,7 @@
         android:id="@+id/rv_read_top_bar"
         android:layout_width="0dp"
         android:layout_height="90dp"
-        android:background="@color/white"
+        android:background="#F7F7F7"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"

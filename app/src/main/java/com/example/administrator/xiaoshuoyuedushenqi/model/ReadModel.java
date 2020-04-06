@@ -133,7 +133,7 @@ public class ReadModel implements IReadContract.Model {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
+              //Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");

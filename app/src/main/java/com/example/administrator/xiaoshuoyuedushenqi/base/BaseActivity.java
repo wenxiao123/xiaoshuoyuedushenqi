@@ -1,12 +1,18 @@
 package com.example.administrator.xiaoshuoyuedushenqi.base;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 
 /**
@@ -17,10 +23,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     protected T mPresenter;
     private Bundle mSavedInstanceState;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        App.updateNightMode(isNight);
         doBeforeSetContentView();
         setContentView(getLayoutId());
 
@@ -37,8 +43,38 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         initData();
         initView();
         doAfterInit();
+//        String is_naghit=intent.getStringExtra("is_naghit");
+//        if(is_naghit!=null&&is_naghit.equals("2")){
+//            mBookshelfBeforeIv.setVisibility(View.VISIBLE);
+//            mBookshelfAfterIv.setVisibility(View.INVISIBLE);
+//            mDiscoveryBeforeIv.setVisibility(View.VISIBLE);
+//            mDiscoveryAfterIv.setVisibility(View.INVISIBLE);
+//            mBookMarkBefore.setVisibility(View.VISIBLE);
+//            mBookMarkAfter.setVisibility(View.INVISIBLE);
+//            mMoreAfterIv.setVisibility(View.VISIBLE);
+//            mMoreBeforeIv.setVisibility(View.INVISIBLE);
+//            changeFragment(FG_MORE);
+//        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        App app= (App) getApplication();
+        App.init(this);
+        if(app.isNight()==true) {
+            app.setNight(false);
+            App.updateNightMode(!SpUtil.getIsNightMode());
+            finish();
+//            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+//                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            Intent intent = new Intent(this, this.getClass());
+            //intent.putExtra("is_naghit", "2");
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

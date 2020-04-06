@@ -237,7 +237,7 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
     private List<NovalInfo> mNovelSourceDataList=new ArrayList<>(); // 小说源列表
     @Override
     public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
-        Log.e("QQQ", "getNovelsSourceSuccess: "+novelSourceDataList.size());
+       // Log.e("QQQ", "getNovelsSourceSuccess: "+novelSourceDataList.size());
         mProgressBar.setVisibility(View.GONE);
         mNovelSourceDataList.clear();
         if(novelSourceDataList.size()==0){
