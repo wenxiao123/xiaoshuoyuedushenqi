@@ -175,9 +175,9 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             float prent = (chpid / wight) * 100;
             NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMaximumFractionDigits(2);
-            if(mDataList.get(i).getSecondPosition()>2) {
+            if (mDataList.get(i).getSecondPosition() > 2) {
                 contentViewHolder.tv_position.setText(nf.format(prent) + "%");
-            }else {
+            } else {
                 contentViewHolder.tv_position.setText("未读");
             }
 //            NumberFormat nf = NumberFormat.getNumberInstance();
@@ -202,7 +202,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                 int wight = mDataList.get(i).getWeight();
                 //Log.e("TAG", "onBindViewHolder: " + chpid + " " + wight+" "+mDataList.get(i).getPosition());
                 float prent = ((float) chpid / (float) wight) * 100;
-                if (chpid != 1) {
+                if (mDataList.get(i).getPosition() >= 1) {
                     contentViewHolder.tv_position.setText(nf.format(prent) + "%");
                 } else {
                     contentViewHolder.tv_position.setText("未读");

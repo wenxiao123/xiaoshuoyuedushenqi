@@ -59,7 +59,7 @@ public class App extends Application {
         context = getApplicationContext();
         Aria.init(this);
 //        init(getContext());//
-        if(SpUtil.getIsNightMode()==true){
+        if(SpUtil.getIsSysNightMode()==true){
             AppCompatDelegate.setDefaultNightMode( AppCompatDelegate.MODE_NIGHT_YES );
         }else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);

@@ -84,7 +84,7 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
     @Override
     protected void doBeforeSetContentView() {
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);   //隐藏标题栏
-        StatusBarUtil.setTranslucentStatus(this);
+        StatusBarUtil.setLightColorStatusBar(this);
         searchResultPresenter=new SearchResultPresenter();
     }
 /*
@@ -243,8 +243,10 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
         if(novelSourceDataList.size()==0){
             showShortToast("暂无搜索小说");
             mNoneTv.setVisibility(View.VISIBLE);
+            mNovelSourceRv.setVisibility(View.GONE);
         }else {
             mNoneTv.setVisibility(View.GONE);
+            mNovelSourceRv.setVisibility(View.VISIBLE);
         }
         // 列表显示小说源
         mNovelSourceDataList = novelSourceDataList;

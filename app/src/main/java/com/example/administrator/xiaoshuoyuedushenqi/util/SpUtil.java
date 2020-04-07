@@ -23,9 +23,10 @@ public class SpUtil {
     private static final String KEY_THEME = "key_theme";            // 阅读主题
     private static final String KEY_BRIGHTNESS = "key_brightness";  // 亮度
     private static final String KEY_IS_NIGHT_MODE= "key_is_night_mode";  // 是否为夜间模式
+    private static final String KEY_IS_SYS_NIGHT_MODE= "key_is_sys_night_mode";  // 是否为夜间模式
     private static final String KEY_TURN_TYPE = "key_turn_type";  // 翻页模式
     private static final String KEY_TEXTSTYLE_TYPE = "key_textstyle";  // 字体模式
-    private static final float DEFAULT_TEXT_SIZE = 55f;//App.getContext().getResources().getDimension(R.dimen.dp_15);
+    private static final float DEFAULT_TEXT_SIZE = 18f;//App.getContext().getResources().getDimension(R.dimen.dp_15);
     private static final float DEFAULT_ROW_SPACE = 35f;
     private static final int DEFAULT_THEME = 0;
     private static final float DEFAULT_BRIGHTNESS = -1f;
@@ -103,6 +104,20 @@ public class SpUtil {
         editor.putBoolean(KEY_IS_NIGHT_MODE, isNightMode);
         editor.apply();
     }
+
+    public static void saveIsSysNightMode(boolean isNightMode) {
+        SharedPreferences.Editor editor = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(KEY_IS_SYS_NIGHT_MODE, isNightMode);
+        editor.apply();
+    }
+
+    public static boolean getIsSysNightMode() {
+        SharedPreferences sp = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return sp.getBoolean(KEY_IS_SYS_NIGHT_MODE, DEFAULT_IS_NIGHT_MODE);
+    }
+
 
     public static boolean getIsNightMode() {
         SharedPreferences sp = App.getContext()

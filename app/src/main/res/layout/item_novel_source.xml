@@ -77,7 +77,7 @@
         android:layout_below="@id/tv_item_novel_source_introduce"
         android:layout_toEndOf="@id/iv_item_novel_source_cover"
         android:id="@+id/tv_item_bookshelf"
-        android:layout_width="@dimen/dp_90"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="加入书架"
         android:gravity="center"

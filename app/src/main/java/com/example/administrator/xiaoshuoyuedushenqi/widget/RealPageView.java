@@ -21,6 +21,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.EpubData;
+import com.scwang.smartrefresh.layout.util.DensityUtil;
 
 import java.util.List;
 
@@ -1088,7 +1089,7 @@ public class RealPageView extends PageView{
      * 设置文字大小
      */
     public void setTextSize(float textSize) {
-        mTextSize = textSize;
+        mTextSize = DensityUtil.dp2px(textSize);
         // hashMap 缓存作废
         mFirstPosMap.clear();
         updateBitmap();

@@ -67,6 +67,22 @@ public class Categorys_one {
 
     List<Text> text;
 
+    @Override
+    public String toString() {
+        return "Categorys_one{" +
+                "id='" + id + '\'' +
+                ", novel_id='" + novel_id + '\'' +
+                ", reurl='" + reurl + '\'' +
+                ", create_time='" + create_time + '\'' +
+                ", update_time='" + update_time + '\'' +
+                ", url='" + url + '\'' +
+                ", chapter_sum='" + chapter_sum + '\'' +
+                ", captername='" + captername + '\'' +
+                ", div='" + div + '\'' +
+                ", text=" + text +
+                '}';
+    }
+
     public String getId() {
         return id;
     }

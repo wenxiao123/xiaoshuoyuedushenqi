@@ -1,12 +1,16 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.RequiresApi;
 
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.RankAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;

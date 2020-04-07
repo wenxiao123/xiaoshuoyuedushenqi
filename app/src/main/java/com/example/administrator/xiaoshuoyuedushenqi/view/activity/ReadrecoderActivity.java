@@ -191,9 +191,6 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         }else {
             tv_nodata.setVisibility(View.GONE);
         }
-//        if (novelNameList.isEmpty()) {
-//            return;
-//        }
         noval_readcoreds.clear();
         setRecyclerViewData(novelNameList);
     }
@@ -239,11 +236,12 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         novelSourceAdapter.setOnNovelSourceListener(new NovelSourceAdapter.NovelSourceListener() {
             @Override
             public void clickItem(int position) {
+                Log.e("QQQ", "clickItem: "+noval_readcoreds.get(position));
                 Intent intent = new Intent(ReadrecoderActivity.this, ReadActivity.class);
                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, noval_readcoreds.get(position).getNovel_id());
                 intent.putExtra(ReadActivity.KEY_ZJ_ID, noval_readcoreds.get(position).getChapter_id());
                 intent.putExtra(ReadActivity.KEY_NAME, noval_readcoreds.get(position).getTitle());
-                intent.putExtra("first_read", 0);
+                intent.putExtra("first_read", 2);
                 String weigh=noval_readcoreds.get(position).getWeigh();
                 intent.putExtra("weigh",Integer.parseInt(weigh));//
                 intent.putExtra(ReadActivity.KEY_COVER, noval_readcoreds.get(position).getPic());
@@ -270,9 +268,9 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
                                     mDbManager.deleteBookReadcoderNovel(noval_readcoreds.get(position).getNovel_id());
                                 }
 
-                                if(login_admin==null){
+                                //if(login_admin==null){
                                     requestPost();
-                                }
+                               // }
                             }
 
                             @Override
@@ -304,23 +302,4 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         isRefresh=true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        App app= (App) getApplication();
-        //App.init(this);
-        if(app.isNight()==true) {
-            app.setNight(false);
-//            App.updateNightMode(SpUtil.getIsNightMode());
-           finish();
-            //SpUtil.saveIsNightMode(SpUtil.getIsNightMode());
-            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-            Intent intent = new Intent(this, this.getClass());
-            //intent.putExtra("is_naghit", "2");
-            startActivity(intent);
-            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
-        }
-    }
 }

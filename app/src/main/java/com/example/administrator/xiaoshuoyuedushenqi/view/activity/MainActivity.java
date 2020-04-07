@@ -553,12 +553,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             App.getInstance().exit();
         }
     }
+
     public class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             updata2();
-//            Intent i = new Intent(MainActivity.this, CacheService.class);
-//            MainActivity.this.stopService(i);
         }
     }
     boolean isNightthod;
@@ -566,21 +565,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        App app= (App) getApplication();
-        //App.init(this);
-        if(app.isNight()==true) {
-            app.setNight(false);
-//            App.updateNightMode(SpUtil.getIsNightMode());
-//            finish();
-            //SpUtil.saveIsNightMode(SpUtil.getIsNightMode());
-            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-            Intent intent = new Intent(this, this.getClass());
-            //intent.putExtra("is_naghit", "2");
-            startActivity(intent);
-            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
-        }
+//        App app= (App) getApplication();
+//        if(app.isNight()==true) {
+//            app.setNight(false);
+//            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+//                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+//            Intent intent = new Intent(this, this.getClass());
+//            startActivity(intent);
+//            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
+//        }
     }
 
     @Override

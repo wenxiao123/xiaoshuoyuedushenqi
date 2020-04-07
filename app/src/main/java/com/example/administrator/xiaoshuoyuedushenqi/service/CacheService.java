@@ -88,6 +88,7 @@ public class CacheService extends Service {
             }
         }
     };
+    private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{0,9})[章节卷集部篇回](\\s*)";
    int f;
    public void postBooks_che() {
         String url = UrlObtainer.GetUrl() + "api/index/Books_che";
@@ -110,18 +111,13 @@ public class CacheService extends Service {
                             String content = jsonArray.getJSONObject(i).getString("content");
                             String load_title=title.replace("&nbsp"," ").replace("</br>","\n");
                             String load_content=content.replace("&nbsp"," ").replace("</br>","\n");
-                            if(!load_title.contains("第")){
-                                String s = Pattern.compile("[^0-9]").matcher(title).replaceAll("");
-//                                String str =title;
-//                                String regex = "\\d*";
-//                                Pattern p = Pattern.compile(regex);
-//                                Matcher m = p.matcher(str);
-//                                while (m.find()) {
-//                                    if (!"".equals(m.group()))
+                            if(!load_title.contains("第")||!load_title.startsWith("第")){
+                                //String s = Pattern.compile("[^0-9]").matcher(title).replaceAll("");
+                                String s = Pattern.compile(ChapterPatternStr).matcher(title).replaceAll("");
                                 String title2 = "";
                                 if(load_title.contains(s)) {
                                     title2=load_title.replace(s, "第" + s + "章 ");
-                                    //Log.e("QQQ", "onResponse: " + s + " " + title2);
+                                  //  Log.e("QQQ", "onResponse: " + s + "***" + title2);
                                 }
 //                                }
                                 addTxtToFileBuffered( title2+ "\n");

@@ -46,6 +46,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryinfoAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryzyAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
@@ -486,19 +487,12 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 sendBroadcast(intent_recever);
                 break;
             case R.id.rel_book_load:
-//                z=1;
-//                postBooks_che();
                 Intent servive_intent = new Intent(NovelIntroActivity.this, CacheService.class);
                 servive_intent.putExtra("bookname", noval_details.getTitle());
                 servive_intent.putExtra("id", pid);
                 servive_intent.putExtra("bookcover", noval_details.getPic());
                 servive_intent.putExtra("weigh", weigh);
                 bindService(servive_intent, conn, BIND_AUTO_CREATE);
-//                bookname = intent.getStringExtra("bookname");
-//                id = intent.getIntExtra("id", 1);
-//                bookcover = intent.getStringExtra("bookcover");
-//                weigh = intent.getIntExtra("weigh", 1);
-                //handler.sendEmptyMessage(1);
                 iv_load.setVisibility(View.GONE);
                 tv_che.setText("正在缓存：0%");
                 BookshelfNovelDbData bookshelf = new BookshelfNovelDbData(pid,noval_details.getTitle(),noval_details.getPic(),1,weigh,1+"");
@@ -510,7 +504,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 break;
             case R.id.tv_begain_read:
                 BookshelfNovelDbData bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
-                Log.e("WWW", "onClick: "+bookshelfNovelDbData1+" "+is_Cache);
                 if (bookshelfNovelDbData1!=null&&is_Cache==false) {
                     Intent read_intent = new Intent(NovelIntroActivity.this, ReadActivity.class);
                     read_intent.putExtra(ReadActivity.KEY_NAME, noval_details.getTitle());
@@ -558,25 +551,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
                 break;
             case R.id.iv_novel_intro_menu:
-                //showSettingBar();
                 showPupowindpw(constraintLayout);
-//                PopupMenu popupMenu = new PopupMenu(NovelIntroActivity.this, mMenuIv);
-//                popupMenu.getMenuInflater().inflate(R.menu.menu_novel_intro, popupMenu.getMenu());
-//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem menuItem) {
-//                        switch (menuItem.getItemId()) {
-//                            case R.id.menu_novel_intro_show_in_browser:
-//                                // 在浏览器显示
-//
-//                                break;
-//                            default:
-//                                break;
-//                        }
-//                        return false;
-//                    }
-//                });
-//                popupMenu.show();
                 break;
             case R.id.tv_novel_intro_catalog:
                 if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
@@ -603,15 +578,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 break;
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        if (binder != null) {
-//            unbindService(conn);
-//        }
-    }
-
     IParagraphData paragraphData = new ParagraphData();
 
     private Boolean ReadData(String filePath, IParagraphData paragraphData) {
@@ -746,33 +712,28 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        App app = (App) getApplication();
-        App.init(this);
-        if (app.isNight() == true) {
-            app.setNight(false);
-//            App.updateNightMode(!SpUtil.getIsNightMode());
-              finish();
-//            SpUtil.saveIsNightMode(!SpUtil.getIsNightMode());
+//        App app = (App) getApplication();
+//        if (app.isNight() == true) {
+//            app.setNight(false);
+//            finish();
 //            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-//                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-//                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-            Intent intent = new Intent(this, this.getClass());
-            intent.putExtra("pid", pid);
-            startActivity(intent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-           // pid = getIntent().getStringExtra("pid");
-            //presenter.getCategoryNovels();
-//            mDbManager = DatabaseManager.getInstance();
-//            login_admin = (Login_admin) SpUtil.readObject(this);
-        } else {
+//            AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+//                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+//            Intent intent = new Intent(this, this.getClass());
+//            intent.putExtra("pid", pid);
+//            startActivity(intent);
+//            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+//           // pid = getIntent().getStringExtra("pid");
+//            //presenter.getCategoryNovels();
+////            mDbManager = DatabaseManager.getInstance();
+////            login_admin = (Login_admin) SpUtil.readObject(this);
+//        } else
+           // {
             j++;
             if (j != 1) {
                 presenter.getNovels(pid);
             }
-        }
+       // }
 
     }
 
@@ -797,8 +758,20 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                         for (int i = 0; i < jsonArray.length(); i++) {
                             String title = jsonArray.getJSONObject(i).getString("title");
                             String content = jsonArray.getJSONObject(i).getString("content");
-                            addTxtToFileBuffered(title + "\n");
-                            addTxtToFileBuffered(content + "\n");
+                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
+                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
+                            if (!load_title.contains("第")) {
+                                String s = Pattern.compile("[^0-9]").matcher(title).replaceAll("");
+                                String title2 = "";
+                                if (load_title.contains(s)) {
+                                    title2 = load_title.replace(s, "第" + s + "章 ");
+                                }
+                                addTxtToFileBuffered(title2 + "\n");
+                                addTxtToFileBuffered(load_content + "\n");
+                            } else {
+                                addTxtToFileBuffered(load_title + "\n");
+                                addTxtToFileBuffered(load_content + "\n");
+                            }
                             Message message = new Message();
                             message.what = 2;
                             message.arg1 = i;
@@ -926,7 +899,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         });
     }
 
-    CategoryinfoAdapter adapter;
+    CategoryzyAdapter adapter;
     private List<DiscoveryNovelData> mNovelDataList = new ArrayList<>();
     Noval_details noval_details;
     int weigh = 0;
@@ -949,6 +922,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 public void onDataChange(String data) {
                     tv_che.setText(data);
                     if(data.equals("已缓存")){
+                        tv_book_add.setText("移除书架");
                         binder.stopSelf();
                     }
                 }
@@ -964,15 +938,19 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         progressBar.setVisibility(View.GONE);
         this.noval_details = noval_details;
         if (noval_details != null) {
-
-            adapter = new CategoryinfoAdapter(this, novalDetails);
-            adapter.setOnCategoryNovelListener(new CategoryinfoAdapter.CategoryNovelListener() {
+//            categoryViewHolder.novelList.setLayoutManager(new GridLayoutManager(mContext, 4));
+//            CategoryzyAdapter adapter = new CategoryzyAdapter(mContext,
+//                    mNovelDataList.get(i).getData_list());
+            adapter = new CategoryzyAdapter(this, novalDetails);
+            adapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
                 @Override
                 public void clickItem(int novelName) {
                     Intent intent = new Intent(NovelIntroActivity.this, NovelIntroActivity.class);
                     // 传递小说名，进入搜查页后直接显示该小说的搜查结果
                     intent.putExtra("pid", novalDetails.get(novelName).getId() + "");
                     startActivity(intent);
+                    overridePendingTransition(R.anim.zoom_enter,
+                            R.anim.zoom_exit);
                 }
             });
             BookshelfNovelDbData novelDbData=mDbManager.selectBookshelfNovel(noval_details.getId()+"");

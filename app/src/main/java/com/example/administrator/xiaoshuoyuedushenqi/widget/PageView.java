@@ -18,6 +18,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.EpubData;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ScreenUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
+import com.scwang.smartrefresh.layout.util.DensityUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,6 +57,11 @@ public class PageView extends View {
     protected String mContent = "";    // 文本内容
     protected int mPosition = 0;  // 当前页第一个字的索引
     protected int mNextPosition;  // 下一页第一个字的索引
+
+    public int getmNextFirstPos() {
+        return mNextPosition;
+    }
+
 
     /* epub 绘制用 */
     protected List<EpubData> mEpubDataList = new ArrayList<>();   // epub 内容
@@ -103,7 +109,7 @@ public class PageView extends View {
         mPaint.setAntiAlias(true);
         mPaint.setColor(getResources().getColor(R.color.read_theme_0_text));
 
-        mTextSize = SpUtil.getTextSize();
+        mTextSize = DensityUtil.dp2px(SpUtil.getTextSize());
         mRowSpace = SpUtil.getRowSpace();
         mSype=SpUtil.getTextStyle();
     }

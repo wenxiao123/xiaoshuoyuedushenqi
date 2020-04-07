@@ -212,7 +212,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
 
     List longs = new ArrayList<>();
     int leng = 0;
-    private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{1,9})[章节卷集部篇回](\\s*)";
+    private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{0,9})[章节卷集部篇回](\\s*)";
 
     private Boolean ReadData(String filePath, IParagraphData paragraphData, List<Chapter> chapters) {
         if(filePath==null){
@@ -672,9 +672,9 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     mIsReversing = true;
                     Collections.reverse(mChapterNameList);
                     Collections.reverse(mChapterUrlList);
-                    mCatalogAdapter.setPosition(z);
+                    mCatalogAdapter.setPosition(0);
                     mCatalogAdapter.notifyDataSetChanged();
-                    mCatalogListRv.scrollToPosition(z);
+                    mCatalogListRv.scrollToPosition(0);
                     mIsReverse = false;
                     mIsReversing = false;
                 } else {
@@ -683,9 +683,9 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     mIsReversing = true;
                     Collections.reverse(mChapterNameList);
                     Collections.reverse(mChapterUrlList);
-                    mCatalogAdapter.setPosition(mCatalogAdapter.getItemCount()-1-z);
+                    mCatalogAdapter.setPosition(0);
                     mCatalogAdapter.notifyDataSetChanged();
-                    mCatalogListRv.scrollToPosition(mCatalogAdapter.getItemCount()-z);
+                    mCatalogListRv.scrollToPosition(0);
                     mIsReverse = true;
                     mIsReversing = false;
                 }

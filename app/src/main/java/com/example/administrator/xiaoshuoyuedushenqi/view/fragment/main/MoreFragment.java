@@ -88,7 +88,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
         StatusBarUtil.setTranslucentStatus(getActivity());
         mainRecyleAdapter1 = new MainRecyleAdapter(getContext(), ints1, strings1);
         recyclerView1.setAdapter(mainRecyleAdapter1);
-        isNight = SpUtil.getIsNightMode();
+        isNight = SpUtil.getIsSysNightMode();
         mainRecyleAdapter1.setOnCatalogListener(new MainRecyleAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
@@ -150,19 +150,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                 switch (position) {
                     case 0:
                         App.init(getContext());
-                        isNight = SpUtil.getIsNightMode();
-//                        final UiModeManager uiModeManager = (UiModeManager)getActivity().getSystemService(Context.UI_MODE_SERVICE);
-                        if (isNight==true) {
-                            isNight = false;
-                           // App.updateNightMode(isNight);
-                          //  uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
-                        } else {
-                            isNight = true;
-                           // App.updateNightMode(isNight);
-                           // uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
-                        }
-//
-                        SpUtil.saveIsNightMode(isNight);
+                        isNight = SpUtil.getIsSysNightMode();
+                        SpUtil.saveIsSysNightMode(!isNight);
                         int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                         AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
                                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);

@@ -448,6 +448,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                         mCatalogAdapter.notifyDataSetChanged();
                         mCatalogAdapter.setPosition(chapter_id - 1);
                         mCatalogListRv.scrollToPosition(chapter_id - 1);
+//                        mCatalogAdapter.setPosition(0);
+//                        mCatalogListRv.scrollToPosition(0);
                         mIsReverse = false;
                         mIsReversing = false;
                     } else {
@@ -459,6 +461,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
 //                    mCatalogAdapter.setPosition(mCatalogAdapter.getItemCount()-chapter_id);
                         mCatalogAdapter.notifyDataSetChanged();
 //                    mCatalogListRv.scrollToPosition(mCatalogAdapter.getItemCount()-chapter_id);
+                        mCatalogAdapter.setPosition(0);
+                        mCatalogListRv.scrollToPosition(0);
                         mIsReverse = true;
                         mIsReversing = false;
                     }

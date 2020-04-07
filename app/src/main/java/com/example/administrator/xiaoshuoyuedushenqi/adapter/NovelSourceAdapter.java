@@ -97,7 +97,7 @@ public class NovelSourceAdapter extends
         novelSourceViewHolder.introduce.setText("阅读至"+mNovelSourceDataList.get(i).getChapter_name());
         //novelSourceViewHolder.webSite.setText(mNovelSourceDataList.get(i).getUrl());
         if(databaseManager.isExistInBookshelfNovel(mNovelSourceDataList.get(i).getNovel_id())){
-            novelSourceViewHolder.tv_item_bookshelf.setText("已加入");
+            novelSourceViewHolder.tv_item_bookshelf.setText("已加入书架");
             novelSourceViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
             novelSourceViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_btn));
         }else {

@@ -346,6 +346,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             if (!searchText.equals(mLastSearch)) {
                 mSearchResultFragment.update(searchText);
             }
+
         } else {
             showSearchResFg();
         }
@@ -397,6 +398,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
      * 隐藏历史搜索 Fg，显示搜索结果 Fg
      */
     private void showSearchResFg() {
+       // Log.e("QQQ", "showSearchResFg: ", );
         if (mSearchResultFragment != null) {
             return;
         }
