@@ -35,10 +35,14 @@ public class MaleLikeModel implements IMaleLikeContract.Model {
         OkhttpUtil.getRequest(UrlObtainer.GetUrl()+"api/index/List_Type", new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("ASA", "onResponse: "+json);
-                Data bean = mGson.fromJson(json, Data.class);
-                List<Catagorys> catagorysList =bean.getData();
-                mPresenter.getCategoryNovelsSuccess(catagorysList);
+                try {
+                    Log.e("ASA", "onResponse: " + json);
+                    Data bean = mGson.fromJson(json, Data.class);
+                    List<Catagorys> catagorysList = bean.getData();
+                    mPresenter.getCategoryNovelsSuccess(catagorysList);
+                }catch (Exception ex){
+                    mPresenter.getCategoryNovelsError("获取分类小说失败");
+                }
             }
 
             @Override

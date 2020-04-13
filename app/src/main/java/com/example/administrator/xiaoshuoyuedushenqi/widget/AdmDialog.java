@@ -53,6 +53,7 @@ public class AdmDialog extends BaseDialog2 implements View.OnClickListener{
     public interface OnClickListener {
         void clickEnsure();
         void clickCancel();
+        void clickAddAdm();
     }
     Context context;
     @Override
@@ -108,6 +109,12 @@ public class AdmDialog extends BaseDialog2 implements View.OnClickListener{
                     .into(image);
             image.setOnClickListener(this);
         }
+        videoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         ImageView imagec =view.findViewById(R.id.icon_close);
         imagec.setOnClickListener(this);
         return view;
@@ -134,22 +141,28 @@ public class AdmDialog extends BaseDialog2 implements View.OnClickListener{
                 break;
             case R.id.img:
                 dismiss();
-                Intent intent=new Intent();
-                intent.setAction("android.intent.action.VIEW");
-                Uri content_url = Uri.parse("http://www.cnblogs.com");
-                intent.setData(content_url);
-                getContext().startActivity(intent);
+//                Intent intent=new Intent();
+//                intent.setAction("android.intent.action.VIEW");
+//                Uri content_url = Uri.parse("http://www.cnblogs.com");
+//                intent.setData(content_url);
+//                getContext().startActivity(intent);
+                if (mOnClickListener != null){
+                    mOnClickListener.clickAddAdm();
+                }
                 break;
             case R.id.icon_close:
                 dismiss();
                 break;
             case R.id.activity_opening_videoview:
                 dismiss();
-                Intent intent1=new Intent();
-                intent1.setAction("android.intent.action.VIEW");
-                Uri content_url1 = Uri.parse("http://www.cnblogs.com");
-                intent1.setData(content_url1);
-                getContext().startActivity(intent1);
+//                Intent intent1=new Intent();
+//                intent1.setAction("android.intent.action.VIEW");
+//                Uri content_url1 = Uri.parse("http://www.cnblogs.com");
+//                intent1.setData(content_url1);
+//                getContext().startActivity(intent1);
+                if (mOnClickListener != null){
+                    mOnClickListener.clickAddAdm();
+                }
                 break;
             case R.id.tv_dialog_tip_cancel:
                 dismiss();

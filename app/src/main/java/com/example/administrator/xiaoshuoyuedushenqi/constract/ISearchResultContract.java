@@ -19,9 +19,9 @@ public interface ISearchResultContract {
         void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList);     // 获取小说源成功
         void getNovelsSourceError(String errorMsg);     // 获取小说源失败
 
-        void getNovelsSource(String novelName);     // 获取小说源
+        void getNovelsSource(String novelName,int z);     // 获取小说源
     }
     interface Model {
-        void getNovelsSource(String novelName);     // 获取小说源
+        void getNovelsSource(String novelName,int z);     // 获取小说源
     }
 }

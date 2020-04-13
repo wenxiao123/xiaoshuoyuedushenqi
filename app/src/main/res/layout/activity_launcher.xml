@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_list_start_pic">
+    <FrameLayout
+        android:layout_marginTop="18dp"
+        android:id="@+id/start_skip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_gravity="right"
+            android:id="@+id/start_skip_count_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
+            android:text="点击跳转"
+            android:gravity="center"
+            android:background="@drawable/bg_start_page_circle"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            />
+    </FrameLayout>
+</LinearLayout>

@@ -3,7 +3,7 @@
     <!-- main -->
     <dimen name="bottom_bar_height">60dp</dimen>
     <dimen name="bottom_bar_icon_text_margin">1dp</dimen>
-
+    <dimen name="reading_default_text_size">20sp</dimen>
     <!-- discovery -->
     <dimen name="discovery_search_bar_height">40dp</dimen>
     <dimen name="discovery_search_bar_margin_top">18dp</dimen>

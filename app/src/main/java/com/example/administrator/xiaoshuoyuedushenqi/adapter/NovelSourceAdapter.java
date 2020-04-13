@@ -26,6 +26,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -110,16 +111,50 @@ public class NovelSourceAdapter extends
                     BookshelfNovelDbData dbData;
                     dbData = new BookshelfNovelDbData(mNovelSourceDataList.get(i).getNovel_id() + "", mNovelSourceDataList.get(i).getTitle(),
                             mNovelSourceDataList.get(i).getPic(), 1, 0, 0, 1+"", Integer.parseInt(mNovelSourceDataList.get(i).getWeigh()), mNovelSourceDataList.get(i).getSerialize() + "");
-                    databaseManager.insertBookshelfNovel(dbData);
+                    databaseManager.insertOrUpdateBook(dbData);
                     Intent intent_recever = new Intent("com.zhh.android");
                     mContext.sendBroadcast(intent_recever);
                     if(login_admin!=null){
                         setBookshelfadd(login_admin.getToken(),mNovelSourceDataList.get(i).getNovel_id());
                     }
-                    ((ReadrecoderActivity)mContext).finish();
+                    //((ReadrecoderActivity)mContext).finish();
+                    novelSourceViewHolder.tv_item_bookshelf.setText("已加入书架");
+                    novelSourceViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
+                    novelSourceViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_btn));
                 }
             });
         }
+        novelSourceViewHolder.tv_delect_bookshelf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final TipDialog tipDialog = new TipDialog.Builder(mContext)
+                        .setContent("是否清除阅读记录")
+                        .setCancel("取消")
+                        .setEnsure("确定")
+                        .setOnClickListener(new TipDialog.OnClickListener() {
+                            @Override
+                            public void clickEnsure() {
+                                if (login_admin != null) {
+                                    getDelectReadcoredData(login_admin.getToken(), mNovelSourceDataList.get(i).getNovel_id(), 1);
+                                }
+
+                                if (databaseManager.isExistInReadCoderNovel(mNovelSourceDataList.get(i).getNovel_id())) {
+                                    databaseManager.deleteBookReadcoderNovel(mNovelSourceDataList.get(i).getNovel_id());
+                                }
+                                //requestPost();
+//                                ((ReadrecoderActivity)mContext).requestPost();
+                            }
+
+                            @Override
+                            public void clickCancel() {
+
+                            }
+                        })
+                        .build();
+                tipDialog.show();
+            }
+        });
+
         novelSourceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,6 +169,41 @@ public class NovelSourceAdapter extends
             }
         });
     }
+
+    public void getDelectReadcoredData(String token, String novel_id,int type) {
+        if(novel_id==null){
+            return;
+        }
+        String url = UrlObtainer.GetUrl()+"api/Lookbook/del";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("type", type+"")
+                .add("novel_id", novel_id)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        String msg=jsonObject.getString("msg");
+                        getDelectReadcoredDataSuccess(msg);
+                    }else {
+                       getDelectReadcoredDataError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                getDelectReadcoredDataError(errorMsg);
+            }
+        });
+    }
+
     public void setBookshelfadd(String token, String novel_id) {
         String url = UrlObtainer.GetUrl()+"api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
@@ -165,19 +235,28 @@ public class NovelSourceAdapter extends
     }
     @Override
     public int getItemCount() {
-//        Log.d(TAG, "getItemCount: size = " + mNovelSourceDataList.size());
         return mNovelSourceDataList.size();
+    }
+    public void getDelectReadcoredDataSuccess(String msg) {
+        ((ReadrecoderActivity)mContext).getDelectReadcoredDataSuccess(msg);
+    }
+
+
+    public void getDelectReadcoredDataError(String errorMsg) {
+        ToastUtil.showToast(mContext,errorMsg);
+
     }
 
     class NovelSourceViewHolder extends RecyclerView.ViewHolder {
         ImageView cover;
         TextView name;
         TextView author;
-        TextView introduce;
+        TextView introduce,tv_delect_bookshelf;
         TextView webSite,tv_item_bookshelf;
 
         public NovelSourceViewHolder(@NonNull View itemView) {
             super(itemView);
+            tv_delect_bookshelf=itemView.findViewById(R.id.tv_delect_bookshelf);
             cover = itemView.findViewById(R.id.iv_item_novel_source_cover);
             name = itemView.findViewById(R.id.tv_item_novel_source_name);
             author = itemView.findViewById(R.id.tv_item_novel_source_author);

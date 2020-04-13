@@ -54,6 +54,10 @@ public class Constant {
     public static final String DB_NAME = "FReader.db";
     // 历史记录表
     public static final String TABLE_HISTORY = "TABLE_HISTORY";
+    // 网站记录表
+    public static final String TABLE_WEBSITE = "TABLE_WEBSITE";
+    public static final String WEBSITE_URL = "WEBSITE_URL";
+    public static final String WEBSITE_TYPE = "WEBSITE_TYPE";
     // 历史记录表的记录
     public static final String TABLE_HISTORY_ID = "TABLE_HISTORY_ID";       // 自增 id（主键）
     public static final String TABLE_HISTORY_WORD = "TABLE_HISTORY_WORD";   // 搜索词

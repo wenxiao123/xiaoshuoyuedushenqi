@@ -67,6 +67,7 @@ public class NovelInfoModel implements NovelInfoContract.Model {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    mPresenter.getNovelsError("请求错误");
                 }
             }
 

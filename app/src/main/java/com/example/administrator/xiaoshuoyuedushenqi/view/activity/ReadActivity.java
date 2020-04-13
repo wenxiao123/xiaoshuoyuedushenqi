@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -73,6 +75,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.OpfData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.EpubCatalogInitEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.NovelIntroInitEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
@@ -110,6 +113,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.IDN;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -121,6 +125,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.security.auth.login.LoginException;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -363,29 +369,17 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         mNovelProgressTv.setText(0 + "%");
                     }
                 } else {
-                    float chpid = mPageView.getPosition();
-                    float wight = mNovelContent.length();
-                    float prent = (chpid / wight) * 100;
-                    NumberFormat nf = NumberFormat.getNumberInstance();
-                    nf.setMaximumFractionDigits(2);
-//                    if(mDataList.get(i).getSecondPosition()>2) {
-//                        contentViewHolder.tv_position.setText(nf.format(prent) + "%");
-//                    }
-                    mNovelProgressTv.setText(nf.format(prent) + "%");
-                    //Log.e("QQQ", "loadTxtSuccess: "+mPageView.getPosition()+" "+text.length());
-//                    int o = 0;
-//                    for (int j = 0; j < longs.size(); j++) {
-//                        if (mPageView.getPosition() < (int) longs.get(0)) {
-//                            o = 0;
-//                            break;
-//                        } else if (mPageView.getPosition() < (int) longs.get(j)) {
-//                            o = j - 1;
-//                            break;
-//                        }
-//                    }
+                    if (mChapterNameList.size() == 0) {
+                        IParagraphData paragraphData = new ParagraphData();
+                        ReadData(adress, paragraphData, chapter);
+                    }
                     mNovelTitleTv1.setText((o + 1) + "/" + weigh);
                     mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
-                    if(mPageView.getmNextFirstPos()>=longs.get(o+1)&&longs.get(o+1)>mPageView.getPosition()) {
+                    float prent = ((float)(o + 1) / (float)weigh) * 100;
+                    NumberFormat nf = NumberFormat.getNumberInstance();
+                    nf.setMaximumFractionDigits(2);
+                    mNovelProgressTv.setText(nf.format(prent) + "%");
+                    if(o+1<longs.size()&&mPageView.getmNextFirstPos()>=longs.get(o+1)&&longs.get(o+1)>mPageView.getPosition()) {
                         last_position=mPageView.getPosition();
                         String s=mNovelContent.substring(mPageView.getPosition(),longs.get(o+1));
                         mPageView.initDrawText(s,1);
@@ -398,15 +392,25 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 if (mType == 0) {
                     nextNet();
                 } else if (mType == 1) {
-                    if(o+2<longs.size()-1) {
-                        Log.e("TTT", "next: "+o+" "+" "+(o + 2)+" "+longs.size());
+                    if(o<longs.size()-2) {
                         String s = mNovelContent.substring(longs.get(o + 1), longs.get(o + 2));
                         mPageView.initDrawText(s, 0);
                         o++;
-                    }else {
+                    }else if(o==longs.size()-2) {
+                        String s = mNovelContent.substring(longs.get(longs.size()-1), mNovelContent.length());
+                        mPageView.initDrawText(s, 0);
+                        o++;
+                    }else if(o==longs.size()-1){
                         showShortToast("当前页为最后一页");
                     }
-                    //showShortToast("已经到最后了");
+                    float chpid = o + 1;
+                    float wight = weigh;
+                    float prent = (chpid / wight) * 100;
+                    NumberFormat nf = NumberFormat.getNumberInstance();
+                    nf.setMaximumFractionDigits(2);
+                    mNovelProgressTv.setText(nf.format(prent) + "%");
+                    mNovelTitleTv1.setText((o + 1) + "/" + weigh);
+                    mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
                 } else if (mType == 2) {
                     nextEpub();
                 }
@@ -419,11 +423,18 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 } else if (mType == 1) {
                       if(o>0) {
                           String s = mNovelContent.substring(longs.get(o - 1), longs.get(o));
-                          mPageView.initDrawText(s, last_position - longs.get(o - 1));
+                          mPageView.initDrawText(s, s.length()-40);
                           o--;
                       }else{
-                          showShortToast("当前页为第一页");
+                    showShortToast("当前页为第一页");
                       }
+
+                    float prent = ((o + 1) / weigh) * 100;
+                    NumberFormat nf = NumberFormat.getNumberInstance();
+                    nf.setMaximumFractionDigits(2);
+                    mNovelProgressTv.setText(nf.format(prent) + "%");
+                    mNovelTitleTv1.setText((o + 1) + "/" + weigh);
+                    mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
                 } else if (mType == 2) {
                     preEpub();
                 }
@@ -492,6 +503,119 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     return true;
                 }
                 return false;
+            }
+        });
+        mPageView.setTouchListener(new RealPageView.TouchListener() {
+            @Override
+            public void center() {
+//                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+//                    hideBrightnessBar();
+//                    return true;
+//                }
+//                if (set_textstyle.getVisibility() == View.VISIBLE) {
+//                    hideTextstyle();
+//                    return true;
+//                }
+//                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+//                    hideSettingBar();
+//                    return true;
+//                }
+//                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+//                    // 隐藏上下栏
+//                    hideBar();
+//                    return true;
+//                }
+//                return false;
+                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+                    hideBrightnessBar();
+
+                }
+                if (set_textstyle.getVisibility() == View.VISIBLE) {
+                    hideTextstyle();
+
+                }
+                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+                    hideSettingBar();
+
+                }
+                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+                    // 隐藏上下栏
+                    hideBar();
+
+                }
+            }
+
+            @Override
+            public Boolean prePage() {
+//                if (isShow || isSpeaking){
+//                    return false;
+//                }
+//
+//                pageFactory.prePage();
+//                if (pageFactory.isfirstPage()) {
+//                    return false;
+//                }
+                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+
+                    return true;
+                }
+                if (set_textstyle.getVisibility() == View.VISIBLE) {
+
+                    return true;
+                }
+                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+
+                    return true;
+                }
+                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+                    // 隐藏上下栏
+
+                    return true;
+                }
+                if (mChapterIndex>=1) {
+                    return false;
+                }
+                return true;
+
+            }
+
+            @Override
+            public Boolean nextPage() {
+//                Log.e("setTouchListener", "nextPage");
+//                if (isShow || isSpeaking){
+//                    return false;
+//                }
+//
+//                pageFactory.nextPage();
+//                if (pageFactory.islastPage()) {
+//                    return false;
+//                }
+                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+
+                    return true;
+                }
+                if (set_textstyle.getVisibility() == View.VISIBLE) {
+
+                    return true;
+                }
+                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+
+                    return true;
+                }
+                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+
+                    return true;
+                }
+
+                if (mChapterIndex>=weigh) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public void cancel() {
+                //pageFactory.cancelPage();
             }
         });
         int theme = SpUtil.getTheme();
@@ -648,11 +772,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mIsUpdateChapter = false;
                 mCatalogProgressTv.setVisibility(View.GONE);
-//                if (mType == 0 || mType == 2) {
                 showChapter();
-//                } else if (mType == 1) {
-//                    mPageView.jumpWithProgress(mTxtNovelProgress);
-//                }
             }
         });
         sb_auto_read_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -758,7 +878,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     ProgressBar progressBar1;
-    int o,last_position;
+    int o, last_position;
+
     private void showPupowindpwTextStyle(View parent) {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.popu_textstyle, null);
@@ -774,7 +895,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 popupWindow.dismiss();
             }
         });
-        post_textStyle();
+        if (textStyles.size() == 0) {
+            post_textStyle();
+        } else {
+            initTextStyle(textStyles);
+        }
         popupWindow.setFocusable(false);
         popupWindow.setAnimationStyle(R.style.dialog_animation);
         // 设置允许在外点击消失
@@ -799,10 +924,14 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     @SuppressLint("WrongConstant")
     private void showPupowindpwChangeWebSite(View parent) {
+        if (mType == 1) {
+            showShortToast("本地缓存小说不支持换源功能");
+            return;
+        }
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.popu_changewebsite, null);
         is_all_one = false;
-        tv_nodata =view. findViewById(R.id.tv_nodata);
+        tv_nodata = view.findViewById(R.id.tv_nodata);
         s_line = view.findViewById(R.id.s_line);
         m_line = view.findViewById(R.id.m_line);
         tvCatalog = view.findViewById(R.id.tv_mulu);
@@ -908,14 +1037,17 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            stopTime();
-//            is_autoRead = false;
-//            tv_autoread.setImageResource(R.mipmap.kaiguan_close);
-            if (mType == 1) {
-                showShortToast("你已看完小说");
-            } else {
-                mChapterIndex++;
-                showChapter();
+            if (msg.what==1) {
+                stopTime();
+                if (mType == 1) {
+                    showShortToast("你已看完小说");
+                } else {
+                    mChapterIndex++;
+                    showChapter();
+                }
+            }else if(msg.what==2){
+                String href= (String) msg.obj;
+                new Thread(new sendValueToServer(href, weight + "", reurl)).start();
             }
         }
     };
@@ -934,6 +1066,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -941,6 +1074,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         JSONObject object = jsonObject.getJSONObject("data");
                         String img = object.getString("value");
                         String href = object.getString("url");
+                        String id= object.getString("id");
                         //String type=img.substring(img.length()-1,img.length()-4);
                         if (img.contains(".png") || img.contains(".jpg") || img.contains(".jpeg")) {
                             String https;
@@ -949,7 +1083,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             } else {
                                 https = UrlObtainer.GetUrl() + img;
                             }
-                            showAdm(https, href, false);
+                            showAdm(id,https, href, false);
                         } else if (img.contains(".mp4")) {
                             String https;
                             if (img.contains("http")) {
@@ -957,7 +1091,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             } else {
                                 https = UrlObtainer.GetUrl() + img;
                             }
-                            showAdm(https, href, true);
+                            showAdm(id,https, href, true);
                         }
                     } else {
                         return;
@@ -974,7 +1108,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         });
     }
 
-    private void showAdm(String href, String url, boolean is_video) {
+    private void showAdm(String id,String href, String url, boolean is_video) {
         final AdmDialog tipDialog = new AdmDialog.Builder(this)
                 .setContent("www.baidu.com")
                 .setHref(url)
@@ -989,6 +1123,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     @Override
                     public void clickCancel() {
 
+                    }
+
+                    @Override
+                    public void clickAddAdm() {
+                        post_addadm(id);
                     }
                 })
                 .setImg(href)
@@ -1043,16 +1182,26 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             dayMode();
         }
         tv_textsize.setText((int) mTextSize + "");
-        File file = new File(mStyle);
-        if (!mStyle.equals("")) {
-            tv_textstyle.setText(file.getName().replace(".ttf", ""));
-        } else {
+        //File file = new File(mStyle);
+        Typeface tf = null;
+        AssetManager mgr = getAssets();
+        if(mStyle.equals("1")) {
+            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("方正卡通简体");
+        }else if(mStyle.equals("2")){
+            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("方正楷体");
+        }else if(mStyle.equals("3")){
+            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("流行体简体");
+        }else {
+            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            tv_textstyle.setTypeface(tf);
             tv_textstyle.setText("系统字体");
         }
-
-//        textStyleAdapter.setPosition(mStyle);
-//        textStyleAdapter.notifyDataSetChanged();
-        // 监听系统亮度的变化
         getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS),
                 true,
@@ -1072,11 +1221,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             if (mType == 1) {
                 BookshelfNovelDbData dbData = mDbManager.selectBookshelfNovel(pid);
                 if (dbData != null) {
-                    dbData.setPosition(mPageView.getPosition());
+                    dbData.setPosition(longs.get(o)+mPageView.getPosition());
+                    dbData.setChapterid((o+1)+"");
+                    dbData.setWeight(weigh);
                     dbData.setSecondPosition(mNovelContent.length());
                     mDbManager.insertOrUpdateBook(dbData);
                 }
-
             } else if (mType == 0) {
                 BookshelfNovelDbData dbData = mDbManager.selectBookshelfNovel(pid);
                 if (dbData != null) {
@@ -1206,12 +1356,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         }
         id = data.getId();
         weigh = data.getMax_num();
-        // Log.e("WWW", "getDetailedChapterDataSuccess: "+weigh);
+        //Log.e("WWW", "getDetailedChapterDataSuccess: "+weigh);
         mNovelContent = data.getContent();
         weight = data.getWeigh();
         mTitle = data.getTitle();
         mChapterIndex = Integer.parseInt(weight);
-        webContent = Html.fromHtml(data.getContent().replace("&nbsp", " ")).toString();//data.getContent().replace("&nbsp"," ").replace("</br>","\n");
+        //Log.e("QQQ", "getDetailedChapterDataSuccess: "+data.getContent());
+        webContent = data.getContent().replace("&nbsp", " ").replace("</br>","\n").toString();//data.getContent().replace("&nbsp"," ").replace("</br>","\n");
         webName = data.getTitle();
         mStateTv.setVisibility(View.GONE);
         if (mCatalog == 1) { //
@@ -1265,9 +1416,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             } else if (mPageView.getPosition() < (int) longs.get(j)) {
                 o = j - 1;
                 break;
+            }else if(mPageView.getPosition() >= (int) longs.get(longs.size()-1)){
+                o = longs.size()-1;
+                break;
             }
         }
-        Log.e("TTT", "loadTxtSuccess: "+o);
         mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o));
         updateChapterProgress();
     }
@@ -1498,7 +1651,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-               // Log.e("QQQ", "onResponse: " + json);
+                // Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -1512,7 +1665,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             for (int z = 0; z < jsonArray.length(); z++) {
                                 categorys_ones.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Categorys_one.class));
                             }
-                           // Log.e("qqq", "onResponse: " + categorys_ones.size());
+                            // Log.e("qqq", "onResponse: " + categorys_ones.size());
                             getCategorysSuccess(categorys_ones);
                         }
                     } else {
@@ -1555,8 +1708,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         mPageView.clear();              // 清除当前文字
                         mStateTv.setVisibility(View.VISIBLE);
                         mStateTv.setText(LOADING_TEXT);
-                        title="";
-                        content="";
+                        title = "";
+                        content = "";
                         if (popupWindow.isShowing()) {
                             popupWindow.dismiss();
                         }
@@ -1565,13 +1718,17 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         } else {
                             is_othersite = false;
                         }
+                      //  Log.e("WWW", "clickWord: " + categorys_ones.get(word));
                         tv_website.setText(categorys_ones.get(word).getUrl());
                         other_website = categorys_ones.get(word).getText();
                         String href = other_website.get(Integer.parseInt(weight) - 1).getChapter_url();
 //                weigh = Integer.parseInt(categorys_ones.get(word).getChapter_sum());
 //                mNovelTitleTv1.setText(mChapterIndex+"/"+weigh);
                         reurl = categorys_ones.get(word).getDiv();
-                        new Thread(new sendValueToServer(href, weight + "", reurl)).start();
+                        Message message=new Message();
+                        message.what=2;
+                        message.obj=href;
+                        handler1.sendMessage(message);
                     }
                 }
             });
@@ -1614,9 +1771,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 sendBroadcast(intent_recever);
                 is_load = false;
                 adress = path + mName + ".txt";
-                mPresenter.loadTxt(adress);
                 mCatalog = 1;
                 mCatalog_posotion = mPageView.getPosition();
+                mPresenter.loadTxt(adress);
+                Event event = new Event(EventBusCode.NOVEL_INTRO_INIT);
+                EventBusUtil.sendEvent(event);
             } else if (msg.what == 4) {
                 int j = msg.arg1;
                 if (30 * d <= weigh && (j + 1) == 30) {
@@ -1711,7 +1870,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         }
 
     }
-    String title,content;
+
+    String title, content;
+
     private void Analysisbiquge(String svrInfo, String div) throws IOException {
         Document doc = Jsoup.connect(svrInfo).get();
         title = doc.body().select("h1").text();
@@ -1952,72 +2113,85 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     ;
 
     private void post_textStyle() {
-        Gson mGson = new Gson();
-        String url = UrlObtainer.GetUrl() + "api/index/get_wordes";
-        RequestBody requestBody = new FormBody.Builder()
-                .build();
-        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    String code = jsonObject.getString("code");
-                    if (code.equals("1")) {
-                        JSONObject object = jsonObject.getJSONObject("data");
-                        JSONArray jsonArray = object.getJSONArray("data");
-                        textStyles.clear();
-                        textStyles.add(new TextStyle("系统字体", true));
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            String name = jsonArray.getJSONObject(i).getString("name");
-                            TextStyle style = mGson.fromJson(jsonArray.getJSONObject(i).toString(), TextStyle.class);
-                            style.setLoad(isLoad(style, name));
-                            textStyles.add(style);
-                        }
-                        initTextStyle(textStyles);
-                    } else {
-                        showShortToast("请求失败");
-                        progressBar.setVisibility(View.GONE);
-                    }
-                    handler.sendEmptyMessage(5);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                showShortToast(errorMsg);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        textStyles.add(new TextStyle("系统字体", "-1"));
+        textStyles.add(new TextStyle("方正卡通简体", "1"));
+        textStyles.add(new TextStyle("方正楷体", "2"));
+        textStyles.add(new TextStyle("流行体简体", "3"));
+        initTextStyle(textStyles);
+//        Gson mGson = new Gson();
+//        String url = UrlObtainer.GetUrl() + "api/index/get_wordes";
+//        RequestBody requestBody = new FormBody.Builder()
+//                .build();
+//        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+//            @Override
+//            public void onResponse(String json) {   // 得到 json 数据
+//                try {
+//                    JSONObject jsonObject = new JSONObject(json);
+//                    String code = jsonObject.getString("code");
+//                    if (code.equals("1")) {
+//                        JSONObject object = jsonObject.getJSONObject("data");
+//                        JSONArray jsonArray = object.getJSONArray("data");
+//                        textStyles.clear();
+//                        textStyles.add(new TextStyle("系统字体", true));
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            String name = jsonArray.getJSONObject(i).getString("name");
+//                            TextStyle style = mGson.fromJson(jsonArray.getJSONObject(i).toString(), TextStyle.class);
+//                            style.setLoad(isLoad(style, name));
+//                            textStyles.add(style);
+//                        }
+//                        initTextStyle(textStyles);
+//                    } else {
+//                        showShortToast("请求失败");
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//                    handler.sendEmptyMessage(5);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(String errorMsg) {
+//                showShortToast(errorMsg);
+//                progressBar.setVisibility(View.GONE);
+//            }
+//        });
     }
 
     void initTextStyle(List<TextStyle> textStyles) {
         progressBar1.setVisibility(View.GONE);
-        if (mStyle == null) {
-            return;
-        }
-        File file = new File(mStyle);
-        int w = 0;
-        for (int z = 0; z < textStyles.size(); z++) {
-            if (file.getName().contains(textStyles.get(z).getName())) {
-                w = z;
-                break;
-            }
-        }
+//        if (mStyle == null) {
+//            return;
+//        }
+//        File file = new File(mStyle);
+//        int w = 0;
+//        for (int z = 0; z < textStyles.size(); z++) {
+//            if (file.getName().contains(textStyles.get(z).getName())) {
+//                w = z;
+//                break;
+//            }
+//        }
         TextStyleAdapter textStyleAdapter = new TextStyleAdapter(this, textStyles);
-        textStyleAdapter.setPosition(w);
+        if (mStyle.equals("-1")) {
+            textStyleAdapter.setPosition(0);
+        } else if (mStyle.equals("1")) {
+            textStyleAdapter.setPosition(1);
+        } else if (mStyle.equals("2")) {
+            textStyleAdapter.setPosition(2);
+        } else if (mStyle.equals("3")) {
+            textStyleAdapter.setPosition(3);
+        }
         ts_recyle.setAdapter(textStyleAdapter);
         textStyleAdapter.setmListener(new TextStyleAdapter.ScreenListener() {
             @Override
             public void clickItem(int position) {
                 textStyleAdapter.setPosition(position);
-                if (textStyles.get(position).getUrl() == null) {
-                    mStyle = null;
-                } else {
-                    mStyle = textStyles.get(position).getUrl();
-                }
-                //Log.e("ZZZ", "clickItem: " + mStyle);
+//                if (textStyles.get(position).getUrl() == null) {
+//                    mStyle = "";
+//                } else {
+                    mStyle = textStyles.get(position).getId();
+//                }
+                SpUtil.saveTextStyle(mStyle);
                 mPageView.setmSype(mStyle);
                 textStyleAdapter.notifyDataSetChanged();
             }
@@ -2044,7 +2218,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 // 判断是否为文件夹
                 if (!subFile[iFileLength].isDirectory()) {
                     String filename = subFile[iFileLength].getName().replace(".ttf", "");
-                    if (filename.equals(textStyle)) {
+                    if (filename.contains(textStyle)) {
                         style.setUrl(subFile[iFileLength].getPath());
                         return true;
                     }
@@ -2112,6 +2286,26 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      * 显示设置栏
      */
     private void showSettingBar() {
+        mStyle = SpUtil.getTextStyle();
+        Typeface tf = null;
+        AssetManager mgr = getAssets();
+        if(mStyle.equals("1")) {
+            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("方正卡通简体");
+        }else if(mStyle.equals("2")){
+            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("方正楷体");
+        }else if(mStyle.equals("3")){
+            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("流行体简体");
+        }else {
+            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("系统字体");
+        }
         mIsShowSettingBar = true;
         Animation bottomAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_enter);
@@ -2373,7 +2567,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     mTurnType = 1;
                     mTurnRealTv.setSelected(true);
                     mTurnNormalTv.setSelected(false);
-                    mPageView.setTurnType(PageView.TURN_TYPE.REAL);
+                    //mPageView.setTurnType(PageView.TURN_TYPE.REAL);
+                    mPageView.setTurnType(PageView.TURN_TYPE.COVER);
                 }
                 break;
             default:
@@ -2381,6 +2576,31 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         }
     }
 
+    private void post_addadm(String id){
+        String url = UrlObtainer.GetUrl() + "api/index/add_adm";
+        Log.e("WWW", "post_addadm: "+url);
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id",id)
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if(code.equals("1")){
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                return;
+            }
+        });
+    }
     private void showPupowindpw(View parent) {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.popu_item2, null);
@@ -2391,7 +2611,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         } else {
             datas = new String[]{"全本缓存", "添加书签"};
         }
-        final Integer[] ints = {R.mipmap.download, R.mipmap.bookmark};
+        final Integer[] ints = {R.mipmap.img_load, R.mipmap.icon_bookmark};
         PupoAdapter mainAdapter = null;
         if (datas != null) {
             mainAdapter = new PupoAdapter(datas, ints);
@@ -2479,7 +2699,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         } else if (mType == 2) {
                             BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
                                     mCover, mChapterIndex, mPageView.getFirstPos(), mType, mPageView.getSecondPos());
-                            mDbManager.insertBookshelfNovel(dbData);
+                            mDbManager.insertOrUpdateBook(dbData);
 
                         } else if (mType == 0) {
                             boolean isflag = false;

@@ -10,9 +10,19 @@ public class TextStyle {
         return isLoad;
     }
 
-    public TextStyle(String name,boolean isLoad) {
+    public TextStyle(String name,String id) {
         this.name = name;
-        this.isLoad=isLoad;
+        this.id=id;
+    }
+
+    @Override
+    public String toString() {
+        return "TextStyle{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", isLoad=" + isLoad +
+                '}';
     }
 
     public void setLoad(boolean load) {

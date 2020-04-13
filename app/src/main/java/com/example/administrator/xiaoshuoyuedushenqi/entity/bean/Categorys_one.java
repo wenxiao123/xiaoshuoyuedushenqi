@@ -79,7 +79,7 @@ public class Categorys_one {
                 ", chapter_sum='" + chapter_sum + '\'' +
                 ", captername='" + captername + '\'' +
                 ", div='" + div + '\'' +
-                ", text=" + text +
+                ", text=" + text.get(0) +
                 '}';
     }
 

@@ -77,7 +77,7 @@ public class ReadcoredPresenter extends BasePresenter<IReakcoredContract.View>
     }
 
     @Override
-    public void getDelectReadcoredData(String token, String novel_id) {
-        mModel.getDelectReadcoredData(token, novel_id);
+    public void getDelectReadcoredData(String token, String novel_id,int type) {
+        mModel.getDelectReadcoredData(token, novel_id,type);
     }
 }

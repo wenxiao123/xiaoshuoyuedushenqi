@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Website;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
@@ -83,6 +84,23 @@ public class DatabaseManager {
     }
 
     /**
+     * 插入一条新的历史记录
+     */
+    public void insertWebsite(Website website) {
+        ContentValues values = new ContentValues();
+        values.put(Constant.WEBSITE_URL, website.getUrl());
+        values.put(Constant.WEBSITE_TYPE, website.getType());
+        mDb.insert(Constant.TABLE_WEBSITE, null, values);
+    }
+
+    /**
+     * 删除一条历史记录
+     */
+    public void deleteWebsite() {
+        mDb.delete(Constant.TABLE_WEBSITE, null, null);
+    }
+
+    /**
      * 查询所有历史记录（较新的记录排前面）
      */
     public List<String> queryAllHistory() {
@@ -92,6 +110,26 @@ public class DatabaseManager {
         if (cursor.moveToLast()) {
             do {
                 res.add(cursor.getString(cursor.getColumnIndex(Constant.TABLE_HISTORY_WORD)));
+            } while (cursor.moveToPrevious());
+        }
+        cursor.close();
+
+        return res;
+    }
+
+    /**
+     * 查询所有历史记录（较新的记录排前面）
+     */
+    public List<Website> queryAllWebsite() {
+        List<Website> res = new ArrayList<>();
+        Cursor cursor = mDb.query(Constant.TABLE_WEBSITE, null, null,
+                null, null, null, null);
+        if (cursor.moveToLast()) {
+            do {
+                String href=cursor.getString(cursor.getColumnIndex(Constant.WEBSITE_URL));
+                int type=cursor.getInt(cursor.getColumnIndex(Constant.WEBSITE_TYPE));
+                //Log.e("WWW2", "getWebsiteSuccess: "+href);
+                res.add(new Website(href,type));
             } while (cursor.moveToPrevious());
         }
         cursor.close();
@@ -134,7 +172,7 @@ public class DatabaseManager {
     public void insertBookshelfNovel(BookshelfNovelDbData dbData) {
         //Log.e("QQQ1", "updataBookshelfNovel: "+dbData);
         ContentValues values = new ContentValues();
-        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovelUrl());//
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovelUrl().trim());//
         if (dbData.getWeight() != 0) {
             values.put(Constant.TABLE_BOOKSHELF_NOVEL_WIGH, dbData.getWeight());
         }
@@ -343,7 +381,7 @@ public class DatabaseManager {
                         position, type, secondPosition, chperid, weight, status);
                 bookshelfNovelDbData.setFuben_id(title1);
                 res.add(bookshelfNovelDbData);
-              // Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
+              Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
             } while (cursor.moveToPrevious());
         }
         cursor.close();
@@ -428,7 +466,7 @@ public class DatabaseManager {
                     res = new BookshelfNovelDbData(novelUrl, name, cover,
                             position, type, secondPosition, chperid, weight, status);
                     res.setFuben_id(fuben);
-                    Log.e("WWW", "selectBookshelfNovel: "+fuben);
+                   // Log.e("WWW", "selectBookshelfNovel: "+fuben);
                     break;
                 }
 

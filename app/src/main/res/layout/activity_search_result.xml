@@ -85,16 +85,21 @@
             android:padding="2dp"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_search_result_novel_source_list"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/srv_novel_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_search_result_novel_source_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scrollbars="none"
         android:overScrollMode="never"/>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <TextView
         android:id="@+id/tv_search_result_none"

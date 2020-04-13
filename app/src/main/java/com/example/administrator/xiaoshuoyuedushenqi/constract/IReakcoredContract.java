@@ -33,12 +33,12 @@ public interface IReakcoredContract {
         void getDelectReadcoredDataError(String errorMsg);
 
         void getReadcoredData(String token, String page);
-        void getDelectReadcoredData(String token, String novel_id);
+        void getDelectReadcoredData(String token, String novel_id,int type);
         void queryAllBook();
     }
     interface Model {
         void queryAllBook();
         void getReadcoredData(String token, String page);
-        void getDelectReadcoredData(String token, String novel_id);
+        void getDelectReadcoredData(String token, String novel_id,int type);
     }
 }

@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:text="@string/item_novel_source_name"
         android:textSize="14sp"
-        android:gravity="center_horizontal"
+        android:gravity="left"
         android:textColor="@color/black"
         android:maxLines="1"
         android:ellipsize="end"

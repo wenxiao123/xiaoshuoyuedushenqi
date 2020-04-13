@@ -5,6 +5,15 @@ public class Text {
     String chapter_name;
     String chapter_url;
 
+    @Override
+    public String toString() {
+        return "Text{" +
+                "chapter_num='" + chapter_num + '\'' +
+                ", chapter_name='" + chapter_name + '\'' +
+                ", chapter_url='" + chapter_url + '\'' +
+                '}';
+    }
+
     public String getChapter_num() {
         return chapter_num;
     }

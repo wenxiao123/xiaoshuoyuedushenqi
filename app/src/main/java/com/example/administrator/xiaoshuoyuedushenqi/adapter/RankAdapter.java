@@ -18,6 +18,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BasePagingLoadAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 
 import java.util.List;
 
@@ -86,11 +87,13 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.NovelViewHolde
         }else {
             href=UrlObtainer.GetUrl()+mList.get(position).getPic();
         }
+        CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)
                 .load(href)
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.cover_place_holder)
-                        .error(R.drawable.cover_error))
+                        .error(R.drawable.cover_error)
+                .transform(transformation))
                 .into(novelViewHolder.cover);
         novelViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -290,7 +290,9 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
+                intent.putExtra("islaod", "2");
+                startActivity(intent);
             }
         });
     }
@@ -350,7 +352,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                     mBookshelfNovelsAdapter.setIsMultiDelete(false);
                     mBookshelfNovelsAdapter.notifyDataSetChanged();
                     iv_bookshelf_more.setText("编辑");
-                    rv_bookshelf_multi_delete_bar.setVisibility(View.VISIBLE);
+                    rv_bookshelf_multi_delete_bar.setVisibility(View.GONE);
                     findViewById(R.id.line).setVisibility(View.GONE);
                     // 全选
 //                    Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);

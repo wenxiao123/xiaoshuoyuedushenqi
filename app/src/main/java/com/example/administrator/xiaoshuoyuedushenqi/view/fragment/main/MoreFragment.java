@@ -75,8 +75,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
     MainRecyleAdapter mainRecyleAdapter3;
     ImageView iv_title;
     RecyclerView recyclerView1, recyclerView2, recyclerView3;
-    String[] strings1 = {"随时赚现金", "给个五星好评", "意见反馈", "分享给好友"};
-    int[] ints1 = {R.mipmap.img_more1, R.mipmap.img_more2, R.mipmap.img_more3, R.mipmap.img_more4};
+    String[] strings1 = {"随时赚现金",  "意见反馈", "分享给好友"};
+    int[] ints1 = {R.mipmap.img_more1,  R.mipmap.img_more3, R.mipmap.img_more4};
     String[] strings2 = {"夜间模式"};
     int[] ints2 = {R.mipmap.img_more5};
     String[] strings3 = {"阅读记录", "设置"};
@@ -101,16 +101,16 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                         showShortToast("暂未开放");
                         //getContext().startActivity(new Intent(getContext(), SuishizhuanxianjinActivity.class));
                         break;
+//                    case 1:
+////                        MarketTools.getTools().startMarket(Context mContext);//打开应用市场，打开当前安装应用的手机应用市场
+////                        MarketTools.getTools().startMarket(Context mContext,String appPackageName);//指定应用包名去打开当前安装应用的手机应用市场
+////                        MarketTools.getTools().startMarket(Context mContext,String appMarketPackageName);//指定应用包名，指定应用商店包名去打开
+//                        MarketTools.getTools().startMarket(getContext());
+//                        break;
                     case 1:
-//                        MarketTools.getTools().startMarket(Context mContext);//打开应用市场，打开当前安装应用的手机应用市场
-//                        MarketTools.getTools().startMarket(Context mContext,String appPackageName);//指定应用包名去打开当前安装应用的手机应用市场
-//                        MarketTools.getTools().startMarket(Context mContext,String appMarketPackageName);//指定应用包名，指定应用商店包名去打开
-                        MarketTools.getTools().startMarket(getContext());
-                        break;
-                    case 2:
                         getContext().startActivity(new Intent(getContext(), FeedbackActivity.class));
                         break;
-                    case 3:
+                    case 2:
                         final ShareDialog tipDialog = new ShareDialog.Builder(getActivity())
                                 .setContent("www.baidu.com")
                                 .setCancel("下次再说")
@@ -341,18 +341,20 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
         @Override
         public void handleMessage(Message msg) {
             if (login_admin != null) {
-                relativeLayout.setClickable(false);
-                iv_title = getActivity().findViewById(R.id.title_img);
-                tv_name = getActivity().findViewById(R.id.tv_name);
-                tv_content = getActivity().findViewById(R.id.tv_content);
-                Glide.with(getActivity())
-                        .load(UrlObtainer.GetUrl() + login_admin.getAvatar())
-                        .apply(new RequestOptions()
-                                .placeholder(R.mipmap.admin)
-                                .error(R.mipmap.admin))
-                        .into(iv_title);
-                tv_content.setVisibility(View.GONE);
-                tv_name.setText(login_admin.getNickname());
+                if(getActivity()!=null) {
+                    relativeLayout.setClickable(false);
+                    iv_title = getActivity().findViewById(R.id.title_img);
+                    tv_name = getActivity().findViewById(R.id.tv_name);
+                    tv_content = getActivity().findViewById(R.id.tv_content);
+                    Glide.with(getActivity())
+                            .load(UrlObtainer.GetUrl() + login_admin.getAvatar())
+                            .apply(new RequestOptions()
+                                    .placeholder(R.mipmap.admin)
+                                    .error(R.mipmap.admin))
+                            .into(iv_title);
+                    tv_content.setVisibility(View.GONE);
+                    tv_name.setText(login_admin.getNickname());
+                }
             }
         }
     };

@@ -9,6 +9,15 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="SplashStyle" parent="AppTheme">
+        <!--<item name="android:windowDisablePreview">true</item>-->
+        <item name="colorPrimary">@color/trans</item>
+        <item name="colorPrimaryDark">@color/trans</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/layout_list_start_pic</item>
+    </style>
     <style name="AppTheme1" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>

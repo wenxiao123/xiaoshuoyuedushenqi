@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Website;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,14 +22,18 @@ public class SpUtil {
     private static final String KEY_TEXT_SIZE = "key_text_size";    // 文字大小
     private static final String KEY_ROW_SPACE = "key_row_space";    // 行距
     private static final String KEY_THEME = "key_theme";            // 阅读主题
+    private static final String KEY_IS_FIRST = "key_is_first";            // 阅读主题
+    private static final String KEY_WENSITE = "key_website";            // 阅读主题
     private static final String KEY_BRIGHTNESS = "key_brightness";  // 亮度
     private static final String KEY_IS_NIGHT_MODE= "key_is_night_mode";  // 是否为夜间模式
     private static final String KEY_IS_SYS_NIGHT_MODE= "key_is_sys_night_mode";  // 是否为夜间模式
     private static final String KEY_TURN_TYPE = "key_turn_type";  // 翻页模式
     private static final String KEY_TEXTSTYLE_TYPE = "key_textstyle";  // 字体模式
-    private static final float DEFAULT_TEXT_SIZE = 18f;//App.getContext().getResources().getDimension(R.dimen.dp_15);
+    private static final float DEFAULT_TEXT_SIZE = 16f;//App.getContext().getResources().getDimension(R.dimen.sp_8);
     private static final float DEFAULT_ROW_SPACE = 35f;
     private static final int DEFAULT_THEME = 0;
+    private static final int IS_FIRST = 0;
+    private static final String WEBSITE = "";
     private static final float DEFAULT_BRIGHTNESS = -1f;
     private static final boolean DEFAULT_IS_NIGHT_MODE = false;
     private static final int DEFAULT_TURN_TYPE = 0;
@@ -38,6 +43,19 @@ public class SpUtil {
                 .getSharedPreferences(NAME, Context.MODE_PRIVATE).edit();
         editor.putFloat(KEY_TEXT_SIZE, textSize);
         editor.apply();
+    }
+
+    public static void saveIs_first(int isfirst) {
+        SharedPreferences.Editor editor = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE).edit();
+        editor.putInt(KEY_IS_FIRST, isfirst);
+        editor.apply();
+    }
+
+    public static int getIsfirst() {
+        SharedPreferences sp = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return sp.getInt(KEY_IS_FIRST, IS_FIRST);
     }
 
     public static void saveTextStyle(String textSize_path) {
@@ -51,6 +69,19 @@ public class SpUtil {
         SharedPreferences sp = App.getContext()
                 .getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sp.getFloat(KEY_TEXT_SIZE, DEFAULT_TEXT_SIZE);
+    }
+
+    public static void saveWebsite(String textSize_path) {
+        SharedPreferences.Editor editor = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE).edit();
+        editor.putString(KEY_WENSITE, textSize_path);
+        editor.apply();
+    }
+
+    public static String getWebsite() {
+        SharedPreferences sp = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return sp.getString(KEY_WENSITE, WEBSITE);
     }
 
     public static void saveRowSpace(float rowSpace) {
@@ -82,7 +113,7 @@ public class SpUtil {
     public static String getTextStyle() {
         SharedPreferences sp = App.getContext()
                 .getSharedPreferences(NAME, Context.MODE_PRIVATE);
-        return sp.getString(KEY_TEXTSTYLE_TYPE, "");
+        return sp.getString(KEY_TEXTSTYLE_TYPE, "-1");
     }
 
     public static void saveBrightness(float brightness) {

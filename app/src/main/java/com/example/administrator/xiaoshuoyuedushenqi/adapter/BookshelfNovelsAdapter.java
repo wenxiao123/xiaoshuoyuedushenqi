@@ -20,6 +20,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.Delet_book_show;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -90,12 +91,14 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             String name = mDataList.get(i).getName().replace(".txt", "");
             contentViewHolder.name.setText(name);
         }
+        CornerTransform transformation = new CornerTransform(mContext, 10);
         if (mDataList.get(i).getType() == 0) {  // 网络小说
             Glide.with(mContext)
                     .load(mDataList.get(i).getCover())
                     .apply(new RequestOptions()
 //                           .placeholder(R.drawable.cover_place_holder)
-                            .error(R.drawable.cover_error))
+                            .error(R.drawable.cover_error)
+                            .transform(transformation))
                     .into(contentViewHolder.cover);
             contentViewHolder.img_add.setVisibility(View.GONE);
             contentViewHolder.tv_status.setVisibility(View.VISIBLE);
@@ -104,7 +107,8 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             Glide.with(mContext)
                     .load(mDataList.get(i).getCover())
                     .apply(new RequestOptions()
-                            .error(R.drawable.local_txt))
+                            .error(R.drawable.local_txt)
+                            .transform(transformation))
                     .into(contentViewHolder.cover);
             contentViewHolder.img_add.setVisibility(View.GONE);
             contentViewHolder.tv_status.setVisibility(View.VISIBLE);
@@ -128,7 +132,8 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             Glide.with(mContext)
                     .load(R.drawable.grey)
                     .apply(new RequestOptions()
-                            .error(R.drawable.cover_error))
+                            .error(R.drawable.cover_error)
+                            .transform(transformation))
                     .into(contentViewHolder.cover);
             contentViewHolder.img_add.setVisibility(View.VISIBLE);
             contentViewHolder.tv_status.setVisibility(View.GONE);
@@ -170,13 +175,13 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
         }
 
         if (mDataList.get(i).getType() == 1 && mDataList.get(i).getSecondPosition() != 0) {
-            float chpid = mDataList.get(i).getPosition();
-            float wight = mDataList.get(i).getSecondPosition();
+            float chpid =  Float.parseFloat(mDataList.get(i).getChapterid());
+            float wight = mDataList.get(i).getWeight();
             float prent = (chpid / wight) * 100;
             NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMaximumFractionDigits(2);
             if (mDataList.get(i).getSecondPosition() > 2) {
-                contentViewHolder.tv_position.setText(nf.format(prent) + "%");
+                contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
             } else {
                 contentViewHolder.tv_position.setText("未读");
             }
@@ -190,22 +195,25 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
 //                mNovelProgressTv.setText(0 + "%");
 //            }
         } else {
-            contentViewHolder.tv_position.setText(0 + "%");
+            contentViewHolder.tv_position.setText("已读 "+0 + "%");
         }
+
         if (mDataList.get(i).getType() == 0) {
             if (mDataList.get(i).getChapterid() == null || mDataList.get(i).getWeight() == 0) {
                 contentViewHolder.tv_position.setText("未读");
             } else {
                 NumberFormat nf = NumberFormat.getNumberInstance();
                 nf.setMaximumFractionDigits(2);
-                int chpid = Integer.parseInt(mDataList.get(i).getChapterid());
-                int wight = mDataList.get(i).getWeight();
-                //Log.e("TAG", "onBindViewHolder: " + chpid + " " + wight+" "+mDataList.get(i).getPosition());
-                float prent = ((float) chpid / (float) wight) * 100;
-                if (mDataList.get(i).getPosition() >= 1) {
-                    contentViewHolder.tv_position.setText(nf.format(prent) + "%");
-                } else {
+                float chpid = Float.parseFloat(mDataList.get(i).getChapterid());
+                float wight = mDataList.get(i).getWeight();
+                float prent = (chpid/wight) * 100;
+                if (mDataList.get(i).getPosition() > 1) {
+                    contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
+                } else if(mDataList.get(i).getPosition()<=1&&mDataList.get(i).getChapterid().equals("1")){
+                   // contentViewHolder.tv_position.setText(nf.format(prent) + "%");
                     contentViewHolder.tv_position.setText("未读");
+                }else {
+                    contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
                 }
             }
         }

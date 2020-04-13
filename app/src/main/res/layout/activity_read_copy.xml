@@ -1,0 +1,897 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<!--    <com.example.administrator.xiaoshuoyuedushenqi.widget.RealPageView-->
+<!--        android:id="@+id/pv_read_page_view"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:paddingStart="@dimen/read_margin_start"-->
+<!--        android:paddingTop="70dp"-->
+<!--        android:paddingEnd="@dimen/read_margin_start"-->
+<!--        android:paddingBottom="@dimen/read_margin_top"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <com.bifan.txtreaderlib.main.TxtReaderView
+        android:id="@+id/pv_read_page_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingStart="@dimen/read_margin_start"
+            android:paddingTop="70dp"
+            android:paddingEnd="@dimen/read_margin_start"
+            android:paddingBottom="@dimen/read_margin_top"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/tv_read_novel_title"
+        android:layout_width="280dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="@dimen/read_margin_start"
+        android:layout_marginTop="30dp"
+        android:ellipsize="end"
+        android:gravity="center|start"
+        android:maxLines="1"
+        android:text="@string/read_novel_title"
+        android:textColor="#707070"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/tv_read_novel_title1"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/read_margin_start"
+        android:layout_marginTop="30dp"
+        android:ellipsize="end"
+        android:gravity="center|end"
+        android:maxLines="1"
+        android:text="@string/read_novel_title"
+        android:textColor="#707070"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_read_novel_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginStart="@dimen/read_margin_start"
+        android:gravity="center|start"
+        android:text="@string/read_novel_progress"
+        android:textColor="@color/read_theme_0_text"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_read_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/read_state"
+        android:textColor="@color/read_theme_0_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- top bar -->
+
+    <RelativeLayout
+        android:id="@+id/rv_read_top_bar"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:background="#F7F7F7"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_read_back"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:padding="20dp"
+            android:tint="@color/gray"
+            android:src="@drawable/all_novel_back" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@id/iv_read_menu"
+            android:layout_toRightOf="@id/iv_read_back"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/old_site"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bachground_lefthalfcricyle"
+                android:gravity="center_vertical"
+                android:paddingLeft="13dp"
+                android:paddingTop="7dp"
+                android:paddingRight="13dp"
+                android:paddingBottom="7dp"
+                android:text="原站"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/old_site"
+                android:background="@drawable/bachground_righthalfcricyle"
+                android:gravity="center_vertical"
+                android:paddingLeft="11dp"
+                android:paddingTop="7dp"
+                android:paddingRight="11dp"
+                android:paddingBottom="7dp"
+                android:text="www.baidu.com"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_read_menu"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="5dp"
+            android:padding="5dp"
+            android:rotation="90"
+            android:src="@drawable/read_menu" />
+
+    </RelativeLayout>
+
+    <!-- bottom bar -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cv_read_bottom_bar"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:background="@drawable/bachground_halfcricyle"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- first -->
+
+        <TextView
+            android:id="@+id/tv_read_previous_chapter"
+            android:layout_width="wrap_content"
+            android:padding="10dp"
+            android:layout_height="@dimen/read_bottom_bar_first_height"
+            android:gravity="center"
+            android:text="@string/read_previous_chapter"
+            android:textColor="@color/black"
+            android:textSize="@dimen/read_bottom_bar_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_read_next_chapter"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/read_bottom_bar_first_height"
+            android:padding="10dp"
+            android:gravity="center"
+            android:text="@string/read_next_chapter"
+            android:textColor="@color/black"
+            android:textSize="@dimen/read_bottom_bar_text_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <SeekBar
+            android:id="@+id/sb_read_novel_progress"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_first_height"
+            android:maxHeight="2dp"
+            android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
+            android:thumb="@drawable/shape_read_seek_bar_thumb"
+            app:layout_constraintEnd_toStartOf="@id/tv_read_next_chapter"
+            app:layout_constraintStart_toEndOf="@id/tv_read_previous_chapter"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- second -->
+
+        <ImageView
+            android:id="@+id/iv_read_catalog"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_second_height"
+            android:paddingTop="22dp"
+            android:paddingBottom="12dp"
+            android:tint="@color/gray"
+            android:src="@drawable/read_catalog"
+            app:layout_constraintEnd_toStartOf="@id/iv_read_brightness"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+
+        <ImageView
+            android:id="@+id/iv_read_brightness"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_second_height"
+            android:paddingTop="20dp"
+            android:tint="@color/gray"
+            android:paddingBottom="10dp"
+            android:src="@mipmap/change_website"
+            app:layout_constraintEnd_toStartOf="@id/iv_read_day_and_night_mode"
+            app:layout_constraintStart_toEndOf="@id/iv_read_catalog"
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+
+        <ImageView
+            android:id="@+id/iv_read_day_and_night_mode"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_second_height"
+            android:paddingTop="22dp"
+            android:paddingBottom="12dp"
+            android:tint="@color/gray"
+            android:src="@mipmap/icon_night"
+            app:layout_constraintEnd_toStartOf="@id/iv_read_setting"
+            app:layout_constraintStart_toEndOf="@id/iv_read_brightness"
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+
+        <ImageView
+            android:id="@+id/iv_read_setting"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_second_height"
+            android:paddingTop="22dp"
+            android:paddingBottom="12dp"
+            android:tint="@color/gray"
+            android:src="@drawable/setting_read"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_read_day_and_night_mode"
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+
+        <!-- third -->
+
+        <TextView
+            android:id="@+id/tv_read_catalog"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_third_height"
+            android:gravity="center|top"
+            android:text="@string/read_catalog"
+            android:textColor="@color/gray_24"
+            android:textSize="@dimen/read_bottom_bar_text_size"
+            app:layout_constraintEnd_toStartOf="@id/tv_read_brightness"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+        <TextView
+            android:id="@+id/tv_read_brightness"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_third_height"
+            android:gravity="center|top"
+            android:text="换网址"
+            android:textColor="@color/gray_24"
+            android:textSize="@dimen/read_bottom_bar_text_size"
+            app:layout_constraintEnd_toStartOf="@id/tv_read_day_and_night_mode"
+            app:layout_constraintStart_toEndOf="@id/tv_read_catalog"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+        <TextView
+            android:id="@+id/tv_read_day_and_night_mode"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_third_height"
+            android:gravity="center|top"
+            android:text="@string/read_night_mode"
+            android:textColor="@color/gray_24"
+            android:textSize="@dimen/read_bottom_bar_text_size"
+            app:layout_constraintEnd_toStartOf="@id/tv_read_setting"
+            app:layout_constraintStart_toEndOf="@id/tv_read_brightness"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+        <TextView
+            android:id="@+id/tv_read_setting"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_bottom_bar_third_height"
+            android:gravity="center|top"
+            android:text="@string/read_setting"
+            android:textColor="@color/gray_24"
+            android:textSize="@dimen/read_bottom_bar_text_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_read_day_and_night_mode"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/cv_read_bottom_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tv_read_catalog_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
+            android:background="@drawable/shape_read_catalog_progress_bg"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:padding="10dp"
+            android:textColor="@color/read_catalog_progress_text"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- brightness bar -->
+
+    <LinearLayout
+        android:id="@+id/cv_read_brightness_bar"
+        android:layout_width="0dp"
+        android:layout_height="350dp"
+        android:background="@drawable/bachground_halfcricyle"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_mulu"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:text="全本换源"
+                    android:textColor="@color/red"
+                    android:textSize="15sp" />
+
+                <View
+                    android:id="@+id/m_line"
+                    android:layout_width="40dp"
+                    android:layout_height="5dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/red_circyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_book_mark"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:text="单章换源"
+                    android:textColor="@color/catalog_chapter_order_text"
+                    android:textSize="15sp" />
+
+                <View
+                    android:id="@+id/s_line"
+                    android:layout_width="40dp"
+                    android:layout_height="5dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/red_circyle"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+        <!-- list -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:id="@+id/pb_over"
+                android:layout_gravity="center_horizontal"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:indeterminateTint="@color/progress_bar"
+                android:visibility="visible" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_catalog_list1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="vertical"
+                />
+            <TextView
+                android:id="@+id/tv_nodata1"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="暂无换源章节"/>
+        </FrameLayout>
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_load"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bachground_white"
+        android:visibility="gone"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="缓存中..."
+        android:textColor="@color/red_aa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    </TextView>
+
+    <!-- setting bar -->
+
+    <LinearLayout
+        android:id="@+id/cv_read_setting_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bachground_halfcricyle"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/sys_ligin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:text="@string/read_system_brightness"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/sys_select"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/sys_ligin"
+                android:src="@mipmap/sys_select" />
+
+            <ImageView
+                android:id="@+id/iv_read_brightness_bar_big"
+                android:layout_width="@dimen/read_brightness_bar_first_height"
+                android:layout_height="@dimen/read_brightness_bar_first_height"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@id/sys_select"
+                android:src="@mipmap/icon_luminance1" />
+
+            <ImageView
+                android:id="@+id/iv_read_brightness_bar_small"
+                android:layout_width="@dimen/read_brightness_bar_first_height"
+                android:layout_height="@dimen/read_brightness_bar_first_height"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:padding="0dp"
+                android:src="@mipmap/icon_luminance"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <SeekBar
+                android:id="@+id/sb_read_brightness_bar_brightness_progress"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/iv_read_brightness_bar_big"
+                android:layout_toRightOf="@id/iv_read_brightness_bar_small"
+                android:maxHeight="2dp"
+                android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
+                android:thumb="@drawable/shape_read_seek_bar_thumb" />
+
+        </RelativeLayout>
+        <!-- first -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:clickable="true"
+            android:layout_marginTop="10dp">
+
+            <View
+                android:id="@+id/v_read_theme_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@drawable/selector_read_theme_0" />
+
+            <View
+                android:id="@+id/v_read_theme_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_read_theme_1" />
+
+            <View
+                android:id="@+id/v_read_theme_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_read_theme_2" />
+
+            <View
+                android:id="@+id/v_read_theme_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_read_theme_3" />
+
+            <View
+                android:id="@+id/v_read_theme_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_read_theme_4" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:id="@+id/iv_read_decrease_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_read_theme_white_selected"
+                android:gravity="center"
+                android:paddingLeft="25dp"
+                android:paddingTop="5dp"
+                android:paddingRight="25dp"
+                android:paddingBottom="5dp"
+                android:text="A-"
+                android:textColor="@color/red"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/tv_textsize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:gravity="center"
+                android:paddingLeft="18dp"
+                android:paddingTop="2dp"
+                android:paddingRight="18dp"
+                android:paddingBottom="2dp"
+                android:text="23"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/iv_read_increase_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_read_theme_white_selected"
+                android:gravity="center"
+                android:paddingLeft="25dp"
+                android:paddingTop="5dp"
+                android:paddingRight="25dp"
+                android:paddingBottom="5dp"
+                android:text="A+"
+                android:textColor="@color/red"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/right"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/bookshelf_add" />
+
+                <TextView
+                    android:id="@+id/tv_textstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_toLeftOf="@id/right"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="2dp"
+                    android:text="苹方字体"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="行间距"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/shape_read_theme_grey_selected">
+
+                <ImageView
+                    android:id="@+id/iv_read_decrease_row_space"
+                    android:layout_width="0dp"
+                    android:scaleX="0.6"
+                    android:scaleY="0.8"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.35"
+                    android:gravity="center"
+                    android:paddingLeft="13dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="13dp"
+                    android:paddingBottom="2dp"
+                    android:src="@mipmap/jian_hang"
+                     />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/read_catalog_progress_text" />
+
+                <TextView
+                    android:id="@+id/tv_jainju"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="0.3"
+                    android:gravity="center"
+                    android:paddingLeft="3dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="3dp"
+                    android:paddingBottom="2dp"
+                    android:text="间距"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/read_catalog_progress_text" />
+
+                <ImageView
+                    android:id="@+id/iv_read_increase_row_space"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.35"
+                    android:gravity="center"
+                    android:paddingLeft="13dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="13dp"
+                    android:paddingBottom="2dp"
+                    android:src="@mipmap/add_hang" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="自动滚屏"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/tv_autoread"
+                android:layout_width="45dp"
+                android:layout_height="25dp"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/icon_auto_close" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/tv_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="滚屏速度"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+            <SeekBar
+                android:layout_marginLeft="20dp"
+                android:id="@+id/sb_auto_read_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tv_auto"
+                android:maxHeight="2dp"
+                android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
+                android:thumb="@drawable/shape_read_seek_bar_thumb" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:id="@+id/tv_read_turn_real"
+                android:layout_width="70dp"
+                android:layout_height="@dimen/read_setting_bar_third_height"
+                android:background="@drawable/selector_read_turn_bg"
+                android:gravity="center"
+                android:text="@string/read_turn_real"
+                android:textColor="@color/read_setting_bar_text"
+                android:textSize="@dimen/read_turn_text_size"
+                android:visibility="visible"
+                />
+
+            <TextView
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@id/tv_read_turn_real"
+                android:id="@+id/tv_read_turn_normal"
+                android:layout_width="70dp"
+                android:layout_height="@dimen/read_setting_bar_third_height"
+                android:background="@drawable/selector_read_turn_bg"
+                android:gravity="center"
+                android:text="@string/read_turn_normal"
+                android:textColor="@color/read_setting_bar_text"
+                android:textSize="@dimen/read_turn_text_size"
+                android:visibility="visible"
+              />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/set_textstyle"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:background="@drawable/bachground_halfcricyle"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:rotation="90"
+                android:src="@drawable/bookshelf_add"
+                android:tint="@color/cardview_dark_background" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="选择字体"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/gray_a3" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/background_vertival" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ts_recyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

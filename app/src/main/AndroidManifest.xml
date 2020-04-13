@@ -4,6 +4,7 @@
     package="com.example.administrator.xiaoshuoyuedushenqi">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
@@ -41,7 +42,8 @@ E" />
         <activity android:name=".view.activity.LoginActivity"/>
         <service android:name=".service.CacheService"/>
         <activity
-            android:name=".view.activity.MainActivity">
+            android:name=".view.activity.LauncherActivity"
+            android:theme="@style/SplashStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -49,6 +51,9 @@ E" />
         </activity>
         <activity
             android:name=".view.activity.NovelIntroActivity"
+            />
+        <activity
+            android:name=".view.activity.MainActivity"
             />
         <activity
             android:name=".view.activity.ReadActivity"

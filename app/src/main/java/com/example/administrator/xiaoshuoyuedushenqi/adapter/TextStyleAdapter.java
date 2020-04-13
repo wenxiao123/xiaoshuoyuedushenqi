@@ -80,31 +80,38 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
 
     @Override
     public void onBindViewHolder(@NonNull ScreenViewHolder screenViewHolder, final int i) {
+        Typeface tf = null;
+        AssetManager mgr = mContext.getAssets();
+        if(i==0) {
+            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+        }else if(i==1) {
+            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+        }else if(i==2) {
+            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+        }else if(i==3) {
+            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+        }
+        screenViewHolder.text.setTypeface(tf);
         screenViewHolder.text.setText(textStyles.get(i).getName());
+       // Log.e("WWW", "onBindViewHolder: "+textStyles.get(i));
         if (position == i) {
             screenViewHolder.img.setVisibility(View.VISIBLE);
         } else {
             screenViewHolder.img.setVisibility(View.GONE);
         }
-        if (textStyles.get(i).isLoad() == true) {
             screenViewHolder.txt.setVisibility(View.GONE);
-        } else {
-            screenViewHolder.txt.setVisibility(View.VISIBLE);
-            screenViewHolder.img.setVisibility(View.GONE);
-        }
-
-        screenViewHolder.txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                url=UrlObtainer.GetUrl() + textStyles.get(i).getUrl();
-//                long taskId = Aria.download(mContext)
-//                        .load(UrlObtainer.GetUrl() + textStyles.get(i).getUrl())     //读取下载地址
-//                        .setFilePath(path + textStyles.get(i).getName()+".ttf") //设置文件保存的完整路径
-//                        .create();   //创建并启动下载
-                screenViewHolder.txt.setText("下载...");
-                anyRunnModule.start(url,path + textStyles.get(i).getName()+".ttf",screenViewHolder.txt);
-            }
-        });
+//        screenViewHolder.txt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//             //   url=UrlObtainer.GetUrl() + textStyles.get(i).getUrl();
+////                long taskId = Aria.download(mContext)
+////                        .load(UrlObtainer.GetUrl() + textStyles.get(i).getUrl())     //读取下载地址
+////                        .setFilePath(path + textStyles.get(i).getName()+".ttf") //设置文件保存的完整路径
+////                        .create();   //创建并启动下载
+////                screenViewHolder.txt.setText("下载...");
+////                anyRunnModule.start(url,path + textStyles.get(i).getName()+".ttf",screenViewHolder.txt);
+//            }
+//        });
         screenViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

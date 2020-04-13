@@ -42,15 +42,16 @@ public class SearchResultModel implements ISearchResultContract.Model {
     }
 
     @Override
-    public void getNovelsSource(String novelName) {
+    public void getNovelsSource(String novelName,int z) {
         String url = UrlObtainer.GetUrl()+"api/index/book_cke";
         RequestBody requestBody = new FormBody.Builder()
                 .add("name", novelName)
+                .add("page",z+"")
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-              //  Log.e("QQQ", "onResponse: "+json);
+                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");

@@ -37,7 +37,7 @@ public class SearchResultPresenter extends BasePresenter<ISearchResultContract.V
     }
 
     @Override
-    public void getNovelsSource(String novelName) {
-        mModel.getNovelsSource(novelName);
+    public void getNovelsSource(String novelName,int z) {
+        mModel.getNovelsSource(novelName,z);
     }
 }

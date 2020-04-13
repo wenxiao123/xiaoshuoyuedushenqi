@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 
 import java.util.List;
 
@@ -57,11 +58,13 @@ public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapte
         }else {
             url=UrlObtainer.GetUrl() +novalDetails.get(i).getPic();
         }
+        CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)
                 .load(url)
                 .apply(new RequestOptions()
                     .placeholder(R.drawable.cover_place_holder)
-                    .error(R.drawable.cover_error))
+                    .error(R.drawable.cover_error)
+                .transform(transformation))
                 .into(categoryNovelViewHolder.cover);
         categoryNovelViewHolder.cover.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -67,7 +67,7 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
 
     @Override
     protected void doInOnCreate() {
-        mPresenter.getNovelsSource(mSearchContent);
+        mPresenter.getNovelsSource(mSearchContent,1);
     }
 
     @Override
@@ -130,24 +130,24 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
             return;
         }
 
-        mNovelSourceAdapter = new NovelResultAdapter(getActivity(), mNovelSourceDataList, new BasePagingLoadAdapter.LoadMoreListener() {
-            @Override
-            public void loadMore() {
-
-            }
-        }, new NovelResultAdapter.NovelListener() {
-            @Override
-            public void clickItem(int novelName) {
-                Intent intent=new Intent(getContext(),NovelIntroActivity.class);
-                intent.putExtra("pid",novelName+"");
-                getContext().startActivity(intent);
-            }
-        });
+//        mNovelSourceAdapter = new NovelResultAdapter(getActivity(), mNovelSourceDataList, new BasePagingLoadAdapter.LoadMoreListener() {
+//            @Override
+//            public void loadMore() {
+//
+//            }
+//        }, new NovelResultAdapter.NovelListener() {
+//            @Override
+//            public void clickItem(int novelName) {
+//                Intent intent=new Intent(getContext(),NovelIntroActivity.class);
+//                intent.putExtra("pid",novelName+"");
+//                getContext().startActivity(intent);
+//            }
+//        });
         mNovelSourceRv.setAdapter(mNovelSourceAdapter);
     }
 
     public void update(String novelName) {
-        mPresenter.getNovelsSource(novelName);
+        mPresenter.getNovelsSource(novelName,1);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 }

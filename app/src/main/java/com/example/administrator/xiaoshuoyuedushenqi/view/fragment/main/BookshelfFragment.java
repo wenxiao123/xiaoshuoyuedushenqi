@@ -368,7 +368,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                     // 将该小说的数据存入数据库
                     BookshelfNovelDbData dbData = new BookshelfNovelDbData(filePath, file.getName(),
                             "", 0, 0, 1);
-                    mDbManager.insertBookshelfNovel(dbData);
+                    mDbManager.insertOrUpdateBook(dbData);
                     // 更新列表
                     mPresenter.queryAllBook();
                 } else if (suffix.equals("epub")) {
@@ -466,6 +466,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
      */
     @Override
     public void queryAllBookSuccess(List<BookshelfNovelDbData> dataList) {
+        Log.e("QQQ", "queryAllBookSuccess: "+dataList.size());
         if (mBookshelfNovelsAdapter == null) {
             mDataList = dataList;
             mDataList2 = dataList;
@@ -527,7 +528,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
            if(!mDbManager.isExistInBookshelfNovelname(dataList.get(i).getName())&&!mDbManager.isExistInBookshelfNovelcover(dataList.get(i).getCover())){
 //               BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
 //                       mCover, mPageView.getPosition(), mType, mNovelContent.length(), mChapterIndex + "", serialize + "");
-               mDbManager.insertBookshelfNovel(new BookshelfNovelDbData(dataList.get(i).getNovelUrl(),
+               mDbManager.insertOrUpdateBook(new BookshelfNovelDbData(dataList.get(i).getNovelUrl(),
                        dataList.get(i).getName(),dataList.get(i).getCover(),1,0,dataList.get(i).getWeight(),1+"",dataList.get(i).getWeight(),dataList.get(i).getStatus()));
            }
         }
@@ -566,6 +567,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -699,7 +701,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         File file = new File(filePath);
         BookshelfNovelDbData dbData = new BookshelfNovelDbData(filePath, file.getName(),
                 opfData.getCover(), 0, 0, 2);
-        mDbManager.insertBookshelfNovel(dbData);
+        mDbManager.insertOrUpdateBook(dbData);
         // 更新列表
         mPresenter.queryAllBook();
 

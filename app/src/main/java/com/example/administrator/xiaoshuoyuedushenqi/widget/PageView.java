@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.bifan.txtreaderlib.main.NormalPageDrawer;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.EpubData;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
@@ -50,7 +51,7 @@ public class PageView extends View {
     protected TURN_TYPE mTurnType = TURN_TYPE.NORMAL;
 
     public enum TURN_TYPE {
-        NORMAL, REAL
+        NORMAL, REAL,COVER
     }
 
     /* 纯文本绘制用 */
@@ -189,19 +190,32 @@ public class PageView extends View {
         }
     }
 
-    protected void drawText(Canvas canvas, Paint textPaint,String path) {
+    protected void drawText(Canvas canvas, Paint textPaint,String type) {
         textPaint.setTextSize(mTextSize);
        //根据路径得到Typeface
-        if(path!=null&&!path.equals("")) {
-            Typeface tf;
-            File file = new File(path);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
+        if(type!=null&&!type.equals("")) {
+           Typeface tf = null;
+//            File file = new File(path);
+//            if (!file.exists()) {
+//                file.getParentFile().mkdirs();
+//            }
+//            if(file.exists()) {
+//                tf = Typeface.createFromFile(file);
+//                textPaint.setTypeface(tf);
+//            }
+            //从asset 读取字体
+            AssetManager mgr = getContext().getAssets();
+//根据路径得到Typeface
+            if(type.equals("1")) {
+                tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            }else if(type.equals("2")){
+                tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            }else if(type.equals("3")){
+                tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            }else if(type.equals("-1")){
+                tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             }
-            if(file.exists()) {
-                tf = Typeface.createFromFile(file);
-                textPaint.setTypeface(tf);
-            }
+            textPaint.setTypeface(tf);
         }else {
         Typeface tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
         textPaint.setTypeface(tf);
@@ -223,16 +237,34 @@ public class PageView extends View {
 //        textPaint.setTypeface(tf);
         drawTextB(canvas, textPaint, mTextSize + getPaddingTop());
     }
-    protected void drawTextB(Canvas canvas, Paint textPaint,String path) {
+    protected void drawTextB(Canvas canvas, Paint textPaint,String type) {
         textPaint.setTextSize(mTextSize);
         //根据路径得到Typeface
-        Typeface tf;
-        File  file = new File(path);
-        if(!file.exists()){
-            file.getParentFile().mkdirs();
-        }
-        if(file.exists()) {
-            tf = Typeface.createFromFile(file);
+        Typeface tf = null;
+        if(type!=null&&!type.equals("")) {
+//            File file = new File(path);
+//            if (!file.exists()) {
+//                file.getParentFile().mkdirs();
+//            }
+//            if(file.exists()) {
+//                tf = Typeface.createFromFile(file);
+//                textPaint.setTypeface(tf);
+//            }
+            //从asset 读取字体
+            AssetManager mgr = getContext().getAssets();
+//根据路径得到Typeface
+            if(type.equals("1")) {
+                tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            }else if(type.equals("2")){
+                tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            }else if(type.equals("3")){
+                tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            }else if(type.equals("-1")){
+                tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            }
+            textPaint.setTypeface(tf);
+        }else {
+             tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             textPaint.setTypeface(tf);
         }
         drawTextB(canvas, textPaint, mTextSize + getPaddingTop());

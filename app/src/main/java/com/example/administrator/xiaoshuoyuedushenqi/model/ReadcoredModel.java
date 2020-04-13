@@ -98,13 +98,14 @@ public class ReadcoredModel implements IReakcoredContract.Model {
         }).start();
     }
     @Override
-    public void getDelectReadcoredData(String token, String novel_id) {
+    public void getDelectReadcoredData(String token, String novel_id,int type) {
         if(novel_id==null){
             return;
         }
         String url = UrlObtainer.GetUrl()+"api/Lookbook/del";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
+                .add("type", type+"")
                 .add("novel_id", novel_id)
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {

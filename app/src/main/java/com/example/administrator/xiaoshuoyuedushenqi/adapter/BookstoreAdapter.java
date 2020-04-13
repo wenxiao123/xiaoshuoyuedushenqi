@@ -19,6 +19,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Catagorys;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 
 import java.util.List;
 
@@ -70,15 +71,19 @@ public class BookstoreAdapter extends RecyclerView.Adapter {
             }
         };
         String href;
-        if(mDataList.get(i).getIcon().contains("http")){
+        if(mDataList.get(i).getIcon()==null){
+            href="";
+        }else if(mDataList.get(i).getIcon().contains("http")){
             href=mDataList.get(i).getIcon();
         }else {
             href=UrlObtainer.GetUrl()+mDataList.get(i).getIcon();
         }
         //Log.e("zzz", "onBindViewHolder: "+href);
+        CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext).load(href).apply(new RequestOptions()
                 .placeholder(R.drawable.cover_place_holder)
-                .error(R.drawable.cover_error))
+                .error(R.drawable.cover_error)
+        .transform(transformation))
                 //.into(simpleTarget);
         .into(contentViewHolder.cover1);
         contentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

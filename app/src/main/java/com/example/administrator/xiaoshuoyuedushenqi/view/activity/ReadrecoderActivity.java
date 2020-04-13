@@ -52,6 +52,7 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
     private ProgressBar mProgressBar;
     private RefreshLayout mRefreshSrv;
     private TextView tv_nodata;
+
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -93,13 +94,17 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
                         .setOnClickListener(new TipDialog.OnClickListener() {
                             @Override
                             public void clickEnsure() {
-                               if(login_admin!=null){
-                                   mPresenter.getDelectReadcoredData(login_admin.getToken(),getIds());
-                               }
-                                mDbManager.deleteReadCoder();
+                                if(noval_readcoreds.size()==0){
+                                    showShortToast("阅读记录已为空");
+                                }else {
+                                    if (login_admin != null) {
+                                        mPresenter.getDelectReadcoredData(login_admin.getToken(), getIds(), 2);
+                                    }
+                                    mDbManager.deleteReadCoder();
 //                               if(login_admin==null) {
-                                   requestPost();
+                                    requestPost();
 //                               }
+                                }
                             }
 
                             @Override
@@ -111,10 +116,10 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
                 tipDialog.show();
             }
         });
-        tv_nodata=findViewById(R.id.tv_nodata);
+        tv_nodata = findViewById(R.id.tv_nodata);
         recyclerView = findViewById(R.id.recycle_readcord);
-      // recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-      //  recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        // recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        //  recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         //showSearchResFg();
         mProgressBar = findViewById(R.id.pb_male);
         mRefreshSrv = findViewById(R.id.srv_male_refresh);
@@ -122,8 +127,8 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         mRefreshSrv.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                z=1;
-                isRefresh=true;
+                z = 1;
+                isRefresh = true;
                 requestPost();
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
                 //refreshlayout.finishLoadMore(false);
@@ -138,28 +143,31 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
                 // refreshlayout.finishLoadMore(false);
             }
         });
-        ClassicsHeader classicsHeader=new ClassicsHeader(this);
+        ClassicsHeader classicsHeader = new ClassicsHeader(this);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(new Date());
-        classicsHeader.setLastUpdateText("最后更新:"+dateString);
+        classicsHeader.setLastUpdateText("最后更新:" + dateString);
         //refreshLayout.setRefreshHeader(new BezierRadarHeader(getContext()).setEnableHorizontalDrag(true));
         mRefreshSrv.setRefreshHeader(classicsHeader);
         //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
         mRefreshSrv.setRefreshFooter(new ClassicsFooter(this));
     }
-    int z=1;
+
+    int z = 1;
     boolean isRefresh;
-    public String getIds(){
-        StringBuilder sb=new StringBuilder();
-        for(int z=0;z<noval_readcoreds.size();z++){
-            if(z==noval_readcoreds.size()-1){
+
+    public String getIds() {
+        StringBuilder sb = new StringBuilder();
+        for (int z = 0; z < noval_readcoreds.size(); z++) {
+            if (z == noval_readcoreds.size() - 1) {
                 sb.append(noval_readcoreds.get(z).getNovel_id());
-            }else {
-                sb.append(noval_readcoreds.get(z).getNovel_id()+",");
+            } else {
+                sb.append(noval_readcoreds.get(z).getNovel_id() + ",");
             }
         }
         return sb.toString();
     }
+
     @Override
     protected void doAfterInit() {
         mProgressBar.setVisibility(View.VISIBLE);
@@ -168,13 +176,14 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
 
     }
 
-    private void requestPost(){
+    public void requestPost() {
         if (login_admin != null) {
-            mPresenter.getReadcoredData(login_admin.getToken(), z+"");
+            mPresenter.getReadcoredData(login_admin.getToken(), z + "");
         } else {
             mPresenter.queryAllBook();
         }
     }
+
     @Override
     protected boolean isRegisterEventBus() {
         return false;
@@ -186,23 +195,24 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
     public void queryAllBookSuccess(List<Noval_Readcored> novelNameList) {
         mProgressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        if(novelNameList.size()==0){
+        if (novelNameList.size() == 0) {
             tv_nodata.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             tv_nodata.setVisibility(View.GONE);
         }
         noval_readcoreds.clear();
         setRecyclerViewData(novelNameList);
     }
-    public void setRecyclerViewData(List<Noval_Readcored> novelNameList){
-        if(isRefresh==true){
+
+    public void setRecyclerViewData(List<Noval_Readcored> novelNameList) {
+        if (isRefresh == true) {
             noval_readcoreds.clear();
-            isRefresh=false;
-            novelSourceAdapter=null;
+            isRefresh = false;
+            novelSourceAdapter = null;
         }
         noval_readcoreds.addAll(novelNameList);//new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         WrapContentLinearLayoutManager linearLayoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        int last=linearLayoutManager.findLastVisibleItemPosition();
+        int last = linearLayoutManager.findLastVisibleItemPosition();
         if (novelSourceAdapter == null) {
             noval_readcoreds = novelNameList;
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -212,9 +222,10 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
             recyclerView.setScrollingTouchSlop(last);
         } else {
             //mNovelAdapter.notifyDataSetChanged();
-            novelSourceAdapter.notifyItemChanged(last,0);
+            novelSourceAdapter.notifyItemChanged(last, 0);
         }
     }
+
     @Override
     public void queryAllBookError(String errorMsg) {
         showShortToast(errorMsg);
@@ -224,9 +235,9 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
     public void getReadcoredDataSuccess(List<Noval_Readcored> novelNameList) {
         mProgressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-       if(novelNameList.size()==0&&z==1) {
+        if (novelNameList.size() == 0 && z == 1) {
             mPresenter.queryAllBook();
-        }else {
+        } else {
             setRecyclerViewData(novelNameList);
         }
     }
@@ -236,50 +247,53 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         novelSourceAdapter.setOnNovelSourceListener(new NovelSourceAdapter.NovelSourceListener() {
             @Override
             public void clickItem(int position) {
-                Log.e("QQQ", "clickItem: "+noval_readcoreds.get(position));
-                Intent intent = new Intent(ReadrecoderActivity.this, ReadActivity.class);
-                intent.putExtra(ReadActivity.KEY_NOVEL_URL, noval_readcoreds.get(position).getNovel_id());
-                intent.putExtra(ReadActivity.KEY_ZJ_ID, noval_readcoreds.get(position).getChapter_id());
-                intent.putExtra(ReadActivity.KEY_NAME, noval_readcoreds.get(position).getTitle());
-                intent.putExtra("first_read", 2);
-                String weigh=noval_readcoreds.get(position).getWeigh();
-                intent.putExtra("weigh",Integer.parseInt(weigh));//
-                intent.putExtra(ReadActivity.KEY_COVER, noval_readcoreds.get(position).getPic());
-                intent.putExtra(ReadActivity.KEY_POSITION, 1);
-                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+//                Log.e("QQQ", "clickItem: " + noval_readcoreds.get(position));
+//                Intent intent = new Intent(ReadrecoderActivity.this, ReadActivity.class);
+//                intent.putExtra(ReadActivity.KEY_NOVEL_URL, noval_readcoreds.get(position).getNovel_id());
+//                intent.putExtra(ReadActivity.KEY_ZJ_ID, noval_readcoreds.get(position).getChapter_id());
+//                intent.putExtra(ReadActivity.KEY_NAME, noval_readcoreds.get(position).getTitle());
+//                intent.putExtra("first_read", 2);
+//                String weigh = noval_readcoreds.get(position).getWeigh();
+//                intent.putExtra("weigh", Integer.parseInt(weigh));//
+//                intent.putExtra(ReadActivity.KEY_COVER, noval_readcoreds.get(position).getPic());
+//                intent.putExtra(ReadActivity.KEY_POSITION, 1);
+//                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+                if(!mDbManager.isExistInBookshelfNovel(noval_readcoreds.get(position).getNovel_id())){
+                    Intent intent = new Intent(ReadrecoderActivity.this, NovelIntroActivity.class);
+                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                    intent.putExtra("pid", noval_readcoreds.get(position).getNovel_id());
+                    startActivity(intent);
+                }
             }
 
             @Override
             public void longclickItem(int position) {
-                final TipDialog tipDialog = new TipDialog.Builder(ReadrecoderActivity.this)
-                        .setContent("是否清除阅读记录")
-                        .setCancel("取消")
-                        .setEnsure("确定")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                if(login_admin!=null){
-                                    mPresenter.getDelectReadcoredData(login_admin.getToken(),noval_readcoreds.get(position).getNovel_id());
-                                }
-
-                                if(mDbManager.isExistInReadCoderNovel(noval_readcoreds.get(position).getNovel_id())) {
-                                    mDbManager.deleteBookReadcoderNovel(noval_readcoreds.get(position).getNovel_id());
-                                }
-
-                                //if(login_admin==null){
-                                    requestPost();
-                               // }
-                            }
-
-                            @Override
-                            public void clickCancel() {
-
-                            }
-                        })
-                        .build();
-                tipDialog.show();
+//                final TipDialog tipDialog = new TipDialog.Builder(ReadrecoderActivity.this)
+//                        .setContent("是否清除阅读记录")
+//                        .setCancel("取消")
+//                        .setEnsure("确定")
+//                        .setOnClickListener(new TipDialog.OnClickListener() {
+//                            @Override
+//                            public void clickEnsure() {
+//                                if (login_admin != null) {
+//                                    mPresenter.getDelectReadcoredData(login_admin.getToken(), noval_readcoreds.get(position).getNovel_id(), 1);
+//                                }
+//
+//                                if (mDbManager.isExistInReadCoderNovel(noval_readcoreds.get(position).getNovel_id())) {
+//                                    mDbManager.deleteBookReadcoderNovel(noval_readcoreds.get(position).getNovel_id());
+//                                }
+                            //   requestPost();
+//                            }
+//
+//                            @Override
+//                            public void clickCancel() {
+//
+//                            }
+//                        })
+//                        .build();
+//                tipDialog.show();
             }
         });
         recyclerView.setAdapter(novelSourceAdapter);
@@ -292,14 +306,14 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
 
     @Override
     public void getDelectReadcoredDataSuccess(String msg) {
-        isRefresh=true;
+        isRefresh = true;
         requestPost();
     }
 
     @Override
     public void getDelectReadcoredDataError(String errorMsg) {
         showShortToast(errorMsg);
-        isRefresh=true;
+        isRefresh = true;
     }
 
 }

@@ -59,7 +59,7 @@ public class SearchFragment extends BaseFragment<SearchResultPresenter>
 
     @Override
     protected void doInOnCreate() {
-        mPresenter.getNovelsSource(mSearchContent);
+        mPresenter.getNovelsSource(mSearchContent,1);
     }
 
     @Override
@@ -142,6 +142,6 @@ public class SearchFragment extends BaseFragment<SearchResultPresenter>
     }
 
     public void update(String novelName) {
-        mPresenter.getNovelsSource(novelName);
+        mPresenter.getNovelsSource(novelName,1);
     }
 }

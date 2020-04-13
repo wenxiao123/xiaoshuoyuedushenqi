@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,14 +42,19 @@ import okhttp3.RequestBody;
  * @author
  * Created on 2019/12/21
  */
-public class NovelResultAdapter extends BasePagingLoadAdapter<NovalInfo> {
+public class NovelResultAdapter extends RecyclerView.Adapter {
 
-    private NovelListener mListener;
+    private Context mContext;
+    List<NovalInfo> mList;
+    NovelListener mListener;
 
-    public NovelResultAdapter(Context mContext, List<NovalInfo> mList,
-                              LoadMoreListener loadMoreListener, NovelListener novelListener) {
-        super(mContext, mList, loadMoreListener);
-        mListener = novelListener;
+    public void setmListener(NovelListener mListener) {
+        this.mListener = mListener;
+    }
+
+    public NovelResultAdapter(Context mContext, List<NovalInfo> mList) {
+        this.mList=mList;
+        this.mContext=mContext;
         databaseManager= DatabaseManager.getInstance();
         login_admin = (Login_admin) SpUtil.readObject(mContext);
     }
@@ -57,23 +64,14 @@ public class NovelResultAdapter extends BasePagingLoadAdapter<NovalInfo> {
         isRating = rating;
     }
 
-    public interface NovelListener {
-        void clickItem(int novelName);
-    }
-
+    @NonNull
     @Override
-    protected int getPageCount() {
-        return Constant.NOVEL_PAGE_NUM;
-    }
-
-    @Override
-    protected RecyclerView.ViewHolder setItemViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new NovelViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_novel_result, null));
     }
-    DatabaseManager databaseManager;
-    private Login_admin login_admin;
+
     @Override
-    protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NovelViewHolder novelViewHolder = (NovelViewHolder) holder;
         novelViewHolder.title.setText(mList.get(position).getTitle());
         novelViewHolder.author.setText(mList.get(position).getAuthor());
@@ -84,11 +82,13 @@ public class NovelResultAdapter extends BasePagingLoadAdapter<NovalInfo> {
         }else {
             href=UrlObtainer.GetUrl()+mList.get(position).getPic();
         }
+        CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)
                 .load(href)
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.cover_place_holder)
-                        .error(R.drawable.cover_error))
+                        .error(R.drawable.cover_error)
+                        .transform(transformation))
                 .into(novelViewHolder.cover);
         novelViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,22 +103,47 @@ public class NovelResultAdapter extends BasePagingLoadAdapter<NovalInfo> {
 //        }else {
 //            novelViewHolder.tv_item_rating.setVisibility(View.GONE);
 //        }
-        novelViewHolder.tv_item_bookshelf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BookshelfNovelDbData dbData;
-                dbData = new BookshelfNovelDbData(mList.get(position).getId() + "", mList.get(position).getTitle(),
-                        mList.get(position).getPic(), 1, 0, 0, 1+"", 10, mList.get(position).getSerialize() + "");
-                databaseManager.insertOrUpdateBook(dbData);
-                Intent intent_recever = new Intent("com.zhh.android");
-                mContext.sendBroadcast(intent_recever);
-                if(login_admin!=null){
-                    setBookshelfadd(login_admin.getToken(),mList.get(position).getId() + "");
+        if(databaseManager.isExistInBookshelfNovel(mList.get(position).getId()+"")){
+            novelViewHolder.tv_item_bookshelf.setText("已加入书架");
+            novelViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
+            novelViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_btn));
+        }else {
+            novelViewHolder.tv_item_bookshelf.setText("加入书架");
+            novelViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.red));
+            novelViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_red));
+            novelViewHolder.tv_item_bookshelf.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    BookshelfNovelDbData dbData;
+                    dbData = new BookshelfNovelDbData(mList.get(position).getId() + "", mList.get(position).getTitle(),
+                            mList.get(position).getPic(), 1, 0, 0, 1 + "", 10, mList.get(position).getSerialize() + "");
+                    databaseManager.insertOrUpdateBook(dbData);
+                    Intent intent_recever = new Intent("com.zhh.android");
+                    mContext.sendBroadcast(intent_recever);
+                    if (login_admin != null) {
+                        setBookshelfadd(login_admin.getToken(), mList.get(position).getId() + "");
+                    }
+                    // ((Activity) mContext).finish();
+                    novelViewHolder.tv_item_bookshelf.setText("已加入书架");
+                    novelViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
+                    novelViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_btn));
                 }
-                ((Activity)mContext).finish();
-            }
-        });
+            });
+        }
     }
+
+    @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    public interface NovelListener {
+        void clickItem(int novelName);
+    }
+
+    DatabaseManager databaseManager;
+    private Login_admin login_admin;
+
     public void setBookshelfadd(String token, String novel_id) {
         String url = UrlObtainer.GetUrl()+"api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()

@@ -85,8 +85,11 @@ public class AnyRunnModule {
     }
 
     @Download.onTaskFail void taskFail(DownloadTask task) {
-        //Log.d(TAG, "fail"+task.getKey());
-        checkPemission();
+        if(z<5){
+            start(url,mUrl,textView);
+        }else {
+            textView.setText("下载失败");
+        }
     }
 
     @Download.onTaskComplete void taskComplete(DownloadTask task) {
@@ -103,15 +106,18 @@ public class AnyRunnModule {
         }
     }
 
-
+   int z=0;
+   String url="";
    public void start(String url,String filepath,TextView t1) {
         textView=t1;
         mUrl = filepath;
+        this.url=url;
         mTaskId = Aria.download(this)
                 .load(url)
                 .setFilePath(filepath)
                 .resetState()
                 .create();
+        z++;
     }
 
     public void stop() {
