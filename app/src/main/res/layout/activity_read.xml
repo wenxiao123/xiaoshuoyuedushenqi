@@ -16,19 +16,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-<!--    <com.example.administrator.xiaoshuoyuedushenqi.book.PageWidget-->
-<!--        android:id="@+id/pv_read_page_view"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:paddingStart="@dimen/read_margin_start"-->
-<!--            android:paddingTop="70dp"-->
-<!--            android:paddingEnd="@dimen/read_margin_start"-->
-<!--            android:paddingBottom="@dimen/read_margin_top"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-
     <TextView
         android:id="@+id/tv_read_novel_title"
         android:layout_width="280dp"
@@ -547,7 +534,9 @@
             android:layout_width="match_parent"
             android:layout_height="43dp"
             android:clickable="true"
-            android:layout_marginTop="10dp">
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
 
             <View
                 android:id="@+id/v_read_theme_0"
@@ -604,14 +593,14 @@
                 android:id="@+id/iv_read_decrease_font"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_read_theme_white_selected"
+                android:background="@drawable/shape_read_theme_grey_selected"
                 android:gravity="center"
                 android:paddingLeft="25dp"
                 android:paddingTop="5dp"
                 android:paddingRight="25dp"
                 android:paddingBottom="5dp"
                 android:text="A-"
-                android:textColor="@color/red"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
 
 
@@ -633,17 +622,18 @@
                 android:id="@+id/iv_read_increase_font"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_read_theme_white_selected"
+                android:background="@drawable/shape_read_theme_grey_selected"
                 android:gravity="center"
                 android:paddingLeft="25dp"
                 android:paddingTop="5dp"
                 android:paddingRight="25dp"
                 android:paddingBottom="5dp"
                 android:text="A+"
-                android:textColor="@color/red"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <RelativeLayout
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -656,6 +646,7 @@
                     android:src="@drawable/bookshelf_add" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_textstyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -703,13 +694,14 @@
                 <ImageView
                     android:id="@+id/iv_read_decrease_row_space"
                     android:layout_width="0dp"
-                    android:scaleX="0.6"
+                    android:scaleX="0.5"
                     android:scaleY="0.8"
                     android:layout_height="match_parent"
                     android:layout_weight="0.35"
                     android:gravity="center"
                     android:paddingLeft="13dp"
                     android:paddingTop="2dp"
+                    android:tint="@color/gray"
                     android:paddingRight="13dp"
                     android:paddingBottom="2dp"
                     android:src="@mipmap/jian_hang"
@@ -750,6 +742,7 @@
                     android:paddingTop="2dp"
                     android:paddingRight="13dp"
                     android:paddingBottom="2dp"
+                    android:tint="@color/gray"
                     android:src="@mipmap/add_hang" />
             </LinearLayout>
         </RelativeLayout>
@@ -768,7 +761,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="自动滚屏"
+                android:text="自动阅读"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -793,16 +786,28 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="滚屏速度"
+                android:text="慢"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/tv_qucliy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="快"
+                android:layout_alignParentRight="true"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
             <SeekBar
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:id="@+id/sb_auto_read_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/tv_auto"
+                android:layout_toLeftOf="@id/tv_qucliy"
                 android:maxHeight="2dp"
                 android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
                 android:thumb="@drawable/shape_read_seek_bar_thumb" />
@@ -815,13 +820,25 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="20dp">
             <TextView
+                android:id="@+id/fanye"
+                android:layout_width="70dp"
+                android:layout_height="@dimen/read_setting_bar_third_height"
+                android:gravity="center_vertical"
+                android:text="翻页动画"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/fanye"
                 android:id="@+id/tv_read_turn_real"
                 android:layout_width="70dp"
                 android:layout_height="@dimen/read_setting_bar_third_height"
-                android:background="@drawable/selector_read_turn_bg"
+                android:background="@drawable/shape_read_theme_white_selected"
                 android:gravity="center"
-                android:text="@string/read_turn_real"
-                android:textColor="@color/read_setting_bar_text"
+                android:text="覆盖"
+                android:textColor="@color/red_aa"
                 android:textSize="@dimen/read_turn_text_size"
                 android:visibility="visible"
                 />
@@ -832,10 +849,10 @@
                 android:id="@+id/tv_read_turn_normal"
                 android:layout_width="70dp"
                 android:layout_height="@dimen/read_setting_bar_third_height"
-                android:background="@drawable/selector_read_turn_bg"
+                android:background="@drawable/shape_read_theme_grey_selected"
                 android:gravity="center"
-                android:text="@string/read_turn_normal"
-                android:textColor="@color/read_setting_bar_text"
+                android:text="上下"
+                android:textColor="@color/black"
                 android:textSize="@dimen/read_turn_text_size"
                 android:visibility="visible"
               />
@@ -894,5 +911,40 @@
             android:layout_marginTop="10dp" />
 
     </LinearLayout>
-
+<LinearLayout
+    android:id="@+id/l_yingdaoye"
+    android:background="#86000000"
+    android:weightSum="3"
+    android:clickable="true"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tv_left"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="向 → 滑"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/txt_click"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="点击"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/tv_right"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="向 ← 滑"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_height="match_parent"/>
+</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

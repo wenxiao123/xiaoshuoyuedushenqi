@@ -23,6 +23,7 @@ public class SpUtil {
     private static final String KEY_ROW_SPACE = "key_row_space";    // 行距
     private static final String KEY_THEME = "key_theme";            // 阅读主题
     private static final String KEY_IS_FIRST = "key_is_first";            // 阅读主题
+    private static final String KEY_READ_FIRST = "key_read_first";            // 阅读主题
     private static final String KEY_WENSITE = "key_website";            // 阅读主题
     private static final String KEY_BRIGHTNESS = "key_brightness";  // 亮度
     private static final String KEY_IS_NIGHT_MODE= "key_is_night_mode";  // 是否为夜间模式
@@ -33,6 +34,7 @@ public class SpUtil {
     private static final float DEFAULT_ROW_SPACE = 35f;
     private static final int DEFAULT_THEME = 0;
     private static final int IS_FIRST = 0;
+    private static final int READ_FIRST = 0;
     private static final String WEBSITE = "";
     private static final float DEFAULT_BRIGHTNESS = -1f;
     private static final boolean DEFAULT_IS_NIGHT_MODE = false;
@@ -56,6 +58,19 @@ public class SpUtil {
         SharedPreferences sp = App.getContext()
                 .getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sp.getInt(KEY_IS_FIRST, IS_FIRST);
+    }
+
+    public static void saveRead_first(int isfirst) {
+        SharedPreferences.Editor editor = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE).edit();
+        editor.putInt(KEY_READ_FIRST, isfirst);
+        editor.apply();
+    }
+
+    public static int getReadfirst() {
+        SharedPreferences sp = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return sp.getInt(KEY_READ_FIRST, READ_FIRST);
     }
 
     public static void saveTextStyle(String textSize_path) {

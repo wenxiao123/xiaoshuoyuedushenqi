@@ -1,6 +1,9 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +33,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -343,10 +347,70 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     boolean isChecked = false;
-
+    int read_frist;
+    TextView tv_left,tv_right,txt_click;
+    float x,now_x;
+    LinearLayout l_yingdaoye;
+    boolean is_left,is_right;
     @Override
     protected void initView() {
+        read_frist=SpUtil.getReadfirst();
         App.init(this);
+        txt_click=findViewById(R.id.txt_click);
+        l_yingdaoye=findViewById(R.id.l_yingdaoye);
+        txt_click.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if( is_left==true) {
+                    l_yingdaoye.setVisibility(View.GONE);
+                }
+            }
+        });
+        tv_left = findViewById(R.id.tv_left);
+        tv_left.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if(is_right==false){
+                               return false;
+                        }
+                        x=motionEvent.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        is_left=true;
+                        now_x=motionEvent.getX();
+                        if(now_x-x>20){
+                            ScleAnimtion(txt_click);
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+        tv_right = findViewById(R.id.tv_right);
+        tv_right.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        x=motionEvent.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        is_right=true;
+                        now_x=motionEvent.getX();
+                        if(now_x-x<20){
+                            ScleAnimtion(tv_left);
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+        if(read_frist==0){
+            l_yingdaoye.setVisibility(View.VISIBLE);
+            ScleAnimtion(tv_right);
+        }
         tv_jainju = findViewById(R.id.tv_jainju);
         tv_jainju.setText((int) mRowSpace + "");
         mTopSettingBarRv = findViewById(R.id.rv_read_top_bar);
@@ -373,17 +437,31 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         IParagraphData paragraphData = new ParagraphData();
                         ReadData(adress, paragraphData, chapter);
                     }
+                    o = 0;
+                    for (int j = 0; j < longs.size(); j++) {
+                        if (mPageView.getPosition() < (int) longs.get(0)) {
+                            o = 0;
+                            break;
+                        } else if (mPageView.getPosition() < (int) longs.get(j)) {
+                            o = j - 1;
+                            break;
+                        }else if(mPageView.getPosition() >= (int) longs.get(longs.size()-1)){
+                            o = longs.size()-1;
+                            break;
+                        }
+                    }
                     mNovelTitleTv1.setText((o + 1) + "/" + weigh);
+                    Log.e("QQQ1", "updateProgress: "+o);
                     mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
                     float prent = ((float)(o + 1) / (float)weigh) * 100;
                     NumberFormat nf = NumberFormat.getNumberInstance();
                     nf.setMaximumFractionDigits(2);
                     mNovelProgressTv.setText(nf.format(prent) + "%");
-                    if(o+1<longs.size()&&mPageView.getmNextFirstPos()>=longs.get(o+1)&&longs.get(o+1)>mPageView.getPosition()) {
-                        last_position=mPageView.getPosition();
-                        String s=mNovelContent.substring(mPageView.getPosition(),longs.get(o+1));
-                        mPageView.initDrawText(s,1);
-                    }
+//                    if(o+1<longs.size()&&mPageView.getmNextFirstPos()>=longs.get(o+1)&&longs.get(o+1)>mPageView.getPosition()) {
+//                        last_position=mPageView.getPosition();
+//                        String s=mNovelContent.substring(mPageView.getPosition(),longs.get(o+1));
+//                        mPageView.initDrawText(s,1);
+//                    }
                 }
             }
 
@@ -392,25 +470,25 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 if (mType == 0) {
                     nextNet();
                 } else if (mType == 1) {
-                    if(o<longs.size()-2) {
-                        String s = mNovelContent.substring(longs.get(o + 1), longs.get(o + 2));
-                        mPageView.initDrawText(s, 0);
-                        o++;
-                    }else if(o==longs.size()-2) {
-                        String s = mNovelContent.substring(longs.get(longs.size()-1), mNovelContent.length());
-                        mPageView.initDrawText(s, 0);
-                        o++;
-                    }else if(o==longs.size()-1){
-                        showShortToast("当前页为最后一页");
-                    }
-                    float chpid = o + 1;
-                    float wight = weigh;
-                    float prent = (chpid / wight) * 100;
-                    NumberFormat nf = NumberFormat.getNumberInstance();
-                    nf.setMaximumFractionDigits(2);
-                    mNovelProgressTv.setText(nf.format(prent) + "%");
-                    mNovelTitleTv1.setText((o + 1) + "/" + weigh);
-                    mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
+//                    if(o<longs.size()-2) {
+//                        String s = mNovelContent.substring(longs.get(o + 1), longs.get(o + 2));
+//                        mPageView.initDrawText(s, 0);
+//                        o++;
+//                    }else if(o==longs.size()-2) {
+//                        String s = mNovelContent.substring(longs.get(longs.size()-1), mNovelContent.length());
+//                        mPageView.initDrawText(s, 0);
+//                        o++;
+//                    }else if(o==longs.size()-1){
+//                        showShortToast("当前页为最后一页");
+//                    }
+//                    float chpid = o + 1;
+//                    float wight = weigh;
+//                    float prent = (chpid / wight) * 100;
+//                    NumberFormat nf = NumberFormat.getNumberInstance();
+//                    nf.setMaximumFractionDigits(2);
+//                    mNovelProgressTv.setText(nf.format(prent) + "%");
+//                    mNovelTitleTv1.setText((o + 1) + "/" + weigh);
+//                    mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
                 } else if (mType == 2) {
                     nextEpub();
                 }
@@ -421,20 +499,20 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 if (mType == 0) {
                     preNet();
                 } else if (mType == 1) {
-                      if(o>0) {
-                          String s = mNovelContent.substring(longs.get(o - 1), longs.get(o));
-                          mPageView.initDrawText(s, s.length()-40);
-                          o--;
-                      }else{
-                    showShortToast("当前页为第一页");
-                      }
-
-                    float prent = ((o + 1) / weigh) * 100;
-                    NumberFormat nf = NumberFormat.getNumberInstance();
-                    nf.setMaximumFractionDigits(2);
-                    mNovelProgressTv.setText(nf.format(prent) + "%");
-                    mNovelTitleTv1.setText((o + 1) + "/" + weigh);
-                    mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
+//                      if(o>0) {
+//                          String s = mNovelContent.substring(longs.get(o - 1), longs.get(o));
+//                          mPageView.initDrawText(s, s.length()-40);
+//                          o--;
+//                      }else{
+//                    showShortToast("当前页为第一页");
+//                      }
+//
+//                    float prent = ((o + 1) / weigh) * 100;
+//                    NumberFormat nf = NumberFormat.getNumberInstance();
+//                    nf.setMaximumFractionDigits(2);
+//                    mNovelProgressTv.setText(nf.format(prent) + "%");
+//                    mNovelTitleTv1.setText((o + 1) + "/" + weigh);
+//                    mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
                 } else if (mType == 2) {
                     preEpub();
                 }
@@ -503,119 +581,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     return true;
                 }
                 return false;
-            }
-        });
-        mPageView.setTouchListener(new RealPageView.TouchListener() {
-            @Override
-            public void center() {
-//                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
-//                    hideBrightnessBar();
-//                    return true;
-//                }
-//                if (set_textstyle.getVisibility() == View.VISIBLE) {
-//                    hideTextstyle();
-//                    return true;
-//                }
-//                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
-//                    hideSettingBar();
-//                    return true;
-//                }
-//                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
-//                    // 隐藏上下栏
-//                    hideBar();
-//                    return true;
-//                }
-//                return false;
-                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
-                    hideBrightnessBar();
-
-                }
-                if (set_textstyle.getVisibility() == View.VISIBLE) {
-                    hideTextstyle();
-
-                }
-                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
-                    hideSettingBar();
-
-                }
-                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
-                    // 隐藏上下栏
-                    hideBar();
-
-                }
-            }
-
-            @Override
-            public Boolean prePage() {
-//                if (isShow || isSpeaking){
-//                    return false;
-//                }
-//
-//                pageFactory.prePage();
-//                if (pageFactory.isfirstPage()) {
-//                    return false;
-//                }
-                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
-
-                    return true;
-                }
-                if (set_textstyle.getVisibility() == View.VISIBLE) {
-
-                    return true;
-                }
-                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
-
-                    return true;
-                }
-                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
-                    // 隐藏上下栏
-
-                    return true;
-                }
-                if (mChapterIndex>=1) {
-                    return false;
-                }
-                return true;
-
-            }
-
-            @Override
-            public Boolean nextPage() {
-//                Log.e("setTouchListener", "nextPage");
-//                if (isShow || isSpeaking){
-//                    return false;
-//                }
-//
-//                pageFactory.nextPage();
-//                if (pageFactory.islastPage()) {
-//                    return false;
-//                }
-                if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
-
-                    return true;
-                }
-                if (set_textstyle.getVisibility() == View.VISIBLE) {
-
-                    return true;
-                }
-                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
-
-                    return true;
-                }
-                if (mBottomBarCv.getVisibility() == View.VISIBLE) {
-
-                    return true;
-                }
-
-                if (mChapterIndex>=weigh) {
-                    return false;
-                }
-                return true;
-            }
-
-            @Override
-            public void cancel() {
-                //pageFactory.cancelPage();
             }
         });
         int theme = SpUtil.getTheme();
@@ -749,6 +714,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     if (mType == 0) {   // 网络小说
                         mChapterIndex = (int) ((weigh - 1) * scale);
                         mTxtNovelProgress = (float) scale;
+                        mNovelProgressTv.setText((int) (mTxtNovelProgress * 100) + "%");
                         mCatalogProgressTv.setText((int) (mTxtNovelProgress * 100) + "%");
                         //mNovelProgressTv.setText((int)(scale*100)+"%");
                     } else if (mType == 1) {    // 本地 txt
@@ -851,11 +817,17 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         tv_load = findViewById(R.id.tv_load);
         switch (mTurnType) {
             case 0:
-                mTurnNormalTv.setSelected(true);
+                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                mTurnNormalTv.setTextColor(getResources().getColor(R.color.red_aa));
+                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
                 mPageView.setTurnType(PageView.TURN_TYPE.NORMAL);
                 break;
             case 1:
-                mTurnRealTv.setSelected(true);
+                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
+                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                mTurnRealTv.setTextColor(getResources().getColor(R.color.red_aa));
                 mPageView.setTurnType(PageView.TURN_TYPE.REAL);
                 break;
         }
@@ -875,6 +847,20 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
             }
         });
+    }
+    AnimatorSet animatorSetsuofang;
+    public void ScleAnimtion(TextView tv){
+        if(animatorSetsuofang!=null){
+            animatorSetsuofang.cancel();
+        }
+        animatorSetsuofang = new AnimatorSet();//组合动画
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(tv, "scaleX", 1, 1.3f,1);//后几个参数是放大的倍数
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(tv, "scaleY", 1, 1.3f,1);
+        scaleX.setRepeatCount(ValueAnimator.INFINITE);//永久循环
+        scaleY.setRepeatCount(ValueAnimator.INFINITE);
+        animatorSetsuofang.setDuration(3000);//时间
+        animatorSetsuofang.play(scaleX).with(scaleY);//两个动画同时开始
+        animatorSetsuofang.start();//开始
     }
 
     ProgressBar progressBar1;
@@ -1165,17 +1151,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             mPresenter.getOpfData(mNovelUrl);
         }
         if (mBrightness == -1f) {    // 系统亮度
-            //mSystemBrightnessSw.setChecked(true);
-            //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_red));
             sys_select.setImageResource(R.mipmap.sys_selected);
         } else {    // 自定义亮度
             mBrightnessProcessSb.setProgress((int) (100 * mBrightness));
-            //mSystemBrightnessSw.setChecked(false);
-            //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_cricyle));
             sys_select.setImageResource(R.mipmap.sys_select);
             ScreenUtil.setWindowBrightness(this, mBrightness);
         }
-        // Log.e("QQQ", "initData: "+mIsNightMode);
         if (mIsNightMode == true) { // 夜间模式
             nightMode();
         } else {    // 日间模式
@@ -1221,7 +1202,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             if (mType == 1) {
                 BookshelfNovelDbData dbData = mDbManager.selectBookshelfNovel(pid);
                 if (dbData != null) {
-                    dbData.setPosition(longs.get(o)+mPageView.getPosition());
+                    dbData.setPosition(mPageView.getPosition());
                     dbData.setChapterid((o+1)+"");
                     dbData.setWeight(weigh);
                     dbData.setSecondPosition(mNovelContent.length());
@@ -1372,6 +1353,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         }
         mNovelTitleTv.setText(mName + " / " + data.getTitle());
         mNovelTitleTv1.setText(mChapterIndex + "/" + weigh);
+        Log.e("QQQ2", "updateProgress: "+mChapterIndex);
         updateChapterProgress();
         if (is_autoRead) {
             starttime();
@@ -2557,16 +2539,20 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             case R.id.tv_read_turn_normal:
                 if (mTurnType != 0) {
                     mTurnType = 0;
-                    mTurnNormalTv.setSelected(true);
-                    mTurnRealTv.setSelected(false);
+                    mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                    mTurnNormalTv.setTextColor(getResources().getColor(R.color.red_aa));
+                    mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                    mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
                     mPageView.setTurnType(PageView.TURN_TYPE.NORMAL);
                 }
                 break;
             case R.id.tv_read_turn_real:
                 if (mTurnType != 1) {
                     mTurnType = 1;
-                    mTurnRealTv.setSelected(true);
-                    mTurnNormalTv.setSelected(false);
+                    mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                    mTurnRealTv.setTextColor(getResources().getColor(R.color.red_aa));
+                    mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                    mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
                     //mPageView.setTurnType(PageView.TURN_TYPE.REAL);
                     mPageView.setTurnType(PageView.TURN_TYPE.COVER);
                 }
@@ -2997,19 +2983,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     progress = (int) (100 * (float) mPosition / (mNovelContent.length() - 1));
                 }
             } else {
-                //mTxtNovelProgress = (float) scale;
                 String s = String.valueOf(mTxtNovelProgress * 100);
                 String str = s.substring(0, Math.min(5, s.length()));
                 int f = (int) Float.parseFloat(str);
                 progress = f;
-//                try {
-////                    progress = (int) Float.parseFloat(
-////                            mNovelProgress.substring(0, mNovelProgress.length()-1));
-//                    progress=(int) (mNovelContent.length() * mTxtNovelProgress)/100;
-//                } catch (NumberFormatException e) {
-//                    e.printStackTrace();
-//                }
             }
+               //o= (int) (weigh * (((float)progress)/100))-2;
         } else if (mType == 2) {    // 本地 epub
             if (!mEpubTocList.isEmpty()) {
                 progress = (int) (100 * ((float) mChapterIndex / (mEpubTocList.size() - 1)));

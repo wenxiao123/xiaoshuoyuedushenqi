@@ -427,11 +427,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 refresh();
                 break;
             case R.id.paixu:
-              //  Log.e("QQQ", "onClick: "+isRefresh);
-                if(catalogDataAll.size()>0){
-                    isRefresh=true;
-                }else {
-                    isRefresh=false;
+                if (mIsReversing || mIsRefreshing) {
+                    return;
                 }
                 if (mCatalogAdapter==null) {
                     return;
@@ -441,15 +438,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                         // 正序显示章节
                         mChapterOrderTv.setRotation(360);
                         mIsReversing = true;
-                        //isRefresh=false;
-                        //type=1;
                         Collections.reverse(catalogDataAll);
-                        //mPresenter.getCatalogData(mUrl,z,type);
                         mCatalogAdapter.notifyDataSetChanged();
-                        mCatalogAdapter.setPosition(chapter_id - 1);
-                        mCatalogListRv.scrollToPosition(chapter_id - 1);
-//                        mCatalogAdapter.setPosition(0);
-//                        mCatalogListRv.scrollToPosition(0);
+                        mCatalogAdapter.setPosition(0);
+                        mCatalogListRv.scrollToPosition(0);
                         mIsReverse = false;
                         mIsReversing = false;
                     } else {
