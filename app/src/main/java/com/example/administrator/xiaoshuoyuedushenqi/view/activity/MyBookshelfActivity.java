@@ -160,6 +160,11 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
 //                        mBookshelfNovelsAdapter.notifyDataSetChanged();
                     }
                 },this);
+        mBookshelfNovelsAdapter.setIsMultiDelete(true);
+        mBookshelfNovelsAdapter.notifyDataSetChanged();
+        iv_bookshelf_more.setText("取消");
+        rv_bookshelf_multi_delete_bar.setVisibility(View.VISIBLE);
+        findViewById(R.id.line).setVisibility(View.VISIBLE);
     }
 
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
@@ -299,7 +304,6 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
 
     @Override
     protected void doAfterInit() {
-
     }
 
     @Override
@@ -321,13 +325,26 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         switch (v.getId()) {
             case R.id.tv_bookshelf_multi_delete_select_all:
                 // 全选
+                int z = 0;
+                for (int i = 0; i < mCheckedList.size(); i++) {
+                    if(mCheckedList.get(i)==true) {
+                        z++;
+                    }
+                }
+                if(z==mCheckedList.size()){
+                    is_allselect=false;
+                    for (int i = 0; i < mCheckedList.size(); i++) {
+                        mCheckedList.set(i, false);
+                    }
+                    mDeleteTv.setText("删除");
+                }else {
                 if(!is_allselect) {
-                    is_allselect=true;
                     int num = 0;
                     for (int i = 0; i < mCheckedList.size(); i++) {
                         mCheckedList.set(i, true);
                         num++;
                     }
+                    is_allselect=true;
                     if (num != 0) {
                         mDeleteTv.setText("删除(" + num + ")");
                     }
@@ -337,28 +354,28 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                         mCheckedList.set(i, false);
                     }
                     mDeleteTv.setText("删除");
-                }
+                }}
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
                 break;
 
             case R.id.iv_bookshelf_more:
-                if(iv_bookshelf_more.getText().equals("编辑")){
-                    mBookshelfNovelsAdapter.setIsMultiDelete(true);
-                    mBookshelfNovelsAdapter.notifyDataSetChanged();
-                    iv_bookshelf_more.setText("取消");
-                    rv_bookshelf_multi_delete_bar.setVisibility(View.VISIBLE);
-                    findViewById(R.id.line).setVisibility(View.VISIBLE);
-                }else {
-                    mBookshelfNovelsAdapter.setIsMultiDelete(false);
-                    mBookshelfNovelsAdapter.notifyDataSetChanged();
-                    iv_bookshelf_more.setText("编辑");
-                    rv_bookshelf_multi_delete_bar.setVisibility(View.GONE);
-                    findViewById(R.id.line).setVisibility(View.GONE);
+//                if(iv_bookshelf_more.getText().equals("编辑")){
+//                    mBookshelfNovelsAdapter.setIsMultiDelete(true);
+//                    mBookshelfNovelsAdapter.notifyDataSetChanged();
+//                    iv_bookshelf_more.setText("取消");
+//                    rv_bookshelf_multi_delete_bar.setVisibility(View.VISIBLE);
+//                    findViewById(R.id.line).setVisibility(View.VISIBLE);
+//                }else {
+//                    mBookshelfNovelsAdapter.setIsMultiDelete(false);
+//                    mBookshelfNovelsAdapter.notifyDataSetChanged();
+//                    iv_bookshelf_more.setText("编辑");
+//                    rv_bookshelf_multi_delete_bar.setVisibility(View.GONE);
+//                    findViewById(R.id.line).setVisibility(View.GONE);
                     // 全选
 //                    Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
 //                    intent.putExtra("islaod", "2");
 //                    startActivity(intent);
-                }
+              //  }
                 break;
 
             case R.id.tv_bookshelf_multi_delete_delete:

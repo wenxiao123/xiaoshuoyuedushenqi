@@ -519,17 +519,25 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             }
 
             @Override
-            public void nextPage() {
+            public boolean nextPage() {
                 if (mType == 1) {
                     updateChapterProgress();
                 }
+                if (mIsShowSettingBar) {
+                    return false;
+                }
+                return true;
             }
 
             @Override
-            public void prePage() {
+            public boolean prePage() {
                 if (mType == 1) {
                     updateChapterProgress();
                 }
+                if (mIsShowSettingBar) {
+                    return false;
+                }
+                return true;
             }
 
             @Override

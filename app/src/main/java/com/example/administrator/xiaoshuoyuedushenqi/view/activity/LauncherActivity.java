@@ -1,13 +1,21 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
@@ -20,6 +28,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CircleProgressbar;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -34,17 +44,21 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Website;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
+import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getContext;
+
 
 public class LauncherActivity extends BaseActivity {
     public final int MSG_FINISH_LAUNCHERACTIVITY = 500;
     DatabaseManager databaseManager;
     private TextView mCountDownTextView;
+    VideoView videoView;
+    ImageView image;
     public Handler mHandler = new Handler(){
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_FINISH_LAUNCHERACTIVITY:
                     //跳转到MainActivity，并结束当前的LauncherActivity
-                    Intent intent = new Intent(LauncherActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LauncherActivity.this, AdmActivity.class);
                     startActivity(intent);
                     finish();
                     break;
@@ -78,6 +92,9 @@ public class LauncherActivity extends BaseActivity {
     @Override
     protected void initView() {
         mCountDownTextView = (TextView) findViewById(R.id.start_skip_count_down);
+        circleProgressbar=findViewById(R.id.tv_red_skip);
+        videoView=findViewById(R.id.activity_opening_videoview);
+        image =findViewById(R.id.img);
     }
 
     @Override
@@ -89,6 +106,7 @@ public class LauncherActivity extends BaseActivity {
         }
         setBookshelfadd();
     }
+    CircleProgressbar circleProgressbar;
     public void getCategoryNovels() {
         Gson mGson=new Gson();
         String url = UrlObtainer.GetUrl()+"api/Rmlist/Rem_List";
@@ -125,7 +143,6 @@ public class LauncherActivity extends BaseActivity {
             }
         });
     }
-
     private void getCategoryNovelsError(String errorMsg) {
         showShortToast(errorMsg);
     }

@@ -109,7 +109,7 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
 ////                        .setFilePath(path + textStyles.get(i).getName()+".ttf") //设置文件保存的完整路径
 ////                        .create();   //创建并启动下载
 ////                screenViewHolder.txt.setText("下载...");
-////                anyRunnModule.start(url,path + textStyles.get(i).getName()+".ttf",screenViewHolder.txt);
+          //      anyRunnModule.start(url,path + textStyles.get(i).getName()+".ttf",screenViewHolder.txt);
 //            }
 //        });
         screenViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

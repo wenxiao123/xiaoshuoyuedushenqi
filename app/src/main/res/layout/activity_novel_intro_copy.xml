@@ -57,22 +57,24 @@
                         android:id="@+id/framle_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
+
                         <ImageView
                             android:id="@+id/img_cover"
                             android:layout_width="95dp"
                             android:layout_height="128dp"
                             android:scaleType="fitXY"
                             android:src="@drawable/default_cover" />
+
                         <TextView
-                            android:background="@color/red_aa"
                             android:id="@+id/tv_status"
-                            android:padding="2dp"
-                            android:textSize="10sp"
-                            android:textColor="@color/white"
-                            android:layout_gravity="right|bottom"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="连载"/>
+                            android:layout_gravity="right|bottom"
+                            android:background="@color/red_aa"
+                            android:padding="2dp"
+                            android:text="连载"
+                            android:textColor="@color/white"
+                            android:textSize="10sp" />
                     </FrameLayout>
 
                     <TextView
@@ -177,8 +179,8 @@
                         android:paddingRight="20dp"
                         android:paddingBottom="10dp"
                         android:text="立即阅读"
-                        android:textSize="14sp"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_book_add"
@@ -193,8 +195,8 @@
                         android:paddingRight="20dp"
                         android:paddingBottom="10dp"
                         android:text="移除书架"
-                        android:textSize="14sp"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_book_load"
@@ -204,13 +206,13 @@
                         android:layout_weight="1"
                         android:background="@drawable/bachground_btn"
                         android:gravity="center"
-                        android:textSize="14sp"
                         android:paddingLeft="20dp"
                         android:paddingTop="10dp"
                         android:paddingRight="20dp"
                         android:paddingBottom="10dp"
                         android:text="全本缓存"
-                        android:textColor="#9FA2B3" />
+                        android:textColor="#9FA2B3"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -225,14 +227,14 @@
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
                         <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_gravity="center_horizontal"
-                            android:scaleType="fitXY"
+                            android:id="@+id/img_collect"
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:padding="5dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerInside"
                             android:src="@mipmap/icon_collection" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -256,6 +258,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center_horizontal"
+                            android:layout_margin="5dp"
                             android:scaleType="fitXY"
                             android:src="@mipmap/icon_catalogue" />
 
@@ -279,10 +282,12 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:id="@+id/iv_tuijian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
                             android:layout_gravity="center_horizontal"
-                            android:scaleType="fitXY"
+                            android:padding="5dp"
+                            android:scaleType="centerInside"
                             android:src="@mipmap/icon_recommended" />
 
                         <TextView
@@ -308,6 +313,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center_horizontal"
+                            android:layout_margin="5dp"
                             android:scaleType="fitXY"
                             android:src="@mipmap/icon_share_gray" />
 

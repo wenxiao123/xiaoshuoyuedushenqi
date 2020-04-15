@@ -134,6 +134,24 @@ public class Noval_details {
     public void setChapter(Chapter chapter) {
         this.chapter = chapter;
     }
+    int favorites;
+    int position;
+
+    public int getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(int favorites) {
+        this.favorites = favorites;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     int  word;
     String category_name;

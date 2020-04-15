@@ -612,7 +612,7 @@ public class RealPageView extends PageView{
                 break;
         }
     }
-    int y = 0;
+    int y = 0,x=0;
     /**
      * 处理普通翻页的事件分发
      */
@@ -620,6 +620,7 @@ public class RealPageView extends PageView{
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                  y= (int) event.getY();
+                 x=(int) event.getX();
                 if (event.getX() < viewWidth / 3) {
                     mCurrStyle = STYLE.LEFT;
                 } else if (event.getX() > viewWidth - viewWidth / 3) {
@@ -651,6 +652,7 @@ public class RealPageView extends PageView{
 //                break;
             case MotionEvent.ACTION_UP:
                 downY= (int) event.getY();
+                downX=(int) event.getX();
 //                switch (mCurrStyle) {
 //                    case LEFT:
 //                        // 上一页
@@ -669,11 +671,13 @@ public class RealPageView extends PageView{
 //                        }
 //                        break;
 //                }
-                Log.e("EEE", "onVerticalTouchEvent: "+downY+" "+y);
-                if(downY-y>10){
+                if(mListener.isshowSettingBar()!=true&&downY-y>10&&downX-x<10){
                    pre();
-                }else if(y-downY>10){
+                }else if(mListener.isshowSettingBar()!=true&&y-downY>10&&x-downX<10){
                    next();
+                }else if(downX > viewWidth / 5 && downX < viewWidth * 4 / 5){
+                    // 弹出或隐藏菜单
+                    mListener.showOrHideSettingBar();
                 }
                 break;
             default:
@@ -821,6 +825,7 @@ public class RealPageView extends PageView{
                     }
                     cancelPage = false;
                     if (isNext) {
+                        //mListener.next();
                         mAnimationProvider.setDirection(AnimationProvider.Direction.next);
                     } else {
                         mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
@@ -854,7 +859,6 @@ public class RealPageView extends PageView{
                 this.postInvalidate();
             }
         }else if (event.getAction() == MotionEvent.ACTION_UP){
-            Log.e(TAG,"ACTION_UP");
             if (!isMove){
                 cancelPage = false;
                 //是否点击了中间
@@ -868,19 +872,17 @@ public class RealPageView extends PageView{
                 }
 
                 if (isNext) {
-                    Boolean isNext =x-downX<20||downX-x<20;
+                    Boolean isNext =mListener.nextPage();
                     mAnimationProvider.setDirection(AnimationProvider.Direction.next);
-                    Log.e("www1", "onCoverTouchEvent: "+x+" "+downX);
-//                    if (isNext==true) {
-//                        return true;
-//                    }
+                    if (isNext!=true) {
+                        return true;
+                    }
                 } else {
-                    Boolean isPre = x-downX<10||downX-x<10;
+                    Boolean isPre = mListener.prePage();
                     mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
-                    Log.e("www2", "onCoverTouchEvent: "+isPre);
-//                    if (isPre==true) {
-//                        return true;
-//                    }
+                    if (isPre!=true) {
+                        return true;
+                    }
                 }
             }
 
@@ -936,6 +938,9 @@ public class RealPageView extends PageView{
             if (mScroller.getFinalX() == x && mScroller.getFinalY() == y){
                 isRuning = false;
             }
+//            mListener.nextPage();
+//            mPageIndex++;
+//            updateBitmap();
             postInvalidate();
         }
         super.computeScroll();

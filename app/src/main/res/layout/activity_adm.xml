@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/trans"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bachground_halfcricyle"
+        android:orientation="vertical">
+        <VideoView
+            android:layout_centerVertical="true"
+            android:id="@+id/activity_opening_videoview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+        <ImageView
+            android:id="@+id/img"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:background="@color/white"
+            android:src="@mipmap/logo"/>
+    </RelativeLayout>
+    <com.example.administrator.xiaoshuoyuedushenqi.widget.CircleProgressbar
+        android:layout_marginTop="35dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/tv_red_skip"
+        android:layout_width="30dp"
+        android:text="跳过"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_gravity="right"
+        android:textColor="@color/red_aa"
+        android:textSize="10sp"
+        android:layout_height="30dp" />
+</FrameLayout>

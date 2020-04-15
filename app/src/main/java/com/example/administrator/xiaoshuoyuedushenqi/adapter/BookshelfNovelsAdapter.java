@@ -96,7 +96,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             Glide.with(mContext)
                     .load(mDataList.get(i).getCover())
                     .apply(new RequestOptions()
-//                           .placeholder(R.drawable.cover_place_holder)
+                         .placeholder(R.drawable.cover_error)
                             .error(R.drawable.cover_error)
                             .transform(transformation))
                     .into(contentViewHolder.cover);

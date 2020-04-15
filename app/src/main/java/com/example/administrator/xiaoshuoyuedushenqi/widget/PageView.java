@@ -80,8 +80,8 @@ public class PageView extends View {
         void updateProgress(String progress);     // 通知主活动更新进度
         void next();    // 显示下一章节
         void pre();     // 显示上一章节
-        void nextPage();   // 下一页
-        void prePage();   // 上一页
+        boolean nextPage();   // 下一页
+        boolean prePage();   // 上一页
         void showOrHideSettingBar();
         boolean isshowSettingBar(); // 弹出或隐藏设置栏
     }

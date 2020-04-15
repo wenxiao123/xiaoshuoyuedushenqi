@@ -52,6 +52,7 @@ E" />
         <activity
             android:name=".view.activity.NovelIntroActivity"
             />
+        <activity android:name=".view.activity.AdmActivity"/>
         <activity
             android:name=".view.activity.MainActivity"
             />

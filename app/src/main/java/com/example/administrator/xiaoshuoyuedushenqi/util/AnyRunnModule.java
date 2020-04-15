@@ -26,7 +26,6 @@ public class AnyRunnModule {
     private Context mContext;
     private String mUrl;
     private long mTaskId = -1;
-    TextView textView;
     public AnyRunnModule(Context context) {
         Aria.download(this).register();
         mContext = context;
@@ -67,9 +66,6 @@ public class AnyRunnModule {
 
     @Download.onTaskRunning protected void running(DownloadTask task) {
         Log.d(TAG, "running"+task.getPercent());
-        if(textView!=null&&task!=null) {
-            textView.setText(task.getPercent() + "%");
-        }
     }
 
     @Download.onTaskResume void taskResume(DownloadTask task) {
@@ -86,30 +82,19 @@ public class AnyRunnModule {
 
     @Download.onTaskFail void taskFail(DownloadTask task) {
         if(z<5){
-            start(url,mUrl,textView);
-        }else {
-            textView.setText("下载失败");
+            start(url,mUrl);
         }
     }
 
     @Download.onTaskComplete void taskComplete(DownloadTask task) {
         Log.d(TAG, "ok");
-        if(textView==null){
-         return;
-        }else {
-            textView.setVisibility(View.GONE);
-            SpUtil.saveTextStyle(mUrl);
-            if (mContext != null) {
-                ((ReadActivity) mContext).listText();
-            }
-            unRegister();
-        }
+        unRegister();
+
     }
 
    int z=0;
    String url="";
-   public void start(String url,String filepath,TextView t1) {
-        textView=t1;
+   public void start(String url,String filepath) {
         mUrl = filepath;
         this.url=url;
         mTaskId = Aria.download(this)

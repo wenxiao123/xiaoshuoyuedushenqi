@@ -186,6 +186,7 @@ public class SpUtil {
 
     //private final static String FILE_NAME = "data_save";
     private final static String KEY = "admin";
+    private final static String KEY2 = "url";
 
     /**
      * desc:保存对象
@@ -236,6 +237,31 @@ public class SpUtil {
     }
 
     /**
+     * desc:保存对象
+     * @param context
+     * @param obj
+     * modified:
+     */
+    public static void saveObject2(Context context,Object obj){
+        try {
+            // 保存对象
+            SharedPreferences.Editor sharedata = context.getSharedPreferences(NAME, 0).edit();
+            //先将序列化结果写到byte缓存中，其实就分配一个内存空间
+            ByteArrayOutputStream bos=new ByteArrayOutputStream();
+            ObjectOutputStream os=new ObjectOutputStream(bos);
+            //将对象序列化写入byte缓存
+            os.writeObject(obj);
+            //将序列化的数据转为16进制保存
+            String bytesToHexString = bytesToHexString(bos.toByteArray());
+            //保存该16进制数组
+            sharedata.putString(KEY2, bytesToHexString);
+            sharedata.commit();
+        } catch (Exception e) {
+        }
+    }
+
+
+    /**
      * desc:获取保存的Object对象
      * @param context
      * @return
@@ -264,13 +290,36 @@ public class SpUtil {
         return null;
 
     }
-    /**
-     * desc:将16进制的数据转为数组
-     * <p>创建人：聂旭阳 , 2014-5-25 上午11:08:33</p>
-     * @param data
+
+     /* desc:获取保存的Object对象
+     * @param context
      * @return
-     * modified:
-     */
+             * modified:
+            */
+    public static Object readObject2(Context context){
+        try {
+            SharedPreferences sharedata = context.getSharedPreferences(NAME, 0);
+            if (sharedata.contains(KEY2)) {
+                String string = sharedata.getString(KEY2, "");
+                if(TextUtils.isEmpty(string)){
+                    return null;
+                }else{
+                    //将16进制的数据转为数组，准备反序列化
+                    byte[] stringToBytes = StringToBytes(string);
+                    ByteArrayInputStream bis=new ByteArrayInputStream(stringToBytes);
+                    ObjectInputStream is=new ObjectInputStream(bis);
+                    //返回反序列化得到的对象
+                    Object readObject = is.readObject();
+                    return readObject;
+                }
+            }
+        } catch (Exception e) {
+        }
+        //所有异常返回null
+        return null;
+
+    }
+
     public static byte[] StringToBytes(String data){
         String hexString=data.toUpperCase().trim();
         if (hexString.length()%2!=0) {

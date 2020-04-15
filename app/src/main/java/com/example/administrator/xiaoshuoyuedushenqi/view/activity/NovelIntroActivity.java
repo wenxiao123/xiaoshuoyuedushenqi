@@ -102,6 +102,7 @@ import java.util.regex.Pattern;
 import cn.bmob.v3.util.V;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
+import q.rorbin.badgeview.QBadgeView;
 
 import static com.example.administrator.xiaoshuoyuedushenqi.view.activity.LocalCatalogActivity.getCharset;
 
@@ -139,6 +140,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     ProgressBar progressBar;
     Login_admin login_admin;
     TextView txt_book_load;
+    ImageView img_collect,iv_tuijian;
     private RelativeLayout rel_book_add;
 
     @Override
@@ -166,8 +168,24 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
     //ImageView iv_load;
     TextView tv_novel_intro_novel_name;
+    boolean is_checked=false;
     @Override
     protected void initView() {
+        l_collect=findViewById(R.id.l_collect);
+        l_collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(is_checked==false){
+                    is_checked=true;
+                    img_collect.setImageResource(R.mipmap.icon_collection_yes);
+                }else {
+                    is_checked=false;
+                    img_collect.setImageResource(R.mipmap.icon_collection);
+                }
+            }
+        });
+        img_collect=findViewById(R.id.img_collect);
+        iv_tuijian=findViewById(R.id.iv_tuijian);
         tv_novel_intro_novel_name=findViewById(R.id.tv_novel_intro_novel_name);
         l_all = findViewById(R.id.l_all);
         //relativeLayout = findViewById(R.id.bottom);
@@ -944,7 +962,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             //binder.postBooks_che();
         }
     };
-
+    LinearLayout l_collect;
     @Override
     public void getNovelsSuccess(Noval_details noval_details, List<Noval_details> novalDetails) {
         if (j <= 1) {
@@ -1014,6 +1032,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             } else {
                 url = UrlObtainer.GetUrl() + noval_details.getPic();
             }
+            //iv_tuijian
+            new QBadgeView(this).bindTarget(img_collect).setBadgeGravity(Gravity.END|Gravity.TOP).setBadgeNumber(noval_details.getFavorites());
+            new QBadgeView(this).bindTarget(iv_tuijian).setBadgeGravity(Gravity.END|Gravity.TOP).setBadgeNumber(noval_details.getPosition());
             CornerTransform transformation = new CornerTransform(this, 10);
             Glide.with(this)
                     .load(url)
