@@ -7,27 +7,32 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.provider.Settings;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import com.bifan.txtreaderlib.R;
 import com.bifan.txtreaderlib.bean.TxtChar;
 import com.bifan.txtreaderlib.bean.TxtMsg;
 import com.bifan.txtreaderlib.interfaces.ICenterAreaClickListener;
@@ -40,23 +45,15 @@ import com.bifan.txtreaderlib.main.TxtConfig;
 import com.bifan.txtreaderlib.main.TxtReaderView;
 import com.bifan.txtreaderlib.ui.ChapterList;
 import com.bifan.txtreaderlib.utils.ELogger;
-import com.example.administrator.xiaoshuoyuedushenqi.app.App;
-import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
-import com.example.administrator.xiaoshuoyuedushenqi.constract.IReadContract;
-import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DetailedChapterData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.EpubData;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.EpubTocItem;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.epub.OpfData;
-import com.example.administrator.xiaoshuoyuedushenqi.presenter.ReadPresenter;
-import com.example.administrator.xiaoshuoyuedushenqi.util.ScreenUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,230 +61,23 @@ import java.util.List;
  * on 2017/12/8.
  */
 
-public class TxtPlayActivity extends BaseActivity<ReadPresenter>
-        implements IReadContract.View, View.OnClickListener {
+public class TxtPlayActivity extends AppCompatActivity {
     protected Handler mHandler;
     protected boolean FileExist = false;
-    public static final String KEY_NOVEL_URL = "read_key_novel_url";
-    public static final String KEY_NOVEL_URL_FUBEN = "read_key_novel_url_fuben";
-    public static final String KEY_CHPATER_ID = "chpter_id";
-    public static final String KEY_SERIALIZE = "serialize";
-    public static final String KEY_AUTHOR = "author";
-    public static final String KEY_ZJ_ID = "ZJ_id";
-    public static final String KEY_NAME = "read_key_name";
-    public static final String KEY_COVER = "read_key_cover";
-    public static final String KEY_CHAPTER_INDEX = "read_key_chapter_index";
-    public static final String Catalog_start_Position = "Catalog_start_Position";
-    public static final String KEY_POSITION = "read_key_position";
-    public static final String KEY_IS_REVERSE = "read_key_is_reverse";
-    public static final String KEY_TYPE = "read_key_type";
-    public static final String KEY_IS_CATALOG = "is_catalog";
-    public static final String KEY_SECOND_POSITION = "read_key_second_position";
-    String mAuthor = "";
-    String adress = "";
-    App app;
-    String pid;
-    private OpfData mOpfData;
-    // Epub 文件的目录
-    private List<EpubTocItem> mEpubTocList = new ArrayList<>();
-    List<String> testBean;
-    // 图片的父目录，为 opf 文件的父目录
-    private String mParentPath = "";
-    // 网络小说目录
-    private List<String> mNetCatalogList = new ArrayList<>();
-    // 当前小说阅读进度（本地 txt 用）
-    private float mTxtNovelProgress;
-    // 小说内容（本地 txt 用）
-    private String mNovelContent;
-    // 小说进度（本地 txt 用）
-    private String mNovelProgress = "";
 
-    // 以下内容通过 Intent 传入
-    private String mNovelUrl;   // 小说 url，本地小说为 filePath
-    private String mName;   // 小说名
-    private String mCover;  // 小说封面
-    private int mType, mCatalog;      // 小说类型，0 为网络小说， 1 为本地 txt 小说, 2 为本地 epub 小说
-    private int mChapterIndex;   // 当前阅读的章节索引
-    private int mCatalog_posotion;   // 当前阅读的位置
-    private int mPosition;  // 文本开始读取位置
-    private boolean mIsReverse; // 是否需要将章节列表倒序
-    private int mSecondPosition; // epub 用
-    private TextView tv_textsize;
-    private ImageView sys_select;
-    private DatabaseManager mDbManager;
-    private boolean mIsLoadingChapter = false;  // 是否正在加载具体章节
-    private boolean mIsShowingOrHidingBar = false;  // 是否正在显示或隐藏上下栏
-    private boolean mIsShowBrightnessBar = false;   // 是否正在显示亮度栏
-    private boolean mIsShowtextstyle = false;   // 是否正在显示亮度栏
-    private boolean mIsSystemBrightness = true;     // 是否为系统亮度
-    private boolean mIsShowSettingBar = false;      // 是否正在显示设置栏
-    private boolean mIsNeedWrite2Db = true;         // 活动结束时是否需要将书籍信息写入数据库
-    private boolean mIsUpdateChapter = false;   // 是否更新章节
-
-    // 从 sp 中读取
-    private float mTextSize;    // 字体大小
-    private float mRowSpace;    // 行距
-    private int mTheme;         // 阅读主题
-    private String mStyle = "";         // 字体样式
-    private float mBrightness;  // 屏幕亮度，为 -1 时表示系统亮度
-    private boolean mIsNightMode;           // 是否为夜间模式
-    private int mTurnType;      // 翻页模式：0 为正常，1 为仿真
-    private String[] strings = {"方正卡通", "方正旗黑", "方正华隶"};
-    private float mMinTextSize = 36f;
-    private float mMaxTextSize = 76f;
-    private float mMinRowSpace = 0f;
-    private float mMaxRowSpace = 48f;
-    private int chpter_id;
-    private int first_read;
-    private int serialize;
-    private Login_admin login_admin;
-    private String zj_id;
-    int weigh;
-    boolean is_othersite = false, is_all_one = false;
-
-    //    @Override
-//    protected void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(getContentViewLayout());
-//        FileExist = getIntentData();
-//        init();
-//        loadFile();
-//        registerListener();
-//    }
     @Override
-    protected void doBeforeSetContentView() {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         StatusBarUtil.setTranslucentStatus(this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_hwtxtpaly;
-    }
-
-    @Override
-    protected ReadPresenter getPresenter() {
-        return null;
-    }
-
-    @Override
-    protected void initData() {
-        app = (App) getApplication();
-        // 从前一个活动传来
-        mAuthor = getIntent().getStringExtra(KEY_AUTHOR);
-        adress = getIntent().getStringExtra(KEY_NOVEL_URL_FUBEN);
-        chpter_id = getIntent().getIntExtra(KEY_CHPATER_ID, 1);
-        zj_id = getIntent().getStringExtra(KEY_ZJ_ID);
-        first_read = getIntent().getIntExtra("first_read", 0);
-        mNovelUrl = getIntent().getStringExtra(KEY_NOVEL_URL);
-        pid = mNovelUrl;
-        mName = getIntent().getStringExtra(KEY_NAME);
-        mCover = getIntent().getStringExtra(KEY_COVER);
-        weigh = getIntent().getIntExtra("weigh", 0);
-        serialize = getIntent().getIntExtra(KEY_SERIALIZE, 0);
-        //mChapterIndex = getIntent().getIntExtra(KEY_CHAPTER_INDEX, 0);
-        mCatalog_posotion = getIntent().getIntExtra(Catalog_start_Position, 0);
-        mPosition = getIntent().getIntExtra(KEY_POSITION, 0);
-        mIsReverse = getIntent().getBooleanExtra(KEY_IS_REVERSE, false);
-        mType = getIntent().getIntExtra(KEY_TYPE, 0);
-        mCatalog = getIntent().getIntExtra(KEY_IS_CATALOG, 0);
-        mSecondPosition = getIntent().getIntExtra(KEY_SECOND_POSITION, 0);
-        // 从 SP 得到
-        mTextSize = SpUtil.getTextSize();
-        mRowSpace = SpUtil.getRowSpace();
-        mTheme = SpUtil.getTheme();
-        mStyle = SpUtil.getTextStyle();
-        mBrightness = SpUtil.getBrightness();
-        mIsNightMode = SpUtil.getIsNightMode();
-        // Log.e("qqq1", "initData: "+mIsNightMode);
-        mTurnType = SpUtil.getTurnType();
-        // 其他
-        mDbManager = DatabaseManager.getInstance();
-        login_admin = (Login_admin) SpUtil.readObject(this);
-        if (weigh == 0) {
-            BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(mNovelUrl);
-            if (bookshelfNovelDbData != null) {
-                weigh = bookshelfNovelDbData.getWeight();
-            }
-        }
-    }
-
-    @Override
-    protected void initView() {
+        setContentView(getContentViewLayout());
         FileExist = getIntentData();
         init();
+        loadFile();
+        registerListener();
     }
 
-    @Override
-    protected void doAfterInit() {
-//
-//        loadFile();
-//        registerListener();
-//        // Log.e("QQQ", "doAfterInit: "+mNovelUrl+" "+chpter_id);
-//        if (mType == 0) {
-//            // 先通过小说 url 获取所有章节 url 信息
-//            //mPresenter.getChapterList(mid);
-//            if (first_read == 0) {
-//                mPresenter.getDetailedChapterData(zj_id + "");
-//            } else if (first_read == 1) {
-//                mPresenter.getDetailedChapterData(mNovelUrl + "", 1 + "");
-//            } else if (first_read == 2) {
-//                mPresenter.getDetailedChapterData(mNovelUrl + "", chpter_id + "");
-//            }
-//        } else if (mType == 1) {
-//            // 通过 FilePath 读取本地小说
-//            //Log.e("QQQ", "doAfterInit: "+adress);
-//            mPresenter.loadTxt(adress);
-//        } else if (mType == 2) {
-//            // 先根据 filePath 获得 OpfData
-//            mPresenter.getOpfData(mNovelUrl);
-//        }
-//        if (mBrightness == -1f) {    // 系统亮度
-//            //mSystemBrightnessSw.setChecked(true);
-//            //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_red));
-//            sys_select.setImageResource(com.example.administrator.xiaoshuoyuedushenqi.R.mipmap.sys_selected);
-//        } else {    // 自定义亮度
-//            mBrightnessProcessSb.setProgress((int) (100 * mBrightness));
-//            //mSystemBrightnessSw.setChecked(false);
-//            //mSys_light.setBackground(getResources().getDrawable(R.drawable.bachground_cricyle));
-//            sys_select.setImageResource(com.example.administrator.xiaoshuoyuedushenqi.R.mipmap.sys_select);
-//            ScreenUtil.setWindowBrightness(this, mBrightness);
-//        }
-//        // Log.e("QQQ", "initData: "+mIsNightMode);
-//        if (mIsNightMode == true) { // 夜间模式
-//            nightMode();
-//        } else {    // 日间模式
-//            dayMode();
-//        }
-//        tv_textsize.setText((int) mTextSize + "");
-//        //File file = new File(mStyle);
-//        Typeface tf = null;
-//        AssetManager mgr = getAssets();
-//        if(mStyle.equals("1")) {
-//            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("方正卡通简体");
-//        }else if(mStyle.equals("2")){
-//            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("方正楷体");
-//        }else if(mStyle.equals("3")){
-//            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("流行体简体");
-//        }else {
-//            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("系统字体");
-//        }
-//        getContentResolver().registerContentObserver(
-//                Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS),
-//                true,
-//                mBrightnessObserver);
-    }
-
-    @Override
-    protected boolean isRegisterEventBus() {
-        return false;
+    protected int getContentViewLayout() {
+        return R.layout.activity_txtpaly;
     }
 
     protected boolean getIntentData() {
@@ -429,26 +219,230 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
         ClipboardView = findViewById(R.id.activity_hwtxtplay_Clipboar);
         mSelectedText = (TextView) findViewById(R.id.activity_hwtxtplay_selected_text);
 
-        mMenuHolder.mTitle = (TextView) findViewById(R.id.txtreadr_menu_title);
+        mMenuHolder.mTitle =  findViewById(R.id.iv_read_menu);
         mMenuHolder.mPreChapter = (TextView) findViewById(R.id.txtreadr_menu_chapter_pre);
         mMenuHolder.mNextChapter = (TextView) findViewById(R.id.txtreadr_menu_chapter_next);
         mMenuHolder.mSeekBar = (SeekBar) findViewById(R.id.txtreadr_menu_seekbar);
         mMenuHolder.mTextSizeDel = findViewById(R.id.txtreadr_menu_textsize_del);
         mMenuHolder.mTextSize = (TextView) findViewById(R.id.txtreadr_menu_textsize);
         mMenuHolder.mTextSizeAdd = findViewById(R.id.txtreadr_menu_textsize_add);
-        mMenuHolder.mBoldSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting1_bold);
-        mMenuHolder.mNormalSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting1_normal);
-        mMenuHolder.mCoverSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting2_cover);
-        mMenuHolder.mShearSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting2_shear);
-        mMenuHolder.mTranslateSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting2_translate);
 
+        mMenuHolder.mTextCowDel = findViewById(R.id.iv_read_decrease_row_space);
+        mMenuHolder.mTextCow = (TextView) findViewById(R.id.tv_jainju);
+        mMenuHolder.mTextCowAdd = findViewById(R.id.iv_read_increase_row_space);
+
+        //mMenuHolder.mBoldSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting1_bold);
+        //mMenuHolder.mNormalSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting1_normal);
+        mMenuHolder.mCoverSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting2_cover);
+        //mMenuHolder.mShearSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting2_shear);
+        mMenuHolder.mTranslateSelectedLayout = findViewById(R.id.txtreadr_menu_textsetting2_translate);
+        mSettingBarCv = findViewById(R.id.cv_read_setting_bar);
+        tv_textstyle = findViewById(R.id.tv_textstyle);
         mMenuHolder.mStyle1 = findViewById(R.id.hwtxtreader_menu_style1);
         mMenuHolder.mStyle2 = findViewById(R.id.hwtxtreader_menu_style2);
         mMenuHolder.mStyle3 = findViewById(R.id.hwtxtreader_menu_style3);
         mMenuHolder.mStyle4 = findViewById(R.id.hwtxtreader_menu_style4);
         mMenuHolder.mStyle5 = findViewById(R.id.hwtxtreader_menu_style5);
-    }
 
+        mMenuHolder.mTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPupowindpw(mMenuHolder.mTitle);
+            }
+        });
+        ImageView  iv_read_setting=findViewById(R.id.iv_read_setting);
+        iv_read_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gone(mTopMenu, mBottomMenu, mCoverView, mChapterMsgView);
+                showSettingBar();
+            }
+        });
+    }
+    private void showPupowindpw(View parent) {
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.popu_item2, null);
+        ListView lv_appointment = (ListView) view.findViewById(R.id.list_view);
+        final String[] datas;
+//        if (mType == 1) {
+//            datas = new String[]{"已缓存", "添加书签"};
+//        } else {
+            datas = new String[]{"全本缓存", "添加书签"};
+//        }
+        final Integer[] ints = {R.mipmap.img_load, R.mipmap.icon_bookmark};
+        PupoAdapter mainAdapter = null;
+        if (datas != null) {
+            mainAdapter = new PupoAdapter(datas, ints);
+        }
+        lv_appointment.setAdapter(mainAdapter);
+        // 创建一个PopuWidow对象,设置宽高
+        final PopupWindow popupWindow = new PopupWindow(view, (int) (parent.getWidth() * 2), ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        // 使其聚集,可点击
+        popupWindow.setFocusable(true);
+        backgroundAlpha(0.5f);
+        // 设置允许在外点击消失
+        popupWindow.setOutsideTouchable(true);
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        popupWindow.showAsDropDown(parent, -(parent.getWidth() * 2), 15);
+        lv_appointment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+//                        if (mIsShowingOrHidingBar) {
+//                            return;
+//                        }
+//                        if (mIsShowBrightnessBar) {
+//                            hideBrightnessBar();
+//                            return;
+//                        }
+//                        if (mIsShowtextstyle) {
+//                            hideTextstyle();
+//                            return;
+//                        }
+//                        if (mIsShowSettingBar) {
+//                            hideSettingBar();
+//                            return;
+//                        }
+//                        mIsShowingOrHidingBar = true;
+//                        if (mTopSettingBarRv.getVisibility() != View.VISIBLE) {
+//                            // 显示上下栏
+//                            showBar();
+//                        } else {
+//                            // 隐藏上下栏
+//                            hideBar();
+//                        }
+//                        d = 1;
+//                        if (datas[position].equals("已缓存")) {
+//                            showShortToast("已经缓存");
+//                            break;
+//                        } else {
+//                            tv_load.setVisibility(View.VISIBLE);
+//                            if (is_othersite == true) {
+//                                new Thread(new ReadActivity.LoadRunable(other_website.get(d - 1).getChapter_url())).start();
+//                            } else {
+//                                postBooks_che();
+//                            }
+//                            is_load = true;
+//                        }
+                        break;
+                    case 1:
+//                        if (mType == 1) {
+//                            boolean isflag = false;
+//                            List<BookmarkNovelDbData> bookmarkNovelDbData = mDbManager.queryAllBookmarkNovel(mNovelUrl);
+//                            //Log.e("QQQ", "2222: "+bookmarkNovelDbData.size());
+//                            for (int i = 0; i < bookmarkNovelDbData.size(); i++) {
+//                                // Log.e("QQQ", "onItemClick: "+bookmarkNovelDbData.get(i).getPosition()+" "+mPageView.getPosition());
+//                                if (bookmarkNovelDbData.get(i).getPosition() == mPageView.getPosition()) {
+//                                    //Log.e("QQQ", "onItemClick: "+111);
+//                                    isflag = true;
+//                                    break;
+//                                }
+//                            }
+//                            // String progress = mNovelProgressTv.getText().toString().substring(0, mNovelProgressTv.getText().length() - 1);
+//                            if (isflag == false) {
+//                                String progress = mNovelProgressTv.getText().toString().substring(0, mNovelProgressTv.getText().length() - 1);
+//                                Date t = new Date();
+//                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                                BookmarkNovelDbData dbData = new BookmarkNovelDbData(mNovelUrl, mName,
+//                                        mNovelContent.substring(mPageView.getPosition(), mPageView.getPosition() + 23), Float.parseFloat(progress) / 100, mPageView.getPosition(), mType, df.format(t), mChapterIndex + "");
+//                                mDbManager.insertBookmarkNovel(dbData);
+//                                showShortToast("书签已添加");
+//                            } else {
+//                                showShortToast("此书签已存在");
+//                            }
+//                        } else if (mType == 2) {
+//                            BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
+//                                    mCover, mChapterIndex, mPageView.getFirstPos(), mType, mPageView.getSecondPos());
+//                            mDbManager.insertOrUpdateBook(dbData);
+//
+//                        } else if (mType == 0) {
+//                            boolean isflag = false;
+//                            List<BookmarkNovelDbData> bookmarkNovelDbData = mDbManager.queryAllBookmarkNovel(mNovelUrl);
+//                            //Log.e("QQQ", "2222: "+bookmarkNovelDbData.size());
+//                            for (int i = 0; i < bookmarkNovelDbData.size(); i++) {
+//                                // Log.e("QQQ", "onItemClick: "+bookmarkNovelDbData.get(i).getPosition()+" "+mPageView.getPosition());
+//                                if (bookmarkNovelDbData.get(i).getPosition() == mPageView.getPosition()) {
+//                                    //Log.e("QQQ", "onItemClick: "+111);
+//                                    isflag = true;
+//                                    break;
+//                                }
+//                            }
+//                            // String progress = mNovelProgressTv.getText().toString().substring(0, mNovelProgressTv.getText().length() - 1);
+//                            if (isflag == false) {
+//                                Date t = new Date();
+//                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                                int seletposi = mPageView.getPosition() + 23 <= webContent.length() ? mPageView.getPosition() + 23 : webContent.length() - 1;
+//                                BookmarkNovelDbData dbData = new BookmarkNovelDbData(mNovelUrl, webName,
+//                                        webContent.substring(mPageView.getPosition(), seletposi), mChapterIndex, mPageView.getPosition(), mType, df.format(t), mChapterIndex + "");
+//                                mDbManager.insertBookmarkNovel(dbData);
+//                                showShortToast("书签已添加");
+//                            } else {
+//                                showShortToast("此书签已存在");
+//                            }
+//                        }
+                        break;
+                }
+                popupWindow.dismiss();
+            }
+        });
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1f);
+            }
+        });
+
+    }
+    class PupoAdapter extends BaseAdapter {
+        LayoutInflater inflater = LayoutInflater.from(TxtPlayActivity.this);
+        String[] strings;
+        Integer[] integers;
+
+        public PupoAdapter(String[] strings, Integer[] integers) {
+            this.strings = strings;
+            this.integers = integers;
+        }
+
+        @Override
+        public int getCount() {
+            return strings.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return strings[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = inflater.inflate(R.layout.grid_item, parent, false);
+            ImageView imageView = convertView.findViewById(R.id.img);
+            TextView textView = convertView.findViewById(R.id.text);
+            textView.setTextColor(getResources().getColor(R.color.black));
+            imageView.setImageResource(integers[position]);
+            textView.setText(strings[position]);
+            return convertView;
+        }
+    }
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha
+     */
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
     private final int[] StyleTextColors = new int[]{
             Color.parseColor("#4a453a"),
             Color.parseColor("#505550"),
@@ -562,7 +556,7 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
         if (mTxtReaderView.getTxtReaderContext().getFileMsg() != null) {
             FileName = mTxtReaderView.getTxtReaderContext().getFileMsg().FileName;
         }
-        mMenuHolder.mTextSize.setText(mTxtReaderView.getTextSize() + "");
+//        mMenuHolder.mTextSize.setText(mTxtReaderView.getTextSize() + "");
         mTopDecoration.setBackgroundColor(mTxtReaderView.getBackgroundColor());
         mBottomDecoration.setBackgroundColor(mTxtReaderView.getBackgroundColor());
         //mTxtReaderView.setLeftSlider(new MuiLeftSlider());//修改左滑动条
@@ -573,11 +567,11 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
         onPageSwitchSettingUi(mTxtReaderView.getTxtReaderContext().getTxtConfig().Page_Switch_Mode);
         //保存的翻页模式
         int pageSwitchMode = mTxtReaderView.getTxtReaderContext().getTxtConfig().Page_Switch_Mode;
-        if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_SERIAL) {
+        if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_SERIAL) {
             mTxtReaderView.setPageSwitchByTranslate();
-        } else if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_COVER) {
+        } else if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_COVER){
             mTxtReaderView.setPageSwitchByCover();
-        } else if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_SHEAR) {
+        }else if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_SHEAR){
             mTxtReaderView.setPageSwitchByShear();
         }
         //章节初始化
@@ -612,7 +606,7 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
         setSeekBarListener();
         setCenterClickListener();
         setPageChangeListener();
-        setOnTextSelectListener();
+        //setOnTextSelectListener();
         setStyleChangeListener();
         setExtraListener();
     }
@@ -622,11 +616,13 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
         mMenuHolder.mNextChapter.setOnClickListener(new ChapterChangeClickListener(false));
         mMenuHolder.mTextSizeAdd.setOnClickListener(new TextChangeClickListener(true));
         mMenuHolder.mTextSizeDel.setOnClickListener(new TextChangeClickListener(false));
-        mMenuHolder.mBoldSelectedLayout.setOnClickListener(new TextSettingClickListener(true));
-        mMenuHolder.mNormalSelectedLayout.setOnClickListener(new TextSettingClickListener(false));
+        mMenuHolder.mTextCowAdd.setOnClickListener(new TextChangeClickListener(true));
+        mMenuHolder.mTextCowDel.setOnClickListener(new TextChangeClickListener(false));
+        //mMenuHolder.mBoldSelectedLayout.setOnClickListener(new TextSettingClickListener(true));
+//        mMenuHolder.mNormalSelectedLayout.setOnClickListener(new TextSettingClickListener(false));
         mMenuHolder.mTranslateSelectedLayout.setOnClickListener(new SwitchSettingClickListener(TxtConfig.PAGE_SWITCH_MODE_SERIAL));
         mMenuHolder.mCoverSelectedLayout.setOnClickListener(new SwitchSettingClickListener(TxtConfig.PAGE_SWITCH_MODE_COVER));
-        mMenuHolder.mShearSelectedLayout.setOnClickListener(new SwitchSettingClickListener(TxtConfig.PAGE_SWITCH_MODE_SHEAR));
+        //mMenuHolder.mShearSelectedLayout.setOnClickListener(new SwitchSettingClickListener(TxtConfig.PAGE_SWITCH_MODE_SHEAR));
     }
 
     protected void setStyleChangeListener() {
@@ -689,19 +685,27 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
                 mMenuHolder.mSeekBar.setProgress((int) (progress * 100));
                 IChapter currentChapter = mTxtReaderView.getCurrentChapter();
                 if (currentChapter != null) {
-                    mChapterNameText.setText((currentChapter.getTitle() + "").trim());
+                    if(name==null) {
+                        mChapterNameText.setText((currentChapter.getTitle() + "").trim());
+                    }else {
+                        mChapterNameText.setText((currentChapter.getTitle() + "/"+name).trim());
+                    }
+                    title=currentChapter.getTitle();
                 } else {
                     mChapterNameText.setText("无章节");
                 }
             }
         });
     }
-
+    String title,name;
     protected void setCenterClickListener() {
         mTxtReaderView.setOnCenterAreaClickListener(new ICenterAreaClickListener() {
             @Override
             public boolean onCenterClick(float widthPercentInView) {
                 mSettingText.performClick();
+                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+                    hideSettingBar();
+                }
                 return true;
             }
 
@@ -710,6 +714,9 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
                 if (mBottomMenu.getVisibility() == View.VISIBLE) {
                     mSettingText.performClick();
                     return true;
+                }
+                if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+                    hideSettingBar();
                 }
                 return false;
             }
@@ -828,95 +835,88 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
 
     private void onTextSettingUi(Boolean isBold) {
         if (isBold) {
-            mMenuHolder.mBoldSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_selected);
-            mMenuHolder.mNormalSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
+            //mMenuHolder.mBoldSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_selected);
+//            mMenuHolder.mNormalSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
         } else {
-            mMenuHolder.mBoldSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
+            //mMenuHolder.mBoldSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
             mMenuHolder.mNormalSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_selected);
         }
     }
 
     private void onPageSwitchSettingUi(int pageSwitchMode) {
-        if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_SERIAL) {
+        if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_SERIAL) {
             mMenuHolder.mTranslateSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_selected);
             mMenuHolder.mCoverSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
-            mMenuHolder.mShearSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
-        } else if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_COVER) {
+            //mMenuHolder.mShearSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
+        } else if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_COVER){
             mMenuHolder.mTranslateSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
             mMenuHolder.mCoverSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_selected);
-            mMenuHolder.mShearSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
-        } else if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_SHEAR) {
+           // mMenuHolder.mShearSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
+        }else if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_SHEAR){
             mMenuHolder.mTranslateSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
             mMenuHolder.mCoverSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_unselected);
-            mMenuHolder.mShearSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_selected);
+            //mMenuHolder.mShearSelectedLayout.setBackgroundResource(R.drawable.shape_menu_textsetting_selected);
         }
     }
-
-    @Override
-    public void onClick(View view) {
-
+    private String mStyle = "";         // 字体样式
+    private LinearLayout mSettingBarCv;
+    private TextView tv_textstyle;
+    /**
+     * 显示设置栏
+     */
+    private void showSettingBar() {
+        mStyle = SpUtil.getTextStyle();
+        Typeface tf = null;
+        AssetManager mgr = getAssets();
+        if(mStyle.equals("1")) {
+            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("方正卡通简体");
+        }else if(mStyle.equals("2")){
+            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("方正楷体");
+        }else if(mStyle.equals("3")){
+            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("流行体简体");
+        }else {
+            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("系统字体");
+        }
+        //mIsShowSettingBar = true;
+        Animation bottomAnim = AnimationUtils.loadAnimation(
+                this, R.anim.read_setting_bottom_enter);
+        mSettingBarCv.startAnimation(bottomAnim);
+        mSettingBarCv.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void getChapterUrlListSuccess(List<String> chapterUrlList, List<String> chapterNameList) {
+    /**
+     * 隐藏设置栏
+     */
+    private void hideSettingBar() {
+        Animation bottomExitAnim = AnimationUtils.loadAnimation(
+                this, R.anim.read_setting_bottom_exit);
+        bottomExitAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mSettingBarCv.setVisibility(View.GONE);
+                //mIsShowSettingBar = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mSettingBarCv.startAnimation(bottomExitAnim);
     }
-
-    @Override
-    public void getChapterUrlListError(String errorMsg) {
-
-    }
-
-    @Override
-    public void getDetailedChapterDataSuccess(DetailedChapterData data) {
-
-    }
-
-    @Override
-    public void getDetailedChapterDataError(String errorMsg) {
-
-    }
-
-    @Override
-    public void loadTxtSuccess(String text) {
-
-    }
-
-    @Override
-    public void loadTxtError(String errorMsg) {
-
-    }
-
-    @Override
-    public void getOpfDataSuccess(OpfData opfData) {
-
-    }
-
-    @Override
-    public void getOpfDataError(String errorMsg) {
-
-    }
-
-    @Override
-    public void getEpubChapterDataSuccess(List<EpubData> dataList) {
-
-    }
-
-    @Override
-    public void getEpubChapterDataError(String errorMsg) {
-
-    }
-
-    @Override
-    public void getReadRecordSuccess(String message) {
-
-    }
-
-    @Override
-    public void getReadRecordError(String errorMsg) {
-
-    }
-
     private class TextSettingClickListener implements View.OnClickListener {
         private Boolean Bold;
 
@@ -943,12 +943,11 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
         @Override
         public void onClick(View view) {
             if (FileExist) {
-                if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_COVER) {
+                if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_COVER) {
                     mTxtReaderView.setPageSwitchByCover();
-                } else if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_SERIAL) {
+                } else   if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_SERIAL){
                     mTxtReaderView.setPageSwitchByTranslate();
-                }
-                if (pageSwitchMode == TxtConfig.PAGE_SWITCH_MODE_SHEAR) {
+                }  if (pageSwitchMode==TxtConfig.PAGE_SWITCH_MODE_SHEAR){
                     mTxtReaderView.setPageSwitchByShear();
                 }
                 onPageSwitchSettingUi(pageSwitchMode);
@@ -978,6 +977,32 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
         private Boolean Add;
 
         public TextChangeClickListener(Boolean pre) {
+            Add = pre;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (FileExist) {
+                int textSize = mTxtReaderView.getCowSize();
+                if (Add) {
+                    if (textSize + 2 <= TxtConfig.MAX_COW_SIZE) {
+                        mTxtReaderView.setCowSize(textSize + 2);
+                        mMenuHolder.mTextCow.setText(textSize + 2 + "");
+                    }
+                } else {
+                    if (textSize - 2 >= TxtConfig.MIN_COW_SIZE) {
+                        mTxtReaderView.setCowSize(textSize - 2);
+                        mMenuHolder.mTextCow.setText(textSize - 2 + "");
+                    }
+                }
+            }
+        }
+    }
+
+    private class CowChangeClickListener implements View.OnClickListener {
+        private Boolean Add;
+
+        public CowChangeClickListener(Boolean pre) {
             Add = pre;
         }
 
@@ -1023,7 +1048,13 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
     }
 
     protected void setBookName(String name) {
-        mMenuHolder.mTitle.setText(name + "");
+        this.name=name;
+        if(title==null) {
+            mChapterNameText.setText(name + "");
+        }else {
+            mChapterNameText.setText(title + "/"+name);
+        }
+       //mMenuHolder.mTitle.setText(name + "");
     }
 
     protected void Show(View... views) {
@@ -1050,17 +1081,19 @@ public class TxtPlayActivity extends BaseActivity<ReadPresenter>
     }
 
     protected class MenuHolder {
-        public TextView mTitle;
+        public ImageView mTitle;
         public TextView mPreChapter;
         public TextView mNextChapter;
         public SeekBar mSeekBar;
-        public View mTextSizeDel;
-        public View mTextSizeAdd;
+        public TextView mTextSizeDel,mTextCow;
+        public TextView mTextSizeAdd;
+        public ImageView mTextCowDel;
+        public ImageView mTextCowAdd;
         public TextView mTextSize;
         public View mBoldSelectedLayout;
         public View mNormalSelectedLayout;
-        public View mCoverSelectedLayout;
-        public View mShearSelectedLayout;
+        public TextView mCoverSelectedLayout;
+        public TextView mShearSelectedLayout;
         public View mTranslateSelectedLayout;
         public View mStyle1;
         public View mStyle2;

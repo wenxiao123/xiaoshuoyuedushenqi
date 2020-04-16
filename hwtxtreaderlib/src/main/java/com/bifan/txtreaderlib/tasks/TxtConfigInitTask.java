@@ -118,7 +118,7 @@ public class TxtConfigInitTask implements ITxtTask {
         param.PaddingRight = TxtConfig.Page_PaddingRight;
         param.PaddingTop = TxtConfig.Page_PaddingTop;
         param.PaddingBottom = TxtConfig.Page_PaddingBottom;
-        param.ParagraphMargin = TxtConfig.Page_Paragraph_margin;
+        param.ParagraphMargin = TxtConfig.getCowSize(readerContext.context);
     }
 
 

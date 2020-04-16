@@ -558,11 +558,11 @@ public class RealPageView extends PageView{
             //onNormalTouchEvent(event);
             onVerticalTouchEvent(event);
         } else  if (mTurnType == TURN_TYPE.COVER) {
-            if (mHasBitmapB) {
+//            if (mHasBitmapB) {
                 onCoverTouchEvent(event);
-            }else {
-                onCoverTouchEventNoBitmapB(event);
-            }
+//            }else {
+//                onCoverTouchEventNoBitmapB(event);
+//            }
         } else if (mTurnType == TURN_TYPE.REAL) {
             if (mHasBitmapB) {
                 onRealTouchEvent(event);
@@ -805,7 +805,8 @@ public class RealPageView extends PageView{
             isRuning = false;
             mAnimationProvider.setStartPoint(downX,downY);
             abortAnimation();
-        }else if (event.getAction() == MotionEvent.ACTION_MOVE){
+        }else
+            if (event.getAction() == MotionEvent.ACTION_MOVE){
 
             final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
             //判断是否移动了
@@ -858,7 +859,8 @@ public class RealPageView extends PageView{
                 isRuning = true;
                 this.postInvalidate();
             }
-        }else if (event.getAction() == MotionEvent.ACTION_UP){
+        }else
+            if (event.getAction() == MotionEvent.ACTION_UP){
             if (!isMove){
                 cancelPage = false;
                 //是否点击了中间
