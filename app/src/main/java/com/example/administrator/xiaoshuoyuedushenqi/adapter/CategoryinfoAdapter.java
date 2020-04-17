@@ -62,8 +62,7 @@ public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapte
         Glide.with(mContext)
                 .load(url)
                 .apply(new RequestOptions()
-                    .placeholder(R.drawable.cover_place_holder)
-                    .error(R.drawable.cover_error)
+                        .error(R.drawable.cover_error)
                 .transform(transformation))
                 .into(categoryNovelViewHolder.cover);
         categoryNovelViewHolder.cover.setOnClickListener(new View.OnClickListener() {

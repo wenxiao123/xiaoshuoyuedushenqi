@@ -86,8 +86,7 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
         Glide.with(mContext)
                 .load(href)
                 .apply(new RequestOptions()
-                        .placeholder(R.drawable.cover_place_holder)
-                        .error(R.drawable.cover_error)
+                         .error(R.drawable.cover_error)
                         .transform(transformation))
                 .into(novelViewHolder.cover);
         novelViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -1,5 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.presenter;
 
+import android.util.Log;
+
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IReadContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DetailedChapterData;
@@ -118,6 +120,7 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
 
     @Override
     public void getDetailedChapterData(String bookid, String id) {
+        Log.e("TR", "getDetailedChapterData: "+id);
         mModel.getDetailedChapterData(bookid,id);
     }
 

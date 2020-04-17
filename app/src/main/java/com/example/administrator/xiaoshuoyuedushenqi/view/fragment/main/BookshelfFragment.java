@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bifan.txtreaderlib.main.TxtConfig;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookshelfNovelsAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
@@ -54,6 +55,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MyBookshelfAc
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.TxtPlayActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.gson.Gson;
 
@@ -628,7 +630,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 //                        }else {
                             if (mDataList.get(position).getType() == 0) {
                                // Log.e("QQQ", "clickItem: "+mDataList.get(position));
-                                Intent intent = new Intent(getActivity(), ReadActivity.class);
+                                Intent intent = new Intent(getActivity(), TxtPlayActivity.class);
                                 // 小说 url
                                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
                                 // 小说名
@@ -650,21 +652,25 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                 intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
                                 startActivity(intent);
                             } else {
-                                Intent intent = new Intent(getActivity(), ReadActivity.class);
+                                TxtConfig.saveIsOnVerticalPageMode(getContext(),false);
+                                Intent intent = new Intent(getActivity(), TxtPlayActivity.class);
                                 // 小说 url
-                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
-                                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,mDataList.get(position).getFuben_id());
-                                // 小说名
-                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
+//                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
+//                                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,mDataList.get(position).getFuben_id());
+//                                // 小说名
+//                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
                                 // 小说封面 url
-                                intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+                                //intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+                                intent.putExtra("FilePath",  mDataList.get(position).getFuben_id());
+                                intent.putExtra("FileName", mDataList.get(position).getName());
                                 // 小说类型
                                 intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
-                                // 开始阅读的位置
-                                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
-                                intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
-                                intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
+//                                // 开始阅读的位置
+//                                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
+//                                intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
+//                                intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
                                 startActivity(intent);
+                              //TxtPlayActivity.loadTxtFile(getContext(), mDataList.get(position).getFuben_id());
                             }
                         }
                         // }
@@ -678,8 +684,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 //                        mBookshelfNovelsAdapter.setIsMultiDelete(true);
 //                        mBookshelfNovelsAdapter.notifyDataSetChanged();
 //                        mMultiDeleteRv.setVisibility(View.VISIBLE);
-                        Intent bookShelfintent = new Intent(getContext(), MyBookshelfActivity.class);
-                        startActivity(bookShelfintent);
+//                        Intent bookShelfintent = new Intent(getContext(), MyBookshelfActivity.class);
+//                        startActivity(bookShelfintent);
                     }
                 });
     }

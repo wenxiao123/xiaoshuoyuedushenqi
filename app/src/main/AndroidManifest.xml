@@ -64,6 +64,9 @@ E" />
             android:name=".view.activity.BookCataloActivity"
             />
         <activity
+            android:name=".view.activity.TxtPlayActivity"
+            />
+        <activity
             android:name=".view.activity.MyBookshelfActivity"
             />
         <activity

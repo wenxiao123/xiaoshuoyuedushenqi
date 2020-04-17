@@ -36,7 +36,7 @@ public class PageView extends View {
     protected static final int TYPE_TXT = 0;  // 网络小说也属于 txt
     protected static final int TYPE_EPUB = 1;
 
-    public static final boolean IS_TEST = false;    // 是否进行单独测试
+    public static final boolean IS_TEST = true;    // 是否进行单独测试
 
     protected Paint mPaint;
     protected float mTextSize=31;      // 字体大小
@@ -312,6 +312,15 @@ public class PageView extends View {
 //        textPaint.setTypeface(tf);
         posRecord = drawTextImpl(canvas,textPaint,currY, content, posRecord);
     }
+    int pagenumdex=0;
+
+    public int getPagenumdex() {
+        return pagenumdex;
+    }
+
+    public void setPagenumdex(int pagenumdex) {
+        this.pagenumdex = pagenumdex;
+    }
 
     /**
      * 真正进行文本绘制
@@ -353,6 +362,7 @@ public class PageView extends View {
                 textWidths += textWidth;
                 num++;
             }
+            pagenumdex=num;
             add = num <= 1? 0f : (width - paddingStart - paddingEnd - textWidths) / (num - 1);
             // 进行绘制
             for (int i = 0; i < num; i++) {
@@ -375,7 +385,9 @@ public class PageView extends View {
 
         return posRecord;
     }
-
+    public float getTxtHight(){
+        return mTextSize + mRowSpace;
+    }
     protected void drawEpub(Canvas canvas, Paint textPaint) {
         float width = getWidth();
         float height = getHeight();

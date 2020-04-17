@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_read_bottom_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/bachground_halfcricyle"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="visible">
+
+    <!-- first -->
+
+    <TextView
+        android:id="@+id/txtreadr_menu_chapter_pre"
+        android:layout_width="wrap_content"
+        android:padding="10dp"
+        android:layout_height="@dimen/read_bottom_bar_first_height"
+        android:gravity="center"
+        android:text="@string/read_previous_chapter"
+        android:textColor="@color/black"
+        android:textSize="@dimen/read_bottom_bar_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtreadr_menu_chapter_next"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/read_bottom_bar_first_height"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="@string/read_next_chapter"
+        android:textColor="@color/black"
+        android:textSize="@dimen/read_bottom_bar_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/txtreadr_menu_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/read_bottom_bar_first_height"
+        android:maxHeight="2dp"
+        android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
+        android:thumb="@drawable/shape_read_seek_bar_thumb"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- second -->
+
+    <ImageView
+        android:id="@+id/iv_read_catalog"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_second_height"
+        android:paddingTop="22dp"
+        android:paddingBottom="12dp"
+        android:tint="@color/gray"
+        android:src="@drawable/read_catalog"
+        app:layout_constraintEnd_toStartOf="@id/iv_read_brightness"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtreadr_menu_chapter_pre" />
+
+    <ImageView
+        android:id="@+id/iv_read_brightness"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_second_height"
+        android:paddingTop="20dp"
+        android:tint="@color/gray"
+        android:paddingBottom="10dp"
+        android:src="@mipmap/change_website"
+        app:layout_constraintEnd_toStartOf="@id/iv_read_day_and_night_mode"
+        app:layout_constraintStart_toEndOf="@id/iv_read_catalog"
+        app:layout_constraintTop_toBottomOf="@id/txtreadr_menu_chapter_pre" />
+
+    <ImageView
+        android:id="@+id/iv_read_day_and_night_mode"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_second_height"
+        android:paddingTop="22dp"
+        android:paddingBottom="12dp"
+        android:tint="@color/gray"
+        android:src="@mipmap/icon_night"
+        app:layout_constraintEnd_toStartOf="@id/iv_read_setting"
+        app:layout_constraintStart_toEndOf="@id/iv_read_brightness"
+        app:layout_constraintTop_toBottomOf="@id/txtreadr_menu_chapter_pre" />
+
+    <ImageView
+        android:id="@+id/iv_read_setting"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_second_height"
+        android:paddingTop="22dp"
+        android:paddingBottom="12dp"
+        android:tint="@color/gray"
+        android:src="@drawable/setting_read"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_read_day_and_night_mode"
+        app:layout_constraintTop_toBottomOf="@id/txtreadr_menu_chapter_pre" />
+
+    <!-- third -->
+
+    <TextView
+        android:id="@+id/tv_read_catalog"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_third_height"
+        android:gravity="center|top"
+        android:text="@string/read_catalog"
+        android:textColor="@color/gray_24"
+        android:textSize="@dimen/read_bottom_bar_text_size"
+        app:layout_constraintEnd_toStartOf="@id/tv_read_brightness"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+    <TextView
+        android:id="@+id/tv_read_brightness"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_third_height"
+        android:gravity="center|top"
+        android:text="换网址"
+        android:textColor="@color/gray_24"
+        android:textSize="@dimen/read_bottom_bar_text_size"
+        app:layout_constraintEnd_toStartOf="@id/tv_read_day_and_night_mode"
+        app:layout_constraintStart_toEndOf="@id/tv_read_catalog"
+        app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+    <TextView
+        android:id="@+id/tv_read_day_and_night_mode"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_third_height"
+        android:gravity="center|top"
+        android:text="@string/read_night_mode"
+        android:textColor="@color/gray_24"
+        android:textSize="@dimen/read_bottom_bar_text_size"
+        app:layout_constraintEnd_toStartOf="@id/tv_read_setting"
+        app:layout_constraintStart_toEndOf="@id/tv_read_brightness"
+        app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+    <TextView
+        android:id="@+id/tv_read_setting"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/read_bottom_bar_third_height"
+        android:gravity="center|top"
+        android:text="@string/read_setting"
+        android:textColor="@color/gray_24"
+        android:textSize="@dimen/read_bottom_bar_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_read_day_and_night_mode"
+        app:layout_constraintTop_toBottomOf="@id/iv_read_catalog" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

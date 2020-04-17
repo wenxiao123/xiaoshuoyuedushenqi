@@ -11,6 +11,11 @@
     <color name="grey_a1">#9FA2B3</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="hwtxtreader_styleclor1">#d0cdc4</color>
+    <color name="hwtxtreader_styleclor2">#ccebcc</color>
+    <color name="hwtxtreader_styleclor3">#d4c7a5</color>
+    <color name="hwtxtreader_styleclor4">#393330</color>
+    <color name="hwtxtreader_styleclor5">#00141f</color>
     <color name="background_color">#F7F8F9</color>
     <color name="colorAccent">@android:color/holo_blue_light</color>
 

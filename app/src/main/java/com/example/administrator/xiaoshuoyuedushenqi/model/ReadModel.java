@@ -113,6 +113,7 @@ public class ReadModel implements IReadContract.Model {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    mPresenter.getDetailedChapterDataError("请求数据失败");
                 }
             }
 

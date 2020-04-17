@@ -3,19 +3,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <com.example.administrator.xiaoshuoyuedushenqi.widget.RealPageView
-        android:id="@+id/pv_read_page_view"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingStart="@dimen/read_margin_start"
-        android:paddingTop="70dp"
-        android:paddingEnd="@dimen/read_margin_start"
-        android:paddingBottom="@dimen/read_margin_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+        <com.example.administrator.xiaoshuoyuedushenqi.widget.RealPageView
+        android:id="@+id/pv_read_page_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/read_margin_start"
+        android:paddingTop="70dp"
+        android:paddingEnd="@dimen/read_margin_start"
+        android:paddingBottom="@dimen/read_margin_top"/>
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/l_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/srv_novel_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingStart="@dimen/read_margin_start"
+            android:paddingTop="60dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="@dimen/read_margin_top"
+            android:id="@+id/recycle_read"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        </LinearLayout>
+        <ScrollView
+            android:visibility="gone"
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:visibility="gone"
+                android:paddingStart="@dimen/read_margin_start"
+                android:paddingTop="70dp"
+                android:paddingEnd="@dimen/read_margin_start"
+                android:paddingBottom="@dimen/read_margin_top"
+                android:id="@+id/txt_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </ScrollView>
+    </FrameLayout>
     <TextView
         android:id="@+id/tv_read_novel_title"
         android:layout_width="280dp"
@@ -808,7 +846,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/tv_auto"
                 android:layout_toLeftOf="@id/tv_qucliy"
-                android:maxHeight="2dp"
+                android:maxHeight="3dp"
                 android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
                 android:thumb="@drawable/shape_read_seek_bar_thumb" />
         </RelativeLayout>
@@ -915,7 +953,6 @@
     android:id="@+id/l_yingdaoye"
     android:background="#86000000"
     android:weightSum="3"
-    android:clickable="true"
     android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="match_parent">

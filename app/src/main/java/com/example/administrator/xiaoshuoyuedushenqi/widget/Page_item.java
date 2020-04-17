@@ -20,13 +20,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
-import com.bifan.txtreaderlib.interfaces.IReaderViewDrawer;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.book.animation.AnimationProvider;
 import com.example.administrator.xiaoshuoyuedushenqi.book.animation.CoverAnimation;
@@ -40,7 +38,7 @@ import java.util.List;
  * @author
  * Created on 2019/12/29
  */
-public class RealPageView extends PageView{
+public class Page_item extends PageView{
     private static final String TAG = "RealPageView";
 
     private STYLE mCurrStyle = STYLE.NONE; //记录当前的点击样式
@@ -98,17 +96,17 @@ public class RealPageView extends PageView{
     private boolean mIsLoadNextPage = true;   // 是否翻到下一页
     private int mLastX = 0;
 
-    public RealPageView(Context context) {
+    public Page_item(Context context) {
         super(context);
         init(context);
     }
 
-    public RealPageView(Context context, AttributeSet attrs) {
+    public Page_item(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public RealPageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Page_item(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -354,6 +352,7 @@ public class RealPageView extends PageView{
     }
     @Override
     protected void onDraw(Canvas canvas) {
+        Log.e("XXX", "onDraw: "+2233);
         if (!checkBeforeDraw()) {
             return;
         }
@@ -411,7 +410,6 @@ public class RealPageView extends PageView{
         int duration =  (400 * Math.abs(dx)) / viewWidth;
         Log.e("duration",duration + "");
         scroller.startScroll((int) mAnimationProvider.getmTouch().x, 0, dx, 0, duration);
-        updateBitmap();
     }
     /**
      * 计算各点坐标
@@ -555,25 +553,24 @@ public class RealPageView extends PageView{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mTurnType == TURN_TYPE.NORMAL) {
-            onNormalTouchEvent(event);
-            //onVerticalTouchEvent(event);
-        } else  if (mTurnType == TURN_TYPE.COVER) {
+//        if (mTurnType == TURN_TYPE.NORMAL) {
+         //   onNormalTouchEvent(event);
+//            //onVerticalTouchEvent(event);
+//        } else  if (mTurnType == TURN_TYPE.COVER) {
+////            if (mHasBitmapB) {
+//                onCoverTouchEvent(event);
+////            }else {
+////                onCoverTouchEventNoBitmapB(event);
+////            }
+//        } else if (mTurnType == TURN_TYPE.REAL) {
 //            if (mHasBitmapB) {
-                onCoverTouchEvent(event);
-//            }else {
-//                Log.e("WWW", "onTouchEvent: "+222);
-//                onCoverTouchEventNoBitmapB(event);
+//                onRealTouchEvent(event);
+//            } else {
+//                onRealTouchEventNoBitmapB(event);
 //            }
-        } else if (mTurnType == TURN_TYPE.REAL) {
-            if (mHasBitmapB) {
-                onRealTouchEvent(event);
-            } else {
-                onRealTouchEventNoBitmapB(event);
-            }
-        }
+//        }
 
-        return true;
+        return false;
     }
 
     /**
@@ -759,7 +756,6 @@ public class RealPageView extends PageView{
                 } else {
                     mCurrStyle = STYLE.CENTER;
                 }
-                mAnimationProvider.setStartPoint(downX,downY);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mCurrStyle != STYLE.LEFT && mCurrStyle != STYLE.CENTER) {
@@ -769,61 +765,6 @@ public class RealPageView extends PageView{
                     mIsLoadNextPage = event.getX() < mLastX;
                 }
                 mLastX = (int) event.getX();
-                final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-                //判断是否移动了
-                if (isMove==false) {
-                    isMove = Math.abs(downX - x) > slop || Math.abs(downY - y) > slop;
-                }
-
-                if (isMove){
-                    isMove = true;
-                    if (moveX == 0 && moveY ==0) {
-                        Log.e(TAG,"isMove");
-                        //判断翻得是上一页还是下一页
-                        if (x - downX >0){
-                            isNext = false;
-                        }else{
-                            isNext = true;
-                        }
-                        cancelPage = false;
-                        if (isNext) {
-                            //mListener.next();
-                            mAnimationProvider.setDirection(AnimationProvider.Direction.next);
-                        } else {
-                            mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
-                        }
-                        if (Math.abs(event.getX() - mLastX) >= 5) {
-                            mIsLoadNextPage = event.getX() < mLastX;
-                        }
-                        mLastX = (int) event.getX();
-                        Log.e("SSS","isNext:" + isNext);
-                    }else{
-                        //判断是否取消翻页
-                        if (isNext){
-                            if (x - moveX > 0){
-                                cancelPage = true;
-                                mAnimationProvider.setCancel(true);
-                            }else {
-                                cancelPage = false;
-                                mAnimationProvider.setCancel(false);
-                            }
-                        }else{
-                            if (x - moveX < 0){
-                                mAnimationProvider.setCancel(true);
-                                cancelPage = true;
-                            }else {
-                                mAnimationProvider.setCancel(false);
-                                cancelPage = false;
-                            }
-                        }
-                        Log.e(TAG,"cancelPage:" + cancelPage);
-                    }
-
-                    moveX = x;
-                    moveY = y;
-                    isRuning = true;
-                    this.postInvalidate();
-                }
                 break;
             case MotionEvent.ACTION_UP:
                 if (mCurrStyle == STYLE.LEFT) {
@@ -849,162 +790,25 @@ public class RealPageView extends PageView{
      */
     private boolean onCoverTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
-        int x = (int)event.getX();
-        int y = (int)event.getY();
-        mAnimationProvider.setmTouch(new PointF(x,y));
-        if (event.getAction() == MotionEvent.ACTION_DOWN){
-            downX = (int) event.getX();
-            downY = (int) event.getY();
-            moveX = 0;
-            moveY = 0;
-            isMove = false;
-            noNext = false;
-            isNext = false;
-            isRuning = false;
-            mAnimationProvider.setStartPoint(downX,downY);
-            abortAnimation();
-        }else if (event.getAction() == MotionEvent.ACTION_MOVE){
-
-            final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-            //判断是否移动了
-            if (isMove==false) {
-                isMove = Math.abs(downX - x) > slop || Math.abs(downY - y) > slop;
-            }
-
-            if (isMove){
-                isMove = true;
-                if (moveX == 0 && moveY ==0) {
-                    Log.e(TAG,"isMove");
-                    //判断翻得是上一页还是下一页
-                    if (x - downX >0){
-                        isNext = false;
-                    }else{
-                        isNext = true;
-                    }
-                    cancelPage = false;
-                    if (isNext) {
-                        //mListener.next();
-                        mAnimationProvider.setDirection(AnimationProvider.Direction.next);
-                    } else {
-                        mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
-                    }
-                    if (Math.abs(event.getX() - mLastX) >= 5) {
-                        mIsLoadNextPage = event.getX() < mLastX;
-                    }
-                    mLastX = (int) event.getX();
-                    Log.e("SSS","isNext:" + isNext);
-                }else{
-                    //判断是否取消翻页
-                    if (isNext){
-                        if (x - moveX > 0){
-                            cancelPage = true;
-                            mAnimationProvider.setCancel(true);
-                        }else {
-                            cancelPage = false;
-                            mAnimationProvider.setCancel(false);
-                        }
-                    }else{
-                        if (x - moveX < 0){
-                            mAnimationProvider.setCancel(true);
-                            cancelPage = true;
-                        }else {
-                            mAnimationProvider.setCancel(false);
-                            cancelPage = false;
-                        }
-                    }
-                    Log.e(TAG,"cancelPage:" + cancelPage);
-                }
-
-                moveX = x;
-                moveY = y;
-                isRuning = true;
-                this.postInvalidate();
-            }
-        }else if (event.getAction() == MotionEvent.ACTION_UP){
-            if (!isMove){
-                cancelPage = false;
-                //是否点击了中间
-                if (downX > viewWidth / 5 && downX < viewWidth * 4 / 5){
-                   // Log.e("www3", "onCoverTouchEvent: "+2233);
-                    return true;
-                }else if (x < viewWidth / 2){
-                    isNext = false;
-                }else{
-                    isNext = true;
-                }
-
-                if (isNext) {
-                    //Boolean isNext =mListener.nextPage();
-                    mAnimationProvider.setDirection(AnimationProvider.Direction.next);
-//                    if (isNext!=true) {
-//                        return true;
-                   // next();
-//                    }
-                } else {
-                    //Boolean isPre = mListener.prePage();
-                    mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
-//                    if (isPre!=true) {
-//                        return true;
-//                    }
-                    //pre();
-                }
-            }
-
-//            if (mIsLoadNextPage) {
-//                isRuning = true;
-//                startAnimation(mScroller);
-//                //next();
-//                this.postInvalidate();
-//            }else {
-//                isRuning = true;
-//                //startCancelAnim();
-//                //next();
-//                this.postInvalidate();
-//            }
-//            if (!noNext) {
-////                isRuning = true;
-////                mAnimationProvider.startAnimation(mScroller);
-//////                mListener.nextPage();
-//////                mPageIndex++;
-////                updateBitmap();
-////                this.postInvalidate();
-////            }
-            if (noNext==false) {
-                isRuning = true;
-                startAnimation(mScroller);
-//                if (mHasBitmapB) {
-//                    next();
-//                }
-                //next();
-                this.postInvalidate();
-            }
-        }
-//        if (PageFactory.getStatus() == PageFactory.Status.OPENING){
-//            return true;
-//        }
-
 //        int x = (int)event.getX();
 //        int y = (int)event.getY();
-//
-//        mAnimationProvider.setTouchPoint(x,y);
+//        mAnimationProvider.setmTouch(new PointF(x,y));
 //        if (event.getAction() == MotionEvent.ACTION_DOWN){
 //            downX = (int) event.getX();
 //            downY = (int) event.getY();
 //            moveX = 0;
 //            moveY = 0;
 //            isMove = false;
-////            cancelPage = false;
 //            noNext = false;
 //            isNext = false;
 //            isRuning = false;
 //            mAnimationProvider.setStartPoint(downX,downY);
 //            abortAnimation();
-//            Log.e(TAG,"ACTION_DOWN");
 //        }else if (event.getAction() == MotionEvent.ACTION_MOVE){
 //
 //            final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 //            //判断是否移动了
-//            if (!isMove) {
+//            if (isMove==false) {
 //                isMove = Math.abs(downX - x) > slop || Math.abs(downY - y) > slop;
 //            }
 //
@@ -1020,24 +824,12 @@ public class RealPageView extends PageView{
 //                    }
 //                    cancelPage = false;
 //                    if (isNext) {
-//                      //  Boolean isNext = mTouchListener.nextPage();
-////                        calcCornerXY(downX,mScreenHeight);
+//                        //mListener.next();
 //                        mAnimationProvider.setDirection(AnimationProvider.Direction.next);
-//
-////                        if (!isNext) {
-////                            noNext = true;
-////                            return true;
-////                        }
 //                    } else {
-//                       // Boolean isPre = mTouchListener.prePage();
 //                        mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
-//
-////                        if (!isPre) {
-////                            noNext = true;
-////                            return true;
-////                        }
 //                    }
-//                    Log.e(TAG,"isNext:" + isNext);
+//                    Log.e("SSS","isNext:" + isNext);
 //                }else{
 //                    //判断是否取消翻页
 //                    if (isNext){
@@ -1066,19 +858,11 @@ public class RealPageView extends PageView{
 //                this.postInvalidate();
 //            }
 //        }else if (event.getAction() == MotionEvent.ACTION_UP){
-//            Log.e(TAG,"ACTION_UP");
 //            if (!isMove){
 //                cancelPage = false;
 //                //是否点击了中间
-//                if (downX > viewWidth / 5 && downX < viewWidth * 4 / 5 && downY > viewWidth / 3 && downY < viewWidth * 2 / 3){
-//                    if (mTouchListener != null){
-//                        mTouchListener.center();
-//                    }
-//                    Log.e(TAG,"center");
-////                    mCornerX = 1; // 拖拽点对应的页脚
-////                    mCornerY = 1;
-////                    mTouch.x = 0.1f;
-////                    mTouch.y = 0.1f;
+//                if (downX > viewWidth / 5 && downX < viewWidth * 4 / 5){
+//                   // Log.e("www3", "onCoverTouchEvent: "+2233);
 //                    return true;
 //                }else if (x < viewWidth / 2){
 //                    isNext = false;
@@ -1087,34 +871,163 @@ public class RealPageView extends PageView{
 //                }
 //
 //                if (isNext) {
-//                    //Boolean isNext = mTouchListener.nextPage();
+//                    //Boolean isNext =mListener.nextPage();
 //                    mAnimationProvider.setDirection(AnimationProvider.Direction.next);
-////                    if (!isNext) {
+////                    if (isNext!=true) {
 ////                        return true;
 ////                    }
 //                } else {
-//                   // Boolean isPre = mTouchListener.prePage();
+//                    //Boolean isPre = mListener.prePage();
 //                    mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
-////                    if (!isPre) {
+////                    if (isPre!=true) {
 ////                        return true;
 ////                    }
 //                }
 //            }
 //
-//            if (cancelPage && mTouchListener != null){
-//               // mTouchListener.cancel();
-//            }
-//
-//            Log.e(TAG,"isNext:" + isNext);
-//            if (!noNext) {
+//            if (noNext==false) {
 //                isRuning = true;
-//                mAnimationProvider.startAnimation(mScroller);
-////                mListener.nextPage();
-////                mPageIndex++;
-//                updateBitmap();
+//                startAnimation(mScroller);
+//                //next();
 //                this.postInvalidate();
 //            }
 //        }
+//        if (PageFactory.getStatus() == PageFactory.Status.OPENING){
+//            return true;
+//        }
+
+        int x = (int)event.getX();
+        int y = (int)event.getY();
+
+        mAnimationProvider.setTouchPoint(x,y);
+        if (event.getAction() == MotionEvent.ACTION_DOWN){
+            downX = (int) event.getX();
+            downY = (int) event.getY();
+            moveX = 0;
+            moveY = 0;
+            isMove = false;
+//            cancelPage = false;
+            noNext = false;
+            isNext = false;
+            isRuning = false;
+            mAnimationProvider.setStartPoint(downX,downY);
+            abortAnimation();
+            Log.e(TAG,"ACTION_DOWN");
+        }else if (event.getAction() == MotionEvent.ACTION_MOVE){
+
+            final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+            //判断是否移动了
+            if (!isMove) {
+                isMove = Math.abs(downX - x) > slop || Math.abs(downY - y) > slop;
+            }
+
+            if (isMove){
+                isMove = true;
+                if (moveX == 0 && moveY ==0) {
+                    Log.e(TAG,"isMove");
+                    //判断翻得是上一页还是下一页
+                    if (x - downX >0){
+                        isNext = false;
+                    }else{
+                        isNext = true;
+                    }
+                    cancelPage = false;
+                    if (isNext) {
+                      //  Boolean isNext = mTouchListener.nextPage();
+//                        calcCornerXY(downX,mScreenHeight);
+                        mAnimationProvider.setDirection(AnimationProvider.Direction.next);
+
+//                        if (!isNext) {
+//                            noNext = true;
+//                            return true;
+//                        }
+                    } else {
+                       // Boolean isPre = mTouchListener.prePage();
+                        mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
+
+//                        if (!isPre) {
+//                            noNext = true;
+//                            return true;
+//                        }
+                    }
+                    Log.e(TAG,"isNext:" + isNext);
+                }else{
+                    //判断是否取消翻页
+                    if (isNext){
+                        if (x - moveX > 0){
+                            cancelPage = true;
+                            mAnimationProvider.setCancel(true);
+                        }else {
+                            cancelPage = false;
+                            mAnimationProvider.setCancel(false);
+                        }
+                    }else{
+                        if (x - moveX < 0){
+                            mAnimationProvider.setCancel(true);
+                            cancelPage = true;
+                        }else {
+                            mAnimationProvider.setCancel(false);
+                            cancelPage = false;
+                        }
+                    }
+                    Log.e(TAG,"cancelPage:" + cancelPage);
+                }
+
+                moveX = x;
+                moveY = y;
+                isRuning = true;
+                this.postInvalidate();
+            }
+        }else if (event.getAction() == MotionEvent.ACTION_UP){
+            Log.e(TAG,"ACTION_UP");
+            if (!isMove){
+                cancelPage = false;
+                //是否点击了中间
+                if (downX > viewWidth / 5 && downX < viewWidth * 4 / 5 && downY > viewWidth / 3 && downY < viewWidth * 2 / 3){
+                    if (mTouchListener != null){
+                        mTouchListener.center();
+                    }
+                    Log.e(TAG,"center");
+//                    mCornerX = 1; // 拖拽点对应的页脚
+//                    mCornerY = 1;
+//                    mTouch.x = 0.1f;
+//                    mTouch.y = 0.1f;
+                    return true;
+                }else if (x < viewWidth / 2){
+                    isNext = false;
+                }else{
+                    isNext = true;
+                }
+
+                if (isNext) {
+                    //Boolean isNext = mTouchListener.nextPage();
+                    mAnimationProvider.setDirection(AnimationProvider.Direction.next);
+//                    if (!isNext) {
+//                        return true;
+//                    }
+                } else {
+                   // Boolean isPre = mTouchListener.prePage();
+                    mAnimationProvider.setDirection(AnimationProvider.Direction.pre);
+//                    if (!isPre) {
+//                        return true;
+//                    }
+                }
+            }
+
+            if (cancelPage && mTouchListener != null){
+               // mTouchListener.cancel();
+            }
+
+            Log.e(TAG,"isNext:" + isNext);
+            if (!noNext) {
+                isRuning = true;
+                mAnimationProvider.startAnimation(mScroller);
+//                mListener.nextPage();
+//                mPageIndex++;
+                updateBitmap();
+                this.postInvalidate();
+            }
+        }
         return true;
     }
     private int downX = 0;
@@ -1229,8 +1142,8 @@ public class RealPageView extends PageView{
                         break;
                     case RIGHT:
                         // 加载下一章节（无动画）
-                        mListener.next();
-                        //next();
+                        //mListener.next();
+                        next();
                         break;
                 }
                 break;

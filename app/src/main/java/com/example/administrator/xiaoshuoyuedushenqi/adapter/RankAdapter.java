@@ -59,24 +59,21 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.NovelViewHolde
             Glide.with(mContext)
                     .load(mContext.getResources().getDrawable(R.mipmap.no_1))
                     .apply(new RequestOptions()
-                            .placeholder(R.drawable.cover_place_holder)
-                            .error(R.drawable.cover_error))
+                            )
                     .into(novelViewHolder.iv_rank);
         }else if(position==1){
             novelViewHolder.iv_rank.setVisibility(View.VISIBLE);
             Glide.with(mContext)
                     .load(mContext.getResources().getDrawable(R.mipmap.no_2))
                     .apply(new RequestOptions()
-                            .placeholder(R.drawable.cover_place_holder)
-                            .error(R.drawable.cover_error))
+                            )
                     .into(novelViewHolder.iv_rank);
         }else if(position==2){
             novelViewHolder.iv_rank.setVisibility(View.VISIBLE);
             Glide.with(mContext)
                     .load(mContext.getResources().getDrawable(R.mipmap.no_3))
                     .apply(new RequestOptions()
-                            .placeholder(R.drawable.cover_place_holder)
-                            .error(R.drawable.cover_error))
+                            )
                     .into(novelViewHolder.iv_rank);
         }else {
             novelViewHolder.iv_rank.setVisibility(View.GONE);
@@ -91,7 +88,6 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.NovelViewHolde
         Glide.with(mContext)
                 .load(href)
                 .apply(new RequestOptions()
-                        .placeholder(R.drawable.cover_place_holder)
                         .error(R.drawable.cover_error)
                 .transform(transformation))
                 .into(novelViewHolder.cover);

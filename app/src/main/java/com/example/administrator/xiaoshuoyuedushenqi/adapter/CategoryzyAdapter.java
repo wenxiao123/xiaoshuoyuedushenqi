@@ -61,8 +61,7 @@ public class CategoryzyAdapter extends RecyclerView.Adapter<CategoryzyAdapter.Ca
         Glide.with(mContext)
                 .load(href)
                 .apply(new RequestOptions()
-                    //.placeholder(R.drawable.cover_place_holder)
-                    .error(R.drawable.cover_error)
+                .error(R.drawable.cover_error)
                 .transform(transformation))
                 .into(categoryNovelViewHolder.cover);
         categoryNovelViewHolder.cover.setOnClickListener(new View.OnClickListener() {

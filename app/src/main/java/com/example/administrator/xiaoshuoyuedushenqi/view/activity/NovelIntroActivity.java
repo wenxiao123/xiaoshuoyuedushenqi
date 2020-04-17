@@ -1039,7 +1039,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             Glide.with(this)
                     .load(url)
                     .apply(new RequestOptions()
-                            .placeholder(R.drawable.cover_place_holder)
                             .error(R.drawable.cover_error)
                             .transform(transformation))
                     .into(mTopBgIv);

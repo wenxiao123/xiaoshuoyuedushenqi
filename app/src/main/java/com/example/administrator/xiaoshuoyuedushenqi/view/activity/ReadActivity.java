@@ -12,15 +12,18 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.CalendarContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -47,6 +50,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -54,7 +58,9 @@ import android.widget.TextView;
 import com.bifan.txtreaderlib.interfaces.IParagraphData;
 import com.bifan.txtreaderlib.main.ParagraphData;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.AppRecyleAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.ChangeCategoryAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.ReadRecyleAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.TextStyleAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
@@ -91,12 +97,19 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ScreenUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.AdmDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.PageView;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.RealPageView;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,6 +135,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -190,7 +204,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private TextView mSettingTv, tv_website;
     private TextView tvCatalog, mBookMark;
     private View s_line, m_line;
-
+    private RecyclerView recycle_read;
+    private ScrollView scrollView;
+    private TextView textView;
     private SeekBar mBrightnessProcessSb;
     private Switch mSystemBrightnessSw;
 
@@ -247,7 +263,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private boolean mIsShowSettingBar = false;      // 是否正在显示设置栏
     private boolean mIsNeedWrite2Db = true;         // 活动结束时是否需要将书籍信息写入数据库
     private boolean mIsUpdateChapter = false;   // 是否更新章节
-
+    ReadRecyleAdapter readRecyleAdapter;
+    private RefreshLayout mRefreshSrv;
+    LinearLayout l_vertical;
     // 从 sp 中读取
     private float mTextSize;    // 字体大小
     private float mRowSpace;    // 行距
@@ -257,7 +275,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private boolean mIsNightMode;           // 是否为夜间模式
     private int mTurnType;      // 翻页模式：0 为正常，1 为仿真
     private String[] strings = {"方正卡通", "方正旗黑", "方正华隶"};
-    private float mMinTextSize = 36f;
+    private float mMinTextSize = 10f;
     private float mMaxTextSize = 76f;
     private float mMinRowSpace = 0f;
     private float mMaxRowSpace = 48f;
@@ -307,6 +325,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     @Override
     protected void initData() {
         app = (App) getApplication();
+        recycle_read=findViewById(R.id.recycle_read);
+        scrollView=findViewById(R.id.scrollView);
+        textView=findViewById(R.id.txt_content);
         // 从前一个活动传来
         mAuthor = getIntent().getStringExtra(KEY_AUTHOR);
         adress = getIntent().getStringExtra(KEY_NOVEL_URL_FUBEN);
@@ -352,8 +373,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     float x,now_x;
     LinearLayout l_yingdaoye;
     boolean is_left,is_right;
+    @SuppressLint("RestrictedApi")
     @Override
     protected void initView() {
+        l_vertical=findViewById(R.id.l_vertical);
         read_frist=SpUtil.getReadfirst();
         App.init(this);
         txt_click=findViewById(R.id.txt_click);
@@ -362,6 +385,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             @Override
             public void onClick(View view) {
                 if( is_left==true) {
+                    showBar();
                     l_yingdaoye.setVisibility(View.GONE);
                 }
             }
@@ -382,13 +406,16 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         now_x=motionEvent.getX();
                         if(now_x-x>20){
                             ScleAnimtion(txt_click);
+                            mPageView.initDrawText(mNovelContent,0);
                         }
                         break;
                 }
                 return true;
             }
         });
+
         tv_right = findViewById(R.id.tv_right);
+
         tv_right.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -401,6 +428,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         now_x=motionEvent.getX();
                         if(now_x-x<20){
                             ScleAnimtion(tv_left);
+                            mPageView.initDrawText(mNovelContent,mPageView.getmNextFirstPos());
                         }
                         break;
                 }
@@ -410,6 +438,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         if(read_frist==0){
             l_yingdaoye.setVisibility(View.VISIBLE);
             ScleAnimtion(tv_right);
+            SpUtil.saveRead_first(1);
         }
         tv_jainju = findViewById(R.id.tv_jainju);
         tv_jainju.setText((int) mRowSpace + "");
@@ -451,7 +480,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         }
                     }
                     mNovelTitleTv1.setText((o + 1) + "/" + weigh);
-                    Log.e("QQQ1", "updateProgress: "+o);
                     mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o).substring(3));
                     float prent = ((float)(o + 1) / (float)weigh) * 100;
                     NumberFormat nf = NumberFormat.getNumberInstance();
@@ -566,6 +594,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     hideBar();
                     return;
                 }
+//                if(exec!=null&&is_autoRead==true){
+//                    stopTime();
+//                }
                 return;
             }
 
@@ -613,6 +644,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 bgColor = getResources().getColor(R.color.read_theme_0_bg);
                 break;
         }
+        textView.setTextSize(mTextSize);
+        textView.setBackgroundColor(bgColor);
+        recycle_read.setBackgroundColor(bgColor);
         mPageView.setBackgroundColor(bgColor);
         if (mIsNightMode == true) {
             mPageView.setBackgroundColor(getResources().getColor(R.color.read_night_mode_back_bg));
@@ -752,7 +786,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         sb_auto_read_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                pro = progress;
+                if(pro>10) {
+                    pro = progress;
+                }else {
+                    pro=10;
+
+                }
                 double scale = (double) progress / 100f;
                 //Log.e("QQQ", "onProgressChanged: "+scale);
                 if (is_autoRead) {
@@ -843,18 +882,57 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             @Override
             public void onClick(View view) {
                 if (!is_autoRead) {
-                    starttime();
+                    z=0;
+                    //starttime();
                     sb_auto_read_progress.setProgress(pro);
                     is_autoRead = true;
                     tv_autoread.setImageResource(R.mipmap.kaiguan_open);
 
                 } else {
-                    stopTime();
+                   // stopTime();
                     is_autoRead = false;
                     tv_autoread.setImageResource(R.mipmap.icon_auto_close);
                 }
             }
         });
+        mRefreshSrv = findViewById(R.id.srv_novel_refresh);
+        mRefreshSrv.setEnableRefresh(false);
+        mRefreshSrv.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+//                z=1;
+//                isRefresh=true;
+                mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                //refreshlayout.finishLoadMore(false);
+            }
+        });
+        mRefreshSrv.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                mChapterIndex++;
+                mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
+                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+                // refreshlayout.finishLoadMore(false);
+            }
+        });
+        ClassicsHeader classicsHeader=new ClassicsHeader(this);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(new Date());
+        classicsHeader.setLastUpdateText("最后更新:"+dateString);
+        //refreshLayout.setRefreshHeader(new BezierRadarHeader(getContext()).setEnableHorizontalDrag(true));
+        mRefreshSrv.setRefreshHeader(classicsHeader);
+        RefreshFooter refreshFooter=new ClassicsFooter(this);
+       // refreshFooter.setNoMoreData(false);
+        //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
+        mRefreshSrv.setRefreshFooter(refreshFooter);
+//        findViewById(R.id.iv_all_novel_back).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
+//
     }
     AnimatorSet animatorSetsuofang;
     public void ScleAnimtion(TextView tv){
@@ -1014,19 +1092,65 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         exec.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                z = z + 10;
-                if (mPageView.getPosition() <= mNovelContent.length() - 100) {
-                    String content = mNovelContent.replace("</br>", "\n").replace("&nbsp", " ");
-                    mPageView.initDrawText(content, mPageView.getPosition() + z);
-                } else {
-                    handler1.sendEmptyMessage(1);
+                //Log.e("trt", "run: "+recycle_read.canScrollVertically(1));
+                z = z + mPageView.getPagenumdex();
+                if(recycle_read.getVisibility()==View.GONE) {
+                    if (mPageView.getPosition() <= mNovelContent.length() - 100) {
+                        String content = mNovelContent.replace("</br>", "\n").replace("&nbsp", " ");
+                        mPageView.initDrawText(content, mPageView.getPosition() + z);
+                    } else {
+                        handler1.sendEmptyMessage(1);
+                    }
+                }else {
+                    Log.e("trt", "run: "+recycle_read.canScrollVertically(1));
+                    if(recycle_read.canScrollVertically(1)) {
+                        recycle_read.smoothScrollBy(0, (int) mPageView.getTxtHight()*5);
+                    }else {
+                        handler1.sendEmptyMessage(3);
+                    }
+//                    recycle_read.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                        @Override
+//                        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                            super.onScrollStateChanged(recyclerView, newState);
+////                            if(is_autoRead&&is_scrolled==true){
+////
+////                            }
+//                            Log.e("TRT", "direction "+is_scrolled);//滑动到底部
+//
+//                           // Log.e("TRT", "onScrollStateChanged: "+ recycle_read.getScrollState());
+////                            if(is_scrolled==false){
+////                                Log.e("TRT", "onScrollStateChanged: "+222);
+////                                mChapterIndex++;
+////                                mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
+////                            }
+////                            is_scrolled=false;
+//                        }
+//
+//                        @Override
+//                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                            //is_scrolled=true;
+////                            if(recycle_read.canScrollVertically(1)){
+////                                //Log.i("TRT", "direction 1: true");
+////                            }else if(is_scrolled==false){
+////                                is_scrolled=true;
+////                                Log.i("TRT", "direction 1: false");//滑动到底部
+////                                mChapterIndex++;
+////                                mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
+////                            }
+////                             if(is_scrolled==false){
+////                                 is_scrolled=true;
+////                             }
+//                            //handler1.sendEmptyMessage(3);
+//                        }
+//                    });
+
                 }
+
             }
         }, 1000, read_speed, TimeUnit.MILLISECONDS);
-        //Log.e("QQQ", "starttime: "+read_speed);
-
+        //handler1.sendEmptyMessage()
     }
-
+    boolean is_scrolled;
     Handler handler1 = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -1041,13 +1165,79 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
             }else if(msg.what==2){
                 String href= (String) msg.obj;
-                new Thread(new sendValueToServer(href, weight + "", reurl)).start();
+//                new Thread(new sendValueToServer(href, weight + "", reurl)).start();
+                z = z + mPageView.getPagenumdex();
+                if(recycle_read.getVisibility()==View.GONE) {
+                    if (mPageView.getPosition() <= mNovelContent.length() - 100) {
+                        String content = mNovelContent.replace("</br>", "\n").replace("&nbsp", " ");
+                        mPageView.initDrawText(content, mPageView.getPosition() + z);
+                    } else {
+                        handler1.sendEmptyMessage(1);
+                    }
+                }else {
+                    Log.e("trt", "run: "+recycle_read.canScrollVertically(1));
+                    if(recycle_read.canScrollVertically(1)) {
+                        recycle_read.smoothScrollBy(0, (int) mPageView.getTxtHight()*5);
+                    }else {
+                        handler1.sendEmptyMessage(3);
+                    }
+//                    recycle_read.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                        @Override
+//                        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                            super.onScrollStateChanged(recyclerView, newState);
+////                            if(is_autoRead&&is_scrolled==true){
+////
+////                            }
+//                            Log.e("TRT", "direction "+is_scrolled);//滑动到底部
+//
+//                           // Log.e("TRT", "onScrollStateChanged: "+ recycle_read.getScrollState());
+////                            if(is_scrolled==false){
+////                                Log.e("TRT", "onScrollStateChanged: "+222);
+////                                mChapterIndex++;
+////                                mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
+////                            }
+////                            is_scrolled=false;
+//                        }
+//
+//                        @Override
+//                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                            //is_scrolled=true;
+////                            if(recycle_read.canScrollVertically(1)){
+////                                //Log.i("TRT", "direction 1: true");
+////                            }else if(is_scrolled==false){
+////                                is_scrolled=true;
+////                                Log.i("TRT", "direction 1: false");//滑动到底部
+////                                mChapterIndex++;
+////                                mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
+////                            }
+////                             if(is_scrolled==false){
+////                                 is_scrolled=true;
+////                             }
+//                            //handler1.sendEmptyMessage(3);
+//                        }
+//                    });
+
+                }
+
+            }else if(msg.what==3){
+//                String href= (String) msg.obj;
+//                new Thread(new sendValueToServer(href, weight + "", reurl)).start();
+//                if(recycle_read.canScrollVertically(1)){
+//                    //Log.i("TRT", "direction 1: true");
+//                }else if(is_scrolled==false){
+                   // is_scrolled=true;
+                    Log.e("TRT", "direction 1: false");//滑动到底部
+                    mChapterIndex++;
+                    mPresenter.getDetailedChapterData(mNovelUrl, mChapterIndex + "");
+               // }
+            }else  if(msg.what==4){
+
             }
         }
     };
 
     void stopTime() {
-        if (exec != null) {
+       if (exec != null) {
             exec.shutdownNow();
             exec = null;
         }
@@ -1328,7 +1518,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     String mTitle;
     String id, weight;
     int t = 0;
-
+    List<String> mlist_all=new ArrayList<>();
+    LinearLayoutManager linearLayoutManager;
     /**
      * 获取具体章节信息成功
      */
@@ -1361,10 +1552,57 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         }
         mNovelTitleTv.setText(mName + " / " + data.getTitle());
         mNovelTitleTv1.setText(mChapterIndex + "/" + weigh);
-        Log.e("QQQ2", "updateProgress: "+mChapterIndex);
         updateChapterProgress();
         if (is_autoRead) {
+            stopTime();
+            z=0;
             starttime();
+        }
+        String con=webContent.substring(mPageView.getPosition());
+        //String[] strings=stringSpilt(con,length);
+        String[] strings=con.split("   ");
+        List<String> mlist = Arrays.asList(strings);
+        List arrList = new ArrayList(mlist);
+        mlist_all.addAll(arrList);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        int last=linearLayoutManager.findLastVisibleItemPosition();
+        if (readRecyleAdapter == null) {
+            mlist_all = arrList;
+            readRecyleAdapter=new ReadRecyleAdapter(ReadActivity.this,mlist_all);
+            recycle_read.setLayoutManager(linearLayoutManager);
+            recycle_read.setAdapter(readRecyleAdapter);
+            readRecyleAdapter.setOnCatalogListener(new ReadRecyleAdapter.CatalogListener() {
+                @Override
+                public void clickItem(int position) {
+                    if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+                        hideBrightnessBar();
+                    }
+                    if (set_textstyle.getVisibility() == View.VISIBLE) {
+                        hideTextstyle();
+                    }
+                    if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+                        hideSettingBar();
+                    }
+                    if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+                        // 隐藏上下栏
+                        hideBar();
+                    }else {
+                        showBar();
+                    }
+                }
+            });
+            recycle_read.setFocusableInTouchMode(false);
+            recycle_read.setScrollingTouchSlop(last);
+        } else {
+            readRecyleAdapter.notifyItemChanged(last,0);
+        }
+        if(mTurnType==0){
+            NumberFormat nf = NumberFormat.getNumberInstance();
+            nf.setMaximumFractionDigits(2);
+            float v = (((float) mChapterIndex / (float) weigh) * 100);//+ p * (1 / weigh));
+            mNovelProgressTv.setText(nf.format(v) + "%");
+            mPageView.setVisibility(View.GONE);
+            l_vertical.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1410,6 +1648,49 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 o = longs.size()-1;
                 break;
             }
+        }
+        if(mTurnType==0){
+            String con = "";
+            int leng=0;
+            if(webContent!=null) {
+                con = webContent.substring(mPageView.getPosition());
+            }else  if(mNovelContent!=null) {
+                con = mNovelContent.substring(mPageView.getPosition());
+            }
+            leng=mPageView.getmNextFirstPos()-mPageView.getPosition();
+            String[] strings=stringSpilt(con,leng);
+            //String[] strings=con.split("   ");
+            List<String> mlist = Arrays.asList(strings);
+            List arrList = new ArrayList(mlist);
+            mlist_all.addAll(arrList);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            int last=linearLayoutManager.findLastVisibleItemPosition();
+            mlist_all = arrList;
+            readRecyleAdapter=new ReadRecyleAdapter(ReadActivity.this,mlist_all);
+            recycle_read.setLayoutManager(linearLayoutManager);
+            recycle_read.setAdapter(readRecyleAdapter);
+            readRecyleAdapter.setOnCatalogListener(new ReadRecyleAdapter.CatalogListener() {
+                @Override
+                public void clickItem(int position) {
+                    if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+                        hideBrightnessBar();
+                    }
+                    if (set_textstyle.getVisibility() == View.VISIBLE) {
+                        hideTextstyle();
+                    }
+                    if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+                        hideSettingBar();
+                    }
+                    if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+                        // 隐藏上下栏
+                        hideBar();
+                    }else {
+                        showBar();
+                    }
+                }
+            });
+            mPageView.setVisibility(View.GONE);
+            l_vertical.setVisibility(View.VISIBLE);
         }
         mNovelTitleTv.setText(mName + " / " + mChapterNameList.get(o));
         updateChapterProgress();
@@ -2019,6 +2300,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      * 隐藏上下栏
      */
     private void hideBar() {
+//        if(exec!=null&&is_autoRead==true){
+//            starttime();
+//        }
         Animation topExitAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_top_exit);
         topExitAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -2483,6 +2767,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
                 mTextSize--;
                 tv_textsize.setText((int) mTextSize + "");
+                SpUtil.saveTextSize(mTextSize);
+                if(readRecyleAdapter!=null) {
+                    readRecyleAdapter.notifyDataSetChanged();
+                }
                 mPageView.setTextSize(mTextSize);
                 break;
             case R.id.iv_read_increase_font:
@@ -2491,6 +2779,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
                 mTextSize++;
                 tv_textsize.setText((int) mTextSize + "");
+                SpUtil.saveTextSize(mTextSize);
+                if(readRecyleAdapter!=null) {
+                    readRecyleAdapter.notifyDataSetChanged();
+                }
                 mPageView.setTextSize(mTextSize);
                 break;
             case R.id.iv_read_decrease_row_space:
@@ -2499,6 +2791,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
                 mRowSpace--;
                 mPageView.setRowSpace(mRowSpace);
+                SpUtil.saveRowSpace(mRowSpace);
+                if(readRecyleAdapter!=null) {
+                    readRecyleAdapter.notifyDataSetChanged();
+                }
                 tv_jainju.setText((int) mRowSpace + "");
                 break;
             case R.id.iv_read_increase_row_space:
@@ -2507,6 +2803,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
                 mRowSpace++;
                 mPageView.setRowSpace(mRowSpace);
+                SpUtil.saveRowSpace(mRowSpace);
+                if(readRecyleAdapter!=null) {
+                    readRecyleAdapter.notifyDataSetChanged();
+                }
                 tv_jainju.setText((int) mRowSpace + "");
                 break;
             case R.id.v_read_theme_0:
@@ -2552,6 +2852,60 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
                     mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
                     mPageView.setTurnType(PageView.TURN_TYPE.NORMAL);
+                    mPageView.setVisibility(View.GONE);
+                    l_vertical.setVisibility(View.VISIBLE);
+                    String con = "";
+                    int leng=0;
+                    if(webContent!=null) {
+                        con = webContent.substring(mPageView.getPosition());
+                    }else  if(mNovelContent!=null) {
+                        con = mNovelContent.substring(mPageView.getPosition());
+                    }
+                    leng=mPageView.getmNextFirstPos()-mPageView.getPosition();
+                    String[] strings=stringSpilt(con,leng);
+                    //String[] strings=con.split("   ");
+                    List<String> mlist = Arrays.asList(strings);
+                    List arrList = new ArrayList(mlist);
+                    mlist_all.addAll(arrList);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+                    int last=linearLayoutManager.findLastVisibleItemPosition();
+                    mlist_all = arrList;
+                    readRecyleAdapter=new ReadRecyleAdapter(ReadActivity.this,mlist_all);
+                    recycle_read.setLayoutManager(linearLayoutManager);
+                    recycle_read.setAdapter(readRecyleAdapter);
+                    readRecyleAdapter.setOnCatalogListener(new ReadRecyleAdapter.CatalogListener() {
+                        @Override
+                        public void clickItem(int position) {
+                            if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+                                hideBrightnessBar();
+                            }
+                            if (set_textstyle.getVisibility() == View.VISIBLE) {
+                                hideTextstyle();
+                            }
+                            if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+                                hideSettingBar();
+                            }
+                            if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+                                // 隐藏上下栏
+                                hideBar();
+                            }else {
+                                showBar();
+                            }
+                        }
+                    });
+                    if (mBrightnessBarCv.getVisibility() == View.VISIBLE) {
+                        hideBrightnessBar();
+                    }
+                    if (set_textstyle.getVisibility() == View.VISIBLE) {
+                        hideTextstyle();
+                    }
+                    if (mSettingBarCv.getVisibility() == View.VISIBLE) {
+                        hideSettingBar();
+                    }
+                    if (mBottomBarCv.getVisibility() == View.VISIBLE) {
+                        // 隐藏上下栏
+                        hideBar();
+                    }
                 }
                 break;
             case R.id.tv_read_turn_real:
@@ -2561,13 +2915,49 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     mTurnRealTv.setTextColor(getResources().getColor(R.color.red_aa));
                     mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
                     mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
-                    //mPageView.setTurnType(PageView.TURN_TYPE.REAL);
-                    mPageView.setTurnType(PageView.TURN_TYPE.COVER);
+                    mPageView.setTurnType(PageView.TURN_TYPE.REAL);
+                    mPageView.setVisibility(View.VISIBLE);
+                    //scrollView.setVisibility(View.GONE);
+                    l_vertical.setVisibility(View.GONE);
+                    //mPageView.show
+                    //mPageView.setTurnType(PageView.TURN_TYPE.COVER);
                 }
                 break;
             default:
                 break;
         }
+    }
+    public String[] stringSpilt(String s,int len){
+        int spiltNum;//len->想要分割获得的子字符串的长度
+        int i;
+        int cache = len;//存放需要切割的数组长度
+        spiltNum = (s.length())/len;
+        String[] subs;//创建可分割数量的数组
+        if((s.length()%len)>0){
+            subs = new String[spiltNum+1];
+        }else{
+            subs = new String[spiltNum];
+        }
+
+//可用一个全局变量保存分割的数组的长度
+//System.out.println(subs.length);
+        leng = subs.length;
+        int start = 0;
+        if(spiltNum>0){
+            for(i=0;i<subs.length;i++){
+                if(i==0){
+                    subs[0] = s.substring(start, len);
+                    start = len;
+                }else if(i>0 && i<subs.length-1){
+                    len = len + cache ;
+                    subs[i] = s.substring(start,len);
+                    start = len ;
+                }else{
+                    subs[i] = s.substring(len,s.length());
+                }
+            }
+        }
+        return subs;
     }
 
     private void post_addadm(String id){
@@ -2803,7 +3193,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mNovelProgressTv.setTextColor(getResources().getColor(R.color.read_night_mode_title));
         mStateTv.setTextColor(getResources().getColor(R.color.read_night_mode_text));
         mPageView.setBgColor(getResources().getColor(R.color.read_night_mode_bg));
+        recycle_read.setBackgroundColor(getResources().getColor(R.color.read_night_mode_bg));
         mPageView.setTextColor(getResources().getColor(R.color.read_night_mode_text));
+        textView.setTextColor(getResources().getColor(R.color.read_night_mode_text));
         mPageView.setBackBgColor(getResources().getColor(R.color.read_night_mode_back_bg));
         mPageView.setBackTextColor(getResources().getColor(R.color.read_night_mode_back_text));
         mPageView.post(new Runnable() {
@@ -2835,6 +3227,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      * 根据主题更新阅读界面
      */
     private void updateWithTheme() {
+        SpUtil.saveTheme(mTheme);
+        if(readRecyleAdapter!=null) {
+            readRecyleAdapter.notifyDataSetChanged();
+        }
         if (mIsNightMode) {
             // 退出夜间模式
             mDayAndNightModeIv.setImageResource(R.mipmap.icon_night);
@@ -2912,7 +3308,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mNovelProgressTv.setTextColor(textColor);
         mStateTv.setTextColor(textColor);
         mPageView.setTextColor(textColor);
+        textView.setTextColor(textColor);
         mPageView.setBgColor(bgColor);
+        recycle_read.setBackgroundColor(backBgColor);
         mPageView.setBackgroundColor(bgColor);
         mPageView.setBackTextColor(backTextColor);
         mPageView.setBackBgColor(backBgColor);

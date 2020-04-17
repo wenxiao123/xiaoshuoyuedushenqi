@@ -105,6 +105,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
         circleProgressbar = findViewById(R.id.tv_red_skip);
         videoView = findViewById(R.id.activity_opening_videoview);
         image = findViewById(R.id.img);
+        guodu=findViewById(R.id.guodu);
         anyRunnModule = new AnyRunnModule(this);
         //mCountDownTextView = (TextView) findViewById(R.id.start_skip_count_down);
     }
@@ -207,12 +208,13 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
     }
 
     VideoView videoView;
-    ImageView image;
+    ImageView image,guodu;
 
     private void showAdm(String time, String https, String href, boolean b) {
         int s = Integer.parseInt(time);
         if (b == true) {
             videoView.setVisibility(View.VISIBLE);
+            image.setVisibility(View.GONE);
             Uri uri = Uri.parse(https);
             MediaController mediaController = new MediaController(this);
             mediaController.setVisibility(View.GONE);//隐藏进度条
@@ -225,7 +227,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     mp.setLooping(true);
-                    image.setVisibility(View.GONE);
+                    guodu.setVisibility(View.GONE);
                     circleProgressbar.setVisibility(View.VISIBLE);
                     mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 10000);
                     circleProgressbar.setTimeMillis(s * 10000);
@@ -238,8 +240,11 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
             });
             videoView.setOnClickListener(this);
         } else {
+            circleProgressbar.setVisibility(View.VISIBLE);
+            guodu.setVisibility(View.GONE);
             mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 10000);
             circleProgressbar.setTimeMillis(s * 10000);
+            circleProgressbar.setText(s + "s 跳过");
             circleProgressbar.start();
             mCountDownTimer = new MyCountDownTimer(s * 10000, 1000);
             mCountDownTimer.start();
@@ -271,10 +276,13 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
 
     private void load_video(String https) {
         File file=new File(path);
+        File[] files=file.listFiles();
         file.delete();
         String[] str = https.split("\\/");
         String name = str[str.length - 1];
-        anyRunnModule.start(https, path + name);
+        if(files!=null&&files.length!=0&&!files[0].getName().contains(name)) {
+            anyRunnModule.start(https, path + name);
+        }
     }
 
     private void getCategoryNovelsError(String errorMsg) {

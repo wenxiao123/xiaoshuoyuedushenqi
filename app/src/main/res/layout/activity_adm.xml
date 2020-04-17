@@ -24,6 +24,14 @@
             android:background="@color/white"
             android:src="@mipmap/logo"/>
     </RelativeLayout>
+    <ImageView
+        android:id="@+id/guodu"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:background="@mipmap/guanggao"
+        />
     <com.example.administrator.xiaoshuoyuedushenqi.widget.CircleProgressbar
         android:layout_marginTop="35dp"
         android:layout_marginRight="15dp"

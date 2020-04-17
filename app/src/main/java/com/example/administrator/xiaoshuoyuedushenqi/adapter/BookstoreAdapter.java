@@ -81,7 +81,6 @@ public class BookstoreAdapter extends RecyclerView.Adapter {
         //Log.e("zzz", "onBindViewHolder: "+href);
         CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext).load(href).apply(new RequestOptions()
-                .placeholder(R.drawable.cover_place_holder)
                 .error(R.drawable.cover_error)
         .transform(transformation))
                 //.into(simpleTarget);

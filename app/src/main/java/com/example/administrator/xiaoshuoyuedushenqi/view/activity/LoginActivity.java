@@ -70,8 +70,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         Glide.with(this)
                 .load(R.mipmap.admin)
                 .apply(new RequestOptions()
-                        .placeholder(R.drawable.cover_place_holder)
-                        .error(R.drawable.cover_error))
+                        )
                 .into(img_title);
         findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
             @Override
