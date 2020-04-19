@@ -20,16 +20,11 @@ import com.tencent.bugly.crashreport.CrashReport;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.update.BmobUpdateAgent;
-
 /**
  * @author
  * Created on 2020/2/28
  */
 public class App extends Application {
-
     private static Context context;
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
     boolean isNight;
@@ -49,13 +44,22 @@ public class App extends Application {
     public void setCatalogDataAll(List<Cataloginfo> catalogDataAll) {
         this.catalogDataAll = catalogDataAll;
     }
+    private static App app;
 
+    public static Context getAppContext() {
+        return app;
+    }
+
+    public static Resources getAppResources() {
+        return app.getResources();
+    }
     @Override
     public void onCreate() {
         super.onCreate();
         // 为应用设置异常处理
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init();
+        app=this;
         context = getApplicationContext();
         Aria.init(this);
 //        init(getContext());//
