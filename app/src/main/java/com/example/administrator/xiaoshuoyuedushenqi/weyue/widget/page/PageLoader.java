@@ -542,7 +542,7 @@ public abstract class PageLoader {
             mBookRecord = new BookRecordBean();
         }
 
-        mCurChapterPos = chpter_id;
+        //mCurChapterPos = chpter_id;
         mLastChapter = mCurChapterPos;
     }
 
@@ -553,7 +553,7 @@ public abstract class PageLoader {
         //preLoadNextChapter();
         //加载完成
         mStatus = STATUS_FINISH;
-        Log.e("QQQ", "openChapter: "+mCurPageList.size()+" "+isBookOpen);
+        Log.e("QQQ", "openChapter: "+mCurChapterPos+" "+isBookOpen);
         //获取制定页面
         if (!isBookOpen) {
             isBookOpen = true;
@@ -1057,7 +1057,7 @@ public abstract class PageLoader {
         //如果存在当前章，预加载下一章
         if (mCurPageList != null) {
             mStatus = STATUS_FINISH;
-            preLoadNextChapter();
+            //preLoadNextChapter();
         }
         //如果当前章不存在，则表示在加载中
         else {

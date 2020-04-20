@@ -25,12 +25,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.security.auth.login.LoginException;
 import javax.xml.transform.Transformer;
 
 import io.reactivex.Observable;
@@ -152,19 +154,21 @@ public class VMBookContentInfo extends BaseViewModel {
 //                            }
 //                        });
         s=Integer.parseInt(bookId);
-        size=bookChapterList.size();
-        for(int z=Integer.parseInt(bookId);z<bookChapterList.size();z++) {
-            getDetailedChapterData(noval_id, z+"");
-        }
+//        size=bookChapterList.size();
+//        Log.e("QQQ", "loadContent: "+size);
+//        for(int z=Integer.parseInt(bookId);z<bookChapterList.size();z++) {
+            getDetailedChapterData(noval_id, (s+1)+"");
+//        }
     }
     String bookid;
     public void loadContent2(int bookId, List<TxtChapter> bookChapterList) {
         bookid=bookId+"";
         //首先判断是否Chapter已经存在
-        //for (int i = 0; i < bookChapterList.size(); i++) {
-            TxtChapter bookChapter = bookChapterList.get(1);
+//        for (int i = 0; i < bookChapterList.size(); i++) {
+            TxtChapter bookChapter = bookChapterList.get(0);
+        Log.e("WWW", "Analysisbiquge: "+22222);
             new Thread(new LoadRunable(bookChapter.getLink())).start();
-        //}
+//        }
     }
 
     public void getDetailedChapterData(String bookid, String id) {
@@ -177,7 +181,7 @@ public class VMBookContentInfo extends BaseViewModel {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-               Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
+              // Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -187,26 +191,34 @@ public class VMBookContentInfo extends BaseViewModel {
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
+                            File file = BookManager.getBookFile(bookid, data.getTitle());
+//                            if(file.exists()){
+//                                iBookChapters.finishChapters();
+//                            }else {
                             BookSaveUtils.getInstance().saveChapterInfo(bookid, data.getTitle(), data.getContent());
-                            Log.e("QQQ", "onResponse: "+s);
-                            if(s<size-1) {
-                                handler.sendEmptyMessage(1);
-                            }else {
+//                            }
+                           // Log.e("QQQ", "onResponse: "+s);
+//                            if(s<size-1) {
+//                                handler.sendEmptyMessage(1);
+//                            }else {
                                 handler.sendEmptyMessage(2);
-                            }
+//                            }
                         }
                     } else {
+                        iBookChapters.finishChapters();
 //                        chapterError();
                         return;
                         // mPresenter.getDetailedChapterDataError("请求数据失败");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    iBookChapters.finishChapters();
                 }
             }
 
             @Override
             public void onFailure(String errorMsg) {
+                iBookChapters.finishChapters();
                 // mPresenter.getDetailedChapterDataError(errorMsg);
             }
         });
@@ -246,17 +258,17 @@ public class VMBookContentInfo extends BaseViewModel {
         }
     };
     String content;
+
     private void Analysisbiquge(String svrInfo, String div) throws IOException {
-        Log.e("QQQ", "Analysisbiquge: "+svrInfo);
         Document doc = Jsoup.connect(svrInfo).get();
         title = doc.body().select("h1").text();
         Elements elements;
         elements = doc.body().select(div);
-        content = "333333333333333333";
+        content = "3333333333333";
         for (Element link : elements) {
             content = content + link.text();
         }
-        Log.e("WWW", "Analysisbiquge: "+content);
+        Log.e("QQQ", "Analysisbiquge: "+content);
         BookSaveUtils.getInstance().saveChapterInfo(bookid, title, content);
         iBookChapters.finishChapters();
     }

@@ -349,7 +349,7 @@ public class PageView extends View {
     //获取PageLoader
     public PageLoader getPageLoader(boolean isLocal,boolean isother){
         Log.e("QQQ", "getPageLoader: "+isLocal+" "+isother);
-        if (mPageLoader == null){
+        //if (mPageLoader == null){
             if (isLocal){
                 mPageLoader = new LocalPageLoader(this);
             }
@@ -360,7 +360,7 @@ public class PageView extends View {
                     mPageLoader = new OtherNetPageLoader(this);
                 }
             }
-        }
+       // }
         return mPageLoader;
     }
 

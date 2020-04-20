@@ -536,7 +536,45 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 //                                false, false);;
                         mPageLoader=null;
                         mPageLoader = txt_page.getPageLoader(mCollBook.isLocal(),is_othersite);
+                        //Log.e("QQQ", "clickWord: "+is_othersite);
                         mPageLoader.openBook(mCollBook);
+                        mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
+                            @Override
+                            public void onChapterChange(int pos) {
+
+                            }
+
+                            @Override
+                            public void onLoadChapter(List<TxtChapter> chapters, int pos) {
+                                mVmContentInfo.setNoval_id(mCollBook.get_id());
+                                Log.e("QQQ", "clickWord: "+44444444);
+                                if(is_othersite==false) {
+                                    mVmContentInfo.loadContent(pos + "", chapters);
+                                }else {
+                                    mVmContentInfo.loadContent2(pos, chapters);
+                                }
+                                if (mPageLoader.getPageStatus() == NetPageLoader.STATUS_LOADING
+                                        || mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
+                                    //冻结使用
+                                    //mReadSbChapterProgress.setEnabled(false);
+                                }
+                            }
+
+                            @Override
+                            public void onCategoryFinish(List<TxtChapter> chapters) {
+
+                            }
+
+                            @Override
+                            public void onPageCountChange(int count) {
+
+                            }
+
+                            @Override
+                            public void onPageChange(int pos) {
+
+                            }
+                        });
 //                        Message message=new Message();
 //                        message.what=2;
 //                        message.obj=href;
@@ -685,12 +723,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onLoadChapter(List<TxtChapter> chapters, int pos) {
                 mVmContentInfo.setNoval_id(mCollBook.get_id());
+                Log.e("QQQ", "clickWord: "+44444444);
                 if(is_othersite==false) {
                     mVmContentInfo.loadContent(pos + "", chapters);
                 }else {
                     mVmContentInfo.loadContent2(pos, chapters);
                 }
-//                setCategorySelect(mPageLoader.getChapterPos());
                 if (mPageLoader.getPageStatus() == NetPageLoader.STATUS_LOADING
                         || mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
                     //冻结使用

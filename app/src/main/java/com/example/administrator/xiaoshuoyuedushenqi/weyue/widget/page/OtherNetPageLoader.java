@@ -53,11 +53,11 @@ public class OtherNetPageLoader extends PageLoader{
     @Override
     public void openBook(CollBookBean collBook){
         super.openBook(collBook);
+       // Log.e("QQQ2", "openBook: "+222);
         isBookOpen = false;
         //if (collBook.getBookChapters() == null) return;
         //mChapterList = convertTxtChapter(collBook.getBookChapters());
         //设置目录回调
-        Log.e("WWW", "openBook: "+222);
         getCategorys(mCollBook.get_id());
         //提示加载下面的章节
         //getDetailedChapterData(mCollBook.get_id(),chpter_id+"",1);
@@ -73,7 +73,7 @@ public class OtherNetPageLoader extends PageLoader{
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ", "onResponse: " + json);
+              //  Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -110,6 +110,7 @@ public class OtherNetPageLoader extends PageLoader{
         if (mPageChangeListener != null){
             mPageChangeListener.onCategoryFinish(mChapterList);
         }
+        Log.e("QQQ", "getCatalogDataSuccess: "+3333);
         loadCurrentChapter();
     }
     private void getCatalogDataError() {
@@ -157,7 +158,7 @@ public class OtherNetPageLoader extends PageLoader{
     private List<TxtChapter> convertTxtChapter(List<Categorys_one>  catalogData){
         List<TxtChapter> txtChapters = new ArrayList<>(catalogData.get(0).getText().size());
         for (Text bean : catalogData.get(0).getText()){
-            Log.e("QQQ", "convertTxtChapter: "+bean.getChapter_url());
+            //Log.e("QQQ", "convertTxtChapter: "+bean.getChapter_url());
             TxtChapter chapter = new TxtChapter();
             chapter.bookId = catalogData.get(0).getId()+"";
             chapter.title = bean.getChapter_name();
@@ -297,6 +298,7 @@ public class OtherNetPageLoader extends PageLoader{
     }
 
     private void loadCurrentChapter(){
+        Log.e("QQQ", "loadCurrentChapter: "+222);
         if (mPageChangeListener != null){
             List<TxtChapter> bookChapters = new ArrayList<>(5);
             //提示加载当前章节和前面两章和后面两章
