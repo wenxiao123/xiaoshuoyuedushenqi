@@ -509,7 +509,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     if (mDbManager.isExistInBookshelfNovel(pid)) {
                         tv_book_add.setText("加入书架");
                         mDbManager.deleteBookshelfNovel(pid.trim());
-                        Log.e("QQQ", "onClick: "+pid);
+                       // Log.e("QQQ", "onClick: "+pid);
                         if (login_admin!= null) {
                             delectBookshelfadd(login_admin.getToken(), pid);
                         }

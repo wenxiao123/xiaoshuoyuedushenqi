@@ -148,7 +148,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ", "onResponse: " + json);
+               // Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -174,7 +174,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                                 https = UrlObtainer.GetUrl() + img;
                             }
                             Url_gg gg=new Url_gg(href,time,https);
-                            Log.e("QQQ", "onResponse: "+gg);
+                            //Log.e("QQQ", "onResponse: "+gg);
                             SpUtil.saveObject2(AdmActivity.this,gg);
                             load_video(https);
                             showAdm(time, https, href, true);

@@ -944,7 +944,7 @@ public class TxtPlayActivity extends AppCompatActivity {
             } else if (first_read == 1) {
                 presenter.getDetailedChapterData(mNovelUrl + "", 1 + "");
             } else if (first_read == 2) {
-                Log.e("QQQ", "getIntentData: "+mNovelUrl + ""+chpter_id);
+              //  Log.e("QQQ", "getIntentData: "+mNovelUrl + ""+chpter_id);
                 presenter.getDetailedChapterData(mNovelUrl + "", chpter_id + "");
             }
         }

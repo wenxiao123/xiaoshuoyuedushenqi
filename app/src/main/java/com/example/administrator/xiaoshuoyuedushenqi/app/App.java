@@ -33,7 +33,15 @@ public class App extends Application {
     private static Context context;
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
     boolean isNight;
+    private static App app;
 
+    public static Context getAppContext() {
+        return app;
+    }
+
+    public static Resources getAppResources() {
+        return app.getResources();
+    }
     public boolean isNight() {
         return isNight;
     }
@@ -56,6 +64,7 @@ public class App extends Application {
         // 为应用设置异常处理
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init();
+        app=this;
         context = getApplicationContext();
         Aria.init(this);
 //        init(getContext());//

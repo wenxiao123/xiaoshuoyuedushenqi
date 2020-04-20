@@ -69,6 +69,7 @@ E" />
         <activity
             android:name=".view.activity.MyBookshelfActivity"
             />
+        <activity android:name=".view.activity.WYReadActivity"/>
         <activity
             android:name=".view.activity.ReadrecoderActivity"
             />

@@ -327,7 +327,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
      */
     @Override
     public void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
-       // Log.e("QQQ", "getCatalogDataSuccess: "+catalogData.size());
+        // Log.e("QQQ", "getCatalogDataSuccess: "+catalogData.size());
         if(weigh<50||(z==1&&catalogData.size()<50)){
             mIsRefreshing = false;
             mProgressBar.setVisibility(View.GONE);
