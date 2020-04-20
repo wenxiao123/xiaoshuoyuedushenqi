@@ -12,6 +12,7 @@ public class TxtConfig {
 
     public static final String SAVE_NAME = "TxtConfig";
     public static final String C_TEXT_SIZE = "TEXT_SIZE ";
+    public static final String C_COW_SIZE = "COW_SIZE ";
     public static final String C_TEXT_COLOR = "TEXT_COLOR";
     public static final String C_NOTE_TEXT_COLOR = "TEXT_COLOR";
     public static final String C_SLIDER_COLOR = "SLIDER_COLOR";
@@ -41,6 +42,8 @@ public class TxtConfig {
     public   int Page_Switch_Mode = PAGE_SWITCH_MODE_COVER;
     public static  int MAX_TEXT_SIZE = 150;//in px
     public static  int MIN_TEXT_SIZE = 30;//in px
+    public static  int MAX_COW_SIZE = 150;//in px
+    public static  int MIN_COW_SIZE = 30;//in px
     public static  int DEFAULT_SELECT_TEXT_COLOR = Color.parseColor("#44f6950b");
     public static  int DEFAULT_SLIDER_COLOR = Color.parseColor("#1f4cf5");
 
@@ -118,6 +121,20 @@ public class TxtConfig {
     public static int getTextSize(Context context) {
         SharedPreferences share = getS(context);
         return share.getInt(C_TEXT_SIZE, MIN_TEXT_SIZE);
+    }
+
+    public static void saveCowSize(Context context, int textSize) {
+        textSize = textSize < MIN_COW_SIZE ? MIN_COW_SIZE : textSize;
+        textSize = textSize > MAX_COW_SIZE ? MAX_COW_SIZE : textSize;
+        SharedPreferences share = getS(context);
+        SharedPreferences.Editor editor = share.edit();
+        editor.putInt(C_COW_SIZE, textSize);
+        editor.commit();
+    }
+
+    public static int getCowSize(Context context) {
+        SharedPreferences share = getS(context);
+        return share.getInt(C_COW_SIZE, MIN_COW_SIZE);
     }
 
     public static void saveTextColor(Context context, int textColor) {

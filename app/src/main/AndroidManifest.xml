@@ -57,6 +57,16 @@ E" />
             android:name=".view.activity.MainActivity"
             />
         <activity
+            android:name="com.bifan.txtreaderlib.ui.HwTxtPlayActivity"
+            android:theme="@style/HwTxtFullScreen">
+            <intent-filter>
+                <data android:scheme="txt" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".view.activity.ReadActivity"
             />
         <activity android:name=".view.activity.WebActivity"/>
@@ -72,6 +82,9 @@ E" />
         <activity android:name=".view.activity.WYReadActivity"/>
         <activity
             android:name=".view.activity.ReadrecoderActivity"
+            />
+        <activity
+            android:name=".view.activity.TxtPlayActivity"
             />
         <activity android:name=".view.activity.SearchResultActivity"/>
         <activity

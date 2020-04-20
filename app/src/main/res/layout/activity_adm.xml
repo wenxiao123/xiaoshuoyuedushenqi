@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:background="@color/white"
-            android:src="@mipmap/logo"/>
+            android:src="@mipmap/img_cover"/>
     </RelativeLayout>
     <ImageView
         android:id="@+id/guodu"

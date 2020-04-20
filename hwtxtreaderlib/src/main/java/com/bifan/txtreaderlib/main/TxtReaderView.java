@@ -246,6 +246,16 @@ public class TxtReaderView extends TxtReaderBaseView {
         Reload();
     }
 
+    /**
+     * 设置字体大小
+     *
+     * @param textSize min 25 max 70 in px
+     */
+    public void setCowSize(int textSize) {
+        readerContext.getTxtConfig().saveCowSize(getContext(), textSize);
+        Reload();
+    }
+
 
     /**
      * 获取字体大小 in px
@@ -254,6 +264,15 @@ public class TxtReaderView extends TxtReaderBaseView {
      */
     public int getTextSize() {
         return readerContext.getTxtConfig().getTextSize(getContext());
+    }
+
+    /**
+     * 获取字体大小 in px
+     *
+     * @return
+     */
+    public int getCowSize() {
+        return readerContext.getTxtConfig().getCowSize(getContext());
     }
 
     /**

@@ -1,79 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="#000000"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:paddingBottom="13dp"-->
+    <!--android:paddingLeft="10dp"-->
+    <!--android:paddingTop="43dp">-->
+
+    <!--<ImageView-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="18dp"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:onClick="BackClick"-->
+        <!--android:src="@drawable/ic_key_back" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/txtreadr_menu_title"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:ellipsize="end"-->
+        <!--android:maxLines="1"-->
+        <!--android:text=""-->
+        <!--android:textColor="#ffffff"-->
+        <!--android:textSize="17sp" />-->
+<!--</LinearLayout>-->
+
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rv_read_top_bar"
-    android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:background="#F7F7F7"
-    android:clickable="true"
-    android:focusable="true"
-    android:visibility="visible"
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/rv_read_top_bar"
+android:layout_width="match_parent"
+android:layout_height="90dp"
+android:background="#F7F7F7"
+android:clickable="true"
+android:focusable="true"
+android:visibility="visible"
     >
 
-    <ImageView
-        android:id="@+id/iv_read_back"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:padding="20dp"
-        android:onClick="BackClick"
-        android:tint="@color/gray"
-        android:src="@drawable/all_novel_back" />
+<ImageView
+    android:id="@+id/iv_read_back"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginStart="0dp"
+    android:padding="20dp"
+    android:onClick="BackClick"
+    android:tint="@color/gray"
+    android:src="@drawable/all_novel_back" />
 
-    <RelativeLayout
+<RelativeLayout
 
+    android:layout_width="wrap_content"
+    android:layout_height="60dp"
+    android:layout_alignParentBottom="true"
+    android:layout_marginRight="15dp"
+    android:layout_toLeftOf="@id/iv_read_menu"
+    android:layout_toRightOf="@id/iv_read_back"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
+
+    <TextView
+        android:id="@+id/old_site"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="15dp"
-        android:layout_toLeftOf="@id/iv_read_menu"
-        android:layout_toRightOf="@id/iv_read_back"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bachground_lefthalfcricyle"
+        android:gravity="center_vertical"
+        android:paddingLeft="13dp"
+        android:paddingTop="7dp"
+        android:paddingRight="13dp"
+        android:paddingBottom="7dp"
+        android:text="原站"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/old_site"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="@drawable/bachground_lefthalfcricyle"
-            android:gravity="center_vertical"
-            android:paddingLeft="13dp"
-            android:paddingTop="7dp"
-            android:paddingRight="13dp"
-            android:paddingBottom="7dp"
-            android:text="原站"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+    <TextView
+        android:id="@+id/tv_website"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/old_site"
+        android:background="@drawable/bachground_righthalfcricyle"
+        android:gravity="center_vertical"
+        android:paddingLeft="11dp"
+        android:paddingTop="7dp"
+        android:paddingRight="11dp"
+        android:paddingBottom="7dp"
+        android:text="www.baidu.com"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+</RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_website"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/old_site"
-            android:background="@drawable/bachground_righthalfcricyle"
-            android:gravity="center_vertical"
-            android:paddingLeft="11dp"
-            android:paddingTop="7dp"
-            android:paddingRight="11dp"
-            android:paddingBottom="7dp"
-            android:text="www.baidu.com"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
-    </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/iv_read_menu"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="5dp"
-        android:padding="5dp"
-        android:rotation="90"
-        android:src="@drawable/read_menu" />
+<ImageView
+    android:id="@+id/iv_read_menu"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginEnd="5dp"
+    android:padding="5dp"
+    android:rotation="90"
+    android:src="@drawable/read_menu" />
 
 </RelativeLayout>
