@@ -153,7 +153,7 @@ public class VMBookContentInfo extends BaseViewModel {
 //                                mDisposable = disposable;
 //                            }
 //                        });
-        s=Integer.parseInt(bookId);
+           s=Integer.parseInt(bookId);
 //        size=bookChapterList.size();
 //        Log.e("QQQ", "loadContent: "+size);
 //        for(int z=Integer.parseInt(bookId);z<bookChapterList.size();z++) {
@@ -162,11 +162,10 @@ public class VMBookContentInfo extends BaseViewModel {
     }
     String bookid;
     public void loadContent2(int bookId, List<TxtChapter> bookChapterList) {
-        bookid=bookId+"";
+             //bookid=bookChapterList.get(bookId).getBookId()+"";
         //首先判断是否Chapter已经存在
 //        for (int i = 0; i < bookChapterList.size(); i++) {
             TxtChapter bookChapter = bookChapterList.get(0);
-        Log.e("WWW", "Analysisbiquge: "+22222);
             new Thread(new LoadRunable(bookChapter.getLink())).start();
 //        }
     }
@@ -181,12 +180,13 @@ public class VMBookContentInfo extends BaseViewModel {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-              // Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
+                //Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
                         if(jsonObject.isNull("data")){
+                            iBookChapters.finishChapters();
                             return;
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
@@ -264,12 +264,12 @@ public class VMBookContentInfo extends BaseViewModel {
         title = doc.body().select("h1").text();
         Elements elements;
         elements = doc.body().select(div);
-        content = "3333333333333";
+        content = "转码阅读：";
         for (Element link : elements) {
-            content = content + link.text();
+            content = content + link.text().replace("</p>","\n");
         }
-        Log.e("QQQ", "Analysisbiquge: "+content);
-        BookSaveUtils.getInstance().saveChapterInfo(bookid, title, content);
+       // Log.e("QQQ", "Analysisbiquge: "+content);
+        BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title, content);
         iBookChapters.finishChapters();
     }
 }

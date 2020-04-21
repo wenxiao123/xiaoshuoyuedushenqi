@@ -2384,7 +2384,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     List<TextStyle> textStyles = new ArrayList<>();
-    ;
 
     private void post_textStyle() {
         textStyles.add(new TextStyle("系统字体", "-1"));
@@ -2697,9 +2696,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 // 目录
                 if (mType == 0) {
                     // 跳转到目录页面，并且将自己的引用传递给它
-                    Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
-                            new HoldReadActivityEvent(ReadActivity.this));
-                    EventBusUtil.sendStickyEvent(event);
+//                    Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+//                            new HoldReadActivityEvent(WYReadActivity.class));
+//                    EventBusUtil.sendStickyEvent(event);
                     Intent intent = new Intent(ReadActivity.this, CatalogActivity.class);
                     intent.putExtra(CatalogActivity.KEY_URL, mNovelUrl);    // 传递当前小说的 url
                     intent.putExtra(CatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
@@ -2709,9 +2708,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     startActivity(intent);
                 } else if (mType == 1) {
                     // 跳转到目录页面，并且将自己的引用传递给它
-                    Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
-                            new HoldReadActivityEvent(ReadActivity.this));
-                    EventBusUtil.sendStickyEvent(event);
+//                    Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+//                            new HoldReadActivityEvent(WYReadActivity.this));
+//                    EventBusUtil.sendStickyEvent(event);
                     Intent intent = new Intent(ReadActivity.this, LocalCatalogActivity.class);
                     intent.putExtra("file_path", adress);    // 传递当前小说的 url
                     intent.putExtra(LocalCatalogActivity.KEY_ID, mNovelUrl);    // 传递当前小说的 url

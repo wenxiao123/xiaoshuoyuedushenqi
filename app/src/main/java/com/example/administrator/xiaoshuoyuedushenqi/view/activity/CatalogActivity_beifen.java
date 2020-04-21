@@ -73,7 +73,7 @@ public class CatalogActivity_beifen extends BaseActivity<CatalogPresenter>
      * 如果是在 ReadActivity 通过点击目录跳转过来，那么持有该 ReadActivity 的引用，
      * 之后如果跳转到新的章节时，利用该引用结束旧的 ReadActivity
      */
-    private ReadActivity mReadActivity;
+    private WYReadActivity mReadActivity;
 
     private List<String> mChapterNameList = new ArrayList<>();
     private List<String> mChapterUrlList = new ArrayList<>();

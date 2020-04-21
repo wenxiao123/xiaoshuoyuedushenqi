@@ -33,6 +33,9 @@ public class Constant {
     public static String BOOK_CACHE_PATH = FileUtils.getCachePath() + File.separator
             + "book_cache" + File.separator;
 
+    public static String BOOK_OTHER_CACHE_PATH = FileUtils.getCachePath() + File.separator
+            + "other_book_cache" + File.separator;
+
     /**
      * 保存本地token
      */

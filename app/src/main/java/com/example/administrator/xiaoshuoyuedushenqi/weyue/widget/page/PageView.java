@@ -19,6 +19,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.Scro
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.SimulationPageAnim;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.SlidePageAnim;
 
+import java.lang.ref.WeakReference;
+
 
 /**
  * 绘制页面显示内容的类
@@ -101,6 +103,8 @@ public class PageView extends View {
         mPageLoader.setDisplaySize(w,h);
         //初始化完成
         isPrepare = true;
+        mAutoPlayTask = new AutoPlayTask(this);
+        startAutoPlay();
     }
 
     //设置翻页的模式
@@ -154,19 +158,31 @@ public class PageView extends View {
     }
 
     public boolean autoNextPage(){
-        if (mPageAnim instanceof ScrollPageAnim){
-            return false;
-        }
-        else {
+//        if (mPageAnim instanceof ScrollPageAnim){
+//            return false;
+//        }
+//        else {
             startPageAnim(PageAnimation.Direction.NEXT);
-            return true;
-        }
+               return true;
+//        }
     }
 
     private void startPageAnim(PageAnimation.Direction direction){
         if (mTouchListener == null) return;
         //是否正在执行动画
         abortAnimation();
+
+        if (mPageMode ==PageView.PAGE_MODE_SCROLL && direction == PageAnimation.Direction.NEXT) {
+            int x = mViewWidth;
+            int y = 0;
+            //初始化动画
+            mPageAnim.setStartPoint(x, y);
+            //设置点击点
+            mPageAnim.setTouchPoint(x, y);
+            ((ScrollPageAnim) mPageAnim).startAutoRead(mTextSize+mTextInterval);
+            this.postInvalidate();
+            return;
+        }
         if (direction == PageAnimation.Direction.NEXT){
             int x = mViewWidth;
             int y = mViewHeight;
@@ -233,6 +249,7 @@ public class PageView extends View {
                 isMove = false;
                 canTouch = mTouchListener.onTouch();
                 mPageAnim.onTouchEvent(event);
+                stopAutoPlay();
                 break;
             case MotionEvent.ACTION_MOVE:
                 //判断是否大于最小滑动值。
@@ -263,6 +280,7 @@ public class PageView extends View {
                         return true;
                     }
                 }
+                startAutoPlay();
                 mPageAnim.onTouchEvent(event);
                 break;
         }
@@ -348,7 +366,7 @@ public class PageView extends View {
 
     //获取PageLoader
     public PageLoader getPageLoader(boolean isLocal,boolean isother){
-        Log.e("QQQ", "getPageLoader: "+isLocal+" "+isother);
+       // Log.e("QQQ", "getPageLoader: "+isLocal+" "+isother);
         //if (mPageLoader == null){
             if (isLocal){
                 mPageLoader = new LocalPageLoader(this);
@@ -370,5 +388,92 @@ public class PageView extends View {
         boolean prePage();
         boolean nextPage();
         void cancel();
+    }
+
+    /**
+     * 自动阅读逻辑
+     */
+    //字体的大小
+    private int mTextSize=60;
+    //行间距
+    private int mTextInterval=30;
+    private AutoPlayTask mAutoPlayTask;
+    //自动阅读间隔时间
+    private int mAutoPlayInterval = 3000;
+    //是否开启自动阅读
+    private boolean mAutoPlayAble = false;
+
+    public void startAutoPlay() {
+        stopAutoPlay();
+        Log.e("auto","------------------------1");
+        if (mAutoPlayAble) {
+            postDelayed(mAutoPlayTask, mAutoPlayInterval);
+        }
+    }
+
+    public void stopAutoPlay() {
+        if (mAutoPlayTask != null) {
+            removeCallbacks(mAutoPlayTask);
+        }
+    }
+
+
+    public int getmTextSize() {
+        return mTextSize;
+    }
+
+    public void setmTextSize(int mTextSize) {
+        this.mTextSize = mTextSize;
+    }
+
+    public int getmTextInterval() {
+        return mTextInterval;
+    }
+
+    public void setmTextInterval(int mTextInterval) {
+        this.mTextInterval = mTextInterval;
+    }
+
+    public int getmAutoPlayInterval() {
+        return mAutoPlayInterval;
+    }
+
+    public void setmAutoPlayInterval(int mAutoPlayInterval) {
+        this.mAutoPlayInterval = mAutoPlayInterval;
+    }
+
+    public boolean ismAutoPlayAble() {
+        return mAutoPlayAble;
+    }
+
+    public void setmAutoPlayAble(boolean mAutoPlayAble) {
+        this.mAutoPlayAble = mAutoPlayAble;
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == VISIBLE) {
+            startAutoPlay();
+        } else if (visibility == INVISIBLE || visibility == GONE) {
+            stopAutoPlay();
+        }
+    }
+    private static class AutoPlayTask implements Runnable {
+        private final WeakReference<PageView> mPageView;
+
+        private AutoPlayTask(PageView pageView) {
+            mPageView = new WeakReference<>(pageView);
+        }
+
+        @Override
+        public void run() {
+            Log.e("auto","------------------------2");
+            PageView pageView = mPageView.get();
+            if (pageView != null) {
+                pageView.autoNextPage();
+                pageView.startAutoPlay();
+            }
+        }
     }
 }

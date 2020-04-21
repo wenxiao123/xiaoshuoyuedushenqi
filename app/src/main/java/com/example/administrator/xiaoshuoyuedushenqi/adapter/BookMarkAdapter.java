@@ -78,7 +78,7 @@ public class BookMarkAdapter extends RecyclerView.Adapter<BookMarkAdapter.Catalo
         if(mChapterNameList.get(i).getType()==1) {
             int z = 0;
             for (int j = 0; j < longs.size(); j++) {
-                if (mChapterNameList.get(i).getPosition() < (int) longs.get(0)) {
+                if (mChapterNameList.get(i).getPosition() <= (int) longs.get(0)) {
                     z = 0;
                     break;
                 } else if (mChapterNameList.get(i).getPosition() < (int) longs.get(j)) {
@@ -86,8 +86,9 @@ public class BookMarkAdapter extends RecyclerView.Adapter<BookMarkAdapter.Catalo
                     break;
                 }
             }
-            String title = strings.get(z);
-            catalogViewHolder.chapterName.setText((i + 1) + ". " + title.substring(3, title.length()));
+            String title = mChapterNameList.get(i).getContent();
+            //catalogViewHolder.chapterName.setText((i + 1) + ". " + title.substring(3, title.length()));
+            catalogViewHolder.chapterName.setText(mChapterNameList.get(i).getName());
             catalogViewHolder.chapterName.setTag(i);
         }else if(mChapterNameList.get(i).getType()==0){
             catalogViewHolder.chapterName.setText(mChapterNameList.get(i).getName());

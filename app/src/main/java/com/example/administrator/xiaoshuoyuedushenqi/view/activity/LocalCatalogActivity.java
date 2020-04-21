@@ -1,11 +1,13 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CatalogNameAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.android.material.tabs.TabLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -56,6 +58,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getContext;
+
 public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         implements ICatalogContract.View, View.OnClickListener {
     private static final String TAG = "LocalCatalogActivity";
@@ -83,7 +87,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
      * 如果是在 ReadActivity 通过点击目录跳转过来，那么持有该 ReadActivity 的引用，
      * 之后如果跳转到新的章节时，利用该引用结束旧的 ReadActivity
      */
-    private ReadActivity mReadActivity;
+    private WYReadActivity mReadActivity;
 
     private List<String> mChapterNameList = new ArrayList<>();
     private List<BookmarkNovelDbData> bookmarkNovelDbDatas = new ArrayList<>();
@@ -213,6 +217,16 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     List longs = new ArrayList<>();
     int leng = 0;
     private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{0,9})[章节卷集部篇回](\\s*)";
+    // "序(章)|前言"
+    private final static Pattern mPreChapterPattern = Pattern.compile("^(\\s{0,10})((\u5e8f[\u7ae0\u8a00]?)|(\u524d\u8a00)|(\u6954\u5b50))(\\s{0,10})$", Pattern.MULTILINE);
+
+    //正则表达式章节匹配模式
+    // "(第)([0-9零一二两三四五六七八九十百千万壹贰叁肆伍陆柒捌玖拾佰仟]{1,10})([章节回集卷])(.*)"
+    private static final String[] CHAPTER_PATTERNS = new String[]{"^(.{0,8})(\u7b2c)([0-9\u96f6\u4e00\u4e8c\u4e24\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u767e\u5343\u4e07\u58f9\u8d30\u53c1\u8086\u4f0d\u9646\u67d2\u634c\u7396\u62fe\u4f70\u4edf]{1,10})([\u7ae0\u8282\u56de\u96c6\u5377])(.{0,30})$",
+            "^(\\s{0,4})([\\(\u3010\u300a]?(\u5377)?)([0-9\u96f6\u4e00\u4e8c\u4e24\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u767e\u5343\u4e07\u58f9\u8d30\u53c1\u8086\u4f0d\u9646\u67d2\u634c\u7396\u62fe\u4f70\u4edf]{1,10})([\\.:\uff1a\u0020\f\t])(.{0,30})$",
+            "^(\\s{0,4})([\\(\uff08\u3010\u300a])(.{0,30})([\\)\uff09\u3011\u300b])(\\s{0,2})$",
+            "^(\\s{0,4})(\u6b63\u6587)(.{0,20})$",
+            "^(.{0,4})(Chapter|chapter)(\\s{0,4})([0-9]{1,4})(.{0,30})$"};
 
     private Boolean ReadData(String filePath, IParagraphData paragraphData, List<Chapter> chapters) {
         if(filePath==null){
@@ -310,8 +324,10 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
      * @return 没有识别到章节数据返回null
      */
     private Chapter compileChapter(String data, int chapterStartIndex, int ParagraphIndex, int chapterIndex) {
-        if (data.trim().startsWith("第") || data.contains("第")) {
-            Pattern p = Pattern.compile(ChapterPatternStr);
+       // if (data.trim().startsWith("第") || data.contains("第")) {
+            for (String str : CHAPTER_PATTERNS) {
+           // Pattern p = Pattern.compile(ChapterPatternStr);
+            Pattern p = Pattern.compile(str, Pattern.MULTILINE);
             Matcher matcher = p.matcher(data);
             while (matcher.find()) {
                 longs.add(chapterStartIndex + ParagraphIndex);
@@ -448,32 +464,41 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     showShortToast("当前无网络，请检查网络后重试");
                     return;
                 }
+                CollBookBean bookBean=new CollBookBean(file_path, mName, "", "",
+                        mCover, false, 0,0,
+                        "", "", count, "",
+                        false, true);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                bundle.putString(WYReadActivity.CHPTER_ID,(position)+"");
+                startActivity(WYReadActivity.class, bundle);
                 // 点击 item，跳转到相应小说阅读页
-                Intent intent = new Intent(LocalCatalogActivity.this, ReadActivity.class);
-                // 小说 url（本地小说为 filePath），参数类型为 String
-                intent.putExtra(ReadActivity.KEY_NOVEL_URL, pid);
-                // 小说 url（本地小说为 filePath），参数类型为 String
-                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN, file_path);
-                // 小说名，参数类型为 String
-                intent.putExtra(ReadActivity.KEY_NAME, mName);
-                // 小说封面 url，参数类型为 String
-                intent.putExtra(ReadActivity.KEY_COVER, mCover);
-//                 小说类型，0 为网络小说， 1 为本地 txt 小说，2 为本地 epub 小说
-//                 参数类型为 int（非必需，不传的话默认为 0）
-                intent.putExtra(ReadActivity.KEY_TYPE, 1);
-                intent.putExtra(ReadActivity.KEY_IS_CATALOG, 1);
-                intent.putExtra("catalog", (Serializable) mChapterNameList);
-                intent.putExtra("weigh", count);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                // 开始阅读的章节索引，参数类型为 int（非必需，不传的话默认为 0）
-                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-                if (paixuiv.getRotation()==0||paixuiv.getRotation()==360) {
-                    intent.putExtra(ReadActivity.Catalog_start_Position, (int) longs.get(position));
-                } else {
-                    intent.putExtra(ReadActivity.Catalog_start_Position, (int) longs.get(longs.size() - 1 - position));
-                }
-
-                startActivity(intent);
+//                Intent intent = new Intent(LocalCatalogActivity.this, ReadActivity.class);
+//                // 小说 url（本地小说为 filePath），参数类型为 String
+//                intent.putExtra(ReadActivity.KEY_NOVEL_URL, pid);
+//                // 小说 url（本地小说为 filePath），参数类型为 String
+//                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN, file_path);
+//                // 小说名，参数类型为 String
+//                intent.putExtra(ReadActivity.KEY_NAME, mName);
+//                // 小说封面 url，参数类型为 String
+//                intent.putExtra(ReadActivity.KEY_COVER, mCover);
+////                 小说类型，0 为网络小说， 1 为本地 txt 小说，2 为本地 epub 小说
+////                 参数类型为 int（非必需，不传的话默认为 0）
+//                intent.putExtra(ReadActivity.KEY_TYPE, 1);
+//                intent.putExtra(ReadActivity.KEY_IS_CATALOG, 1);
+//                intent.putExtra("catalog", (Serializable) mChapterNameList);
+//                intent.putExtra("weigh", count);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                // 开始阅读的章节索引，参数类型为 int（非必需，不传的话默认为 0）
+//                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
+//                if (paixuiv.getRotation()==0||paixuiv.getRotation()==360) {
+//                    intent.putExtra(ReadActivity.Catalog_start_Position, (int) longs.get(position));
+//                } else {
+//                    intent.putExtra(ReadActivity.Catalog_start_Position, (int) longs.get(longs.size() - 1 - position));
+//                }
+//
+//                startActivity(intent);
                 // 跳转后活动结束
                 if (mReadActivity != null) {
                     mReadActivity.finish();
@@ -483,7 +508,11 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         });
 
     }
-
+    public void startActivity(Class<?> className, Bundle bundle) {
+        Intent intent = new Intent(getContext(), className);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
     private void initBookMarkAdapter() {
         bookAdapter = new BookMarkAdapter(this, bookmarkNovelDbDatas, mChapterNameList, longs);
         bookAdapter.setOnCatalogListener(new BookMarkAdapter.CatalogListener() {

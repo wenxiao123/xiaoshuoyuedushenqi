@@ -345,7 +345,7 @@ public class AdminSetActivity extends BaseActivity {
                 }
             }
         });
-        ints3[0] = FileSizeUtil.getFileOrFilesSize(Constant.BOOK_ADRESS, FileSizeUtil.SIZETYPE_MB) + " MB";
+        ints3[0] = FileSizeUtil.getFileOrFilesSize(com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant.BOOK_OTHER_CACHE_PATH, FileSizeUtil.SIZETYPE_MB) + " MB";
         mainRecyleAdapter3 = new MainSetAdapter(this, ints3, strings3);
         recyclerView3.setAdapter(mainRecyleAdapter3);
 
@@ -362,51 +362,8 @@ public class AdminSetActivity extends BaseActivity {
                                     @Override
                                     public void clickEnsure() {
                                         //showShortToast("暂未开放");
-                                        File file = new File(Constant.BOOK_ADRESS);
+                                        File file = new File(com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant.BOOK_OTHER_CACHE_PATH);
                                         file.delete();
-                                        ints3[0] = "0 MB";
-                                        mainRecyleAdapter3.notifyDataSetChanged();
-                                        File[] subFile = file.listFiles();
-                                        if (subFile != null && subFile.length > 0) {
-                                            for (int iFileLength = 0; iFileLength < subFile.length; iFileLength++) {
-                                                // 判断是否为文件夹
-                                                if (!subFile[iFileLength].isDirectory()) {
-                                                    String filename = subFile[iFileLength].getName();
-                                                    if (filename.contains(".txt")) {
-//                                                        if(manager.isExistInBookshelfNovel(subFile[iFileLength].getPath())){
-//                                                            BookshelfNovelDbData dbData=manager.selectBookshelfNovel(subFile[iFileLength].getPath());
-//                                                           // Log.e("QQQ", "clickEnsure: "+dbData);
-//                                                            String url=dbData.getNovelUrl();
-//                                                            if(dbData.getFuben_id()!=null){
-//                                                                dbData.setType(0);
-//                                                                dbData.setNovelUrl(dbData.getFuben_id());
-//                                                                manager.updataBookshelfNovel(dbData,url);
-//                                                            }else {
-//                                                                manager.deleteBookReadcoderNovel(url);
-//                                                            }
-//                                                            Intent intent_recever = new Intent("com.zhh.android");
-//                                                            sendBroadcast(intent_recever);
-//                                                        }
-                                                        List<BookshelfNovelDbData> novelDbDataList = manager.queryAllBookshelfNovel();
-                                                        for (int i = 0; i < novelDbDataList.size(); i++) {
-                                                            if (subFile[iFileLength].getPath().equals(novelDbDataList.get(i).getFuben_id())) {
-                                                                BookshelfNovelDbData bookshelfNovelDbData = novelDbDataList.get(i);
-                                                                bookshelfNovelDbData.setFuben_id("");
-                                                                bookshelfNovelDbData.setType(0);
-                                                                if(bookshelfNovelDbData.getChapterid()==null||bookshelfNovelDbData.getChapterid().equals("0")){
-                                                                    bookshelfNovelDbData.setChapterid("1");
-                                                                }
-                                                                manager.insertOrUpdateBook(bookshelfNovelDbData);
-                                                            }
-                                                        }
-                                                        Intent intent_recever = new Intent("com.zhh.android");
-                                                        sendBroadcast(intent_recever);
-                                                        subFile[iFileLength].delete();
-
-                                                    }
-                                                }
-                                            }
-                                        }
                                     }
 
                                     @Override

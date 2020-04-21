@@ -82,8 +82,7 @@ public class NovelSourceAdapter extends
         }
         Glide.with(mContext)
                 .load(href)
-                .apply(new RequestOptions()
-                        )
+                .apply(new RequestOptions().error(R.drawable.cover_error))
                 .into(novelSourceViewHolder.cover);
         novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getTitle());
         // 作者可能为空

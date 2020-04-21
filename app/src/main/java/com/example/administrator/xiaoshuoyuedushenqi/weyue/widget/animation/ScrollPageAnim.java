@@ -373,7 +373,11 @@ public class ScrollPageAnim extends PageAnimation {
         //mScroller.fling(0, (int) mTouchY, 0, (int) mVelocity.getYVelocity(), 0, 0, 0, Integer.MAX_VALUE);
         mScroller.fling(0, (int) mTouchY, 0, (int) mVelocity.getYVelocity(), 0, 0, Integer.MAX_VALUE*-1, Integer.MAX_VALUE);
     }
+    public synchronized void startAutoRead(int dy) {
+        isRunning = true;
+        mScroller.startScroll(0, (int)mTouchY, 0, -dy);
 
+    }
     @Override
     public void scrollAnim() {
         if (mScroller.computeScrollOffset()) {

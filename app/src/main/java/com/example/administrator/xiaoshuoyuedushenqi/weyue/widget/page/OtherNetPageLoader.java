@@ -110,7 +110,7 @@ public class OtherNetPageLoader extends PageLoader{
         if (mPageChangeListener != null){
             mPageChangeListener.onCategoryFinish(mChapterList);
         }
-        Log.e("QQQ", "getCatalogDataSuccess: "+3333);
+        //Log.e("QQQ", "getCatalogDataSuccess: "+3333);
         loadCurrentChapter();
     }
     private void getCatalogDataError() {
@@ -298,7 +298,7 @@ public class OtherNetPageLoader extends PageLoader{
     }
 
     private void loadCurrentChapter(){
-        Log.e("QQQ", "loadCurrentChapter: "+222);
+        //Log.e("QQQ", "loadCurrentChapter: "+222);
         if (mPageChangeListener != null){
             List<TxtChapter> bookChapters = new ArrayList<>(5);
             //提示加载当前章节和前面两章和后面两章
@@ -323,7 +323,7 @@ public class OtherNetPageLoader extends PageLoader{
                 }
                 bookChapters.addAll(mChapterList.subList(prev,current));
             }
-            Log.e("QQQ", "loadCurrentChapter: "+222);
+            //Log.e("QQQ", "loadCurrentChapter: "+222);
             mPageChangeListener.onLoadChapter(bookChapters,mCurChapterPos);
         }
     }

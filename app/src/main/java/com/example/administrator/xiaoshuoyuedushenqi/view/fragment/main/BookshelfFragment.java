@@ -664,19 +664,29 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                 bundle.putString(WYReadActivity.CHPTER_ID,mDataList.get(position).getChapterid());
                                 startActivity(WYReadActivity.class, bundle);
                             } else {
-                                TxtConfig.saveIsOnVerticalPageMode(getContext(), false);
-                                Intent intent = new Intent(getActivity(), TxtPlayActivity.class);
-                                // 小说 url
-//                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
-//                                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,mDataList.get(position).getFuben_id());
-//                                // 小说名
-//                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
-                                // 小说封面 url
-                                //intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
-                                intent.putExtra("FilePath", mDataList.get(position).getFuben_id());
-                                intent.putExtra("FileName", mDataList.get(position).getName());
-                                // 小说类型
-                                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
+                                CollBookBean bookBean=new CollBookBean(mDataList.get(position).getFuben_id(), mDataList.get(position).getName(), "", "",
+                                        mDataList.get(position).getCover(), false, 0,0,
+                                        "", "", mDataList.get(position).getWeight(), "",
+                                        false, true);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);//
+                                bundle.putString(WYReadActivity.LOAD_PATH,mDataList.get(position).getNovelUrl());
+                                bundle.putString(WYReadActivity.CHPTER_ID,mDataList.get(position).getPosition()+"");
+                                startActivity(WYReadActivity.class, bundle);
+//                                TxtConfig.saveIsOnVerticalPageMode(getContext(), false);
+//                                Intent intent = new Intent(getActivity(), TxtPlayActivity.class);
+//                                // 小说 url
+////                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
+////                                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,mDataList.get(position).getFuben_id());
+////                                // 小说名
+////                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
+//                                // 小说封面 url
+//                                //intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+//                                intent.putExtra("FilePath", mDataList.get(position).getFuben_id());
+//                                intent.putExtra("FileName", mDataList.get(position).getName());
+//                                // 小说类型
+//                                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
                                        // 开始阅读的位置
                                   //intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
                                  //  intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());

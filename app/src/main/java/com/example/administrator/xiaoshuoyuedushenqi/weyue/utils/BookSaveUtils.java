@@ -49,4 +49,19 @@ public class BookSaveUtils {
         }
     }
 
+    public void saveChapterInfo2(String folderName, String fileName, String content) {
+        File file = BookManager.getBookFile2(folderName, fileName);
+       // Log.e("QQQ", "convertTxtChapter: "+file.getPath());
+        //获取流并存储
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(content);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            IOUtils.close(writer);
+        }
+    }
+
 }

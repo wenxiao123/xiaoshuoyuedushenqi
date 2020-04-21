@@ -60,6 +60,8 @@
         android:id="@+id/rv_bookshelf_bookshelf_novels_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_bookshelf_separator"
         app:layout_constraintEnd_toEndOf="parent"

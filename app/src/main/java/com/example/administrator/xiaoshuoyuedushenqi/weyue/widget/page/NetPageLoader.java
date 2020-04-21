@@ -5,6 +5,8 @@ import android.os.Message;
 import android.util.Log;
 
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Categorys_one;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Text;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
@@ -54,11 +56,25 @@ public class NetPageLoader extends PageLoader{
         //if (collBook.getBookChapters() == null) return;
         //mChapterList = convertTxtChapter(collBook.getBookChapters());
         //设置目录回调
-        getCatalogData(mCollBook.get_id(),1,1);
+        getCatalogData(mCollBook.get_id(),z,1);
         //提示加载下面的章节
         //getDetailedChapterData(mCollBook.get_id(),chpter_id+"",1);
     }
-    int z=0;
+
+    public List<Categorys_one> getCategorys_ones() {
+        return categorys_ones;
+    }
+    boolean is_website;
+    public void setCategorys_ones(List<Categorys_one> categorys_ones) {
+        this.categorys_ones = categorys_ones;
+        is_website=true;
+        mChapterList=convertTxtChapter2(categorys_ones);
+        mStatus=STATUS_LOADING;
+        loadCurrentChapter();
+    }
+
+    List<Categorys_one> categorys_ones = new ArrayList<>();
+    int z=1;
     public void getCatalogData(String id,int posion,int type) {
         Gson gson=new Gson();
         String url = UrlObtainer.GetUrl()+"api/index/Books_List";
@@ -72,7 +88,6 @@ public class NetPageLoader extends PageLoader{
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {
-               // Log.e("QQQ2", "onResponse: "+weigh+" "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -80,6 +95,7 @@ public class NetPageLoader extends PageLoader{
                         JSONObject jsonObject1=jsonObject.getJSONObject("data");
                         JSONArray object=jsonObject1.getJSONArray("data");
                         weigh=Integer.parseInt(jsonObject1.getString("total"));
+                        //Log.e("QQQ2", "onResponse: "+weigh+" "+posion+" "+json);
                         List<Cataloginfo> catalogData=new ArrayList<>();
                         for(int i=0;i<object.length();i++){
                             catalogData.add(gson.fromJson(object.getJSONObject(i).toString(),Cataloginfo.class));
@@ -107,11 +123,12 @@ public class NetPageLoader extends PageLoader{
             catalogDataAll.addAll(catalogData);
             handler.sendEmptyMessage(2);
         }else {
-            if (z < weigh / 50) {
+            if (z <= weigh / 50) {
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(1);
             } else {
-               handler.sendEmptyMessage(2);
+                catalogDataAll.addAll(catalogData);
+                handler.sendEmptyMessage(2);
             }
         }
     }
@@ -127,6 +144,7 @@ public class NetPageLoader extends PageLoader{
                 z++;
                 getCatalogData(mCollBook.get_id(), z, 1);
             }else {
+               // Log.e("QQQ", "handleMessage: "+catalogDataAll.size());
                 mChapterList = convertTxtChapter(catalogDataAll);
                 if (mPageChangeListener != null){
                     mPageChangeListener.onCategoryFinish(mChapterList);
@@ -187,6 +205,19 @@ public class NetPageLoader extends PageLoader{
         }
         return txtChapters;
     }
+
+    private List<TxtChapter> convertTxtChapter2(List<Categorys_one> categorys_ones){
+        List<TxtChapter> txtChapters = new ArrayList<>(catalogDataAll.size());
+        for (Text bean : categorys_ones.get(0).getText()){
+            // Log.e("QQQ", "convertTxtChapter: "+bean.getTitle());
+            TxtChapter chapter = new TxtChapter();
+            chapter.bookId = categorys_ones.get(0).getNovel_id()+"";
+            chapter.title = bean.getChapter_name();
+            chapter.link = bean.getChapter_url();
+            txtChapters.add(chapter);
+        }
+        return txtChapters;
+    }
     @Nullable
     @Override
     protected List<TxtPage> loadPageList(int chapter) {
@@ -211,10 +242,17 @@ public class NetPageLoader extends PageLoader{
 
         //获取要加载的文件
         TxtChapter txtChapter = mChapterList.get(chapter);
-        File file = new File(Constant.BOOK_CACHE_PATH + mCollBook.get_id()
-                + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
-        Log.e("QQQ", "loadPageList: "+file.getPath()+" "+file.exists());
+        File file;
+        if(is_website==false) {
+            file = new File(Constant.BOOK_CACHE_PATH + mCollBook.get_id()
+                    + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
+        }else {
+            file = new File(Constant.BOOK_OTHER_CACHE_PATH + mCollBook.get_id()
+                    + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
+        }
+        //Log.e("QQQ", "loadPageList: "+file.getPath()+" "+file.exists());
         if (!file.exists()) return null;
+        //if(file.length()==0)
         Reader reader = null;
         try {
             reader = new FileReader(file);
@@ -342,7 +380,7 @@ public class NetPageLoader extends PageLoader{
                 }
                 bookChapters.addAll(mChapterList.subList(prev,current));
             }
-            Log.e("QQQ", "loadCurrentChapter: "+222);
+            //Log.e("QQQ", "loadCurrentChapter: "+222);
             mPageChangeListener.onLoadChapter(bookChapters,mCurChapterPos);
         }
     }

@@ -16,6 +16,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.rxhelper.RxUtil
 import java.util.List;
 
 
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -43,6 +44,8 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+
+import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getContext;
 
 /**
  * Created by newbiechen on 17-7-1.
@@ -80,6 +83,15 @@ public abstract class PageLoader {
     private WeakReference<List<TxtPage>> mWeakPrePageList;
     //当前章节的页面列表
     private List<TxtPage> mCurPageList;
+
+    public List<TxtPage> getmCurPageList() {
+        return mCurPageList;
+    }
+
+    public void setmCurPageList(List<TxtPage> mCurPageList) {
+        this.mCurPageList = mCurPageList;
+    }
+
     //下一章的页面列表缓存
     private List<TxtPage> mNextPageList;
 
@@ -118,6 +130,15 @@ public abstract class PageLoader {
     /*****************params**************************/
     //当前的状态
     protected int mStatus = STATUS_LOADING;
+
+    public int getmCurChapterPos() {
+        return mCurChapterPos;
+    }
+
+    public void setmCurChapterPos(int mCurChapterPos) {
+        this.mCurChapterPos = mCurChapterPos;
+    }
+
     //当前章
     protected int mCurChapterPos = 0;
     //书本是否打开
@@ -159,6 +180,10 @@ public abstract class PageLoader {
     private int chpter_id;
     //字体的大小
     private int mTextSize;
+
+    //字体的大小
+    private String mTextStyle;
+
     //标题的行间距
     private int mTitleInterval;
     //段落距离(基于行间距的额外距离)
@@ -166,6 +191,11 @@ public abstract class PageLoader {
     private int mTitlePara;
     //电池的百分比
     private int mBatteryLevel;
+
+    public int getmPageMode() {
+        return mPageMode;
+    }
+
     //页面的翻页效果模式
     private int mPageMode;
     //加载器的颜色主题
@@ -195,6 +225,7 @@ public abstract class PageLoader {
     private void initData() {
         mSettingManager = ReadSettingManager.getInstance();
         mTextSize = mSettingManager.getTextSize();
+        mTextStyle=mSettingManager.getTextStyle();
         mTitleSize = mTextSize + ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
         mPageMode = mSettingManager.getPageMode();
         isNightMode = mSettingManager.isNightMode();
@@ -249,6 +280,35 @@ public abstract class PageLoader {
             mBatteryPaint.setColor(Color.WHITE);
         } else {
             mBatteryPaint.setColor(Color.BLACK);
+        }
+        Typeface tf = null;
+        if(mTextStyle!=null&&!mTextStyle.equals("")) {
+//            File file = new File(path);
+//            if (!file.exists()) {
+//                file.getParentFile().mkdirs();
+//            }
+//            if(file.exists()) {
+//                tf = Typeface.createFromFile(file);
+//                textPaint.setTypeface(tf);
+//            }
+            //从asset 读取字体
+            AssetManager mgr = getContext().getAssets();
+//根据路径得到Typeface
+            if(mTextStyle.equals("1")) {
+                tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            }else if(mTextStyle.equals("2")){
+                tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            }else if(mTextStyle.equals("3")){
+                tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            }else if(mTextStyle.equals("-1")){
+                tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            }
+            mTitlePaint.setTypeface(tf);
+            mTextPaint.setTypeface(tf);
+        }else {
+            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            mTitlePaint.setTypeface(tf);
+            mTextPaint.setTypeface(tf);
         }
     }
 
@@ -366,6 +426,70 @@ public abstract class PageLoader {
         mTextPaint.setTextSize(mTextSize);
         //设置标题的字体大小
         mTitlePaint.setTextSize(mTitleSize);
+        //存储状态
+        mSettingManager.setTextSize(mTextSize);
+        //取消缓存
+        mWeakPrePageList = null;
+        mNextPageList = null;
+        //如果当前为完成状态。
+        if (mStatus == STATUS_FINISH) {
+            //重新计算页面
+            mCurPageList = loadPageList(mCurChapterPos);
+
+            //防止在最后一页，通过修改字体，以至于页面数减少导致崩溃的问题
+            if (mCurPage.position >= mCurPageList.size()) {
+                mCurPage.position = mCurPageList.size() - 1;
+            }
+        }
+        //重新设置文章指针的位置
+        mCurPage = getCurPage(mCurPage.position);
+        //绘制
+        mPageView.refreshPage();
+    }
+
+    public void setmSype(String type) {
+        if (!isBookOpen) return;
+
+        mTextInterval = mTextSize / 2;
+        mTextPara = mTextSize;
+        mTextStyle=type;
+        mTitleSize = mTextSize + ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
+        mTitleInterval = mTitleInterval / 2;
+        mTitlePara = mTitleSize;
+        mSettingManager.setTextStyle(mTextStyle);
+        //设置画笔的字体大小
+        mTextPaint.setTextSize(mTextSize);
+        //设置标题的字体大小
+        mTitlePaint.setTextSize(mTitleSize);
+        Typeface tf = null;
+        if(type!=null&&!type.equals("")) {
+//            File file = new File(path);
+//            if (!file.exists()) {
+//                file.getParentFile().mkdirs();
+//            }
+//            if(file.exists()) {
+//                tf = Typeface.createFromFile(file);
+//                textPaint.setTypeface(tf);
+//            }
+            //从asset 读取字体
+            AssetManager mgr = getContext().getAssets();
+//根据路径得到Typeface
+            if(type.equals("1")) {
+                tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            }else if(type.equals("2")){
+                tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            }else if(type.equals("3")){
+                tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            }else if(type.equals("-1")){
+                tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            }
+            mTitlePaint.setTypeface(tf);
+            mTextPaint.setTypeface(tf);
+        }else {
+            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            mTitlePaint.setTypeface(tf);
+            mTextPaint.setTypeface(tf);
+        }
         //存储状态
         mSettingManager.setTextSize(mTextSize);
         //取消缓存
@@ -549,34 +673,37 @@ public abstract class PageLoader {
     //打开具体章节
     public void openChapter() {
         mCurPageList = loadPageList(mCurChapterPos);
-        //进行预加载
-        //preLoadNextChapter();
-        //加载完成
-        mStatus = STATUS_FINISH;
-        Log.e("QQQ", "openChapter: "+mCurChapterPos+" "+isBookOpen);
-        //获取制定页面
-        if (!isBookOpen) {
-            isBookOpen = true;
-            //可能会出现当前页的大小大于记录页的情况。
+        if(mCurPageList!=null&&mCurPageList.size()>0) {
+            //进行预加载
+            //preLoadNextChapter();
+            //加载完成
+            mStatus = STATUS_FINISH;
+            //Log.e("QQQ", "openChapter: "+mCurChapterPos+" "+isBookOpen);
+            //获取制定页面
+            if (!isBookOpen) {
+                isBookOpen = true;
+                //可能会出现当前页的大小大于记录页的情况。
 //            int position = mBookRecord.getPagePos();
 //            Log.e("QQQ", "openChapter: "+position);
 //            if (position >= mCurPageList.size()) {
 //                position = mCurPageList.size() - 1;
 //            }
-            mCurPage = getCurPage(0);
-            mCancelPage = mCurPage;
-            if (mPageChangeListener != null) {
-                mPageChangeListener.onChapterChange(mCurChapterPos);
+                mCurPage = getCurPage(0);
+                mCancelPage = mCurPage;
+                if (mPageChangeListener != null) {
+                    mPageChangeListener.onChapterChange(mCurChapterPos);
+                }
+                mCurPage = getCurPage(0);
+            } else {
+                if (mCurPageList != null && mCurPageList.size() != 0) {
+                    mCurPage = getCurPage(0);
+                } else {
+                    chapterError();
+                }
             }
-            mCurPage = getCurPage(0);
-        } else {
-        if(mCurPageList!=null&&mCurPageList.size()!=0) {
-            mCurPage = getCurPage(0);
         }else {
-            chapterError();
+            mStatus=STATUS_ERROR;
         }
-      }
-
         mPageView.drawCurPage(false);
     }
 
@@ -619,7 +746,8 @@ public abstract class PageLoader {
 
                 //重置段落
                 if (!isTitle) {
-                    paragraph = paragraph.replaceAll("\\s", "").replace("&nbsp"," ").replace("</br>","\n");
+                    paragraph = paragraph.replaceAll("\\s", "").replace("&nbsp","\n").replace("</br>","\n");
+                    paragraph = paragraph.replaceAll("  ", "");
                     //如果只有换行符，那么就不执行
                     if (paragraph.equals("")) continue;
                     paragraph = StringUtils.halfToFull("  " + paragraph + "\n");
@@ -746,12 +874,20 @@ public abstract class PageLoader {
             //根据状态不一样，数据不一样
             if (mStatus != STATUS_FINISH) {
                 if (mChapterList != null && mChapterList.size() != 0) {
-                    canvas.drawText(mChapterList.get(mCurChapterPos).getTitle()
+                    mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
+                    canvas.drawText(mChapterList.get(mCurChapterPos).getTitle()+"/"+mCollBook.getTitle()
                             , mMarginWidth, tipTop, mTipPaint);
+                    canvas.drawText(getChapterPos()+"/"+mChapterList.size()
+                            , mVisibleWidth-mMarginWidth-10, tipTop, mTipPaint);
                 }
+                mTipPaint.setColor(mTextColor);
             } else {
-                Log.e("QQQ", "drawBackground: "+mCurPage.title);
-                canvas.drawText(mCurPage.title, mMarginWidth, tipTop, mTipPaint);
+                mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
+               // Log.e("QQQ", "drawBackground: "+mCurPage.title);
+                canvas.drawText(mCurPage.title+"/"+mCollBook.getTitle(), mMarginWidth, tipTop, mTipPaint);
+                canvas.drawText(getChapterPos()+"/"+mChapterList.size()
+                        , mVisibleWidth-mMarginWidth-10, tipTop, mTipPaint);
+                mTipPaint.setColor(mTextColor);
             }
 
             /******绘制页码********/
@@ -769,50 +905,50 @@ public abstract class PageLoader {
         }
         /******绘制电池********/
 
-        int visibleRight = mDisplayWidth - mMarginWidth;
-        int visibleBottom = mDisplayHeight - tipMarginHeight;
-
-        int outFrameWidth = (int) mTipPaint.measureText("xxx");
-        int outFrameHeight = (int) mTipPaint.getTextSize();
-
-        int polarHeight = ScreenUtils.dpToPx(6);
-        int polarWidth = ScreenUtils.dpToPx(2);
-        int border = 1;
-        int innerMargin = 1;
+//        int visibleRight = mDisplayWidth - mMarginWidth;
+//        int visibleBottom = mDisplayHeight - tipMarginHeight;
+//
+//        int outFrameWidth = (int) mTipPaint.measureText("xxx");
+//        int outFrameHeight = (int) mTipPaint.getTextSize();
+//
+//        int polarHeight = ScreenUtils.dpToPx(6);
+//        int polarWidth = ScreenUtils.dpToPx(2);
+//        int border = 1;
+//        int innerMargin = 1;
 
         //电极的制作
-        int polarLeft = visibleRight - polarWidth;
-        int polarTop = visibleBottom - (outFrameHeight + polarHeight) / 2;
-        Rect polar = new Rect(polarLeft, polarTop, visibleRight,
-                polarTop + polarHeight - ScreenUtils.dpToPx(2));
-
-        mBatteryPaint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(polar, mBatteryPaint);
-
-        //外框的制作
-        int outFrameLeft = polarLeft - outFrameWidth;
-        int outFrameTop = visibleBottom - outFrameHeight;
-        int outFrameBottom = visibleBottom - ScreenUtils.dpToPx(2);
-        Rect outFrame = new Rect(outFrameLeft, outFrameTop, polarLeft, outFrameBottom);
-
-        mBatteryPaint.setStyle(Paint.Style.STROKE);
-        mBatteryPaint.setStrokeWidth(border);
-        canvas.drawRect(outFrame, mBatteryPaint);
-
-        //内框的制作
-        float innerWidth = (outFrame.width() - innerMargin * 2 - border) * (mBatteryLevel / 100.0f);
-        RectF innerFrame = new RectF(outFrameLeft + border + innerMargin, outFrameTop + border + innerMargin,
-                outFrameLeft + border + innerMargin + innerWidth, outFrameBottom - border - innerMargin);
-
-        mBatteryPaint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(innerFrame, mBatteryPaint);
+//        int polarLeft = visibleRight - polarWidth;
+//        int polarTop = visibleBottom - (outFrameHeight + polarHeight) / 2;
+//        Rect polar = new Rect(polarLeft, polarTop, visibleRight,
+//                polarTop + polarHeight - ScreenUtils.dpToPx(2));
+//
+//        mBatteryPaint.setStyle(Paint.Style.FILL);
+//        canvas.drawRect(polar, mBatteryPaint);
+//
+//        //外框的制作
+//        int outFrameLeft = polarLeft - outFrameWidth;
+//        int outFrameTop = visibleBottom - outFrameHeight;
+//        int outFrameBottom = visibleBottom - ScreenUtils.dpToPx(2);
+//        Rect outFrame = new Rect(outFrameLeft, outFrameTop, polarLeft, outFrameBottom);
+//
+//        mBatteryPaint.setStyle(Paint.Style.STROKE);
+//        mBatteryPaint.setStrokeWidth(border);
+//        canvas.drawRect(outFrame, mBatteryPaint);
+//
+//        //内框的制作
+//        float innerWidth = (outFrame.width() - innerMargin * 2 - border) * (mBatteryLevel / 100.0f);
+//        RectF innerFrame = new RectF(outFrameLeft + border + innerMargin, outFrameTop + border + innerMargin,
+//                outFrameLeft + border + innerMargin + innerWidth, outFrameBottom - border - innerMargin);
+//
+//        mBatteryPaint.setStyle(Paint.Style.FILL);
+//        canvas.drawRect(innerFrame, mBatteryPaint);
 
         /******绘制当前时间********/
         //底部的字显示的位置Y
-        float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
-        String time = StringUtils.dateConvert(System.currentTimeMillis(), Constant.FORMAT_TIME);
-        float x = outFrameLeft - mTipPaint.measureText(time) - ScreenUtils.dpToPx(4);
-        canvas.drawText(time, x, y, mTipPaint);
+//        float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
+//        String time = StringUtils.dateConvert(System.currentTimeMillis(), Constant.FORMAT_TIME);
+//        float x = outFrameLeft - mTipPaint.measureText(time) - ScreenUtils.dpToPx(4);
+//        canvas.drawText(time, x, y, mTipPaint);
     }
 
     void drawContent(Bitmap bitmap) {

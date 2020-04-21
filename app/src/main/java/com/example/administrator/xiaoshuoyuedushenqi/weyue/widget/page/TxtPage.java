@@ -11,4 +11,12 @@ public class TxtPage {
     String title;
     int titleLines; //当前 lines 中为 title 的行数。
     List<String> lines;
+
+    public List<String> getLines() {
+        return lines;
+    }
+
+    public void setLines(List<String> lines) {
+        this.lines = lines;
+    }
 }
