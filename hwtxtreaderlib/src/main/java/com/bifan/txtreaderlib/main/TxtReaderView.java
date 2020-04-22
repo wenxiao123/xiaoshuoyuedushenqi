@@ -150,11 +150,13 @@ public class TxtReaderView extends TxtReaderBaseView {
 
         if (getMoveDistance() > 0 && isFirstPage()) {
             ELogger.log(tag, "是第一页了");
+            pageChangeListener.prePage();
             return;
         }
 
         if (getMoveDistance() < 0 && isLastPage()) {
             ELogger.log(tag, "是最后一页了");
+            pageChangeListener.nextPage();
             return;
         }
         invalidate();

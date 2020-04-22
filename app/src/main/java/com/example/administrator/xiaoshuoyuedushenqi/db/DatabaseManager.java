@@ -381,7 +381,7 @@ public class DatabaseManager {
                         position, type, secondPosition, chperid, weight, status);
                 bookshelfNovelDbData.setFuben_id(title1);
                 res.add(bookshelfNovelDbData);
-            Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
+           // Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
             } while (cursor.moveToPrevious());
         }
         cursor.close();

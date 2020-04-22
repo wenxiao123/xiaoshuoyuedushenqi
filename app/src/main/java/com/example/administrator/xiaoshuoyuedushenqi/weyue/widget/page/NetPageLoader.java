@@ -320,6 +320,7 @@ public class NetPageLoader extends PageLoader{
     //装载下一章节的内容
     @Override
     boolean nextChapter(){
+        Log.e("111", "next: "+333);
        boolean hasNext = super.nextChapter();
        if (!hasNext) return false;
        if (mStatus == STATUS_FINISH){

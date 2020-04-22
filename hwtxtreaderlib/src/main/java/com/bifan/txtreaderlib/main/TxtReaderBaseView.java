@@ -271,14 +271,14 @@ public abstract class TxtReaderBaseView extends View implements GestureDetector.
     /**
      * @return 当前页是否是第一页
      */
-    protected synchronized Boolean isFirstPage() {
+    public synchronized Boolean isFirstPage() {
         return readerContext.getPageData().FirstPage() == null || getTopPage() == null;
     }
 
     /**
      * @return 当前页是否是最后一页
      */
-    protected synchronized Boolean isLastPage() {
+    public synchronized Boolean isLastPage() {
         return readerContext.getPageData().LastPage() == null || getBottomPage() == null;
     }
 
@@ -1262,7 +1262,7 @@ public abstract class TxtReaderBaseView extends View implements GestureDetector.
 
     //-------------------------------------------------------------
     private IPageEdgeListener pageEdgeListener;
-    private IPageChangeListener pageChangeListener;
+    public IPageChangeListener pageChangeListener;
     private ISliderListener sliderListener;
     private ICenterAreaClickListener centerAreaClickListener;
 

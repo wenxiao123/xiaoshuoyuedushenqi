@@ -464,6 +464,16 @@ public class HwTxtPlayActivity extends AppCompatActivity {
                     mChapterNameText.setText("无章节");
                 }
             }
+
+            @Override
+            public void nextPage() {
+
+            }
+
+            @Override
+            public void prePage() {
+
+            }
         });
     }
 

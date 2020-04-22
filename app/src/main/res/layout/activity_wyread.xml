@@ -9,11 +9,23 @@
         android:id="@+id/v_title"
         android:layout_width="match_parent"
         android:layout_height="30dp"/>
-    <com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.PageView
-        android:id="@+id/txt_page"
+    <FrameLayout
         android:layout_below="@id/v_title"
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.PageView
+        android:id="@+id/txt_page"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/tv_title"
+            android:textColor="@color/word_color"
+            android:textSize="12sp"
+            android:gravity="right"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
     <RelativeLayout
         android:id="@+id/rv_read_top_bar"
         android:layout_width="match_parent"

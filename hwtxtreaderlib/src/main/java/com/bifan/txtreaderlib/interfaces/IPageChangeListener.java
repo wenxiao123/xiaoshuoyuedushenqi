@@ -7,4 +7,6 @@ package com.bifan.txtreaderlib.interfaces;
 
 public interface IPageChangeListener {
     void onCurrentPage(float progress);
+    void nextPage();
+    void prePage();
 }

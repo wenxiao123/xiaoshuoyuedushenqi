@@ -41,7 +41,8 @@ public class BookSaveUtils {
         Writer writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(file));
-            writer.write(content);
+            String str=content.replace("</br>","\r\n");
+            writer.write(str);
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();

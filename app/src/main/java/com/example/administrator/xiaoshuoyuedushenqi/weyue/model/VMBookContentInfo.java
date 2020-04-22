@@ -191,7 +191,7 @@ public class VMBookContentInfo extends BaseViewModel {
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
-                            File file = BookManager.getBookFile(bookid, data.getTitle());
+                            //File file = BookManager.getBookFile(bookid, data.getTitle());
 //                            if(file.exists()){
 //                                iBookChapters.finishChapters();
 //                            }else {

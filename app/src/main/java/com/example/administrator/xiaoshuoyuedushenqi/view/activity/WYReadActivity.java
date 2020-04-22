@@ -1455,7 +1455,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         super.onDestroy();
         getContentResolver().unregisterContentObserver(mBrightnessObserver);
         if (mCollBook.isLocal()==true) {
-            Log.e("QQQ", "onDestroy: "+mPageLoader.getmCurChapterPos()+" "+load_path);
+           // Log.e("QQQ", "onDestroy: "+mPageLoader.getmCurChapterPos()+" "+load_path);
             BookshelfNovelDbData dbData = mDbManager.selectBookshelfNovel(load_path);
             if (dbData != null) {
                 dbData.setPosition(mPageLoader.getmCurChapterPos());
@@ -1465,7 +1465,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 mDbManager.insertOrUpdateBook(dbData);
             }
         } else if (mCollBook.isLocal()==false) {
-            Log.e("QQQ", "onDestroy: "+mPageLoader.getmCurChapterPos()+" "+mCollBook.get_id());
+           // Log.e("QQQ", "onDestroy: "+mPageLoader.getmCurChapterPos()+" "+mCollBook.get_id());
             BookshelfNovelDbData dbData = mDbManager.selectBookshelfNovel(mCollBook.get_id());
             if (dbData != null) {
                 dbData.setPosition(mPageLoader.getmCurChapterPos());

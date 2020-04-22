@@ -744,27 +744,17 @@ public abstract class PageLoader {
         String paragraph = chapter.getTitle();//默认展示标题
         try {
             while (isTitle || (paragraph = br.readLine()) != null) {
-               // Log.e("QQQ", "loadPages: "+paragraph);
-                Log.e("QQQ", "loadPages: 1 "+paragraph);
-                int wordnum = mTitlePaint.breakText(paragraph, true, mVisibleWidth, null);
                 //重置段落
                 if (!isTitle) {
                     paragraph = paragraph.replaceAll("\\s", "");
                     paragraph = paragraph.replace("&nbsp"," ");
                     paragraph = paragraph.replace(" ","");
-//                    String str="";
-//                    for(int z=0;z<18;z++){
-//                        str=str+" ";
-//                    }
-//                    paragraph = paragraph.replace("</br>",str);
-                    //如果只有换行符，那么就不执行
-//                    if (paragraph.equals("")) continue;
                     paragraph = StringUtils.halfToFull(" " + paragraph + "\n");
                 } else {
                     //设置 title 的顶部间距
                     rHeight -= mTitlePara;
                 }
-                Log.e("QQQ", "loadPages: 1 "+paragraph);
+               // Log.e("QQQ", "loadPages: 1 "+paragraph);
                 int wordCount = 0;
                 String subStr = null;
                 while (paragraph.length() > 0) {
@@ -800,7 +790,7 @@ public abstract class PageLoader {
                     //paragraph=paragraph.replace("\n",s);
                     subStr = paragraph.substring(0, wordCount);
                     if (!subStr.equals("\n")) {
-                        Log.e("QQQ", "loadPages: 1 "+subStr);
+                       // Log.e("QQQ", "loadPages: 1 "+subStr);
                             //将一行字节，存储到lines中
                                 lines.add(subStr);
                                 //设置段落间距
@@ -1155,9 +1145,7 @@ public abstract class PageLoader {
 
     //翻阅下一页
     boolean next() {
-        Log.e("111", "nextChapter: "+222);
         if (!checkStatus()) return false;
-        Log.e("111", "nextChapter: "+333);
         //判断是否到最后一页了
         TxtPage nextPage = getNextPage();
 
