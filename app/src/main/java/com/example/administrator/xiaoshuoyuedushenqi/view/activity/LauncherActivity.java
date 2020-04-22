@@ -152,7 +152,7 @@ public class LauncherActivity extends BaseActivity {
         for(int i=0;i<novalDetailsList.size();i++){
             Noval_details noval_details=novalDetailsList.get(i);
             BookshelfNovelDbData dbData = new BookshelfNovelDbData(noval_details.getId()+"", noval_details.getTitle(),
-                    noval_details.getPic(), 0, 0, 0, 1 + "", 20, noval_details.getSerialize() + "");
+                    noval_details.getPic(), 0, 0, 0, 0 + "", 20, noval_details.getSerialize() + "");
             databaseManager.insertOrUpdateBook(dbData);
         }
         SpUtil.saveIs_first(1);

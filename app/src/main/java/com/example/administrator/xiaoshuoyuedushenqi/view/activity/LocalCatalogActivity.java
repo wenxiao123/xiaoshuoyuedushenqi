@@ -471,7 +471,12 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                 bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                bundle.putString(WYReadActivity.CHPTER_ID,(position)+"");
+                if(mIsReverse==false) {
+                    bundle.putString(WYReadActivity.CHPTER_ID, position + "");
+                }else {
+                    bundle.putString(WYReadActivity.CHPTER_ID, (mChapterNameList.size()-position-1)+ "");
+                }
+                //bundle.putString(WYReadActivity.CHPTER_ID,(position)+"");
                 startActivity(WYReadActivity.class, bundle);
                 // 点击 item，跳转到相应小说阅读页
 //                Intent intent = new Intent(LocalCatalogActivity.this, ReadActivity.class);

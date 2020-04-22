@@ -164,6 +164,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void initData() {
         pid = getIntent().getStringExtra("pid");
+        Log.e("WWW", "initData: "+pid);
         //presenter.getCategoryNovels();
         mDbManager = DatabaseManager.getInstance();
         login_admin = (Login_admin) SpUtil.readObject(this);
@@ -527,7 +528,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                         tv_book_add.setText("移出书架");
                         //String novelUrl, String name, String cover, int position, int type, int secondPosition, String chapterid, int weight, String status
                         BookshelfNovelDbData dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
-                                noval_details.getPic(), 0, 0, 0, 1 + "", weigh, noval_details.getSerialize() + "");
+                                noval_details.getPic(), 0, 0, 0, 0 + "", weigh, noval_details.getSerialize() + "");
                         mDbManager.insertOrUpdateBook(dbData);
                         if (login_admin != null) {
                             setBookshelfadd(login_admin.getToken(), pid);

@@ -133,6 +133,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     private TextView mTurnNormalTv,tv_textstyle;
     private TextView mTurnRealTv,tv_website;
     String chpter_id,load_path;
+    TextView tv_title;
     // 监听系统亮度的变化
     private ContentObserver mBrightnessObserver = new ContentObserver(new Handler()) {
         @Override
@@ -195,6 +196,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     protected void initView() {
         read_frist=SpUtil.getReadfirst();
         App.init(this);
+        tv_title=findViewById(R.id.tv_title);
         txt_click=findViewById(R.id.txt_click);
         l_yingdaoye=findViewById(R.id.l_yingdaoye);
         l_yingdaoye.setOnClickListener(new View.OnClickListener() {
@@ -938,7 +940,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     //冻结使用
                     mReadSbChapterProgress.setEnabled(false);
                 }
-
+                tv_title.setText((mPageLoader.getChapterPos()+1)+"/"+mTxtChapters.size());
                 //隐藏提示
 //                mReadTvPageTip.setVisibility(GONE);
                 mReadSbChapterProgress.setProgress(0);

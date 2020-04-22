@@ -241,6 +241,7 @@ public class NetPageLoader extends PageLoader{
 //        }
 
         //获取要加载的文件
+
         TxtChapter txtChapter = mChapterList.get(chapter);
         File file;
         if(is_website==false) {
@@ -330,8 +331,11 @@ public class NetPageLoader extends PageLoader{
         else if (mStatus == STATUS_LOADING){
             loadCurrentChapter();
             return false;
-        }
-        return false;
+        }else {
+           loadCurrentChapter();
+           return false;
+       }
+        //return false;
     }
 
     //跳转到指定章节
@@ -346,42 +350,42 @@ public class NetPageLoader extends PageLoader{
         //提示加载上一章
         if (mPageChangeListener != null){
             //提示加载前面3个章节（不包括当前章节）
-            int current = mCurChapterPos;
-            int prev = current - 3;
-            if (prev < 0){
-                prev = 0;
-            }
-            mPageChangeListener.onLoadChapter(mChapterList.subList(prev,current),mCurChapterPos);
+//            int current = mCurChapterPos;
+//            int prev = current - 3;
+//            if (prev < 0){
+//                prev = 0;
+//            }
+            mPageChangeListener.onLoadChapter(mChapterList,mCurChapterPos);
         }
     }
 
     private void loadCurrentChapter(){
         if (mPageChangeListener != null){
-            List<TxtChapter> bookChapters = new ArrayList<>(5);
-            //提示加载当前章节和前面两章和后面两章
-            int current = mCurChapterPos;
-            bookChapters.add(mChapterList.get(current));
-
-            //如果当前已经是最后一章，那么就没有必要加载后面章节
-            if (current != mChapterList.size()){
-                int begin = current + 1;
-                int next = begin + 2;
-                if (next > mChapterList.size()){
-                    next = mChapterList.size();
-                }
-                bookChapters.addAll(mChapterList.subList(begin,next));
-            }
-
-            //如果当前已经是第一章，那么就没有必要加载前面章节
-            if (current != 0){
-                int prev = current - 2;
-                if (prev < 0){
-                    prev = 0;
-                }
-                bookChapters.addAll(mChapterList.subList(prev,current));
-            }
+//            List<TxtChapter> bookChapters = new ArrayList<>(5);
+//            //提示加载当前章节和前面两章和后面两章
+//            int current = mCurChapterPos;
+//            bookChapters.add(mChapterList.get(current));
+//
+//            //如果当前已经是最后一章，那么就没有必要加载后面章节
+//            if (current != mChapterList.size()){
+//                int begin = current + 1;
+//                int next = begin + 2;
+//                if (next > mChapterList.size()){
+//                    next = mChapterList.size();
+//                }
+//                bookChapters.addAll(mChapterList.subList(begin,next));
+//            }
+//
+//            //如果当前已经是第一章，那么就没有必要加载前面章节
+//            if (current != 0){
+//                int prev = current - 2;
+//                if (prev < 0){
+//                    prev = 0;
+//                }
+//                bookChapters.addAll(mChapterList.subList(prev,current));
+//            }
             //Log.e("QQQ", "loadCurrentChapter: "+222);
-            mPageChangeListener.onLoadChapter(bookChapters,mCurChapterPos);
+            mPageChangeListener.onLoadChapter(mChapterList,mCurChapterPos);
         }
     }
 
@@ -389,11 +393,11 @@ public class NetPageLoader extends PageLoader{
         //提示加载下一章
         if (mPageChangeListener != null){
             //提示加载当前章节和后面3个章节
-            int current = mCurChapterPos + 1;
-            int next = mCurChapterPos + 3;
-            if (next > mChapterList.size()){
-                next = mChapterList.size();
-            }
+//            int current = mCurChapterPos + 1;
+//            int next = mCurChapterPos + 3;
+//            if (next > mChapterList.size()){
+//                next = mChapterList.size();
+//            }
             //chpter_id++;
             mPageChangeListener.onLoadChapter(mChapterList,mCurChapterPos);
         }

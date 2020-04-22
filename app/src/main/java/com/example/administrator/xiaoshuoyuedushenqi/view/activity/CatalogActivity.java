@@ -193,19 +193,19 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     protected void doAfterInit() {
       isRefresh=false;
       z=1;
-      if(app.getCatalogDataAll().size()>0){
-          catalogDataAll= app.getCatalogDataAll();
-          mProgressBar.setVisibility(View.GONE);
-          mErrorPageTv.setVisibility(View.GONE);
-          mChapterOrderTv.setVisibility(View.VISIBLE);
-          initAdapter();//chapter_id
-          mCatalogAdapter.setPosition(chapter_id-1);
-          mCatalogAdapter.notifyDataSetChanged();
-          mCatalogListRv.scrollToPosition(chapter_id-1);
-         // Log.e("QQQ", "doAfterInit: "+mName);
-      }else {
+//      if(app.getCatalogDataAll().size()>0){
+//          catalogDataAll= app.getCatalogDataAll();
+//          mProgressBar.setVisibility(View.GONE);
+//          mErrorPageTv.setVisibility(View.GONE);
+//          mChapterOrderTv.setVisibility(View.VISIBLE);
+//          initAdapter();//chapter_id
+//          mCatalogAdapter.setPosition(chapter_id-1);
+//          mCatalogAdapter.notifyDataSetChanged();
+//          mCatalogListRv.scrollToPosition(chapter_id-1);
+//         // Log.e("QQQ", "doAfterInit: "+mName);
+//      }else {
           mPresenter.getCatalogData(mUrl,z,type);
-      }
+//      }
         mChapterCountTv.setText("共" + weigh + "章");
         text.setText(mName);
         //getCatalogData();
@@ -345,7 +345,11 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                 bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                bundle.putString(WYReadActivity.CHPTER_ID,position+"");
+                if(mIsReverse==false) {
+                    bundle.putString(WYReadActivity.CHPTER_ID, position + "");
+                }else {
+                    bundle.putString(WYReadActivity.CHPTER_ID, (catalogDataAll.size()-position-1)+ "");
+                }
                 startActivity(WYReadActivity.class, bundle);
                 if (mReadActivity != null) {
                     mReadActivity.finish();
@@ -403,7 +407,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 mCatalogAdapter.notifyDataSetChanged();
                 mCatalogListRv.scrollToPosition(chapter_id - 1);
                 mChapterCountTv.setText("共" + weigh + "章");
-                app.setCatalogDataAll(catalogDataAll);
+                //app.setCatalogDataAll(catalogDataAll);
                 text.setText(mName);
             }
         }

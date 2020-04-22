@@ -1390,7 +1390,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        app.setCatalogDataAll(new ArrayList<>());
+        //app.setCatalogDataAll(new ArrayList<>());
         if (mIsNeedWrite2Db) {
             // 将书籍信息存入数据库
             //mDbManager.deleteBookshelfNovel(mNovelUrl);

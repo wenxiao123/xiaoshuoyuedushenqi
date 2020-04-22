@@ -120,7 +120,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
         } else {
             File file=new File(path);
             File[] files=file.listFiles();
-            if (files.length>0) {
+            if (files!=null&&files.length>0) {
                 Url_gg gg= (Url_gg) SpUtil.readObject2(this);
                 showAdm(gg.getTime(),files[0].getAbsolutePath(),gg.getUrl(),true);
             }else {
