@@ -94,7 +94,7 @@ public abstract class PageLoader {
     }
 
     //下一章的页面列表缓存
-    //private List<TxtPage> mNextPageList;
+    private List<TxtPage> mNextPageList;
 
     //下一页绘制缓冲区，用户缓解卡顿问题。
     private Bitmap mNextBitmap;
@@ -362,7 +362,7 @@ public abstract class PageLoader {
             mPreLoadDisp.dispose();
         }
         //将下一章缓存设置为null
-        //mNextPageList = null;
+        mNextPageList = null;
 
         if (mPageChangeListener != null) {
             mPageChangeListener.onChapterChange(mCurChapterPos);
@@ -431,7 +431,7 @@ public abstract class PageLoader {
         mSettingManager.setTextSize(mTextSize);
         //取消缓存
         mWeakPrePageList = null;
-        //mNextPageList = null;
+        mNextPageList = null;
         //如果当前为完成状态。
         if (mStatus == STATUS_FINISH) {
             //重新计算页面
@@ -495,7 +495,7 @@ public abstract class PageLoader {
         mSettingManager.setTextSize(mTextSize);
         //取消缓存
         mWeakPrePageList = null;
-        //mNextPageList = null;
+        mNextPageList = null;
         //如果当前为完成状态。
         if (mStatus == STATUS_FINISH) {
             //重新计算页面
@@ -676,7 +676,7 @@ public abstract class PageLoader {
         mCurPageList = loadPageList(mCurChapterPos);
         if(mCurPageList!=null&&mCurPageList.size()>0) {
             //进行预加载
-            //preLoadNextChapter();
+            preLoadNextChapter();
             //加载完成
             mStatus = STATUS_FINISH;
             //Log.e("QQQ", "openChapter: "+mCurChapterPos+" "+isBookOpen);
@@ -744,17 +744,18 @@ public abstract class PageLoader {
         String paragraph = chapter.getTitle();//默认展示标题
         try {
             while (isTitle || (paragraph = br.readLine()) != null) {
+
                 //重置段落
                 if (!isTitle) {
                     paragraph = paragraph.replaceAll("\\s", "");
-                    paragraph = paragraph.replace("&nbsp"," ");
-                    paragraph = paragraph.replace(" ","");
-                    paragraph = StringUtils.halfToFull(" " + paragraph + "\n");
+                    //如果只有换行符，那么就不执行
+                    if (paragraph.equals("")) continue;
+                    paragraph = StringUtils.halfToFull("  " + paragraph + "\n");
                 } else {
                     //设置 title 的顶部间距
                     rHeight -= mTitlePara;
                 }
-               // Log.e("QQQ", "loadPages: 1 "+paragraph);
+
                 int wordCount = 0;
                 String subStr = null;
                 while (paragraph.length() > 0) {
@@ -787,24 +788,22 @@ public abstract class PageLoader {
                     } else {
                         wordCount = mTextPaint.breakText(paragraph, true, mVisibleWidth, null);
                     }
-                    //paragraph=paragraph.replace("\n",s);
+
                     subStr = paragraph.substring(0, wordCount);
                     if (!subStr.equals("\n")) {
-                       // Log.e("QQQ", "loadPages: 1 "+subStr);
-                            //将一行字节，存储到lines中
-                                lines.add(subStr);
-                                //设置段落间距
-                                if (isTitle) {
-                                    titleLinesCount += 1;
-                                    rHeight -= mTitleInterval;
-                                } else {
-                                    rHeight -= mTextInterval;
-                                }
-                        //裁剪
-                        paragraph = paragraph.substring(wordCount);
+                        //将一行字节，存储到lines中
+                        lines.add(subStr);
 
+                        //设置段落间距
+                        if (isTitle) {
+                            titleLinesCount += 1;
+                            rHeight -= mTitleInterval;
+                        } else {
+                            rHeight -= mTextInterval;
+                        }
                     }
-
+                    //裁剪
+                    paragraph = paragraph.substring(wordCount);
                 }
 
                 //增加段落的间距
@@ -1110,7 +1109,7 @@ public abstract class PageLoader {
         //加载上一章数据
         int prevChapter = mCurChapterPos - 1;
         //当前章变成下一章
-        //mNextPageList = mCurPageList;
+        mNextPageList = mCurPageList;
 
         //判断上一章缓存是否存在，如果存在则从缓存中获取数据。
         if (mWeakPrePageList != null && mWeakPrePageList.get() != null) {
@@ -1153,13 +1152,14 @@ public abstract class PageLoader {
             if (!nextChapter()) {
                 return false;
             } else {
+               //return nextChapter();
                 mCancelPage = mCurPage;
                 mCurPage = getCurPage(0);
                 mPageView.drawNextPage();
                 return true;
             }
         }
-
+        Log.e("QQQ", "next: "+111);
         mCancelPage = mCurPage;
         mCurPage = nextPage;
         mPageView.drawNextPage();
@@ -1190,22 +1190,22 @@ public abstract class PageLoader {
         }
 
         int nextChapter = mCurChapterPos + 1;
-        //如果存在下一章预加载章节。
-//        if (mNextPageList != null) {
-//            mCurPageList = mNextPageList;
-//            mNextPageList = null;
-//        } else {
+       // 如果存在下一章预加载章节。
+        if (mNextPageList != null) {
+            mCurPageList = mNextPageList;
+            mNextPageList = null;
+        } else {
 //            //这个PageList可能为 null，可能会造成问题。
         mCurPageList = loadPageList(nextChapter);
-//        }
+       }
 
-       // mLastChapter = mCurChapterPos;
+       mLastChapter = mCurChapterPos;
         mCurChapterPos = nextChapter;
 
         //如果存在当前章，预加载下一章
         if (mCurPageList != null) {
             mStatus = STATUS_FINISH;
-            //preLoadNextChapter();
+            preLoadNextChapter();
         }
         //如果当前章不存在，则表示在加载中
         else {
@@ -1249,7 +1249,7 @@ public abstract class PageLoader {
 
             @Override
             public void onNext(List<TxtPage> pages) {
-                //mNextPageList = pages;
+                mNextPageList = pages;
             }
 
 

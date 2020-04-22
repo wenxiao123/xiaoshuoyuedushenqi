@@ -195,7 +195,7 @@ public class VMBookContentInfo extends BaseViewModel {
 //                            if(file.exists()){
 //                                iBookChapters.finishChapters();
 //                            }else {
-                            BookSaveUtils.getInstance().saveChapterInfo(bookid, data.getTitle(), data.getContent());
+                            BookSaveUtils.getInstance().saveChapterInfo(bookid, data.getTitle(), data.getContent().replace("&nbsp"," "));
 //                            }
                            // Log.e("QQQ", "onResponse: "+s);
 //                            if(s<size-1) {
