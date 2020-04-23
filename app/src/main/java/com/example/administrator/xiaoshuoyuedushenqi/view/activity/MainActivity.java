@@ -175,7 +175,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                updata(personBean);
             }
         }else if(isload!=null&&isload.equals("2")){
-            updata2();
+            updata2(false);
         }
         String is_naghit=intent.getStringExtra("is_naghit");
         if(is_naghit!=null&&is_naghit.equals("2")){
@@ -432,9 +432,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
        }
    }
 
-    public void updata2(){
+    public void updata2(boolean flag){
         if(mBookshelfFragment!=null){
-            ((BookshelfFragment)mBookshelfFragment).updata2();
+            ((BookshelfFragment)mBookshelfFragment).updata2(flag);
         }
     }
     /**
@@ -557,7 +557,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     public class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updata2();
+            int i=intent.getIntExtra("type",0);
+            if(i==0) {
+                updata2(false);
+            }else {
+                updata2(true);
+            }
         }
     }
     boolean isNightthod;

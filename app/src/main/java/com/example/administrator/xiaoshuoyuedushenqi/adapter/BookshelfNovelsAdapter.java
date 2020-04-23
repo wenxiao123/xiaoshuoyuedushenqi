@@ -70,8 +70,174 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
-        final ContentViewHolder contentViewHolder = (ContentViewHolder) viewHolder;
-        // 多选删除时显示 CheckBox
+//        final ContentViewHolder contentViewHolder = (ContentViewHolder) viewHolder;
+//        // 多选删除时显示 CheckBox
+//        if (mIsMultiDelete) {
+//            contentViewHolder.checkBox.setVisibility(View.VISIBLE);
+//            // 先设置 CheckBox 的状态，解决 RecyclerView 对 CheckBox 的复用所造成的影响
+//            if (mCheckedList.get(i)) {
+//                contentViewHolder.checkBox.setImageResource(R.mipmap.sys_selected);
+//                contentViewHolder.iv_cover.setVisibility(View.VISIBLE);
+//            } else {
+//                contentViewHolder.checkBox.setImageResource(R.mipmap.sys_select);
+//                contentViewHolder.iv_cover.setVisibility(View.GONE);
+//            }
+//        } else {
+//            contentViewHolder.iv_cover.setVisibility(View.GONE);
+//            //contentViewHolder.v_background.setVisibility(View.GONE);
+//            contentViewHolder.checkBox.setVisibility(View.GONE);
+//        }
+//        if (mDataList.get(i).getName() != null) {
+//            String name = mDataList.get(i).getName().replace(".txt", "");
+//            contentViewHolder.name.setText(name);
+//        }
+//        CornerTransform transformation = new CornerTransform(mContext, 10);
+//        if (mDataList.get(i).getType() == 0) {  // 网络小说
+//            Glide.with(mContext)
+//                    .load(mDataList.get(i).getCover())
+//                    .apply(new RequestOptions()
+//                         .placeholder(R.drawable.cover_error)
+//                            .error(R.drawable.cover_error)
+//                            .transform(transformation))
+//                    .into(contentViewHolder.cover);
+//            contentViewHolder.img_add.setVisibility(View.GONE);
+//            contentViewHolder.tv_status.setVisibility(View.VISIBLE);
+//            contentViewHolder.tv_position.setVisibility(View.VISIBLE);
+//        } else if (mDataList.get(i).getType() == 1) {    // 本地 txt 小说\
+//            Glide.with(mContext)
+//                    .load(mDataList.get(i).getCover())
+//                    .apply(new RequestOptions()
+//                            .error(R.drawable.local_txt)
+//                            .transform(transformation))
+//                    .into(contentViewHolder.cover);
+//            contentViewHolder.img_add.setVisibility(View.GONE);
+//            contentViewHolder.tv_status.setVisibility(View.VISIBLE);
+//            contentViewHolder.tv_position.setVisibility(View.VISIBLE);
+//        } else if (mDataList.get(i).getType() == 2) {   // 本地 epub 小说
+//            if (mDataList.get(i).getCover().equals("")) {
+//                contentViewHolder.cover.setImageResource(R.drawable.local_epub);
+//            } else {
+//                String coverPath = mDataList.get(i).getCover();
+//                Bitmap bitmap = FileUtil.loadLocalPicture(coverPath);
+//                if (bitmap != null) {
+//                    contentViewHolder.cover.setImageBitmap(bitmap);
+//                } else {
+//                    contentViewHolder.cover.setImageResource(R.drawable.local_epub);
+//                }
+//            }
+//            contentViewHolder.img_add.setVisibility(View.GONE);
+//            contentViewHolder.tv_status.setVisibility(View.VISIBLE);
+//            contentViewHolder.tv_position.setVisibility(View.VISIBLE);
+//        } else if (mDataList.get(i).getType() == -1) {
+//            Glide.with(mContext)
+//                    .load(R.drawable.grey)
+//                    .apply(new RequestOptions()
+//                            .error(R.drawable.cover_error)
+//                            .transform(transformation))
+//                    .into(contentViewHolder.cover);
+//            contentViewHolder.img_add.setVisibility(View.VISIBLE);
+//            contentViewHolder.tv_status.setVisibility(View.GONE);
+//            contentViewHolder.tv_position.setVisibility(View.GONE);
+//        }
+//
+//        contentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (mIsMultiDelete) {
+//                    if (mCheckedList.get(i) == true) {
+//                        contentViewHolder.checkBox.setImageResource(R.mipmap.sys_select);
+//                        //contentViewHolder.cover.setAlpha(1f);
+//                        contentViewHolder.iv_cover.setVisibility(View.GONE);
+//                        mCheckedList.set(i, false);
+//                    } else {
+//                        contentViewHolder.iv_cover.setVisibility(View.VISIBLE);
+//                        contentViewHolder.checkBox.setImageResource(R.mipmap.sys_selected);
+//                        //contentViewHolder.cover.setAlpha(0.5f);
+//                        mCheckedList.set(i, true);
+//                    }
+//                    int z = 0;
+//                    for (int i = 0; i < mCheckedList.size(); i++) {
+//                        if (mCheckedList.get(i) == true) {
+//                            z++;
+//                        }
+//                    }
+//                    show.show(z);
+//                } else {
+//                    mListener.clickItem(i);
+//                }
+//            }
+//        });
+//
+//        if (mDataList.get(i).getStatus() == null || mDataList.get(i).getStatus().equals("1")) {
+//            contentViewHolder.tv_status.setText("完结");
+//        } else {
+//            contentViewHolder.tv_status.setText("连载");
+//        }
+//
+//        if (mDataList.get(i).getType() == 1 && mDataList.get(i).getSecondPosition() != 0) {
+//            float chpid =  Float.parseFloat(mDataList.get(i).getChapterid());
+//            float wight = mDataList.get(i).getWeight();
+//            float prent = (chpid / wight) * 100;
+//            NumberFormat nf = NumberFormat.getNumberInstance();
+//            nf.setMaximumFractionDigits(2);
+//            if (mDataList.get(i).getSecondPosition() > 2) {
+//                contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
+//            } else {
+//                contentViewHolder.tv_position.setText("未读");
+//            }
+////            NumberFormat nf = NumberFormat.getNumberInstance();
+////            nf.setMaximumFractionDigits(2);
+////            float p = Float.parseFloat(progress.replace("%", "")) / 100;
+////            if(weigh!=0) {
+////                float v = (((float) mChapterIndex / (float) weigh) * 100 + p * (1 / weigh));
+////                mNovelProgressTv.setText(nf.format(v) + "%");
+////            }else {
+////                mNovelProgressTv.setText(0 + "%");
+////            }
+//        } else {
+//            contentViewHolder.tv_position.setText("已读 "+0 + "%");
+//        }
+//
+//        if (mDataList.get(i).getType() == 0) {
+//            if (mDataList.get(i).getChapterid() == null || mDataList.get(i).getWeight() == 0) {
+//                contentViewHolder.tv_position.setText("未读");
+//            } else {
+//                NumberFormat nf = NumberFormat.getNumberInstance();
+//                nf.setMaximumFractionDigits(2);
+//                float chpid = Float.parseFloat(mDataList.get(i).getChapterid());
+//                float wight = mDataList.get(i).getWeight();
+//                float prent = (chpid/wight) * 100;
+//                if (mDataList.get(i).getPosition() > 1) {
+//                    contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
+//                } else if(mDataList.get(i).getPosition()<=1&&mDataList.get(i).getChapterid().equals("1")){
+//                   // contentViewHolder.tv_position.setText(nf.format(prent) + "%");
+//                    contentViewHolder.tv_position.setText("未读");
+//                }else {
+//                    contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
+//                }
+//            }
+//        }
+//
+//        contentViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                if (mIsMultiDelete) {
+//                    return false;
+//                }
+//                mListener.longClick(i);
+//                return true;
+//            }
+//        });
+    }
+    public static final int NOTIFY_TV = 10086;
+    public static final int NOTIFY_ET = 10087;
+    public static final int NOTIFY_IV = 10088;
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i, @NonNull List payloads) {
+        final ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
+        if (payloads.isEmpty()) {
+            //为空，即不是调用notifyItemChanged(position,payloads)后执行的，也即在初始化时执行的
+//        // 多选删除时显示 CheckBox
         if (mIsMultiDelete) {
             contentViewHolder.checkBox.setVisibility(View.VISIBLE);
             // 先设置 CheckBox 的状态，解决 RecyclerView 对 CheckBox 的复用所造成的影响
@@ -174,17 +340,17 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             contentViewHolder.tv_status.setText("连载");
         }
 
-        if (mDataList.get(i).getType() == 1 && mDataList.get(i).getSecondPosition() != 0) {
+        if (mDataList.get(i).getType() == 1 && mDataList.get(i).getWeight() != 0) {
             float chpid =  Float.parseFloat(mDataList.get(i).getChapterid());
             float wight = mDataList.get(i).getWeight();
             float prent = (chpid / wight) * 100;
             NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMaximumFractionDigits(2);
-            if (mDataList.get(i).getSecondPosition() > 2) {
+//            if (mDataList.get(i).getSecondPosition() > 2) {
                 contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
-            } else {
-                contentViewHolder.tv_position.setText("未读");
-            }
+//            } else {
+//                contentViewHolder.tv_position.setText("未读");
+//            }
 //            NumberFormat nf = NumberFormat.getNumberInstance();
 //            nf.setMaximumFractionDigits(2);
 //            float p = Float.parseFloat(progress.replace("%", "")) / 100;
@@ -215,6 +381,83 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                 }else {
                     contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
                 }
+            }
+        }
+        } else if (payloads.size() > 0 && payloads.get(0) instanceof Integer) {
+            CornerTransform transformation = new CornerTransform(mContext, 10);
+            //不为空，即调用notifyItemChanged(position,payloads)后执行的，可以在这里获取payloads中的数据进行局部刷新
+            int type = (int) payloads.get(0);// 刷新哪个部分 标志位
+            switch (type) {
+                case NOTIFY_TV:
+                    //holder.tv.setText(data);//只刷新tv
+                    break;
+                case NOTIFY_ET:
+                    if (mDataList.get(i).getStatus() == null || mDataList.get(i).getStatus().equals("1")) {
+                        contentViewHolder.tv_status.setText("完结");
+                    } else {
+                        contentViewHolder.tv_status.setText("连载");
+                    }
+
+                    if (mDataList.get(i).getType() == 1 && mDataList.get(i).getWeight() != 0) {
+                        float chpid =  Float.parseFloat(mDataList.get(i).getChapterid());
+                        float wight = mDataList.get(i).getWeight();
+                        float prent = (chpid / wight) * 100;
+                        NumberFormat nf = NumberFormat.getNumberInstance();
+                        nf.setMaximumFractionDigits(2);
+//                        if (mDataList.get(i).getSecondPosition() > 2) {
+                            contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
+//                        } else {
+//                            contentViewHolder.tv_position.setText("未读");
+//                        }
+//            NumberFormat nf = NumberFormat.getNumberInstance();
+//            nf.setMaximumFractionDigits(2);
+//            float p = Float.parseFloat(progress.replace("%", "")) / 100;
+//            if(weigh!=0) {
+//                float v = (((float) mChapterIndex / (float) weigh) * 100 + p * (1 / weigh));
+//                mNovelProgressTv.setText(nf.format(v) + "%");
+//            }else {
+//                mNovelProgressTv.setText(0 + "%");
+//            }
+                    } else {
+                        contentViewHolder.tv_position.setText("已读 "+0 + "%");
+                    }
+
+                    if (mDataList.get(i).getType() == 0) {
+                        if (mDataList.get(i).getChapterid() == null || mDataList.get(i).getWeight() == 0) {
+                            contentViewHolder.tv_position.setText("未读");
+                        } else {
+                            NumberFormat nf = NumberFormat.getNumberInstance();
+                            nf.setMaximumFractionDigits(2);
+                            float chpid = Float.parseFloat(mDataList.get(i).getChapterid());
+                            float wight = mDataList.get(i).getWeight();
+                            float prent = (chpid/wight) * 100;
+                            if (mDataList.get(i).getPosition() > 1) {
+                                contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
+                            } else if(mDataList.get(i).getPosition()<=1&&mDataList.get(i).getChapterid().equals("1")){
+                                // contentViewHolder.tv_position.setText(nf.format(prent) + "%");
+                                contentViewHolder.tv_position.setText("未读");
+                            }else {
+                                contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
+                            }
+                        }
+                    }
+                    break;
+                case NOTIFY_IV:
+                    if (mIsMultiDelete) {
+                        contentViewHolder.checkBox.setVisibility(View.VISIBLE);
+                        // 先设置 CheckBox 的状态，解决 RecyclerView 对 CheckBox 的复用所造成的影响
+                        if (mCheckedList.get(i)) {
+                            contentViewHolder.checkBox.setImageResource(R.mipmap.sys_selected);
+                            contentViewHolder.iv_cover.setVisibility(View.VISIBLE);
+                        } else {
+                            contentViewHolder.checkBox.setImageResource(R.mipmap.sys_select);
+                            contentViewHolder.iv_cover.setVisibility(View.GONE);
+                        }
+                    } else {
+                        contentViewHolder.iv_cover.setVisibility(View.GONE);
+                        contentViewHolder.checkBox.setVisibility(View.GONE);
+                    }
+                    break;
             }
         }
 

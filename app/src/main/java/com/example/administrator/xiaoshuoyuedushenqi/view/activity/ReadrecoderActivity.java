@@ -221,8 +221,8 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
             recyclerView.setFocusableInTouchMode(false);
             recyclerView.setScrollingTouchSlop(last);
         } else {
-            //mNovelAdapter.notifyDataSetChanged();
-            novelSourceAdapter.notifyItemChanged(last, 0);
+            novelSourceAdapter.notifyDataSetChanged();
+            //novelSourceAdapter.notifyItemChanged(last, 0);
         }
     }
 
@@ -260,12 +260,12 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
 //                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                startActivity(intent);
-                if(!mDbManager.isExistInBookshelfNovel(noval_readcoreds.get(position).getNovel_id())){
+               // if(!mDbManager.isExistInBookshelfNovel(noval_readcoreds.get(position).getNovel_id())){
                     Intent intent = new Intent(ReadrecoderActivity.this, NovelIntroActivity.class);
                     // 传递小说名，进入搜查页后直接显示该小说的搜查结果
                     intent.putExtra("pid", noval_readcoreds.get(position).getNovel_id());
                     startActivity(intent);
-                }
+               // }
             }
 
             @Override

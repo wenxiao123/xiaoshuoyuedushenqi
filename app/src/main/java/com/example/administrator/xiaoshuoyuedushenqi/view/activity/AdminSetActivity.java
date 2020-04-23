@@ -37,7 +37,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.MainSetAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
-import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
@@ -50,6 +49,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.FileSizeUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.FileUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import org.json.JSONArray;
@@ -329,7 +330,12 @@ public class AdminSetActivity extends BaseActivity {
         ints2[0] = "v " + getVersionName(this);
         mainRecyleAdapter2 = new MainSetAdapter(this, ints2, strings2);
         recyclerView2.setAdapter(mainRecyleAdapter2);
-
+        mainRecyleAdapter2.setOnCatalogListener(new MainSetAdapter.CatalogListener() {
+            @Override
+            public void clickItem(int position) {
+                showShortToast("暂无更新");
+            }
+        });
         mainRecyleAdapter2.setOnCatalogListener(new MainSetAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
@@ -345,7 +351,7 @@ public class AdminSetActivity extends BaseActivity {
                 }
             }
         });
-        ints3[0] = FileSizeUtil.getFileOrFilesSize(com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant.BOOK_OTHER_CACHE_PATH, FileSizeUtil.SIZETYPE_MB) + " MB";
+        ints3[0] = FileSizeUtil.getFileOrFilesSize(Constant.BOOK_OTHER_CACHE_PATH, FileSizeUtil.SIZETYPE_MB) + " MB";
         mainRecyleAdapter3 = new MainSetAdapter(this, ints3, strings3);
         recyclerView3.setAdapter(mainRecyleAdapter3);
 
@@ -362,8 +368,10 @@ public class AdminSetActivity extends BaseActivity {
                                     @Override
                                     public void clickEnsure() {
                                         //showShortToast("暂未开放");
-                                        File file = new File(com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant.BOOK_OTHER_CACHE_PATH);
+                                        File file = new File(FileUtils.getCachePath() + File.separator);
                                         file.delete();
+                                        ints3[0]="0.00 MB";
+                                        mainRecyleAdapter3.notifyDataSetChanged();
                                     }
 
                                     @Override

@@ -111,6 +111,7 @@ public class NovelSourceAdapter extends
                             mNovelSourceDataList.get(i).getPic(), 1, 0, 0, 1+"", Integer.parseInt(mNovelSourceDataList.get(i).getWeigh()), mNovelSourceDataList.get(i).getSerialize() + "");
                     databaseManager.insertOrUpdateBook(dbData);
                     Intent intent_recever = new Intent("com.zhh.android");
+                    intent_recever.putExtra("type",1);
                     mContext.sendBroadcast(intent_recever);
                     if(login_admin!=null){
                         setBookshelfadd(login_admin.getToken(),mNovelSourceDataList.get(i).getNovel_id());
@@ -140,7 +141,7 @@ public class NovelSourceAdapter extends
                                     databaseManager.deleteBookReadcoderNovel(mNovelSourceDataList.get(i).getNovel_id());
                                 }
                                 //requestPost();
-//                                ((ReadrecoderActivity)mContext).requestPost();
+                                ((ReadrecoderActivity)mContext).requestPost();
                             }
 
                             @Override

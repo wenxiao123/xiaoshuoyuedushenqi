@@ -355,7 +355,10 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                     }
                     mDeleteTv.setText("删除");
                 }}
-                mBookshelfNovelsAdapter.notifyDataSetChanged();
+                for (int i = 0; i < mCheckedList.size(); i++) {
+                    mBookshelfNovelsAdapter.notifyItemChanged(i,mBookshelfNovelsAdapter.NOTIFY_IV);
+                }
+                //mBookshelfNovelsAdapter.notifyDataSetChanged();
                 break;
 
             case R.id.iv_bookshelf_more:

@@ -541,6 +541,7 @@ public abstract class PageLoader {
                 case ReadSettingManager.READ_BG_DEFAULT:
                     mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
                     mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_cec29c);
+                   // mPageBg=0;
                     break;
                 case ReadSettingManager.READ_BG_1:
                     mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2f332d);
@@ -881,7 +882,13 @@ public abstract class PageLoader {
                     }else {
                         s=mChapterList.get(mCurChapterPos).getTitle();
                     }
-                    canvas.drawText(mCollBook.getTitle()+"/"+s, mMarginWidth, tipTop, mTipPaint);
+                    String z;
+                    if(mCollBook.getTitle().length()>12){
+                        z=mCollBook.getTitle().substring(0,12)+"...";
+                    }else {
+                        z=mCollBook.getTitle();
+                    }
+                    canvas.drawText(z+"/"+s, mMarginWidth, tipTop, mTipPaint);
 //                    String sth=(getChapterPos()+1)+"/"+mChapterList.size();
 //                    canvas.drawText(sth, mVisibleWidth-mMarginWidth-sth.length(), tipTop, mTipPaint);
                 }
@@ -895,7 +902,13 @@ public abstract class PageLoader {
                 }else {
                     s=mChapterList.get(mCurChapterPos).getTitle();
                 }
-                canvas.drawText(mCollBook.getTitle()+"/"+s, mMarginWidth, tipTop, mTipPaint);
+                String z;
+                if(mCollBook.getTitle().length()>12){
+                    z=mCollBook.getTitle().substring(0,12)+"...";
+                }else {
+                    z=mCollBook.getTitle();
+                }
+                canvas.drawText(z+"/"+s, mMarginWidth, tipTop, mTipPaint);
 //                String sth=(getChapterPos()+1)+"/"+mChapterList.size();
 //                canvas.drawText(sth, mVisibleWidth-mMarginWidth-sth.length(), tipTop, mTipPaint);
                 mTipPaint.setColor(mTextColor);
@@ -1100,7 +1113,6 @@ public abstract class PageLoader {
 
     //加载上一章
     boolean prevChapter() {
-        //判断是否上一章节为空
         if (mCurChapterPos - 1 < 0) {
             ToastUtils.show("已经没有上一章了");
             return false;
@@ -1159,7 +1171,7 @@ public abstract class PageLoader {
                 return true;
             }
         }
-        Log.e("QQQ", "next: "+111);
+       // Log.e("QQQ", "next: "+111);
         mCancelPage = mCurPage;
         mCurPage = nextPage;
         mPageView.drawNextPage();
@@ -1179,6 +1191,7 @@ public abstract class PageLoader {
 
     boolean nextChapter() {
         //加载一章
+        //加载一章
         if (mCurChapterPos + 1 >= mChapterList.size()) {
             ToastUtils.show("已经没有下一章了");
             return false;
@@ -1190,16 +1203,16 @@ public abstract class PageLoader {
         }
 
         int nextChapter = mCurChapterPos + 1;
-       // 如果存在下一章预加载章节。
+        //如果存在下一章预加载章节。
         if (mNextPageList != null) {
             mCurPageList = mNextPageList;
             mNextPageList = null;
         } else {
-//            //这个PageList可能为 null，可能会造成问题。
-        mCurPageList = loadPageList(nextChapter);
-       }
+            //这个PageList可能为 null，可能会造成问题。
+            mCurPageList = loadPageList(nextChapter);
+        }
 
-       mLastChapter = mCurChapterPos;
+        mLastChapter = mCurChapterPos;
         mCurChapterPos = nextChapter;
 
         //如果存在当前章，预加载下一章

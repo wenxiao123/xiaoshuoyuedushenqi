@@ -64,6 +64,7 @@ public class CacheService extends Service {
 //                    mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
 //                }
                 Intent intent_recever = new Intent("com.zhh.android");
+                intent_recever.putExtra("type",1);
                 sendBroadcast(intent_recever);
                 stopSelf();
             }else if(msg.what==2){

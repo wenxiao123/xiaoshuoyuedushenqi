@@ -64,11 +64,15 @@ public class NetPageLoader extends PageLoader{
     public List<Categorys_one> getCategorys_ones() {
         return categorys_ones;
     }
+    int position;
     boolean is_website;
-    public void setCategorys_ones(List<Categorys_one> categorys_ones) {
+    boolean is_of_all;
+    public void setCategorys_ones(List<Categorys_one> categorys_ones, int position,boolean is_all) {
         this.categorys_ones = categorys_ones;
+        this.position=position;
         is_website=true;
-        mChapterList=convertTxtChapter2(categorys_ones);
+        is_of_all=is_all;
+        mChapterList=convertTxtChapter2(categorys_ones,position);
         mStatus=STATUS_LOADING;
         loadCurrentChapter();
     }
@@ -119,6 +123,10 @@ public class NetPageLoader extends PageLoader{
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
     int weigh;
     private void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
+        if(catalogData.size()==0){
+           chapterError();
+           return;
+        }
         if(weigh<50||(z==1&&catalogData.size()<50)){
             catalogDataAll.addAll(catalogData);
             handler.sendEmptyMessage(2);
@@ -144,7 +152,7 @@ public class NetPageLoader extends PageLoader{
                 z++;
                 getCatalogData(mCollBook.get_id(), z, 1);
             }else {
-               // Log.e("QQQ", "handleMessage: "+catalogDataAll.size());
+                //Log.e("QQQ", "handleMessage: "+catalogDataAll.size());
                 mChapterList = convertTxtChapter(catalogDataAll);
                 if (mPageChangeListener != null){
                     mPageChangeListener.onCategoryFinish(mChapterList);
@@ -206,12 +214,12 @@ public class NetPageLoader extends PageLoader{
         return txtChapters;
     }
 
-    private List<TxtChapter> convertTxtChapter2(List<Categorys_one> categorys_ones){
+    private List<TxtChapter> convertTxtChapter2(List<Categorys_one> categorys_ones,int position){
         List<TxtChapter> txtChapters = new ArrayList<>(catalogDataAll.size());
-        for (Text bean : categorys_ones.get(0).getText()){
+        for (Text bean : categorys_ones.get(position).getText()){
             // Log.e("QQQ", "convertTxtChapter: "+bean.getTitle());
             TxtChapter chapter = new TxtChapter();
-            chapter.bookId = categorys_ones.get(0).getNovel_id()+"";
+            chapter.bookId = categorys_ones.get(position).getNovel_id()+"";
             chapter.title = bean.getChapter_name();
             chapter.link = bean.getChapter_url();
             txtChapters.add(chapter);
@@ -248,6 +256,9 @@ public class NetPageLoader extends PageLoader{
             file = new File(Constant.BOOK_CACHE_PATH + mCollBook.get_id()
                     + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
         }else {
+            if(is_of_all==true){
+                is_website=false;
+            }
             file = new File(Constant.BOOK_OTHER_CACHE_PATH + mCollBook.get_id()
                     + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
         }
@@ -320,7 +331,7 @@ public class NetPageLoader extends PageLoader{
     //装载下一章节的内容
     @Override
     boolean nextChapter(){
-       Log.e("111", "next: "+333);
+      // Log.e("111", "next: "+333);
        boolean hasNext = super.nextChapter();
        // if (!hasNext) return false;
        if (mStatus == STATUS_FINISH){

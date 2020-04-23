@@ -118,6 +118,7 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
                             mList.get(position).getPic(), 1, 0, 0, 1 + "", 10, mList.get(position).getSerialize() + "");
                     databaseManager.insertOrUpdateBook(dbData);
                     Intent intent_recever = new Intent("com.zhh.android");
+                    intent_recever.putExtra("type",1);
                     mContext.sendBroadcast(intent_recever);
                     if (login_admin != null) {
                         setBookshelfadd(login_admin.getToken(), mList.get(position).getId() + "");

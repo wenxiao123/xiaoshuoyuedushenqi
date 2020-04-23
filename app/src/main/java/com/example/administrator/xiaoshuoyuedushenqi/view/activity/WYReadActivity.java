@@ -194,7 +194,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initView() {
-        read_frist=SpUtil.getReadfirst();
         App.init(this);
         tv_title=findViewById(R.id.tv_title);
         txt_click=findViewById(R.id.txt_click);
@@ -205,67 +204,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 l_yingdaoye.setVisibility(View.GONE);
             }
         });
-//        txt_click.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if( is_left==true) {
-//                    showBar();
-//                    l_yingdaoye.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-//        tv_left = findViewById(R.id.tv_left);
-//        tv_left.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                switch (motionEvent.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        if(is_right==false){
-//                            return false;
-//                        }
-//                        x=motionEvent.getX();
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        is_left=true;
-//                        now_x=motionEvent.getX();
-//                        if(now_x-x>20){
-//                            ScleAnimtion(txt_click);
-//                            txt_page.autoPrevPage();
-//                            //mPageView.initDrawText(mNovelContent,0);
-//                        }
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-//
-//        tv_right = findViewById(R.id.tv_right);
-//
-//        tv_right.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                switch (motionEvent.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        x=motionEvent.getX();
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        is_right=true;
-//                        now_x=motionEvent.getX();
-//                        if(now_x-x<20){
-//                            ScleAnimtion(tv_left);
-//                            txt_page.autoNextPage();
-//                            //mPageView.initDrawText(mNovelContent,mPageView.getmNextFirstPos());
-//                        }
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-        if(read_frist==0){
-            l_yingdaoye.setVisibility(View.VISIBLE);
-            ScleAnimtion(tv_right);
-            SpUtil.saveRead_first(1);
-        }
         img=findViewById(R.id.iv_read_menu);
         img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -667,7 +605,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                // Log.e("QQQ", "onResponse: " + json);
+               //Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -720,19 +658,19 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                         if (popupWindow.isShowing()) {
                             popupWindow.dismiss();
                         }
-                        if (is_all_one == false) {
+//                        if (is_all_one == false) {
                             is_othersite = true;
-                        } else {
-                            is_othersite = false;
-                        }
-                        ((NetPageLoader)mPageLoader).setCategorys_ones(categorys_ones);
+//                        } else {
+//                            is_othersite = false;
+//                        }
+                        reurl = categorys_ones.get(word).getDiv();
+                        ((NetPageLoader)mPageLoader).setCategorys_ones(categorys_ones,word,is_all_one);
                         //  Log.e("WWW", "clickWord: " + categorys_ones.get(word));
 //                        tv_website.setText(categorys_ones.get(word).getUrl());
 //                        other_website = categorys_ones.get(word).getText();
 //                        String href = other_website.get(Integer.parseInt(weight) - 1).getChapter_url();
 ////                weigh = Integer.parseInt(categorys_ones.get(word).getChapter_sum());
 ////                mNovelTitleTv1.setText(mChapterIndex+"/"+weigh);
-//                        reurl = categorys_ones.get(word).getDiv();
 //                        CollBookBean collBookBean=new CollBookBean(mDataList.get(position).getNovelUrl(), mDataList.get(position).getName(), "", "",
 //                                mDataList.get(position).getCover(), false, 0,0,
 //                                "", "", mDataList.get(position).getWeight(), "",
@@ -933,7 +871,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 if(is_othersite==false) {
                     mVmContentInfo.loadContent(pos + "", chapters);
                 }else {
-                    mVmContentInfo.loadContent2(pos, chapters);
+                    mVmContentInfo.loadContent2(pos, chapters,reurl);
                 }
                 if (mPageLoader.getPageStatus() == NetPageLoader.STATUS_LOADING
                         || mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
@@ -1047,20 +985,24 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public boolean onTouch() {
-//                if (mIsShowSettingBar) {
-//                    hideSettingBar();
-//                    return;
-//                }
                 return true;
             }
 
             @Override
             public boolean prePage() {
+                if (mIsShowSettingBar) {
+                    hideSettingBar();
+                    return true;
+                }
                 return true;
             }
 
             @Override
             public boolean nextPage() {
+                if (mIsShowSettingBar) {
+                    hideSettingBar();
+                    return true;
+                }
                 return true;
             }
 
@@ -1245,7 +1187,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 mBookMark.setTextColor(getResources().getColor(R.color.red));
                 tvCatalog.setTextColor(getResources().getColor(R.color.catalog_chapter_order_text));
                 if (changeCategoryAdapter != null) {
-                    changeCategoryAdapter.setPosition(Integer.parseInt(chpter_id)-1);
+                    changeCategoryAdapter.setPosition(mPageLoader.getChapterPos());
                     changeCategoryAdapter.notifyDataSetChanged();
                 }
                 break;
@@ -1482,6 +1424,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         }
         Intent intent_recever = new Intent("com.zhh.android");
+        //intent_recever.putExtra("type",1);
         sendBroadcast(intent_recever);
     }
     public void setReadRecord(String token, String novel_id, String chapter_id) {
@@ -1528,6 +1471,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 // mPageLoader.setChapterPos(Integer.parseInt(chpter_id));
                 mPageLoader.openChapter();
             });
+            read_frist=SpUtil.getReadfirst();
+            if(read_frist==0){
+                l_yingdaoye.setVisibility(View.VISIBLE);
+                //ScleAnimtion(tv_right);
+                SpUtil.saveRead_first(1);
+            }
         }
     }
     int d = 1;
@@ -1554,6 +1503,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 mCollBook.setIsLocal(true);
                 is_load = false;
                 Intent intent_recever = new Intent("com.zhh.android");
+                intent_recever.putExtra("type",1);
                 sendBroadcast(intent_recever);
                 Event event = new Event(EventBusCode.NOVEL_INTRO_INIT);
                 EventBusUtil.sendEvent(event);

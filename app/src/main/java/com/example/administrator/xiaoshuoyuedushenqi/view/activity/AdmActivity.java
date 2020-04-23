@@ -256,8 +256,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
             Glide.with(getContext())
                     .load(https)
                     .apply(new RequestOptions()
-                            .placeholder(R.mipmap.admin)
-                            .error(R.mipmap.admin)
+                            .placeholder(R.drawable.layout_list_start_pic)
                             .transform(transformation))
                     .into(image);
             image.setOnClickListener(this);

@@ -164,7 +164,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void initData() {
         pid = getIntent().getStringExtra("pid");
-        Log.e("WWW", "initData: "+pid);
         //presenter.getCategoryNovels();
         mDbManager = DatabaseManager.getInstance();
         login_admin = (Login_admin) SpUtil.readObject(this);
@@ -183,18 +182,18 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void initView() {
         l_collect = findViewById(R.id.l_collect);
-        l_collect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (is_checked == false) {
-                    is_checked = true;
-                    img_collect.setImageResource(R.mipmap.icon_collection_yes);
-                } else {
-                    is_checked = false;
-                    img_collect.setImageResource(R.mipmap.icon_collection);
-                }
-            }
-        });
+//        l_collect.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (is_checked == false) {
+//                    is_checked = true;
+//                    img_collect.setImageResource(R.mipmap.icon_collection_yes);
+//                } else {
+//                    is_checked = false;
+//                    img_collect.setImageResource(R.mipmap.icon_collection);
+//                }
+//            }
+//        });
         img_collect = findViewById(R.id.img_collect);
         iv_tuijian = findViewById(R.id.iv_tuijian);
         tv_novel_intro_novel_name = findViewById(R.id.tv_novel_intro_novel_name);
@@ -536,6 +535,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     }
                 }
                 Intent intent_recever = new Intent("com.zhh.android");
+                intent_recever.putExtra("type",1);
                 sendBroadcast(intent_recever);
                 break;
             case R.id.txt_book_load:
@@ -553,6 +553,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     bookshelf.setChapterid(1 + "");
                     mDbManager.insertOrUpdateBook(bookshelf);
                     Intent recever = new Intent("com.zhh.android");
+                    recever.putExtra("type",1);
                     sendBroadcast(recever);
                 }
                 break;
@@ -874,6 +875,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
                 }
                 Intent intent_recever = new Intent("com.zhh.android");
+                intent_recever.putExtra("type",1);
                 sendBroadcast(intent_recever);
                 new Thread(new Runnable() {
                     @Override

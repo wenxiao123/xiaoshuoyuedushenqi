@@ -471,6 +471,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                 bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                bundle.putString(WYReadActivity.LOAD_PATH,pid);
                 if(mIsReverse==false) {
                     bundle.putString(WYReadActivity.CHPTER_ID, position + "");
                 }else {

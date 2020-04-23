@@ -119,8 +119,9 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             queryallBook(login_admin.getToken());
         }
     }
-
-    public void updata2() {
+    boolean is_add;
+    public void updata2(boolean flag) {
+        is_add=flag;
         if (mPresenter != null) {
             mDataList.clear();
             if (login_admin == null) {
@@ -488,7 +489,15 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             }
             mDataList.add(bookshelfNovelDbData);
             mCheckedList.add(false);
-            mBookshelfNovelsAdapter.notifyDataSetChanged();
+            if(is_add==false) {
+                for (int i = 0; i < mBookshelfNovelsAdapter.getItemCount(); i++) {
+                    //mBookshelfNovelsAdapter.notifyDataSetChanged();
+                    mBookshelfNovelsAdapter.notifyItemChanged(i, mBookshelfNovelsAdapter.
+                            NOTIFY_ET);
+                }
+            }else {
+                mBookshelfNovelsAdapter.notifyDataSetChanged();
+            }
         }
 //        if (login_admin != null) {
 //            queryallBook(login_admin.getToken());
