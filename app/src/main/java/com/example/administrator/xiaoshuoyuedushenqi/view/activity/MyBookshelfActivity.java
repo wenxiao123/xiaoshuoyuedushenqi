@@ -261,9 +261,14 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         for (int i = 0; i < mDataList.size(); i++) {
             mCheckedList.add(false);
         }
-        mBookshelfNovelsAdapter.setIsMultiDelete(false);
+        //mBookshelfNovelsAdapter.setIsMultiDelete(false);
         mBookshelfNovelsAdapter.notifyDataSetChanged();
         mIsDeleting = false;
+        if(mBookshelfNovelsAdapter.getItemCount()==0){
+            Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
+            intent.putExtra("islaod", "2");
+            startActivity(intent);
+        }
     }
 
     private boolean deleteCheck() {

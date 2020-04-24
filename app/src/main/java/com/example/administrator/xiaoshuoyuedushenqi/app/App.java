@@ -54,6 +54,16 @@ public class App extends Application {
         return catalogDataAll;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    private String  content;
+
     public void setCatalogDataAll(List<Cataloginfo> catalogDataAll) {
         this.catalogDataAll = catalogDataAll;
     }
@@ -68,11 +78,11 @@ public class App extends Application {
         context = getApplicationContext();
         Aria.init(this);
 //        init(getContext());//
-        if(SpUtil.getIsSysNightMode()==true){
-            AppCompatDelegate.setDefaultNightMode( AppCompatDelegate.MODE_NIGHT_YES );
-        }else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
+//        if(SpUtil.getIsSysNightMode()==true){
+//            AppCompatDelegate.setDefaultNightMode( AppCompatDelegate.MODE_NIGHT_YES );
+//        }else {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//        }
 //        Bmob.initialize(this, "ce63bdbbd4197409b82920b0835a42eb");
 //        BmobUpdateAgent.setUpdateCheckConfig(false);
         new Thread(new Runnable() {

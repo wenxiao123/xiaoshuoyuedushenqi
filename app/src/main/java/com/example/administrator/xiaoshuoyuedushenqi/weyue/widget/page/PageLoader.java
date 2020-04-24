@@ -69,8 +69,18 @@ public abstract class PageLoader {
     //默认的显示参数配置
     private static final int DEFAULT_TIP_SIZE = 12;
     private static final int EXTRA_TITLE_SIZE = 4;
+
+    public List<TxtChapter> getmChapterList() {
+        return mChapterList;
+    }
+
+    public void setmChapterList(List<TxtChapter> mChapterList) {
+        this.mChapterList = mChapterList;
+    }
+
     //当前章节列表
     protected List<TxtChapter> mChapterList;
+
     //书本对象
     protected CollBookBean mCollBook;
     //监听器
@@ -103,10 +113,44 @@ public abstract class PageLoader {
     }
 
     public void setmTextInterval(int mTextInterval) {
-        if (mTextInterval < 5) {
+        if (mTextInterval <= ScreenUtils.spToPx(8)) {
             return;
         }
+
+        if (mTextInterval >= ScreenUtils.spToPx(50)) {
+            return;
+        }
+
+       // mPageView.refreshPage();
+        if (!isBookOpen) return;
+
         this.mTextInterval = mTextInterval;
+        mTitleSize = mTextSize + ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
+        mTitleInterval = mTitleInterval / 2;
+        mTitlePara = mTitleSize;
+
+        //设置画笔的字体大小
+        mTextPaint.setTextSize(mTextSize);
+        //设置标题的字体大小
+        mTitlePaint.setTextSize(mTitleSize);
+        //存储状态
+        mSettingManager.setTextRow(mTextInterval);
+        //取消缓存
+        mWeakPrePageList = null;
+        mNextPageList = null;
+        //如果当前为完成状态。
+        if (mStatus == STATUS_FINISH) {
+            //重新计算页面
+            mCurPageList = loadPageList(mCurChapterPos);
+
+            //防止在最后一页，通过修改字体，以至于页面数减少导致崩溃的问题
+            if (mCurPage.position >= mCurPageList.size()) {
+                mCurPage.position = mCurPageList.size() - 1;
+            }
+        }
+        //重新设置文章指针的位置
+        mCurPage = getCurPage(mCurPage.position);
+        //绘制
         mPageView.refreshPage();
     }
 
@@ -226,6 +270,7 @@ public abstract class PageLoader {
     private void initData() {
         mSettingManager = ReadSettingManager.getInstance();
         mTextSize = mSettingManager.getTextSize();
+        mTextInterval= mSettingManager.getTextRow();
         mTextStyle=mSettingManager.getTextStyle();
         mTitleSize = mTextSize + ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
         mPageMode = mSettingManager.getPageMode();
@@ -513,16 +558,16 @@ public abstract class PageLoader {
     }
 
     //设置夜间模式
-    public void setNightMode(boolean nightMode,View view) {
+    public void setNightMode(boolean nightMode) {
         isNightMode = nightMode;
         if (isNightMode) {
             mBatteryPaint.setColor(Color.WHITE);
             setBgColor(ReadSettingManager.NIGHT_MODE);
-            view.setBackgroundColor(ReadSettingManager.NIGHT_MODE);
+           // view.setBackgroundColor(ReadSettingManager.NIGHT_MODE);
         } else {
             mBatteryPaint.setColor(Color.BLACK);
             setBgColor(mBgTheme);
-            view.setBackgroundColor(mBgTheme);
+            //view.setBackgroundColor(mBgTheme);
         }
         mSettingManager.setNightMode(nightMode);
     }
@@ -572,14 +617,15 @@ public abstract class PageLoader {
     }
 
     public void setBgColor(int theme, View v) {
-        if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
-            mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_fff_99);
-            mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.black);
-        } else if (isNightMode) {
-            mBgTheme = theme;
+//        if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
+//            mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_fff_99);
+//            mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.black);
+//        } else if (isNightMode) {
+//            mBgTheme = theme;
+//            mSettingManager.setReadBackground(theme);
+//        } else {
             mSettingManager.setReadBackground(theme);
-        } else {
-            mSettingManager.setReadBackground(theme);
+            mSettingManager.setNightMode(false);
             switch (theme) {
                 case ReadSettingManager.READ_BG_DEFAULT:
                     mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
@@ -601,8 +647,8 @@ public abstract class PageLoader {
                     mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_627176);
                     mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_001c27);
                     break;
-            }
-        }
+               }
+//        }
 
         if (isBookOpen) {
             //设置参数
@@ -672,7 +718,7 @@ public abstract class PageLoader {
         mLastChapter = mCurChapterPos;
     }
 
-    //打开具体章节
+  //  打开具体章节
     public void openChapter() {
         mCurPageList = loadPageList(mCurChapterPos);
         if(mCurPageList!=null&&mCurPageList.size()>0) {
@@ -874,13 +920,16 @@ public abstract class PageLoader {
             float tipTop = tipMarginHeight - mTipPaint.getFontMetrics().top;
             //根据状态不一样，数据不一样
             if (mStatus != STATUS_FINISH) {
+                String s="";
                 if (mChapterList != null && mChapterList.size() != 0) {
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
-                    String s;
+                    if(mChapterList.get(mCurChapterPos).getTitle()!=null){
                     if(mChapterList.get(mCurChapterPos).getTitle().length()>12){
                          s=mChapterList.get(mCurChapterPos).getTitle().substring(0,12)+"...";
                     }else {
                         s=mChapterList.get(mCurChapterPos).getTitle();
+                    }
+
                     }
                     String z;
                     if(mCollBook.getTitle().length()>12){

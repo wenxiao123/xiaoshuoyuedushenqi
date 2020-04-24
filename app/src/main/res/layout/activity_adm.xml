@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerInside"
-        android:background="@mipmap/guanggao"
+        android:background="@drawable/layout_list_start_pic"
         />
     <com.example.administrator.xiaoshuoyuedushenqi.widget.CircleProgressbar
         android:layout_marginTop="35dp"

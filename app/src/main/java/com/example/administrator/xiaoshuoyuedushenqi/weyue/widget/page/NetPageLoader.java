@@ -131,10 +131,12 @@ public class NetPageLoader extends PageLoader{
             catalogDataAll.addAll(catalogData);
             handler.sendEmptyMessage(2);
         }else {
-            if (z <= weigh / 50) {
+            if (z < weigh / 50) {
+               // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(1);
             } else {
+                //Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(2);
             }
@@ -152,7 +154,7 @@ public class NetPageLoader extends PageLoader{
                 z++;
                 getCatalogData(mCollBook.get_id(), z, 1);
             }else {
-                //Log.e("QQQ", "handleMessage: "+catalogDataAll.size());
+                Log.e("QQQ", "handleMessage: "+catalogDataAll.size());
                 mChapterList = convertTxtChapter(catalogDataAll);
                 if (mPageChangeListener != null){
                     mPageChangeListener.onCategoryFinish(mChapterList);
@@ -229,40 +231,22 @@ public class NetPageLoader extends PageLoader{
     @Nullable
     @Override
     protected List<TxtPage> loadPageList(int chapter) {
-//        if (mChapterList == null){
-//            throw new IllegalArgumentException("chapter list must not null");
-//        }
-        //获取要加载的文件
-       // Log.e("QQQ", "loadPageList: "+data);
-//        TxtChapter txtChapter = new TxtChapter();
-//        txtChapter.setBookId(data.getId());
-//        txtChapter.setTitle(data.getTitle());
-//        txtChapter.setStart(0);
-//        txtChapter.setEnd(data.getContent().length());
-//        byte[] content = data.getContent().replace("&nbsp"," ").replace("</br>","\n").getBytes();
-//        ByteArrayInputStream bais = new ByteArrayInputStream(content);
-//        BufferedReader br = null;
-//        br = new BufferedReader(new InputStreamReader(bais));
-//        return loadPages(txtChapter,br);
-//        if (mChapterList == null){
-//            throw new IllegalArgumentException("chapter list must not null");
-//        }
-
-        //获取要加载的文件
-
         TxtChapter txtChapter = mChapterList.get(chapter);
         File file;
         if(is_website==false) {
             file = new File(Constant.BOOK_CACHE_PATH + mCollBook.get_id()
                     + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
+//            file = new File(Constant.BOOK_CACHE_PATH
+//                    + File.separator + mCollBook.get_id() + FileUtils.SUFFIX_WY);
         }else {
             if(is_of_all==true){
                 is_website=false;
             }
             file = new File(Constant.BOOK_OTHER_CACHE_PATH + mCollBook.get_id()
                     + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
+//            file = new File(Constant.BOOK_OTHER_CACHE_PATH
+//                    + File.separator + mCollBook.get_id() + FileUtils.SUFFIX_WY);
         }
-        //Log.e("QQQ", "loadPageList: "+file.getPath()+" "+file.exists());
         if (!file.exists()) return null;
         //if(file.length()==0)
         Reader reader = null;
@@ -271,7 +255,6 @@ public class NetPageLoader extends PageLoader{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //Log.e("QQQ", "loadPageList: "+2222);
         BufferedReader br = new BufferedReader(reader);
         return loadPages(txtChapter,br);
     }

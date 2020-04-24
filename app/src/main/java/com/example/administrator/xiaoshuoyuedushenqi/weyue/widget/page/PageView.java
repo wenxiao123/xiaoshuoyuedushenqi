@@ -275,7 +275,9 @@ public class PageView extends View {
                     //是否点击了中间
                     if (mCenterRect.contains(x,y)) {
                         if (mTouchListener != null) {
-                            mTouchListener.center();
+                            if(mTouchListener.onTouch()==true) {
+                                mTouchListener.center();
+                            }
                         }
                         return true;
                     }

@@ -9,7 +9,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
  * Created on 2019/11/6
  */
 public class UrlObtainer {
-    static String href="http://cms.scxy88.cn/";
+    static String href="http://hsa.4jvr2g68.com:36213/";//http://cms.scxy88.cn/
+
     public static String GetUrl() {
         return href;
     }

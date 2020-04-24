@@ -220,6 +220,7 @@ public class LauncherActivity extends BaseActivity {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQQ1", "onResponse: "+url+" "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -240,6 +241,7 @@ public class LauncherActivity extends BaseActivity {
 
             @Override
             public void onFailure(String errorMsg) {
+                Log.e("QQQ2", "onResponse: "+url);
                 if(z<websites_lrc.size()) {
                     UrlObtainer.setHref(websites_lrc.get(z).getUrl());
                     setBookshelfadd();

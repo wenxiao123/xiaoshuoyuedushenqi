@@ -226,7 +226,6 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 }
                 // 点击 item，跳转到相应小说阅读页
                 String s_id=bookmarkNovelDbDatas.get(position).getChapterid();
-                Log.e("111", "clickItem: "+s_id);
 //                Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
 //                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
 //                intent.putExtra(ReadActivity.KEY_CHPATER_ID, Integer.parseInt(s_id));

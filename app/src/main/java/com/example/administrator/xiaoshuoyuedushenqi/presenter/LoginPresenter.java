@@ -52,8 +52,8 @@ public class LoginPresenter extends BasePresenter<ILoginContract.View>
     }
 
     @Override
-    public void getVertical() {
-        mModel.getVertical();
+    public void getVertical(String moildle) {
+        mModel.getVertical(moildle);
     }
 
     @Override

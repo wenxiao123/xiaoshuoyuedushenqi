@@ -199,7 +199,8 @@ public class FemaleFragment extends BaseTabFragment<MalePresenter>
             Glide.with(getContext()).load(href)
                     .apply(new RequestOptions()
                             .placeholder(R.drawable.cover_place_holder)
-                            .error(R.mipmap.admin))
+                            .error(R.mipmap.admin)
+                    .centerInside())
                     .into(simpleTarget);
             container.addView(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {

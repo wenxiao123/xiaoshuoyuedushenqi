@@ -37,8 +37,12 @@ public class LoginModel implements ILoginContract.Model {
     }
 
     @Override
-    public void getVertical() {
-        OkhttpUtil.getRequest(UrlObtainer.GetUrl()+"api/index/get_code", new OkhttpCall() {
+    public void getVertical(String moildle) {
+        String url = UrlObtainer.GetUrl() + "api/index/mobilelogin";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("mobile", moildle)
+                .build();
+        OkhttpUtil.getRequest(url, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 try {

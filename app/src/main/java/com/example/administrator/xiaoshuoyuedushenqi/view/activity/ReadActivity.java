@@ -1995,7 +1995,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                         String href = other_website.get(Integer.parseInt(weight) - 1).getChapter_url();
 //                weigh = Integer.parseInt(categorys_ones.get(word).getChapter_sum());
 //                mNovelTitleTv1.setText(mChapterIndex+"/"+weigh);
-                        reurl = categorys_ones.get(word).getDiv();
+                        reurl = categorys_ones.get(word).getElement();
                         Message message=new Message();
                         message.what=2;
                         message.obj=href;

@@ -61,7 +61,7 @@ public class VMBookContentInfo extends BaseViewModel {
     }
 
     Disposable mDisposable;
-    String title;
+    String title,title1;
 
     public VMBookContentInfo(Context mContext, IBookChapters iBookChapters) {
         super(mContext);
@@ -154,11 +154,8 @@ public class VMBookContentInfo extends BaseViewModel {
 //                            }
 //                        });
            s=Integer.parseInt(bookId);
-//        size=bookChapterList.size();
-//        Log.e("QQQ", "loadContent: "+size);
-//        for(int z=Integer.parseInt(bookId);z<bookChapterList.size();z++) {
-            getDetailedChapterData(noval_id, (s+1)+"");
-//        }
+           title1=bookChapterList.get(0).getTitle();
+           getDetailedChapterData(noval_id, (s+1)+"",title1);
     }
     String div;
     public void loadContent2(int bookId, List<TxtChapter> bookChapterList,String div) {
@@ -167,11 +164,12 @@ public class VMBookContentInfo extends BaseViewModel {
 //        for (int i = 0; i < bookChapterList.size(); i++) {
             TxtChapter bookChapter = bookChapterList.get(0);
             this.div=div;
+            Log.e("QQQ", "loadContent2: "+bookChapter.getLink()+" "+div);
             new Thread(new LoadRunable(bookChapter.getLink())).start();
 //        }
     }
 
-    public void getDetailedChapterData(String bookid, String id) {
+    public void getDetailedChapterData(String bookid, String id,String title) {
         Gson mGson=new Gson();
         String url = UrlObtainer.GetUrl() + "api/index/Books_Info";
         RequestBody requestBody = new FormBody.Builder()
@@ -181,12 +179,13 @@ public class VMBookContentInfo extends BaseViewModel {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-               // Log.e("qqq", "onResponse: "+bookid+" "+id+" "+json);
+               //Log.e("qqq", "onResponse: "+bookid+" "+id+" "+url+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
                         if(jsonObject.isNull("data")){
+                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
                             iBookChapters.finishChapters();
                             return;
                         }else {
@@ -197,19 +196,20 @@ public class VMBookContentInfo extends BaseViewModel {
 //                                iBookChapters.finishChapters();
 //                            }else {
                             BookSaveUtils.getInstance().saveChapterInfo(bookid, data.getTitle(), data.getContent().replace("&nbsp"," "));
-//                            }
+                            //BookSaveUtils.getInstance().saveNowChapterInfo(bookid,data.getContent().replace("&nbsp"," "));
+                             //}
                            // Log.e("QQQ", "onResponse: "+s);
-//                            if(s<size-1) {
-//                                handler.sendEmptyMessage(1);
-//                            }else {
-                                handler.sendEmptyMessage(2);
-//                            }
+                             //if(s<size-1) {
+                            //handler.sendEmptyMessage(1);
+                            //}else {
+                            handler.sendEmptyMessage(2);
+                             //}
                         }
                     } else {
                         iBookChapters.finishChapters();
-//                        chapterError();
+                        //chapterError();
                         return;
-                        // mPresenter.getDetailedChapterDataError("请求数据失败");
+                        //mPresenter.getDetailedChapterDataError("请求数据失败");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -252,7 +252,7 @@ public class VMBookContentInfo extends BaseViewModel {
             super.handleMessage(msg);
             if(msg.what==1){
                 s++;
-                getDetailedChapterData(noval_id, s+"");
+                getDetailedChapterData(noval_id, s+"",title1);
             }else  if(msg.what==2){
                 iBookChapters.finishChapters();
             }
@@ -261,17 +261,22 @@ public class VMBookContentInfo extends BaseViewModel {
     String content;
 
     private void Analysisbiquge(String svrInfo, String div) throws IOException {
-        Document doc = Jsoup.connect(svrInfo).get();
-        title = doc.body().select("h1").text();
-        Elements elements;
-        elements = doc.body().select(div);
-        //Log.e("QQQ", "Analysisbiquge: "+elements.html());
-        content = "转码阅读："+elements.html().replace("<p>","");
-//        for (Element link : elements) {
-//            String str=link.text()+"</p>";
-//            content = content +str;
-//        }
-        BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title, content.replace("</p>",""));
-        iBookChapters.finishChapters();
+       try {
+           Document doc = Jsoup.connect(svrInfo).get();
+           title = doc.body().select("h1").text();
+           Elements elements;
+           if(div==null){
+               div="#content";
+           }
+           elements = doc.body().select(div);
+           content = "转码阅读：" + elements.html().replace("<p>", "");
+           BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title, content.replace("</p>", ""));
+           //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
+           iBookChapters.finishChapters();
+       }catch (Exception ex){
+           BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title, "内容有误");
+           //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
+           iBookChapters.finishChapters();
+       }
     }
 }

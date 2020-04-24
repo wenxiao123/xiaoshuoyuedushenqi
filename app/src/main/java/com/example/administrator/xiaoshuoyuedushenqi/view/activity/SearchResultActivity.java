@@ -331,6 +331,8 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
                 Intent intent = new Intent(SearchResultActivity.this, NovelIntroActivity.class);
                 intent.putExtra("pid", novelName + "");
                 startActivity(intent);
+                overridePendingTransition(R.anim.zoom_enter,
+                        R.anim.zoom_exit);
             }
         });
 

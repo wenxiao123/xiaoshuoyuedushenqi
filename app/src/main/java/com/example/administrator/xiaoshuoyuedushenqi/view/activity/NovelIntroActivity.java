@@ -260,6 +260,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
                     intent.putExtra(CatalogActivity.KEY_URL, pid);
                     startActivity(intent);
+                    overridePendingTransition(0, 0);//去掉Activity切换间的动画
                 } else {
                     BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
                     Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
@@ -268,6 +269,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
                     intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
                     startActivity(intent);
+                    overridePendingTransition(0, 0);//去掉Activity切换间的动画
                 }
             }
         });
@@ -1028,8 +1030,8 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                         // 传递小说名，进入搜查页后直接显示该小说的搜查结果
                         intent.putExtra("pid", novalDetails.get(novelName).getId() + "");
                         startActivity(intent);
-//                      overridePendingTransition(R.anim.zoom_enter,
-//                            R.anim.zoom_exit);
+                        overridePendingTransition(R.anim.zoom_enter,
+                            R.anim.zoom_exit);
                     }
                 });
             } else {

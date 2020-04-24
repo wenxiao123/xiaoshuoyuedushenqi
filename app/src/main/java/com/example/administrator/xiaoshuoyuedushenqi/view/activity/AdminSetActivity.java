@@ -45,6 +45,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelD
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.AppUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileSizeUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
@@ -333,14 +334,11 @@ public class AdminSetActivity extends BaseActivity {
         mainRecyleAdapter2.setOnCatalogListener(new MainSetAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
-                showShortToast("暂无更新");
-            }
-        });
-        mainRecyleAdapter2.setOnCatalogListener(new MainSetAdapter.CatalogListener() {
-            @Override
-            public void clickItem(int position) {
                 switch (position) {
                     case 0:
+                        Log.e("WWW", "clickItem: "+ AppUtils.getAppName(AdminSetActivity.this)+" "+AppUtils.getPackageName(AdminSetActivity.this)
+                        +" "+AppUtils.getVersionName(AdminSetActivity.this)+" "+AppUtils.getVersionCode(AdminSetActivity.this));
+                        showShortToast("暂无更新");
                         break;
                     case 1:
                         Intent intent = new Intent(AdminSetActivity.this, WebActivity.class);
@@ -369,7 +367,8 @@ public class AdminSetActivity extends BaseActivity {
                                     public void clickEnsure() {
                                         //showShortToast("暂未开放");
                                         File file = new File(FileUtils.getCachePath() + File.separator);
-                                        file.delete();
+                                        //file.delete();
+                                        deleteDirWihtFile(file);
                                         ints3[0]="0.00 MB";
                                         mainRecyleAdapter3.notifyDataSetChanged();
                                     }
@@ -429,6 +428,18 @@ public class AdminSetActivity extends BaseActivity {
             }
             hideSettingBar();
         }
+    }
+    //删除文件夹和文件夹里面的文件
+    public static void deleteDirWihtFile(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDirWihtFile(file); // 递规的方式删除文件夹
+        }
+        dir.delete();// 删除目录本身
     }
 
     public void postModify(String nickname, String name) {

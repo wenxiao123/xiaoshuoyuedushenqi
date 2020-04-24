@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,6 +45,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AdminSetActiv
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FeedbackActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.LoginActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ReadSettingManager;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.gson.Gson;
@@ -88,7 +90,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
         StatusBarUtil.setTranslucentStatus(getActivity());
         mainRecyleAdapter1 = new MainRecyleAdapter(getContext(), ints1, strings1);
         recyclerView1.setAdapter(mainRecyleAdapter1);
-        isNight = SpUtil.getIsSysNightMode();
+        isNight = ReadSettingManager.getInstance().isNightMode();
         mainRecyleAdapter1.setOnCatalogListener(new MainRecyleAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
@@ -149,17 +151,23 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
 //                }
                 switch (position) {
                     case 0:
-                        App.init(getContext());
-                        isNight = SpUtil.getIsSysNightMode();
+                        isNight = ReadSettingManager.getInstance().isNightMode();
+                        Intent intent_recever = new Intent("com.changebackground.android");
+                        getActivity().sendBroadcast(intent_recever);
                         SpUtil.saveIsSysNightMode(!isNight);
-                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                        AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-                                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                       // getActivity().finish();
-                        Intent intent = new Intent(getActivity(), getActivity().getClass());
-                        intent.putExtra("is_naghit", "2");
-                        startActivity(intent);
-                        getActivity().overridePendingTransition( R.anim.activity_in,R.anim.activity_out);
+                        //backgroundAlpha(0.5f);
+
+//                        App.init(getContext());
+//                        isNight = SpUtil.getIsSysNightMode();
+//                        SpUtil.saveIsSysNightMode(!isNight);
+//                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//                        AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
+//                                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+//                       // getActivity().finish();
+//                        Intent intent = new Intent(getActivity(), getActivity().getClass());
+//                        intent.putExtra("is_naghit", "2");
+//                        startActivity(intent);
+//                        getActivity().overridePendingTransition( R.anim.activity_in,R.anim.activity_out);
                        // DayNightManager.getInstance().setNight(isNight);
                         break;
                 }
@@ -191,7 +199,16 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
             }
         });
     }
-
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha
+     */
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp =getActivity().getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getActivity().getWindow().setAttributes(lp);
+    }
     TextView tv_name, tv_content;
     RelativeLayout relativeLayout;
 

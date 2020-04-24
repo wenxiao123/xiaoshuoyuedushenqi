@@ -21,6 +21,7 @@ public class ReadSettingManager {
     public static final String SHARED_READ_BRIGHTNESS = "shared_read_brightness";
     public static final String SHARED_READ_IS_BRIGHTNESS_AUTO = "shared_read_is_brightness_auto";
     public static final String SHARED_READ_TEXT_SIZE = "shared_read_text_size";
+    public static final String SHARED_READ_TEXT_ROW = "shared_read_text_row";
     public static final String SHARED_READ_TEXT_Style = "shared_read_text_style";
     public static final String SHARED_READ_IS_TEXT_DEFAULT = "shared_read_text_default";
     public static final String SHARED_READ_PAGE_MODE = "shared_read_mode";
@@ -65,6 +66,10 @@ public class ReadSettingManager {
     public void setTextSize(int textSize){
         sharedPreUtils.putInt(SHARED_READ_TEXT_SIZE,textSize);
     }
+    public void setTextRow(int textSize){
+        sharedPreUtils.putInt(SHARED_READ_TEXT_ROW,textSize);
+    }
+
     public void setTextStyle(String textSize){
         sharedPreUtils.putString(SHARED_READ_TEXT_Style,textSize);
     }
@@ -87,6 +92,10 @@ public class ReadSettingManager {
 
     public int getTextSize(){
         return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE, ScreenUtils.spToPx(18));
+    }
+
+    public int getTextRow(){
+        return sharedPreUtils.getInt(SHARED_READ_TEXT_ROW, ScreenUtils.spToPx(18));
     }
 
     public String getTextStyle(){

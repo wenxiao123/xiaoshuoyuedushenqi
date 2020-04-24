@@ -611,7 +611,7 @@
                 android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
                 android:thumb="@drawable/shape_read_seek_bar_thumb" />
         </RelativeLayout>
-        <RelativeLayout
+        <LinearLayout
             android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -643,8 +643,22 @@
                 />
 
             <TextView
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/tv_read_turn_real"
+                android:id="@+id/tv_read_real"
+                android:layout_width="70dp"
+                android:layout_height="@dimen/read_setting_bar_third_height"
+                android:background="@drawable/shape_read_theme_grey_selected"
+                android:gravity="center"
+                android:text="仿真"
+                android:textColor="@color/black"
+                android:textSize="@dimen/read_turn_text_size"
+                android:visibility="visible"
+                />
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/tv_read_real"
                 android:id="@+id/tv_read_turn_normal"
                 android:layout_width="70dp"
                 android:layout_height="@dimen/read_setting_bar_third_height"
@@ -655,7 +669,7 @@
                 android:textSize="@dimen/read_turn_text_size"
                 android:visibility="visible"
                 />
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
     <TextView

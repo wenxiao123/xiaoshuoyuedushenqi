@@ -148,10 +148,11 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-               // Log.e("QQQ", "onResponse: " + json);
+                Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
+                    if(!jsonObject.isNull("data")){
                     if (code.equals("1")) {
                         JSONObject object = jsonObject.getJSONObject("data");
                         String img = object.getString("value");
@@ -173,12 +174,17 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                             } else {
                                 https = UrlObtainer.GetUrl() + img;
                             }
-                            Url_gg gg=new Url_gg(href,time,https);
+                            Url_gg gg = new Url_gg(href, time, https);
                             //Log.e("QQQ", "onResponse: "+gg);
-                            SpUtil.saveObject2(AdmActivity.this,gg);
+                            SpUtil.saveObject2(AdmActivity.this, gg);
                             load_video(https);
                             showAdm(time, https, href, true);
                         }
+                    }
+                    }else {
+                        Intent intent = new Intent(AdmActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
 //                    if (true) {
 //                        // mCountDownTextView.setText("5s 跳过");
@@ -256,7 +262,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
             Glide.with(getContext())
                     .load(https)
                     .apply(new RequestOptions()
-                            .placeholder(R.drawable.layout_list_start_pic)
+                            .placeholder(R.color.trans)
                             .transform(transformation))
                     .into(image);
             image.setOnClickListener(this);

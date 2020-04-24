@@ -11,15 +11,18 @@ public class Categorys_one {
     String url;
     String chapter_sum;
     String captername;
-    String div;
 
-    public String getDiv() {
-        return div;
+    public String getElement() {
+        return element;
     }
 
-    public void setDiv(String div) {
-        this.div = div;
+    public void setElement(String element) {
+        this.element = element;
     }
+
+    String element;
+
+
 
     public String getCaptername() {
         if(getText()==null){
@@ -78,7 +81,7 @@ public class Categorys_one {
                 ", url='" + url + '\'' +
                 ", chapter_sum='" + chapter_sum + '\'' +
                 ", captername='" + captername + '\'' +
-                ", div='" + div + '\'' +
+                ", div='" + element + '\'' +
                 ", text=" + text.get(0) +
                 '}';
     }

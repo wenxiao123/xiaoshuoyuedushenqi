@@ -177,6 +177,16 @@ public class BookManager {
                 + File.separator + fileName + FileUtils.SUFFIX_WY);
     }
 
+    public static File getBook(String folderName) {
+        return FileUtils.getFile(Constant.BOOK_CACHE_PATH
+                + File.separator + folderName + FileUtils.SUFFIX_WY);
+    }
+
+    public static File getBook2(String folderName) {
+        return FileUtils.getFile(Constant.BOOK_OTHER_CACHE_PATH
+                + File.separator + folderName + FileUtils.SUFFIX_WY);
+    }
+
     public static File getBookFile2(String folderName, String fileName) {
         return FileUtils.getFile(Constant.BOOK_OTHER_CACHE_PATH + folderName
                 + File.separator + fileName + FileUtils.SUFFIX_WY);

@@ -84,7 +84,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
             @Override
             public void onClick(View view) {
                 if(isPhoneNumber(et_mobile_phone.getText().toString())){
-                    mPresenter.getVertical();
+                    mPresenter.getVertical(et_mobile_phone.getText().toString());
                 }else {
                     showShortToast("电话号码格式错误！");
                 }

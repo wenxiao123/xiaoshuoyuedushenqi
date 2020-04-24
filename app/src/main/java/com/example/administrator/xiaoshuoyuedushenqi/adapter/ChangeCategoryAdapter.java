@@ -73,8 +73,11 @@ public class ChangeCategoryAdapter extends RecyclerView.Adapter<ChangeCategoryAd
             }
         }
         // 如果超过 8 个字符，只取前 8 个
-        if (s.length() > 38) {
+        if (s!=null&&s.length() > 38) {
             s = s.substring(0, 38) + "...";
+        }
+        if(s==null){
+            holder.itemView.setVisibility(View.GONE);
         }
         holder.content.setText(s);
         holder.tv_laiyuan.setText("来源："+categorys_one.getReurl());

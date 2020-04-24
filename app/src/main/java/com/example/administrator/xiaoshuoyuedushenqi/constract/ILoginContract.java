@@ -24,11 +24,11 @@ public interface ILoginContract {
         void getLoginSuccess(Login_admin loginAdminl);
         void getLoginError(String errorMsg);
 
-        void getVertical();
+        void getVertical(String moildle);
         void getLogin(String mobile,String code);
     }
     interface Model {
-        void getVertical();
+        void getVertical(String moildle);
         void getLogin(String mobile,String code);
     }
 }

@@ -67,6 +67,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.model.BookChaptersBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.model.VMBookContentInfo;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ReadSettingManager;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ScreenUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.IBookChapters;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.NetPageLoader;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.OtherNetPageLoader;
@@ -89,6 +91,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -169,6 +172,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         mVmContentInfo = new VMBookContentInfo(getApplicationContext(), this);
         mStyle = SpUtil.getTextStyle();
         mDbManager = DatabaseManager.getInstance();
+        isNightMode = ReadSettingManager.getInstance().isNightMode();
         login_admin = (Login_admin) SpUtil.readObject(this);
     }
     int read_frist;
@@ -195,6 +199,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void initView() {
         App.init(this);
+        tv_jainju=findViewById(R.id.tv_jainju);
         tv_title=findViewById(R.id.tv_title);
         txt_click=findViewById(R.id.txt_click);
         l_yingdaoye=findViewById(R.id.l_yingdaoye);
@@ -223,6 +228,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 //                showPupowindpwChangeWebSite(iv_read_brightness);
 //            }
 //        });
+        tv_read_real=findViewById(R.id.tv_read_real);
+        tv_read_real.setOnClickListener(this);
         txt_page = findViewById(R.id.txt_page);
         ImageView tv_read_catalog=findViewById(R.id.iv_read_catalog);
         tv_read_catalog.setOnClickListener(this);
@@ -369,22 +376,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         tv_website.setText(UrlObtainer.GetUrl());
         sb_auto_read_progress = findViewById(R.id.sb_auto_read_progress);
         mReadSbChapterProgress=findViewById(R.id.sb_read_novel_progress);
-        switch (mTurnType) {
-            case 0:
-                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
-                mTurnNormalTv.setTextColor(getResources().getColor(R.color.red_aa));
-                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
-                mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
-                //mPageView.setTurnType(com.example.administrator.xiaoshuoyuedushenqi.widget.PageView.TURN_TYPE.NORMAL);
-                break;
-            case 1:
-                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
-                mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
-                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
-                mTurnRealTv.setTextColor(getResources().getColor(R.color.red_aa));
-                //mPageView.setTurnType(com.example.administrator.xiaoshuoyuedushenqi.widget.PageView.TURN_TYPE.REAL);
-                break;
-        }
         switch (mTheme) {
             case 0:
                 mTheme0.setSelected(true);
@@ -398,8 +389,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t = Integer.parseInt(tv_textsize.getText().toString());
                 t--;
-                tv_textsize.setText(t + "");
-                mPageLoader.setTextSize(t);
+                if(t>= ScreenUtils.spToPx(12)&&t<=ScreenUtils.spToPx(32)){
+                    tv_textsize.setText(t + "");
+                    mPageLoader.setTextSize(t);
+                }
             }
         });
         tv_textsize = findViewById(R.id.tv_textsize);
@@ -409,8 +402,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t = Integer.parseInt(tv_textsize.getText().toString());
                 t++;
-                tv_textsize.setText(t + "");
-                mPageLoader.setTextSize(t);
+                if(t>= ScreenUtils.spToPx(12)&&t<=ScreenUtils.spToPx(32)){
+                    tv_textsize.setText(t + "");
+                    mPageLoader.setTextSize(t);
+                }
             }
         });
         iv_read_decrease_row_space = findViewById(R.id.iv_read_decrease_row_space);
@@ -419,7 +414,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t=mPageLoader.getmTextInterval();
                 t--;
-                mPageLoader.setmTextInterval(t);
+                if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
+                    tv_jainju.setText(t+"");
+                    mPageLoader.setmTextInterval(t);
+                }
             }
         });
         iv_read_increase_row_space = findViewById(R.id.iv_read_increase_row_space);
@@ -428,7 +426,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t=mPageLoader.getmTextInterval();
                 t++;
-                mPageLoader.setmTextInterval(t);
+                if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
+                    tv_jainju.setText(t+"");
+                    mPageLoader.setmTextInterval(t);
+                }
             }
         });
         getContentResolver().registerContentObserver(
@@ -449,6 +450,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }else if(msg.what==2){
                 mPageLoader.autoNextPage();
                 handler.sendEmptyMessageDelayed(z,3000);
+            }else if(msg.what==7){
+               if(tipDialog!=null&&tipDialog.isShowing()){
+                   tipDialog.dismiss();
+               }
             }
         }
     };
@@ -507,26 +512,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
      * 显示设置栏
      */
     private void showSettingBar() {
-//        mStyle = SpUtil.getTextStyle();
-//        Typeface tf = null;
-//        AssetManager mgr = getAssets();
-//        if(mStyle.equals("1")) {
-//            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("方正卡通简体");
-//        }else if(mStyle.equals("2")){
-//            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("方正楷体");
-//        }else if(mStyle.equals("3")){
-//            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("流行体简体");
-//        }else {
-//            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
-//            tv_textstyle.setTypeface(tf);
-//            tv_textstyle.setText("系统字体");
-//        }
         mIsShowSettingBar = true;
         Animation bottomAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_enter);
@@ -605,7 +590,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-               //Log.e("QQQ", "onResponse: " + json);
+               Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -617,7 +602,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             JSONArray jsonArray = object.getJSONArray("data");
                             categorys_ones.clear();
                             for (int z = 0; z < jsonArray.length(); z++) {
-                                categorys_ones.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Categorys_one.class));
+                                    categorys_ones.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Categorys_one.class));
                             }
                             // Log.e("qqq", "onResponse: " + categorys_ones.size());
                             getCategorysSuccess(categorys_ones);
@@ -638,6 +623,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         });
     }
     String reurl = "",weight;
+    TextView tv_read_real;
     public void getCategorysSuccess(List<Categorys_one> categorys_one) {
         progressBar.setVisibility(View.GONE);
         if (categorys_one.size() == 0) {
@@ -663,7 +649,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 //                        } else {
 //                            is_othersite = false;
 //                        }
-                        reurl = categorys_ones.get(word).getDiv();
+                        reurl = categorys_ones.get(word).getElement();
                         ((NetPageLoader)mPageLoader).setCategorys_ones(categorys_ones,word,is_all_one);
                         //  Log.e("WWW", "clickWord: " + categorys_ones.get(word));
 //                        tv_website.setText(categorys_ones.get(word).getUrl());
@@ -741,6 +727,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
      * 隐藏设置栏
      */
     private void hideSettingBar() {
+        mIsShowSettingBar = false;
         Animation bottomExitAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_exit);
         bottomExitAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -752,7 +739,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onAnimationEnd(Animation animation) {
                 mSettingBarCv.setVisibility(View.GONE);
-                mIsShowSettingBar = false;
             }
 
             @Override
@@ -851,8 +837,35 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void doAfterInit() {
         mPageLoader = txt_page.getPageLoader(mCollBook.isLocal(),is_othersite);
+        switch (mPageLoader.getmPageMode()) {
+            case PageView.PAGE_MODE_COVER:
+                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                mTurnRealTv.setTextColor(getResources().getColor(R.color.red_aa));
+                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
+                tv_read_real.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                tv_read_real.setTextColor(getResources().getColor(R.color.black));
+                break;
+            case PageView.PAGE_MODE_SCROLL:
+                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                mTurnNormalTv.setTextColor(getResources().getColor(R.color.red_aa));
+                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
+                tv_read_real.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                tv_read_real.setTextColor(getResources().getColor(R.color.black));
+                break;
+            case PageView.PAGE_MODE_SIMULATION:
+                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
+                tv_read_real.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                tv_read_real.setTextColor(getResources().getColor(R.color.red_aa));
+                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
+                break;
+        }
         v_title.setBackgroundColor(mPageLoader.getmPageBg());
         tv_textsize.setText(mPageLoader.getmTextSize() + "");
+        tv_jainju.setText(mPageLoader.getmTextInterval()+"");
         mPageLoader.setmCurChapterPos(Integer.parseInt(chpter_id));
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
             @Override
@@ -967,12 +980,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         txt_page.setTouchListener(new PageView.TouchListener() {
             @Override
             public void center() {
-                //ToastUtil.showToast(WYReadActivity.this,"222");
-                //toggleMenu(true);
-                if (mIsShowingOrHidingBar == false) {
-                    showBar();
-                } else {
-                    hideBar();
+                if(mIsShowSettingBar==false) {
+                    if (mIsShowingOrHidingBar == false) {
+                        showBar();
+                    } else {
+                        hideBar();
+                    }
                 }
                 if(is_autoRead){
                     txt_page.startAutoPlay();
@@ -981,10 +994,27 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     hideSettingBar();
                     return;
                 }
+                if ( mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
+                    mVmContentInfo.setNoval_id(mCollBook.get_id());
+                    if(is_othersite==false) {
+                        mVmContentInfo.loadContent(mPageLoader.getChapterPos()+"", mPageLoader.getmChapterList());
+                    }else {
+                        mVmContentInfo.loadContent2(mPageLoader.getChapterPos(), mPageLoader.getmChapterList(),reurl);
+                    }
+                }
             }
 
             @Override
             public boolean onTouch() {
+                if(mPageLoader.getmPageMode()==PageView.PAGE_MODE_SCROLL) {
+                    if (mIsShowingOrHidingBar != false) {
+                        hideBar();
+                        return false;
+                    }
+                    if (mIsShowSettingBar) {
+                        hideSettingBar();
+                    }
+                }
                 return true;
             }
 
@@ -993,6 +1023,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 if (mIsShowSettingBar) {
                     hideSettingBar();
                     return true;
+                }
+                if (mIsShowingOrHidingBar != false) {
+                    hideBar();
                 }
                 return true;
             }
@@ -1003,6 +1036,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     hideSettingBar();
                     return true;
                 }
+                if (mIsShowingOrHidingBar != false) {
+                    hideBar();
+                }
                 return true;
             }
 
@@ -1011,17 +1047,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         });
         mPageLoader.openBook(mCollBook);//chpter_id
-        if(mPageLoader.getmPageMode()==PageView.PAGE_MODE_SCROLL){
-            mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
-            mTurnNormalTv.setTextColor(getResources().getColor(R.color.red_aa));
-            mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
-            mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
-        }else {
-            mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
-            mTurnRealTv.setTextColor(getResources().getColor(R.color.red_aa));
-            mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
-            mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
-        }
         Typeface tf = null;
         AssetManager mgr = getAssets();
         if(mStyle.equals("1")) {
@@ -1042,6 +1067,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             tv_textstyle.setText("系统字体");
         }
     }
+    boolean is_cliick=false;
     int pro=35,read_speed;
     @Override
     protected boolean isRegisterEventBus() {
@@ -1107,9 +1133,26 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         });
     }
-
+  AdmDialog tipDialog;
     private void showAdm(String id,String href, String url, boolean is_video) {
-        final AdmDialog tipDialog = new AdmDialog.Builder(this)
+        if(tipDialog!=null&&tipDialog.isShowing()){
+            return;
+        }
+        if(is_autoRead){
+           txt_page.stopAutoPlay();
+           new Thread(new Runnable() {
+               @Override
+               public void run() {
+                   try {
+                       Thread.sleep(3000);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   handler.sendEmptyMessage(7);
+               }
+           }).start();
+        }
+        tipDialog = new AdmDialog.Builder(this)
                 .setContent("www.baidu.com")
                 .setHref(url)
                 .setIs_img(is_video)
@@ -1139,13 +1182,16 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 backgroundAlpha(1f);
+                if(is_autoRead){
+                    txt_page.startAutoPlay();
+                }
             }
         });
     }
 
     private void post_addadm(String id){
         String url = UrlObtainer.GetUrl() + "api/index/add_adm";
-        Log.e("WWW", "post_addadm: "+url);
+        //Log.e("WWW", "post_addadm: "+url);
         RequestBody requestBody = new FormBody.Builder()
                 .add("id",id)
                 .build();
@@ -1251,10 +1297,36 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             case R.id.tv_read_day_and_night_mode:
                 if (isNightMode) {
                     isNightMode = false;
+                    int bgColor=ContextCompat.getColor(App.getAppContext(), R.color.color_cec29c);
+                    switch (mTheme) {
+                        case ReadSettingManager.READ_BG_DEFAULT:
+                            //mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                            bgColor = ContextCompat.getColor(App.getAppContext(), R.color.color_cec29c);
+                            break;
+                        case ReadSettingManager.READ_BG_1:
+                            //mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2f332d);
+                            bgColor = ContextCompat.getColor(App.getAppContext(), R.color.color_ccebcc);
+                            break;
+                        case ReadSettingManager.READ_BG_2:
+                           // mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_92918c);
+                            bgColor = ContextCompat.getColor(App.getAppContext(), R.color.color_aaa);
+                            break;
+                        case ReadSettingManager.READ_BG_3:
+                            //mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_383429);
+                            bgColor = ContextCompat.getColor(App.getAppContext(), R.color.color_d1cec5);
+                            break;
+                        case ReadSettingManager.READ_BG_4:
+                           // mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_627176);
+                            bgColor = ContextCompat.getColor(App.getAppContext(), R.color.color_001c27);
+                            break;
+                    }
+
+                    v_title.setBackgroundColor(bgColor);
                 } else {
                     isNightMode = true;
-                }
-                mPageLoader.setNightMode(isNightMode,v_title);
+                    v_title.setBackgroundColor(getResources().getColor(R.color.black));
+                }//ReadSettingManager.NIGHT_MODE
+                mPageLoader.setNightMode(isNightMode);
                 // toggleNightMode();
                 hideBar();
                 break;
@@ -1288,25 +1360,31 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 updateWithTheme();
                 break;
             case R.id.tv_read_turn_normal:
-//                if (mTurnType != 0) {
-//                    mTurnType = 0;
                     mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
                     mTurnNormalTv.setTextColor(getResources().getColor(R.color.red_aa));
                     mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
                     mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
+                    tv_read_real.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                    tv_read_real.setTextColor(getResources().getColor(R.color.black));
                     mPageLoader.setPageMode(PageView.PAGE_MODE_SCROLL);
-                //}
+                break;
+            case R.id.tv_read_real:
+                mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
+                tv_read_real.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
+                tv_read_real.setTextColor(getResources().getColor(R.color.red_aa));
+                mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
+                mPageLoader.setPageMode(PageView.PAGE_MODE_SIMULATION);
                 break;
             case R.id.tv_read_turn_real:
-//                if (mTurnType != 1) {
-//                    mTurnType = 1;
                     mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
                     mTurnRealTv.setTextColor(getResources().getColor(R.color.red_aa));
                     mTurnNormalTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
                     mTurnNormalTv.setTextColor(getResources().getColor(R.color.black));
-                    //mPageView.setTurnType(PageView.TURN_TYPE.REAL);
+                    tv_read_real.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_grey_selected));
+                    tv_read_real.setTextColor(getResources().getColor(R.color.black));
                     mPageLoader.setPageMode(PageView.PAGE_MODE_COVER);
-               // }
                 break;
             default:
                 break;
@@ -1388,6 +1466,25 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 SpUtil.saveTextStyle(mStyle);
                 mPageLoader.setmSype(mStyle);
                 textStyleAdapter.notifyDataSetChanged();
+                Typeface tf = null;
+                AssetManager mgr = getAssets();
+                if(mStyle.equals("1")) {
+                    tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+                    tv_textstyle.setTypeface(tf);
+                    tv_textstyle.setText("方正卡通简体");
+                }else if(mStyle.equals("2")){
+                    tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+                    tv_textstyle.setTypeface(tf);
+                    tv_textstyle.setText("方正楷体");
+                }else if(mStyle.equals("3")){
+                    tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+                    tv_textstyle.setTypeface(tf);
+                    tv_textstyle.setText("流行体简体");
+                }else {
+                    tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+                    tv_textstyle.setTypeface(tf);
+                    tv_textstyle.setText("系统字体");
+                }
             }
         });
 
@@ -1426,6 +1523,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         Intent intent_recever = new Intent("com.zhh.android");
         //intent_recever.putExtra("type",1);
         sendBroadcast(intent_recever);
+        Intent recever = new Intent("com.changebackground.android");
+        sendBroadcast(recever);
+        SpUtil.saveIsSysNightMode(isNightMode);
     }
     public void setReadRecord(String token, String novel_id, String chapter_id) {
         String url = UrlObtainer.GetUrl()+"api/lookbook/add";
@@ -1467,7 +1567,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     public void finishChapters() {
         if (mPageLoader.getPageStatus() == PageLoader.STATUS_LOADING) {
             txt_page.post(() -> {
-                mPageLoader.saveRecord();
+                //mPageLoader.saveRecord();
                 // mPageLoader.setChapterPos(Integer.parseInt(chpter_id));
                 mPageLoader.openChapter();
             });
@@ -1840,7 +1940,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     }
     @Override
     public void errorChapters() {
-
+        if (mPageLoader.getPageStatus() == PageLoader.STATUS_LOADING) {
+            mPageLoader.chapterError();
+        }
     }
 
 

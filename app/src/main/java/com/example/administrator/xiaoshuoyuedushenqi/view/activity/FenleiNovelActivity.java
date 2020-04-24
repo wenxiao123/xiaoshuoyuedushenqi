@@ -257,6 +257,8 @@ public class FenleiNovelActivity extends BaseActivity<ListNovelPresenter>
                 // 传递小说名，进入搜查页后直接显示该小说的搜查结果
                 intent.putExtra("pid", position + "");
                 startActivity(intent);
+                overridePendingTransition(R.anim.zoom_enter,
+                        R.anim.zoom_exit);
             }
         });
     }

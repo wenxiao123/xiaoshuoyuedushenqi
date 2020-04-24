@@ -1,11 +1,15 @@
 package com.example.administrator.xiaoshuoyuedushenqi.base;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +20,10 @@ import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MainActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.WYReadActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ReadSettingManager;
 
 /**
  * @author
@@ -32,7 +39,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 //        App.updateNightMode(isNight);
         doBeforeSetContentView();
         setContentView(getLayoutId());
-
+        backgroungReceiver = new MyBackgroungReceiver();
+        // 注册广播接受者
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.changebackground.android");//要接收的广播
+        registerReceiver(backgroungReceiver, intentFilter);//注册接收者
         mPresenter = getPresenter();
         if (mPresenter != null) {
             mPresenter.attachView(this);
@@ -63,6 +74,14 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onResume() {
         super.onResume();
+        if(!(this instanceof WYReadActivity)) {
+            isNight = ReadSettingManager.getInstance().isNightMode();
+            if (isNight == true) {
+                backgroundAlpha(0.4f);
+            } else {
+                backgroundAlpha(1f);
+            }
+        }
 //        App app= (App) getApplication();
 //        App.init(this);
 //        if(app.isNight()==true) {
@@ -79,6 +98,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 //            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
 //        }
     }
+    boolean isNight;
+    MyBackgroungReceiver backgroungReceiver;
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -92,7 +113,28 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             EventBusUtil.unregister(this);
         }
     }
+    public class MyBackgroungReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isNight = ReadSettingManager.getInstance().isNightMode();
+            if(isNight) {
+                backgroundAlpha(0.4f);
+            }else {
+                backgroundAlpha(1f);
+            }
+        }
+    }
 
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha
+     */
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp =getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
     /**
      * 在setContentView方法前的操作
      */

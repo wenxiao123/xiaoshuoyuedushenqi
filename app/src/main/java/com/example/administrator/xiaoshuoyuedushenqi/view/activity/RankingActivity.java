@@ -207,6 +207,8 @@ public class RankingActivity extends BaseActivity<RankPresenter> implements IRan
                 Intent intent=new Intent(RankingActivity.this,NovelIntroActivity.class);
                 intent.putExtra("pid",position+"");
                 startActivity(intent);
+                overridePendingTransition(R.anim.zoom_enter,
+                        R.anim.zoom_exit);
             }
         });
         recyclerView.setAdapter(mNovelAdapter);
