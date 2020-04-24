@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
@@ -620,6 +621,9 @@ public class DatabaseManager {
      * 查询 Bookshelf 表是否存在主键为 novelUrl 的记录
      */
     public boolean isExistInBookshelfNovel(String novelUrl) {
+        if(TextUtils.isEmpty(novelUrl)){
+            return false;
+        }
         Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null,
                 Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?", new String[]{novelUrl},
                 null, null, null, null);
@@ -635,23 +639,12 @@ public class DatabaseManager {
     }
 
     public boolean isExistInBookshelfNovelname(String name) {
+        if(TextUtils.isEmpty(name)){
+            return false;
+        }
+        Log.e("QQQ", "isExistInBookshelfNovelname: "+name);
         Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null,
                 Constant.TABLE_BOOKSHELF_NOVEL_NAME + " = ?", new String[]{name},
-                null, null, null, null);
-        boolean res = false;
-        if (cursor.moveToLast()) {
-            do {
-                res = true;
-            } while (cursor.moveToPrevious());
-        }
-        cursor.close();
-
-        return res;
-    }
-
-    public boolean isExistInBookshelfNovelcover(String cover) {
-        Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null,
-                Constant.TABLE_BOOKSHELF_NOVEL_COVER + " = ?", new String[]{cover},
                 null, null, null, null);
         boolean res = false;
         if (cursor.moveToLast()) {
@@ -668,6 +661,9 @@ public class DatabaseManager {
      * 查询 Bookshelf 表是否存在主键为 novelUrl 的记录
      */
     public boolean isExistInReadCoderNovel(String novelUrl) {
+        if(TextUtils.isEmpty(novelUrl)){
+            return false;
+        }
         Cursor cursor = mDb.query(Constant.TABLE_READCORDE_NOVEL, null,
                 Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?", new String[]{novelUrl},
                 null, null, null, null);

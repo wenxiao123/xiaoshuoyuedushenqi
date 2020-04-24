@@ -90,6 +90,8 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
             tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
         }else if(i==3) {
             tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+        }else if(i==4) {
+            tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
         }
         screenViewHolder.text.setTypeface(tf);
         screenViewHolder.text.setText(textStyles.get(i).getName());

@@ -539,7 +539,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     public void queryAllBookSuccess2(List<BookshelfNovelDbData> dataList) {
         //   Log.e("QQQ", "queryAllBookSuccess2: "+333);
         for (int i = 0; i < dataList.size(); i++) {
-            if (!mDbManager.isExistInBookshelfNovelname(dataList.get(i).getName()) && !mDbManager.isExistInBookshelfNovelcover(dataList.get(i).getCover())) {
+            if (!mDbManager.isExistInBookshelfNovelname(dataList.get(i).getNovelUrl())) {
 //               BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
 //                       mCover, mPageView.getPosition(), mType, mNovelContent.length(), mChapterIndex + "", serialize + "");
                 mDbManager.insertOrUpdateBook(new BookshelfNovelDbData(dataList.get(i).getNovelUrl(),
@@ -581,7 +581,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                //Log.e("QQQ", "onResponse: " + json);
+                Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -636,33 +636,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                             if (mIsDeleting || (mDataList.size() > 0 && mDataList.get(position).getType() == -1)) {
                                 return;
                             }
-//                        if(mDataList.get(position).getType()==1){
-//                            TxtConfig.saveIsOnVerticalPageMode(getContext(),false);
-//                            HwTxtPlayActivity.loadTxtFile(getContext(), mDataList.get(position).getNovelUrl());
-//                        }else {
                             if (mDataList.get(position).getType() == 0) {
-                                // Log.e("QQQ", "clickItem: "+mDataList.get(position));
-//                                Intent intent = new Intent(getActivity(), TxtPlayActivity.class);
-//                                // 小说 url
-//                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
-//                                // 小说名
-//                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
-//                                // 小说封面 url
-//                                intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
-//                                // 小说类型
-//                                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
-//                                // 开始阅读的位置
-//                                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
-//                                intent.putExtra("weigh", mDataList.get(position).getWeight());
-//                                if (Integer.parseInt(mDataList.get(position).getChapterid().trim()) != 0) {
-//                                    intent.putExtra(ReadActivity.KEY_CHPATER_ID, Integer.parseInt(mDataList.get(position).getChapterid().trim()));
-//                                    intent.putExtra("first_read", 2);
-//                                } else {
-//                                    intent.putExtra("first_read", 1);
-//                                }
-//                                intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
-//                                intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
-//                                startActivity(intent);
                                 CollBookBean bookBean=new CollBookBean(mDataList.get(position).getNovelUrl(), mDataList.get(position).getName(), "", "",
                                         mDataList.get(position).getCover(), false, 0,0,
                                "", "", mDataList.get(position).getWeight(), "",
@@ -683,40 +657,13 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                 bundle.putString(WYReadActivity.LOAD_PATH,mDataList.get(position).getNovelUrl());
                                 bundle.putString(WYReadActivity.CHPTER_ID,mDataList.get(position).getPosition()+"");
                                 startActivity(WYReadActivity.class, bundle);
-//                                TxtConfig.saveIsOnVerticalPageMode(getContext(), false);
-//                                Intent intent = new Intent(getActivity(), TxtPlayActivity.class);
-//                                // 小说 url
-////                                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
-////                                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,mDataList.get(position).getFuben_id());
-////                                // 小说名
-////                                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
-//                                // 小说封面 url
-//                                //intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
-//                                intent.putExtra("FilePath", mDataList.get(position).getFuben_id());
-//                                intent.putExtra("FileName", mDataList.get(position).getName());
-//                                // 小说类型
-//                                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
-                                       // 开始阅读的位置
-                                  //intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
-                                 //  intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
-                                 //intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
-                                // startActivity(intent);
-                                //TxtPlayActivity.loadTxtFile(getContext(), mDataList.get(position).getFuben_id());
                             }
                         }
-                        // }
                     }
 
                     @Override
                     public void longClick(int position) {
-//                        if (mIsDeleting) {
-//                            return;
-//                        }
-//                        mBookshelfNovelsAdapter.setIsMultiDelete(true);
-//                        mBookshelfNovelsAdapter.notifyDataSetChanged();
-//                        mMultiDeleteRv.setVisibility(View.VISIBLE);
-//                        Intent bookShelfintent = new Intent(getContext(), MyBookshelfActivity.class);
-//                        startActivity(bookShelfintent);
+
                     }
                 });
     }

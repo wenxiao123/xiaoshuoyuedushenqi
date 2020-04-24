@@ -87,6 +87,11 @@ public class LauncherActivity extends BaseActivity {
     protected void initData() {
         databaseManager=DatabaseManager.getInstance();
         websites_lrc=databaseManager.queryAllWebsite();
+        if(websites_lrc.size()==0){
+            websites_lrc.add(new Website("http://hsa.4jvr2g68.com:36213",1));
+            websites_lrc.add(new Website("http://ges.atkskjx4.com:36213",0));
+            websites_lrc.add(new Website("http://jos.6ajpz3qu.com:36213",0));
+        }
     }
     private MyCountDownTimer mCountDownTimer;
     @Override
@@ -235,7 +240,13 @@ public class LauncherActivity extends BaseActivity {
                         ToastUtil.showToast(LauncherActivity.this,"请求错误");
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    if(z<websites_lrc.size()) {
+                        UrlObtainer.setHref(websites_lrc.get(z).getUrl());
+                        setBookshelfadd();
+                        z++;
+                    }else {
+                        showShortToast("网络数据接口有误");
+                    }
                 }
             }
 

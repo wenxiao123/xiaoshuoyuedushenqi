@@ -994,14 +994,14 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     hideSettingBar();
                     return;
                 }
-                if ( mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
-                    mVmContentInfo.setNoval_id(mCollBook.get_id());
-                    if(is_othersite==false) {
-                        mVmContentInfo.loadContent(mPageLoader.getChapterPos()+"", mPageLoader.getmChapterList());
-                    }else {
-                        mVmContentInfo.loadContent2(mPageLoader.getChapterPos(), mPageLoader.getmChapterList(),reurl);
-                    }
-                }
+//                if ( mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
+//                    mVmContentInfo.setNoval_id(mCollBook.get_id());
+//                    if(is_othersite==false) {
+//                        mVmContentInfo.loadContent(mPageLoader.getChapterPos()+"", mPageLoader.getmChapterList());
+//                    }else {
+//                        mVmContentInfo.loadContent2(mPageLoader.getChapterPos(), mPageLoader.getmChapterList(),reurl);
+//                    }
+//                }
             }
 
             @Override
@@ -1061,6 +1061,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
             tv_textstyle.setTypeface(tf);
             tv_textstyle.setText("流行体简体");
+        }else if(mStyle.equals("4")){
+            tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
+            tv_textstyle.setTypeface(tf);
+            tv_textstyle.setText("华康圆体W7");
         }else {
             tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             tv_textstyle.setTypeface(tf);
@@ -1398,6 +1402,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         textStyles.add(new TextStyle("方正卡通简体", "1"));
         textStyles.add(new TextStyle("方正楷体", "2"));
         textStyles.add(new TextStyle("流行体简体", "3"));
+        textStyles.add(new TextStyle("华康圆体W7", "4"));
         initTextStyle(textStyles);
     }
 
@@ -1480,6 +1485,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
                     tv_textstyle.setTypeface(tf);
                     tv_textstyle.setText("流行体简体");
+                }else if(mStyle.equals("4")){
+                    tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
+                    tv_textstyle.setTypeface(tf);
+                    tv_textstyle.setText("华康圆体W7");
                 }else {
                     tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
                     tv_textstyle.setTypeface(tf);
@@ -1525,7 +1534,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         sendBroadcast(intent_recever);
         Intent recever = new Intent("com.changebackground.android");
         sendBroadcast(recever);
-        SpUtil.saveIsSysNightMode(isNightMode);
+        //SpUtil.saveIsSysNightMode(isNightMode);
     }
     public void setReadRecord(String token, String novel_id, String chapter_id) {
         String url = UrlObtainer.GetUrl()+"api/lookbook/add";

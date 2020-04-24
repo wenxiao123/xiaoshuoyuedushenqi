@@ -74,11 +74,13 @@ public class NovelSourceAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, final int i) {
-        String href;
-        if(mNovelSourceDataList.get(i).getPic().contains("http")){
-            href=mNovelSourceDataList.get(i).getPic();
-        }else {
-            href=UrlObtainer.GetUrl()+mNovelSourceDataList.get(i).getPic();
+        String href="";
+        if(mNovelSourceDataList.get(i).getPic()!=null) {
+            if (mNovelSourceDataList.get(i).getPic().contains("http")) {
+                href = mNovelSourceDataList.get(i).getPic();
+            } else {
+                href = UrlObtainer.GetUrl() + mNovelSourceDataList.get(i).getPic();
+            }
         }
         Glide.with(mContext)
                 .load(href)

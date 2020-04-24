@@ -152,9 +152,10 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                 switch (position) {
                     case 0:
                         isNight = ReadSettingManager.getInstance().isNightMode();
-                        Intent intent_recever = new Intent("com.changebackground.android");
-                        getActivity().sendBroadcast(intent_recever);
-                        SpUtil.saveIsSysNightMode(!isNight);
+                        Intent recever = new Intent("com.changebackground.android");
+                        getActivity().sendBroadcast(recever);
+                        ReadSettingManager.getInstance().setNightMode(!isNight);
+                        //SpUtil.saveIsSysNightMode(!isNight);
                         //backgroundAlpha(0.5f);
 
 //                        App.init(getContext());

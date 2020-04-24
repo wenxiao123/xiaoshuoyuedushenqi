@@ -346,6 +346,8 @@ public abstract class PageLoader {
                 tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
             }else if(mTextStyle.equals("3")){
                 tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            }else if(mTextStyle.equals("4")){
+                tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
             }else if(mTextStyle.equals("-1")){
                 tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             }
@@ -526,6 +528,8 @@ public abstract class PageLoader {
                 tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
             }else if(type.equals("3")){
                 tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            }else if(type.equals("4")){
+                tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
             }else if(type.equals("-1")){
                 tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             }
