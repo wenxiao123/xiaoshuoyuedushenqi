@@ -1,20 +1,28 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author
  * Created on 2019/11/17
  */
-public class Cataloginfo {
+public class Cataloginfo implements Serializable {
     int id;
-    int novel_id;
+    String novel_id;
     String title;
     String reurl;
     String update_time;
     int weigh;
     int hits;
     int word;
+
+    public Cataloginfo(int id, String novel_id, String title, String reurl) {
+        this.id = id;
+        this.novel_id = novel_id;
+        this.title = title;
+        this.reurl = reurl;
+    }
 
     @Override
     public String toString() {
@@ -38,11 +46,11 @@ public class Cataloginfo {
         this.id = id;
     }
 
-    public int getNovel_id() {
+    public String getNovel_id() {
         return novel_id;
     }
 
-    public void setNovel_id(int novel_id) {
+    public void setNovel_id(String novel_id) {
         this.novel_id = novel_id;
     }
 

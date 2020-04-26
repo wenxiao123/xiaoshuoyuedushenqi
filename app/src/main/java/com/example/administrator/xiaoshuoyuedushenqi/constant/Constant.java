@@ -63,6 +63,8 @@ public class Constant {
     public static final String TABLE_HISTORY_WORD = "TABLE_HISTORY_WORD";   // 搜索词
     // 书架书籍表
     public static final String TABLE_BOOKSHELF_NOVEL = "TABLE_BOOKSHELF_NOVEL";
+    public static final String TABLE_COLALOG_NOVEL="TABLE_COLALOG_NOVEL";
+    public static final String CREATE_TABLE_COLALOG_NOVEL= "TABLE_COLAG_NOVEL";
     // 书架阅读记录表
     public static final String TABLE_READCORDE_NOVEL = "TABLE_READCORDE_NOVEL";
     // 书架书籍表

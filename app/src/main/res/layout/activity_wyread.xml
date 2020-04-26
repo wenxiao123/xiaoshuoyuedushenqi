@@ -12,8 +12,7 @@
     <FrameLayout
         android:layout_below="@id/v_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/icon_background">
+        android:layout_height="match_parent">
     <com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.PageView
         android:id="@+id/txt_page"
         android:layout_width="match_parent"

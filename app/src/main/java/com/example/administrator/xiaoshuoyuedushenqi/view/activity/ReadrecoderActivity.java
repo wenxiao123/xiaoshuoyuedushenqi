@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -10,9 +11,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -52,7 +55,7 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
     private ProgressBar mProgressBar;
     private RefreshLayout mRefreshSrv;
     private TextView tv_nodata;
-
+    private LinearLayout l_emputy;
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -78,17 +81,19 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
 
     @Override
     protected void initView() {
+        l_emputy=findViewById(R.id.l_emputy);
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        btn_jingxuan=findViewById(R.id.btn_jingxuan);
         findViewById(R.id.iv_clear_all).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final TipDialog tipDialog = new TipDialog.Builder(ReadrecoderActivity.this)
-                        .setContent("是否清空阅读记录")
+                        .setContent("确定要清空阅读记录吗?")
                         .setCancel("取消")
                         .setEnsure("确定")
                         .setOnClickListener(new TipDialog.OnClickListener() {
@@ -151,8 +156,17 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         mRefreshSrv.setRefreshHeader(classicsHeader);
         //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
         mRefreshSrv.setRefreshFooter(new ClassicsFooter(this));
+        btn_jingxuan.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+               Intent intent=new Intent(ReadrecoderActivity.this,MainActivity.class);
+                intent.putExtra("is_naghit","3");
+               startActivity(intent);
+            }
+        });
     }
-
+    TextView btn_jingxuan;
     int z = 1;
     boolean isRefresh;
 
@@ -195,11 +209,11 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
     public void queryAllBookSuccess(List<Noval_Readcored> novelNameList) {
         mProgressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        if (novelNameList.size() == 0) {
-            tv_nodata.setVisibility(View.VISIBLE);
-        } else {
-            tv_nodata.setVisibility(View.GONE);
-        }
+//        if (novelNameList.size() == 0) {
+//            tv_nodata.setVisibility(View.VISIBLE);
+//        } else {
+//            tv_nodata.setVisibility(View.GONE);
+//        }
         noval_readcoreds.clear();
         setRecyclerViewData(novelNameList);
     }
@@ -221,6 +235,13 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
             recyclerView.setFocusableInTouchMode(false);
             recyclerView.setScrollingTouchSlop(last);
         } else {
+            if(noval_readcoreds.size()==0){
+                l_emputy.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }else {
+                l_emputy.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
             novelSourceAdapter.notifyDataSetChanged();
             //novelSourceAdapter.notifyItemChanged(last, 0);
         }
@@ -297,6 +318,13 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
             }
         });
         recyclerView.setAdapter(novelSourceAdapter);
+        if(noval_readcoreds.size()==0){
+            l_emputy.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }else {
+            l_emputy.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.view.View;
 
 /**
@@ -64,7 +65,13 @@ public class SimulationPageAnim extends HorizonPageAnim{
         mPath1 = new Path();
         mMaxLength = (float) Math.hypot(mScreenWidth, mScreenHeight);
         mPaint = new Paint();
-
+        try {
+            mCurBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);      //android:LargeHeap=true  use in  manifest application
+            mNextBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
+        } catch (Error e) {
+            mCurBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.ALPHA_8);      //android:LargeHeap=true  use in  manifest application
+            mNextBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.ALPHA_8);
+        }
         mPaint.setStyle(Paint.Style.FILL);
 
         createDrawable();
@@ -289,16 +296,8 @@ public class SimulationPageAnim extends HorizonPageAnim{
         } catch (Exception e) {
         }
 
-        mPaint.setColorFilter(mColorMatrixFilter);
-        //对Bitmap进行取色
-        int color = bitmap.getPixel(1, 1);
-        //获取对应的三色
-        int red = (color & 0xff0000) >> 16;
-        int green = (color & 0x00ff00) >> 8;
-        int blue = (color & 0x0000ff);
-        //转换成含有透明度的颜色
-        int tempColor = Color.argb(200, red, green, blue);
 
+        mPaint.setColorFilter(mColorMatrixFilter);
 
         float dis = (float) Math.hypot(mCornerX - mBezierControl1.x,
                 mBezierControl2.y - mCornerY);
@@ -310,12 +309,10 @@ public class SimulationPageAnim extends HorizonPageAnim{
         mMatrixArray[4] = 1 - 2 * f8 * f8;
         mMatrix.reset();
         mMatrix.setValues(mMatrixArray);
-        mMatrix.preTranslate(-mBezierControl1.x, -mBezierControl1.y);
+        mMatrix.setTranslate(-mBezierControl1.x, -mBezierControl1.y);
         mMatrix.postTranslate(mBezierControl1.x, mBezierControl1.y);
         canvas.drawBitmap(bitmap, mMatrix, mPaint);
-        //背景叠加
-        canvas.drawColor(tempColor);
-
+        // canvas.drawBitmap(bitmap, mMatrix, null);
         mPaint.setColorFilter(null);
 
         canvas.rotate(mDegrees, mBezierStart1.x, mBezierStart1.y);
@@ -362,7 +359,7 @@ public class SimulationPageAnim extends HorizonPageAnim{
         float rotateDegrees;
         canvas.save();
         try {
-            canvas.clipPath(mPath0, Region.Op.XOR);
+            canvas.clipPath(mPath0, Region.Op.DIFFERENCE);
             canvas.clipPath(mPath1, Region.Op.INTERSECT);
         } catch (Exception e) {
             // TODO: handle exception
@@ -398,7 +395,7 @@ public class SimulationPageAnim extends HorizonPageAnim{
         mPath1.close();
         canvas.save();
         try {
-            canvas.clipPath(mPath0, Region.Op.XOR);
+            canvas.clipPath(mPath0, Region.Op.DIFFERENCE);
             canvas.clipPath(mPath1, Region.Op.INTERSECT);
         } catch (Exception e) {
         }
@@ -433,6 +430,45 @@ public class SimulationPageAnim extends HorizonPageAnim{
                     (int) (mBezierControl2.x), rightx);
 
         mCurrentPageShadow.draw(canvas);
+        canvas.restore();
+    }
+
+    private void drawNEXTPageAreaAndShadow(Canvas canvas, Bitmap bitmap) {
+        mPath1.reset();
+        mPath1.moveTo(mBezierStart1.x, mBezierStart1.y);
+        mPath1.lineTo(mBeziervertex1.x, mBeziervertex1.y);
+        mPath1.lineTo(mBeziervertex2.x, mBeziervertex2.y);
+        mPath1.lineTo(mBezierStart2.x, mBezierStart2.y);
+        mPath1.lineTo(mCornerX, mCornerY);
+        mPath1.close();
+
+        mDegrees = (float) Math.toDegrees(Math.atan2(mBezierControl1.x
+                - mCornerX, mBezierControl2.y - mCornerY));
+        int leftx;
+        int rightx;
+        GradientDrawable mBackShadowDrawable;
+        if (mIsRTandLB) {  //左下及右上
+            leftx = (int) (mBezierStart1.x);
+            rightx = (int) (mBezierStart1.x + mTouchToCornerDis / 4);
+            mBackShadowDrawable = mBackShadowDrawableLR;
+        } else {
+            leftx = (int) (mBezierStart1.x - mTouchToCornerDis / 4);
+            rightx = (int) mBezierStart1.x;
+            mBackShadowDrawable = mBackShadowDrawableRL;
+        }
+        canvas.save();
+        try {
+            canvas.clipPath(mPath0);
+            canvas.clipPath(mPath1, Region.Op.INTERSECT);
+        } catch (Exception e) {
+        }
+
+
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        canvas.rotate(mDegrees, mBezierStart1.x, mBezierStart1.y);
+        mBackShadowDrawable.setBounds(leftx, (int) mBezierStart1.y, rightx,
+                (int) (mMaxLength + mBezierStart1.y));//左上及右下角的xy坐标值,构成一个矩形
+        mBackShadowDrawable.draw(canvas);
         canvas.restore();
     }
 
@@ -488,7 +524,9 @@ public class SimulationPageAnim extends HorizonPageAnim{
         mPath0.close();
 
         canvas.save();
-        canvas.clipPath(path, Region.Op.XOR);
+        try {
+            canvas.clipPath(path, Region.Op.DIFFERENCE);
+        }catch (Exception e){}
         canvas.drawBitmap(bitmap, 0, 0, null);
         try {
             canvas.restore();
@@ -497,6 +535,33 @@ public class SimulationPageAnim extends HorizonPageAnim{
         }
 
     }
+
+//    /**
+//     * 计算拖拽点对应的拖拽脚
+//     *
+//     * @param x
+//     * @param y
+//     */
+//    public void calcCornerXY(float x, float y) {
+//        if (x <= mScreenWidth / 2) {
+//            mCornerX = 0;
+//        }else {
+//            mCornerX = mScreenWidth;
+//        }
+//        if (y <= mScreenHeight / 2) {
+//            mCornerY = 0;
+//        } else {
+//            mCornerY = mScreenHeight;
+//        }
+//
+//        if ((mCornerX == 0 && mCornerY == mScreenHeight)
+//                || (mCornerX == mScreenWidth && mCornerY == 0)) {
+//            mIsRTandLB = true;
+//        }else {
+//            mIsRTandLB = false;
+//        }
+//
+//    }
 
     /**
      * 计算拖拽点对应的拖拽脚
@@ -507,7 +572,7 @@ public class SimulationPageAnim extends HorizonPageAnim{
     public void calcCornerXY(float x, float y) {
         if (x <= mScreenWidth / 2) {
             mCornerX = 0;
-        }else {
+        } else {
             mCornerX = mScreenWidth;
         }
         if (y <= mScreenHeight / 2) {
@@ -516,12 +581,8 @@ public class SimulationPageAnim extends HorizonPageAnim{
             mCornerY = mScreenHeight;
         }
 
-        if ((mCornerX == 0 && mCornerY == mScreenHeight)
-                || (mCornerX == mScreenWidth && mCornerY == 0)) {
-            mIsRTandLB = true;
-        }else {
-            mIsRTandLB = false;
-        }
+        mIsRTandLB = (mCornerX == 0 && mCornerY == mScreenHeight)
+                || (mCornerX == mScreenWidth && mCornerY == 0);
 
     }
 
@@ -532,16 +593,18 @@ public class SimulationPageAnim extends HorizonPageAnim{
                 * (mCornerY - mMiddleY) / (mCornerX - mMiddleX);
         mBezierControl1.y = mCornerY;
         mBezierControl2.x = mCornerX;
+        //   mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
+        //   * (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
 
-        float f4 = mCornerY-mMiddleY;
+        float f4 = mCornerY - mMiddleY;
         if (f4 == 0) {
             mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
                     * (mCornerX - mMiddleX) / 0.1f;
-
-        }else {
+        } else {
             mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
                     * (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
         }
+
         mBezierStart1.x = mBezierControl1.x - (mCornerX - mBezierControl1.x)
                 / 2;
         mBezierStart1.y = mCornerY;
@@ -570,15 +633,14 @@ public class SimulationPageAnim extends HorizonPageAnim{
 
                 mBezierControl2.x = mCornerX;
 
-                float f5 = mCornerY-mMiddleY;
+                float f5 = mCornerY - mMiddleY;
                 if (f5 == 0) {
                     mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
                             * (mCornerX - mMiddleX) / 0.1f;
-                }else {
+                } else {
                     mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
                             * (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
                 }
-
                 mBezierStart1.x = mBezierControl1.x
                         - (mCornerX - mBezierControl1.x) / 2;
             }
@@ -589,12 +651,17 @@ public class SimulationPageAnim extends HorizonPageAnim{
 
         mTouchToCornerDis = (float) Math.hypot((mTouchX - mCornerX),
                 (mTouchY - mCornerY));
-
-        mBezierEnd1 = getCross(new PointF(mTouchX,mTouchY), mBezierControl1, mBezierStart1,
+        PointF mTouch= new PointF(mTouchX,mTouchY);
+        mBezierEnd1 = getCross(mTouch, mBezierControl1, mBezierStart1,
                 mBezierStart2);
-        mBezierEnd2 = getCross(new PointF(mTouchX,mTouchY), mBezierControl2, mBezierStart1,
+        mBezierEnd2 = getCross(mTouch, mBezierControl2, mBezierStart1,
                 mBezierStart2);
 
+        /*
+         * mBeziervertex1.x 推导
+         * ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
+         * (mBezierStart1.x+ 2*mBezierControl1.x+mBezierEnd1.x) / 4
+         */
         mBeziervertex1.x = (mBezierStart1.x + 2 * mBezierControl1.x + mBezierEnd1.x) / 4;
         mBeziervertex1.y = (2 * mBezierControl1.y + mBezierStart1.y + mBezierEnd1.y) / 4;
         mBeziervertex2.x = (mBezierStart2.x + 2 * mBezierControl2.x + mBezierEnd2.x) / 4;

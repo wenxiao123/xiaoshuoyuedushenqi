@@ -3,6 +3,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -98,7 +99,9 @@ public class PageView extends View {
         mViewHeight = h;
         //重置图片的大小,由于w,h可能比原始的Bitmap更大，所以如果使用Bitmap.setWidth/Height()是会报错的。
         //所以最终还是创建Bitmap的方式。这种方式比较消耗性能，暂时没有找到更好的方法。
+
         setPageMode(mPageMode);
+
         //重置页面加载器的页面
         mPageLoader.setDisplaySize(w,h);
         //初始化完成

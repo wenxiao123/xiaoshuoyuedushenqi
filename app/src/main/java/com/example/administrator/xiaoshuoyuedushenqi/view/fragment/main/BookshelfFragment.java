@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -35,6 +36,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IBookshelfContract;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
@@ -68,8 +70,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import cn.bmob.v3.http.bean.Collect;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -86,7 +90,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     private ImageView mLocalAddIv;
     private ImageView mBookshelfMore;
     private RelativeLayout mLoadingRv;
-
+    private LinearLayout l_emputy;
     private RelativeLayout mMultiDeleteRv;
     private TextView mSelectAllTv;
     private TextView mCancelTv;
@@ -110,18 +114,17 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void doInOnCreate() {
-        //StatusBarUtil.setLightColorStatusBar(getActivity());
-        //StatusBarUtil.setDarkColorStatusBar(getActivity());
-        //StatusBarUtil.setStatusBarColor(getActivity(),getActivity().getColor(R.color.colorAccent2));
         if (login_admin == null) {
             mPresenter.queryAllBook();
         } else {
             queryallBook(login_admin.getToken());
         }
     }
+
     boolean is_add;
+
     public void updata2(boolean flag) {
-        is_add=flag;
+        is_add = flag;
         if (mPresenter != null) {
             mDataList.clear();
             if (login_admin == null) {
@@ -153,6 +156,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         mBookshelfNovelsRv = getActivity().findViewById(R.id.rv_bookshelf_bookshelf_novels_list);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         mBookshelfNovelsRv.setLayoutManager(gridLayoutManager);
+        l_emputy = getActivity().findViewById(R.id.l_emputy);
+        btn_jingxuan=getActivity().findViewById(R.id.btn_jingxuan);
 
         mLocalAddTv = getActivity().findViewById(R.id.tv_bookshelf_add);
         mLocalAddTv.setOnClickListener(this);
@@ -172,6 +177,13 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         mCancelTv.setOnClickListener(this);
         mDeleteTv = getActivity().findViewById(R.id.tv_bookshelf_multi_delete_delete);
         mDeleteTv.setOnClickListener(this);
+        btn_jingxuan.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).checked();
+            }
+        });
     }
 
     @Override
@@ -470,7 +482,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
      */
     @Override
     public void queryAllBookSuccess(List<BookshelfNovelDbData> dataList) {
-      //  Log.e("QQQ", "queryAllBookSuccess: " + dataList.size());
+        //  Log.e("QQQ", "queryAllBookSuccess: " + dataList.size());
         if (mBookshelfNovelsAdapter == null) {
             mDataList = dataList;
             mDataList2 = dataList;
@@ -484,18 +496,25 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             mDataList.clear();
             mDataList.addAll(dataList);
             mCheckedList.clear();
+            mDataList.add(bookshelfNovelDbData);
+            mCheckedList.add(false);
+            if (mDataList.size() == 1) {
+                l_emputy.setVisibility(View.VISIBLE);
+                mBookshelfNovelsRv.setVisibility(View.GONE);
+            } else {
+                l_emputy.setVisibility(View.GONE);
+                mBookshelfNovelsRv.setVisibility(View.VISIBLE);
+            }
             for (int i = 0; i < mDataList.size(); i++) {
                 mCheckedList.add(false);
             }
-            mDataList.add(bookshelfNovelDbData);
-            mCheckedList.add(false);
-            if(is_add==false) {
+            if (is_add == false) {
                 for (int i = 0; i < mBookshelfNovelsAdapter.getItemCount(); i++) {
                     //mBookshelfNovelsAdapter.notifyDataSetChanged();
                     mBookshelfNovelsAdapter.notifyItemChanged(i, mBookshelfNovelsAdapter.
                             NOTIFY_ET);
                 }
-            }else {
+            } else {
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
             }
         }
@@ -626,38 +645,45 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void clickItem(int position) {
-                        if (position == mDataList.size() - 1) {
-                            ((MainActivity) getActivity()).checked();
-                        } else {
-                            if (!NetUtil.hasInternet(getActivity())) {
-                                showShortToast("当前无网络，请检查网络后重试");
-                                return;
-                            }
-                            if (mIsDeleting || (mDataList.size() > 0 && mDataList.get(position).getType() == -1)) {
-                                return;
-                            }
-                            if (mDataList.get(position).getType() == 0) {
-                                CollBookBean bookBean=new CollBookBean(mDataList.get(position).getNovelUrl(), mDataList.get(position).getName(), "", "",
-                                        mDataList.get(position).getCover(), false, 0,0,
-                               "", "", mDataList.get(position).getWeight(), "",
-                                false, false);
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                                bundle.putString(WYReadActivity.CHPTER_ID,mDataList.get(position).getChapterid());
-                                startActivity(WYReadActivity.class, bundle);
+                        try {
+                            if (position == mDataList.size() - 1) {
+                                ((MainActivity) getActivity()).checked();
                             } else {
-                                CollBookBean bookBean=new CollBookBean(mDataList.get(position).getFuben_id(), mDataList.get(position).getName(), "", "",
-                                        mDataList.get(position).getCover(), false, 0,0,
-                                        "", "", mDataList.get(position).getWeight(), "",
-                                        false, true);
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);//
-                                bundle.putString(WYReadActivity.LOAD_PATH,mDataList.get(position).getNovelUrl());
-                                bundle.putString(WYReadActivity.CHPTER_ID,mDataList.get(position).getPosition()+"");
-                                startActivity(WYReadActivity.class, bundle);
+                                if (!NetUtil.hasInternet(getActivity())) {
+                                    showShortToast("当前无网络，请检查网络后重试");
+                                    return;
+                                }
+                                if (mIsDeleting || (mDataList.size() > 0 && mDataList.get(position).getType() == -1)) {
+                                    return;
+                                }
+                                if (mDataList.get(position).getType() == 0) {
+                                    CollBookBean bookBean = new CollBookBean(mDataList.get(position).getNovelUrl(), mDataList.get(position).getName(), "", "",
+                                            mDataList.get(position).getCover(), false, 0, 0,
+                                            "", "", mDataList.get(position).getWeight(), "",
+                                            false, false);
+                                    List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(mDataList.get(position).getNovelUrl());
+                                    Collections.reverse(cataloginfos);
+                                    bookBean.setCataloginfos(cataloginfos);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                                    bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                                    bundle.putString(WYReadActivity.CHPTER_ID, mDataList.get(position).getChapterid());
+                                    startActivity(WYReadActivity.class, bundle);
+                                } else {
+                                    CollBookBean bookBean = new CollBookBean(mDataList.get(position).getFuben_id(), mDataList.get(position).getName(), "", "",
+                                            mDataList.get(position).getCover(), false, 0, 0,
+                                            "", "", mDataList.get(position).getWeight(), "",
+                                            false, true);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                                    bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);//
+                                    bundle.putString(WYReadActivity.LOAD_PATH, mDataList.get(position).getNovelUrl());
+                                    bundle.putString(WYReadActivity.CHPTER_ID, mDataList.get(position).getPosition() + "");
+                                    startActivity(WYReadActivity.class, bundle);
+                                }
                             }
+                        } catch (Exception ex) {
+
                         }
                     }
 
@@ -666,7 +692,16 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 
                     }
                 });
+        if (mDataList.size() == 1) {
+            l_emputy.setVisibility(View.VISIBLE);
+            mBookshelfNovelsRv.setVisibility(View.GONE);
+        } else {
+            l_emputy.setVisibility(View.GONE);
+            mBookshelfNovelsRv.setVisibility(View.VISIBLE);
+        }
     }
+
+    TextView btn_jingxuan;
 
     /**
      * 查询所有书籍信息失败

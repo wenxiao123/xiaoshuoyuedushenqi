@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.arialyy.aria.util.DbDataHelper;
+import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Categorys_one;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Text;
@@ -47,18 +49,30 @@ public class NetPageLoader extends PageLoader{
     public NetPageLoader(PageView pageView) {
         super(pageView);
     }
+    DatabaseManager databaseManager;
 
     //初始化书籍
     @Override
     public void openBook(CollBookBean collBook){
         super.openBook(collBook);
+        databaseManager=DatabaseManager.getInstance();
         isBookOpen = false;
-        //if (collBook.getBookChapters() == null) return;
-        //mChapterList = convertTxtChapter(collBook.getBookChapters());
+        if (collBook.getCataloginfos() != null){
+            if(collBook.getCataloginfos().size()==0){
+                getCatalogData(mCollBook.get_id(),z,1);
+            }else {
+                mChapterList = convertTxtChapter(collBook.getCataloginfos());
+                if (mPageChangeListener != null){
+                    mPageChangeListener.onCategoryFinish(mChapterList);
+                }
+                loadCurrentChapter();
+            }
+        }else {
+            getCatalogData(mCollBook.get_id(),z,1);
+        }
+//        mChapterList = convertTxtChapter(collBook.getBookChapters());
         //设置目录回调
-        getCatalogData(mCollBook.get_id(),z,1);
         //提示加载下面的章节
-        //getDetailedChapterData(mCollBook.get_id(),chpter_id+"",1);
     }
 
     public List<Categorys_one> getCategorys_ones() {
@@ -87,7 +101,6 @@ public class NetPageLoader extends PageLoader{
                 .add("type", type+"")
                 .add("page",posion+"")
                 .add("limit","50")
-                // .add("limit", id)
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
@@ -154,7 +167,7 @@ public class NetPageLoader extends PageLoader{
                 z++;
                 getCatalogData(mCollBook.get_id(), z, 1);
             }else {
-                Log.e("QQQ", "handleMessage: "+catalogDataAll.size());
+                databaseManager.insertBookshelfNovel(catalogDataAll);
                 mChapterList = convertTxtChapter(catalogDataAll);
                 if (mPageChangeListener != null){
                     mPageChangeListener.onCategoryFinish(mChapterList);

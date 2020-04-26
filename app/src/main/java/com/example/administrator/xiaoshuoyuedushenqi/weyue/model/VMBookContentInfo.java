@@ -153,8 +153,12 @@ public class VMBookContentInfo extends BaseViewModel {
 //                                mDisposable = disposable;
 //                            }
 //                        });
+           if(bookChapterList.size()==0){
+              return;
+           }
            s=Integer.parseInt(bookId);
            title1=bookChapterList.get(0).getTitle();
+           //Log.e("QQQ", "loadContent2: "+noval_id+" "+title1);
            getDetailedChapterData(noval_id, (s+1)+"",title1);
     }
     String div;
@@ -164,7 +168,7 @@ public class VMBookContentInfo extends BaseViewModel {
 //        for (int i = 0; i < bookChapterList.size(); i++) {
             TxtChapter bookChapter = bookChapterList.get(0);
             this.div=div;
-            Log.e("QQQ", "loadContent2: "+bookChapter.getLink()+" "+div);
+            //Log.e("QQQ", "loadContent2: "+bookChapter.getLink()+" "+div);
             new Thread(new LoadRunable(bookChapter.getLink())).start();
 //        }
     }
@@ -191,35 +195,27 @@ public class VMBookContentInfo extends BaseViewModel {
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
-                            //File file = BookManager.getBookFile(bookid, data.getTitle());
-//                            if(file.exists()){
-//                                iBookChapters.finishChapters();
-//                            }else {
-                            BookSaveUtils.getInstance().saveChapterInfo(bookid, data.getTitle(), data.getContent().replace("&nbsp"," "));
-                            //BookSaveUtils.getInstance().saveNowChapterInfo(bookid,data.getContent().replace("&nbsp"," "));
-                             //}
-                           // Log.e("QQQ", "onResponse: "+s);
-                             //if(s<size-1) {
-                            //handler.sendEmptyMessage(1);
-                            //}else {
+                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title, data.getContent().replace("&nbsp"," "));
                             handler.sendEmptyMessage(2);
-                             //}
                         }
                     } else {
+                        BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
                         iBookChapters.finishChapters();
-                        //chapterError();
                         return;
-                        //mPresenter.getDetailedChapterDataError("请求数据失败");
+
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
                     iBookChapters.finishChapters();
+                    return;
                 }
             }
 
             @Override
             public void onFailure(String errorMsg) {
+                BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
                 iBookChapters.finishChapters();
+                return;
                 // mPresenter.getDetailedChapterDataError(errorMsg);
             }
         });

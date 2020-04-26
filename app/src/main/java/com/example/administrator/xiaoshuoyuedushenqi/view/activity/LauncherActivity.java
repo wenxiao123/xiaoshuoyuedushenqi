@@ -87,6 +87,9 @@ public class LauncherActivity extends BaseActivity {
     protected void initData() {
         databaseManager=DatabaseManager.getInstance();
         websites_lrc=databaseManager.queryAllWebsite();
+        for(int i=0;i<websites_lrc.size();i++){
+            Log.e("EEE", "initData: "+websites_lrc.get(i).getUrl());
+        }
         if(websites_lrc.size()==0){
             websites_lrc.add(new Website("http://hsa.4jvr2g68.com:36213",1));
             websites_lrc.add(new Website("http://ges.atkskjx4.com:36213",0));
@@ -266,10 +269,11 @@ public class LauncherActivity extends BaseActivity {
     int z=0;
 
     private void getWebsiteSuccess(List<Website> websites) {
-        databaseManager.deleteWebsite();
+        if(websites.size()>0) {
+            databaseManager.deleteWebsite();
+        }
         for(int i=0;i<websites.size();i++){
           databaseManager.insertWebsite(websites.get(i));
-         // Log.e("WWW", "getWebsiteSuccess: "+websites.get(i).getUrl());
         }
         int first= SpUtil.getIsfirst();
         if(first==0) {

@@ -1,6 +1,11 @@
 package com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity;
 
 
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.gen.BookChapterBeanDao;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.gen.CollBookBeanDao;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.gen.DaoSession;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +21,8 @@ import org.greenrobot.greendao.DaoException;
 /**
  * Created by Liang_Lu on 2017/11/21.
  */
-@Entity
 public class CollBookBean implements Serializable {
     private static final long serialVersionUID = 56423411312L;
-    @Id
     private String _id;//如果是本地文件，那么id为所在的地址
 
     private String title;
@@ -37,18 +40,24 @@ public class CollBookBean implements Serializable {
     private String lastChapter;
     //是否更新或未阅读
     private boolean isUpdate = true;
+
+    public List<Cataloginfo> getCataloginfos() {
+        return cataloginfos;
+    }
+
+    public void setCataloginfos(List<Cataloginfo> cataloginfos) {
+        this.cataloginfos = cataloginfos;
+    }
+
+    private List<Cataloginfo> cataloginfos;
     //是否是本地文件
     private boolean isLocal = false;
-    @ToMany(referencedJoinProperty = "bookId")
     private List<BookChapterBean> bookChapterList;
     /** Used to resolve relations */
-    @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
     /** Used for active entity operations. */
-    @Generated(hash = 1552163441)
     private transient CollBookBeanDao myDao;
 
-    @Generated(hash = 757968961)
     public CollBookBean(String _id, String title, String author, String shortIntro,
             String cover, boolean hasCp, int latelyFollower, double retentionRatio,
             String updated, String lastRead, int chaptersCount, String lastChapter,

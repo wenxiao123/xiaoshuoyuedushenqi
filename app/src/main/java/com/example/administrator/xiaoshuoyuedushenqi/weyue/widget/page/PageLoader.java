@@ -1177,14 +1177,14 @@ public abstract class PageLoader {
         mNextPageList = mCurPageList;
 
         //判断上一章缓存是否存在，如果存在则从缓存中获取数据。
-        if (mWeakPrePageList != null && mWeakPrePageList.get() != null) {
-            mCurPageList = mWeakPrePageList.get();
-            mWeakPrePageList = null;
-        }
-        //如果不存在则加载数据
-        else {
+//        if (mWeakPrePageList != null && mWeakPrePageList.get() != null) {
+//            mCurPageList = mWeakPrePageList.get();
+//            mWeakPrePageList = null;
+//        }
+//        //如果不存在则加载数据
+//        else {
             mCurPageList = loadPageList(prevChapter);
-        }
+//        }
 
         mLastChapter = mCurChapterPos;
         mCurChapterPos = prevChapter;
@@ -1224,7 +1224,6 @@ public abstract class PageLoader {
                 return true;
             }
         }
-       // Log.e("QQQ", "next: "+111);
         mCancelPage = mCurPage;
         mCurPage = nextPage;
         mPageView.drawNextPage();
@@ -1275,6 +1274,7 @@ public abstract class PageLoader {
         }
         //如果当前章不存在，则表示在加载中
         else {
+            //Log.e("WWW", "nextChapter: "+"   TTT");
             mStatus = STATUS_LOADING;
             //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
             mCurPage.position = 0;
@@ -1412,11 +1412,13 @@ public abstract class PageLoader {
             if (mPageChangeListener != null) {
                 mPageChangeListener.onPageChange(pos);
             }
+            position=pos;
             return mCurPageList.get(pos);
         }
         return new TxtPage();
     }
 
+   int position;
     /**
      * @return:获取上一个章节的最后一页
      */

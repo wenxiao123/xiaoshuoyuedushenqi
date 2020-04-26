@@ -2,6 +2,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.viewpager.widget.PagerAdapter;
@@ -15,9 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -46,6 +49,9 @@ import com.wzh.viewpager.indicator.UIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
 /**
  * 发现页面的出版页
@@ -182,35 +188,47 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             //View view = views.get(position);
-            ImageView imageView = new ImageView(getContext());
-            SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                    imageView.setBackground(resource);
-                }
-            };
-            String href="";
-            if(views.get(position).getPicpath().contains("http")){
-                href=views.get(position).getPicpath();
-            }else {
-                href=UrlObtainer.GetUrl()+views.get(position).getPicpath();
-            }
-            Glide.with(getContext()).load(href)
-                    .apply(new RequestOptions()
-                            .placeholder(R.drawable.cover_place_holder)
-                            .error(R.mipmap.admin))
-                    .into(simpleTarget);
-            container.addView(imageView);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getContext(), NovelIntroActivity.class);
-                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-                    intent.putExtra("pid", views.get(position).getNovel_id() + "");
-                    startActivity(intent);
-                }
-            });
-            return imageView;
+//            ImageView imageView = new ImageView(getContext());
+//            SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
+//                @Override
+//                public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+//                    imageView.setBackground(resource);
+//                }
+//            };
+//            String href="";
+//            if(views.get(position).getPicpath().contains("http")){
+//                href=views.get(position).getPicpath();
+//            }else {
+//                href=UrlObtainer.GetUrl()+views.get(position).getPicpath();
+//            }
+//            Glide.with(getContext()).load(href)
+//                    .apply(new RequestOptions()
+//                            .placeholder(R.drawable.cover_place_holder)
+//                            .error(R.mipmap.admin))
+//                    .into(simpleTarget);
+//            container.addView(imageView);
+//            imageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+//                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+//                    intent.putExtra("pid", views.get(position).getNovel_id() + "");
+//                    startActivity(intent);
+//                }
+//            });
+//            return imageView;
+//            JCVideoPlayerStandard jcVideoPlayerStandard=new JCVideoPlayerStandard(getContext());
+//            boolean up = jcVideoPlayerStandard.setUp("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4", JCVideoPlayer.SCREEN_LAYOUT_LIST, "");
+//            return jcVideoPlayerStandard;
+            VideoView videoView=new VideoView(getContext());
+            Uri uri = Uri.parse("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4");
+            MediaController mediaController = new MediaController(getContext());
+            mediaController.setVisibility(View.GONE);//隐藏进度条
+            videoView.setMediaController(mediaController);
+            videoView.setVideoURI(uri);
+            videoView.requestFocus();
+            videoView.start();
+            return videoView;
         }
 
         @Override

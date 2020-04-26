@@ -188,6 +188,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             mMoreAfterIv.setVisibility(View.VISIBLE);
             mMoreBeforeIv.setVisibility(View.INVISIBLE);
             changeFragment(FG_MORE);
+        }else if(is_naghit!=null&&is_naghit.equals("3")){
+            // 在开启当前菜单项的动画前，先切换其他菜单项的 icon
+            mBookshelfBeforeIv.setVisibility(View.VISIBLE);
+            mBookshelfAfterIv.setVisibility(View.INVISIBLE);
+            mMoreBeforeIv.setVisibility(View.VISIBLE);
+            mMoreAfterIv.setVisibility(View.INVISIBLE);
+            mBookMarkBefore.setVisibility(View.VISIBLE);
+            mBookMarkAfter.setVisibility(View.INVISIBLE);
+            mDiscoveryAfterIv.setVisibility(View.VISIBLE);
+            mDiscoveryBeforeIv.setVisibility(View.INVISIBLE);
+            // 切换 Fragment
+            changeFragment(FG_DISCOVERY);
         }
     }
 

@@ -50,7 +50,6 @@
             android:textColor="@color/color_tip_line"
             android:layout_gravity="center"
             android:gravity="center"
-            android:background="@drawable/selector_dialog_tip_choice_right"
             android:clickable="true"/>
 
         <View
@@ -66,10 +65,9 @@
             android:layout_height="match_parent"
             android:text="否"
             android:textSize="16sp"
-            android:textColor="@color/red"
+            android:textColor="@color/red_aa"
             android:layout_gravity="center"
             android:gravity="center"
-            android:background="@drawable/selector_dialog_tip_choice_left"
             android:clickable="true"/>
 
 

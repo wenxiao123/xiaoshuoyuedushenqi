@@ -57,6 +57,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.NovelInfoContract;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Chapter;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
@@ -96,6 +97,7 @@ import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -577,6 +579,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                             noval_details.getPic(), false, 0, 0,
                             "", "", weigh, "",
                             false, false);
+                    List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
+                    Collections.reverse(cataloginfos);
+                    bookBean.setCataloginfos(cataloginfos);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
@@ -626,6 +631,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                             noval_details.getPic(), false, 0, 0,
                             "", "", weigh, "",
                             false, false);
+                    List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
+                    Collections.reverse(cataloginfos);
+                    bookBean.setCataloginfos(cataloginfos);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);

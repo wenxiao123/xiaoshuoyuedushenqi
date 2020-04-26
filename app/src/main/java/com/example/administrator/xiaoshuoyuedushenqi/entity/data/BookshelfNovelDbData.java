@@ -1,10 +1,12 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.data;
 
+import java.io.Serializable;
+
 /**
  * @author
  * Created on 2019/11/26
  */
-public class BookshelfNovelDbData {
+public class BookshelfNovelDbData implements Serializable {
     private String novelUrl;
     private String name;
     private String cover;

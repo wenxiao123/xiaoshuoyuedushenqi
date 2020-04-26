@@ -248,6 +248,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
             if (mCheckedList.get(i)) {
                 // 从数据库中删除该小说
                 mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
+                mDbManager.deleteBookCalotaNovel(mDataList.get(i).getNovelUrl());
                 if(login_admin!=null){
 //                    BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(mDataList.get(i).getNovelUrl());
 //                    if(bookshelfNovelDbData!=null) {

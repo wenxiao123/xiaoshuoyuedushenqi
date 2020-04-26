@@ -249,10 +249,10 @@ public class NovelSourceAdapter extends
     }
 
     class NovelSourceViewHolder extends RecyclerView.ViewHolder {
-        ImageView cover;
+        ImageView cover,tv_delect_bookshelf;
         TextView name;
         TextView author;
-        TextView introduce,tv_delect_bookshelf;
+        TextView introduce;
         TextView webSite,tv_item_bookshelf;
 
         public NovelSourceViewHolder(@NonNull View itemView) {

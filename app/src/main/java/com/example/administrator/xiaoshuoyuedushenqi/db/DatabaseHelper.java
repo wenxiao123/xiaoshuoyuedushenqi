@@ -39,6 +39,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Constant.TABLE_BOOKSHELF_NOVEL_POSITION + " int, "
             + Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION + " int)";
 
+    private static final String CREATE_TABLE_COLALOG_NOVEL = "create table " + Constant.TABLE_COLALOG_NOVEL
+            + " ( id int primary key, "
+            + " title text , "
+            + " novalid text , "
+            + " reurl text )";
     // 创建书架书签信息表
     private static final String CREATE_TABLE_BOOKMARK_NOVEL = "create table " + Constant.TABLE_BOOKMARK_NOVEL
             + " ("  + Constant.TABLE_BOOKMARK_ID + " integer primary key autoincrement, "
@@ -72,6 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_TABLE_COLALOG_NOVEL);
         db.execSQL(CREATE_TABLE_HISTORY);
         db.execSQL(CREATE_TABLE_WEBSITE);
         db.execSQL(CREATE_TABLE_BOOKSHELF_NOVEL);

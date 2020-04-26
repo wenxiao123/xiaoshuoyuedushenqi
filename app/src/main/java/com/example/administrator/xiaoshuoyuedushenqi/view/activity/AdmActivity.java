@@ -148,7 +148,6 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ", "onResponse: " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -158,8 +157,9 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                         String img = object.getString("value");
                         String href = object.getString("url");
                         String time = object.getString("time");
+                        String types= object.getString("types");
                         //String type=img.substring(img.length()-1,img.length()-4);
-                        if (img.contains(".png") || img.contains(".jpg") || img.contains(".jpeg")) {
+                        if (types.equals("1")&&(img.contains(".png") || img.contains(".jpg") || img.contains(".jpeg"))) {
                             String https;
                             if (img.contains("http")) {
                                 https = img;
@@ -217,6 +217,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
     ImageView image,guodu;
 
     private void showAdm(String time, String https, String href, boolean b) {
+        Log.e("QQQ", "showAdm: "+https);
         int s = Integer.parseInt(time);
         if (b == true) {
             videoView.setVisibility(View.VISIBLE);

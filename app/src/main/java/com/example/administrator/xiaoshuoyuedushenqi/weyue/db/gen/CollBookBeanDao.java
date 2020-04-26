@@ -185,7 +185,7 @@ public class CollBookBeanDao extends AbstractDao<CollBookBean, String> {
     @Override
     protected final void attachEntity(CollBookBean entity) {
         super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
+        //entity.__setDaoSession(daoSession);
     }
 
     @Override
