@@ -13,6 +13,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.BookManager;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.BookSaveUtils;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.BaseViewModel;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.IBookChapters;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.TxtChapter;
@@ -163,14 +164,9 @@ public class VMBookContentInfo extends BaseViewModel {
     }
     String div;
     public void loadContent2(int bookId, List<TxtChapter> bookChapterList,String div) {
-             //bookid=bookChapterList.get(bookId).getBookId()+"";
-        //首先判断是否Chapter已经存在
-//        for (int i = 0; i < bookChapterList.size(); i++) {
             TxtChapter bookChapter = bookChapterList.get(0);
             this.div=div;
-            //Log.e("QQQ", "loadContent2: "+bookChapter.getLink()+" "+div);
             new Thread(new LoadRunable(bookChapter.getLink())).start();
-//        }
     }
 
     public void getDetailedChapterData(String bookid, String id,String title) {
@@ -189,23 +185,23 @@ public class VMBookContentInfo extends BaseViewModel {
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
                         if(jsonObject.isNull("data")){
-                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
+                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
                             iBookChapters.finishChapters();
                             return;
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
-                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title, data.getContent().replace("&nbsp"," "));
+                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), data.getContent().replace("&nbsp"," "));
                             handler.sendEmptyMessage(2);
                         }
                     } else {
-                        BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
+                        BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
                         iBookChapters.finishChapters();
                         return;
 
                     }
                 } catch (JSONException e) {
-                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
+                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
                     iBookChapters.finishChapters();
                     return;
                 }
@@ -213,7 +209,7 @@ public class VMBookContentInfo extends BaseViewModel {
 
             @Override
             public void onFailure(String errorMsg) {
-                BookSaveUtils.getInstance().saveChapterInfo(bookid, title, "内容为空");
+                BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
                 iBookChapters.finishChapters();
                 return;
                 // mPresenter.getDetailedChapterDataError(errorMsg);
@@ -266,11 +262,11 @@ public class VMBookContentInfo extends BaseViewModel {
            }
            elements = doc.body().select(div);
            content = "转码阅读：" + elements.html().replace("<p>", "");
-           BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title, content.replace("</p>", ""));
+           BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title.replace(" ",""), content.replace("</p>", ""));
            //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
            iBookChapters.finishChapters();
        }catch (Exception ex){
-           BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title, "内容有误");
+           BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title.replace(" ",""), "内容有误");
            //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
            iBookChapters.finishChapters();
        }

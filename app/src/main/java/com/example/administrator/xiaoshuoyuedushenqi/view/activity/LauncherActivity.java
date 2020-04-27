@@ -25,6 +25,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelD
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
@@ -228,7 +229,7 @@ public class LauncherActivity extends BaseActivity {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ1", "onResponse: "+url+" "+json);
+                LogUtils.e(json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -255,7 +256,7 @@ public class LauncherActivity extends BaseActivity {
 
             @Override
             public void onFailure(String errorMsg) {
-                Log.e("QQQ2", "onResponse: "+url);
+                LogUtils.e(url);
                 if(z<websites_lrc.size()) {
                     UrlObtainer.setHref(websites_lrc.get(z).getUrl());
                     setBookshelfadd();

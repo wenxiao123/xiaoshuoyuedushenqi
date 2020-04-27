@@ -300,11 +300,18 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         return false;
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            //code........
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        }
-        return false;
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+//            //code........
+//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//        }
+//        return false;
+//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent recever = new Intent("com.name.android");
+        sendBroadcast(recever);
     }
 }

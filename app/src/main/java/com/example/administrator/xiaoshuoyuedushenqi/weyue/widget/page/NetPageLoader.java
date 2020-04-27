@@ -17,6 +17,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.helper.CollBookHel
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Charset;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.FileUtils;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -145,11 +146,13 @@ public class NetPageLoader extends PageLoader{
             handler.sendEmptyMessage(2);
         }else {
             if (z < weigh / 50) {
-               // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
+                // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
+                LogUtils.e(z+" "+weigh/50);
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(1);
             } else {
-                //Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
+                // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
+                LogUtils.e(z+" "+weigh/50);
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(2);
             }
@@ -248,18 +251,17 @@ public class NetPageLoader extends PageLoader{
         File file;
         if(is_website==false) {
             file = new File(Constant.BOOK_CACHE_PATH + mCollBook.get_id()
-                    + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
-//            file = new File(Constant.BOOK_CACHE_PATH
-//                    + File.separator + mCollBook.get_id() + FileUtils.SUFFIX_WY);
+                    + File.separator + txtChapter.title.replace(" ","") + FileUtils.SUFFIX_WY);
         }else {
             if(is_of_all==true){
-                is_website=false;
+               is_website=false;
+            }else {
+                is_website=true;
             }
             file = new File(Constant.BOOK_OTHER_CACHE_PATH + mCollBook.get_id()
-                    + File.separator + txtChapter.title + FileUtils.SUFFIX_WY);
-//            file = new File(Constant.BOOK_OTHER_CACHE_PATH
-//                    + File.separator + mCollBook.get_id() + FileUtils.SUFFIX_WY);
+                    + File.separator + txtChapter.title.replace(" ","") + FileUtils.SUFFIX_WY);
         }
+       // LogUtils.e(file.getAbsolutePath()+" "+file.exists());
         if (!file.exists()) return null;
         //if(file.length()==0)
         Reader reader = null;

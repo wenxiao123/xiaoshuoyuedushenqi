@@ -74,14 +74,14 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onResume() {
         super.onResume();
-        //if(!(this instanceof WYReadActivity)) {
+        if(!(this instanceof WYReadActivity)) {
             isNight = ReadSettingManager.getInstance().isNightMode();
             if (isNight == true) {
                 backgroundAlpha(0.4f);
             } else {
                 backgroundAlpha(1f);
             }
-        //}
+        }
 //        App app= (App) getApplication();
 //        App.init(this);
 //        if(app.isNight()==true) {

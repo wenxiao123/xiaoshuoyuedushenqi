@@ -2,14 +2,17 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.View;
@@ -26,11 +29,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryinfoAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryzyAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.HotRankAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
+import com.example.administrator.xiaoshuoyuedushenqi.banner.Banner;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseTabFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleContract;
@@ -39,6 +45,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MalePresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
@@ -50,14 +57,13 @@ import com.wzh.viewpager.indicator.UIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
+
+import static cn.bmob.v3.Bmob.getApplicationContext;
 
 /**
  * 发现页面的出版页
  *
- * @author
- * Created on 2019/11/4
+ * @author Created on 2019/11/4
  */
 public class PressFragment extends BaseTabFragment<MalePresenter>
         implements IMaleContract.View {
@@ -85,7 +91,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         return R.layout.fragment_press;
     }
 
-    private UltraViewPager mViewPager4;
+    private Banner banner;
     private UIndicator uIndicator4;
     int mess;
 
@@ -108,32 +114,32 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
     @Override
     protected void initView() {
-       TextView tv_hot_more=getActivity().findViewById(R.id.tv_press_category_more);
+        TextView tv_hot_more = getActivity().findViewById(R.id.tv_press_category_more);
         tv_hot_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getContext(), RankingActivity.class);
-                intent.putExtra("type",2);
-                intent.putExtra("new_or_hot",1);
+                Intent intent = new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type", 2);
+                intent.putExtra("new_or_hot", 1);
                 getContext().startActivity(intent);
             }
         });
         getActivity().findViewById(R.id.iv_press_category_more).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getContext(), RankingActivity.class);
-                intent.putExtra("type",2);
-                intent.putExtra("new_or_hot",1);
+                Intent intent = new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type", 2);
+                intent.putExtra("new_or_hot", 1);
                 getContext().startActivity(intent);
             }
         });
-        TextView tv_item_new_more=getActivity().findViewById(R.id.tv_press_new_more);
+        TextView tv_item_new_more = getActivity().findViewById(R.id.tv_press_new_more);
         tv_item_new_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getContext(), RankingActivity.class);
-                intent.putExtra("type",2);
-                intent.putExtra("new_or_hot",2);
+                Intent intent = new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type", 2);
+                intent.putExtra("new_or_hot", 2);
                 getContext().startActivity(intent);
             }
         });
@@ -141,7 +147,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mCategoryNovelRv = getActivity().findViewById(R.id.rv_press_category_novel_list);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mNewRv=getActivity().findViewById(R.id.rv_male_new_novel_list1);
+        mNewRv = getActivity().findViewById(R.id.rv_male_new_novel_list1);
         mNewRv.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
         rel_click_more = getActivity().findViewById(R.id.click_more_press);
@@ -162,80 +168,80 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
             }
         });
         frameLayout_banner = getActivity().findViewById(R.id.banner1);
-        mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager1);
-
+        banner = getActivity().findViewById(R.id.ultra_viewpager1);
         uIndicator4 = getActivity().findViewById(R.id.indicator);
-
     }
 
-    public class DemoPagerAdapter extends PagerAdapter {
-        private List<Wheel> views;
-
-        public DemoPagerAdapter(List<Wheel> views) {
-            this.views = views;
-        }
-
-        @Override
-        public int getCount() {
-            return views.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            //View view = views.get(position);
-//            ImageView imageView = new ImageView(getContext());
-//            SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
-//                @Override
-//                public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-//                    imageView.setBackground(resource);
+//    public class DemoPagerAdapter extends PagerAdapter {
+//        private List<Wheel> views;
+//
+//        public DemoPagerAdapter(List<Wheel> views) {
+//            this.views = views;
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return views.size();
+//        }
+//
+//        @Override
+//        public boolean isViewFromObject(View view, Object object) {
+//            return view == object;
+//        }
+//
+//        @Override
+//        public Object instantiateItem(ViewGroup container, int position) {
+//            Wheel view = views.get(position);
+//            if (view.getPicpath().endsWith(".mp4")) {
+//                ImageView imageView = new ImageView(getContext());
+//                SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
+//                    @Override
+//                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+//                        imageView.setBackground(resource);
+//                    }
+//                };
+//                String href = "";
+//                if (views.get(position).getPicpath().contains("http")) {
+//                    href = views.get(position).getPicpath();
+//                } else {
+//                    href = UrlObtainer.GetUrl() + views.get(position).getPicpath();
 //                }
-//            };
-//            String href="";
-//            if(views.get(position).getPicpath().contains("http")){
-//                href=views.get(position).getPicpath();
-//            }else {
-//                href=UrlObtainer.GetUrl()+views.get(position).getPicpath();
+//                Glide.with(getContext()).load(href)
+//                        .apply(new RequestOptions()
+//                                .placeholder(R.drawable.cover_place_holder)
+//                                .error(R.mipmap.admin))
+//                        .into(simpleTarget);
+//                container.addView(imageView);
+//                imageView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+//                        // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+//                        intent.putExtra("pid", views.get(position).getNovel_id() + "");
+//                        startActivity(intent);
+//                    }
+//                });
+//                return imageView;
+//            } else {
+//                MediaController mc = new MediaController(getContext());
+//                VideoView videoView = new VideoView(getContext());
+//                videoView.setMediaController(mc);
+//                String netPlayUrl = "http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4";
+//                HttpProxyCacheServer proxy = App.getProxy(getContext());
+//                String proxyUrl = proxy.getProxyUrl(netPlayUrl);
+//                videoView.setVideoPath(proxyUrl);//播放的是代理服务器返回的url，已经进行了封装处理
+//                videoView.requestFocus();//让VideiView获取焦点
+//                videoView.start();//开始播放
+//                container.addView(videoView);
+//                return videoView;
 //            }
-//            Glide.with(getContext()).load(href)
-//                    .apply(new RequestOptions()
-//                            .placeholder(R.drawable.cover_place_holder)
-//                            .error(R.mipmap.admin))
-//                    .into(simpleTarget);
-//            container.addView(imageView);
-//            imageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(getContext(), NovelIntroActivity.class);
-//                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-//                    intent.putExtra("pid", views.get(position).getNovel_id() + "");
-//                    startActivity(intent);
-//                }
-//            });
-//            return imageView;
-//            JCVideoPlayerStandard jcVideoPlayerStandard=new JCVideoPlayerStandard(getContext());
-//            boolean up = jcVideoPlayerStandard.setUp("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4", JCVideoPlayer.SCREEN_LAYOUT_LIST, "");
-//            return jcVideoPlayerStandard;
-            VideoView videoView=new VideoView(getContext());
-            Uri uri = Uri.parse("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4");
-            MediaController mediaController = new MediaController(getContext());
-            mediaController.setVisibility(View.GONE);//隐藏进度条
-            videoView.setMediaController(mediaController);
-            videoView.setVideoURI(uri);
-            videoView.requestFocus();
-            videoView.start();
-            return videoView;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) instantiateItem(container, position));
-        }
-    }
+//        }
+//        // &nbsp     </br>   \n
+//        @Override
+//        public void destroyItem(ViewGroup container, int position, Object object) {
+//            container.removeView((View) instantiateItem(container, position));
+//        }
+//    }
 
     @Override
     protected void doInOnCreate() {
@@ -254,7 +260,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(mRefreshSrv.isRefreshing()) {
+                if (mRefreshSrv.isRefreshing()) {
                     mRefreshSrv.setRefreshing(false);
                 }
             }
@@ -275,6 +281,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
     protected int getPosition() {
         return 1;
     }
+
     private void initCategoryAdapter() {
         mCategoryAdapter = new CategoryAdapter(getActivity(),
                 novelNameList,
@@ -313,7 +320,9 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mCategoryAdapter.setType(2);
         mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
+
     CategoryinfoAdapter categoryinfoAdapter;
+
     private void initAdapter() {
         categoryinfoAdapter = new CategoryinfoAdapter(getContext(),
                 mNovelDataList);
@@ -328,7 +337,9 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         });
         mHotRankRv.setAdapter(categoryinfoAdapter);
     }
+
     CategoryzyAdapter categoryzyAdapter;
+
     private void initnewAdapter() {
         categoryzyAdapter = new CategoryzyAdapter(getContext(),
                 noval_detailsList);
@@ -406,7 +417,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
      */
     @Override
     public void getCategoryNovelsSuccess(List<Noval_details> dataList) {
-       // Log.e("QQQ", "getCategoryNovelsSuccess: "+dataList.size());
+        // Log.e("QQQ", "getCategoryNovelsSuccess: "+dataList.size());
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         frameLayout_banner.setVisibility(View.VISIBLE);
@@ -426,9 +437,9 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         rel_click_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getContext(), RankingActivity.class);
-                intent.putExtra("type",2);
-                intent.putExtra("new_or_hot",1);
+                Intent intent = new Intent(getContext(), RankingActivity.class);
+                intent.putExtra("type", 2);
+                intent.putExtra("new_or_hot", 1);
                 getContext().startActivity(intent);
             }
         });
@@ -446,12 +457,11 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
     @Override
     public void getListImageSuccess(List<Wheel> novalDetailsList) {
-        if(novalDetailsList.size()==0){
+        if (novalDetailsList.size() == 0) {
             return;
-        }else {
-            DemoPagerAdapter mAdapter = new DemoPagerAdapter(novalDetailsList);
-            mViewPager4.setAdapter(mAdapter);
-            uIndicator4.attachToViewPager(mViewPager4.getViewPager());
+        } else {
+            initData1(novalDetailsList);
+            initView1();
         }
     }
 
@@ -465,5 +475,52 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         // 传递小说名，进入搜查页后直接显示该小说的搜查结果
         intent.putExtra(SearchActivity.KEY_NOVEL_NAME, name);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPause() {
+        banner.destroy();
+        super.onPause();
+        // Log.e("WWW", "onPause: "+222);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+    }
+    List list;
+    void initData1(List<Wheel> novalDetailsList){
+        list = new ArrayList<>();
+        HttpProxyCacheServer proxy = App.getProxy(getContext());
+        for(int i=0;i<novalDetailsList.size();i++) {
+            String url;
+            if(novalDetailsList.get(i).getPicpath().contains("http:")){
+                url=novalDetailsList.get(i).getPicpath();
+            }else {
+                url=UrlObtainer.GetUrl()+novalDetailsList.get(i).getPicpath();
+            }
+            LogUtils.e(url);
+            if(novalDetailsList.get(i).getTypes().equals("2")) {
+                String proxyUrl = proxy.getProxyUrl(url);
+                list.add(proxyUrl);
+            }else {
+                list.add(url);
+            }
+        }
+    }
+
+    void initView1(){
+        banner.setDataList(list);
+        banner.setImgDelyed(3000);
+        banner.startBanner();
+        uIndicator4.attachToViewPager(banner.getViewPager());
+        banner.startAutoPlay();
+    }
+
+    @Override
+    public void onDestroy() {
+        banner.destroy();
+        super.onDestroy();
     }
 }

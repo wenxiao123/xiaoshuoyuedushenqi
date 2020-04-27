@@ -19,7 +19,9 @@ import android.widget.VideoView;
 import com.arialyy.aria.core.Aria;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
@@ -32,6 +34,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.AnyRunnModule;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
@@ -52,6 +55,7 @@ import javax.security.auth.login.LoginException;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
+import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getAppContext;
 import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getContext;
 
 
@@ -201,7 +205,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
 //                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, 15000);
+                    mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, 1500);
                 }
             }
 
@@ -215,45 +219,58 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
 
     VideoView videoView;
     ImageView image,guodu;
-
+    private String proxyUrl;
+    private HttpProxyCacheServer proxy;
     private void showAdm(String time, String https, String href, boolean b) {
         Log.e("QQQ", "showAdm: "+https);
         int s = Integer.parseInt(time);
         if (b == true) {
             videoView.setVisibility(View.VISIBLE);
             image.setVisibility(View.GONE);
-            Uri uri = Uri.parse(https);
+            //Uri uri = Uri.parse(https);
             MediaController mediaController = new MediaController(this);
             mediaController.setVisibility(View.GONE);//隐藏进度条
             videoView.setMediaController(mediaController);
-            videoView.setVideoURI(uri);
+            //String netPlayUrl="http://baobab.wdjcdn.com/145076769089714.mp4";
+            proxy = App.getProxy(getAppContext());
+            proxyUrl = proxy.getProxyUrl(https);
+            videoView.setVideoPath(proxyUrl);//播放的是代理服务器返回的url，已经进行了封装处理
+            //videoView.setVideoURI(uri);
             videoView.requestFocus();
             videoView.start();
             videoView.seekTo(2);
             videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    mp.setLooping(true);
+                   // mp.setLooping(true);
                     guodu.setVisibility(View.GONE);
                     circleProgressbar.setVisibility(View.VISIBLE);
-                    mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 10000);
-                    circleProgressbar.setTimeMillis(s * 10000);
+                    //mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 10000);
+                    circleProgressbar.setTimeMillis(s * 1000);
                     circleProgressbar.start();
                     circleProgressbar.setText(s + "s 跳过");
                     //创建倒计时类
-                    mCountDownTimer = new MyCountDownTimer(s * 10000, 1000);
+                    mCountDownTimer = new MyCountDownTimer(s * 1000, 1000);
                     mCountDownTimer.start();
+                }
+            });
+            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+            {
+                @Override
+                public void onCompletion(MediaPlayer mp)
+                {
+                    mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, 100);
                 }
             });
             videoView.setOnClickListener(this);
         } else {
             circleProgressbar.setVisibility(View.VISIBLE);
             guodu.setVisibility(View.GONE);
-            mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 10000);
-            circleProgressbar.setTimeMillis(s * 10000);
+            mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 1000);
+            circleProgressbar.setTimeMillis(s*1000);
             circleProgressbar.setText(s + "s 跳过");
             circleProgressbar.start();
-            mCountDownTimer = new MyCountDownTimer(s * 10000, 1000);
+            mCountDownTimer = new MyCountDownTimer(s * 1000, 1000);
             mCountDownTimer.start();
             videoView.setVisibility(View.GONE);
             image.setVisibility(View.VISIBLE);
@@ -355,7 +372,8 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
 
 
         public void onFinish() {
-            circleProgressbar.setText("0s 跳过");
+            circleProgressbar.setText("跳过");
+            //circleProgressbar.setVisibility(View.GONE);
         }
 
         public void onTick(long millisUntilFinished) {

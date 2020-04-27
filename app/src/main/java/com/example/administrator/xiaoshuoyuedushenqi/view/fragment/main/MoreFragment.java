@@ -1,7 +1,10 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.Uri;
 
@@ -44,6 +47,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.VersionUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AdminSetActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FeedbackActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.LoginActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MainActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ReadSettingManager;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.ShareDialog;
@@ -199,6 +203,11 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                 }
             }
         });
+        receiver = new MyReceiver();
+        // 注册广播接受者
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.name.android");//要接收的广播
+        getActivity().registerReceiver(receiver, intentFilter);//注册接收者
     }
     /**
      * 设置添加屏幕的背景透明度
@@ -242,13 +251,13 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
         mAboutV.setOnClickListener(this);
 
         recyclerView1 = getActivity().findViewById(R.id.recycle_part1);
-        recyclerView1.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false));
+        recyclerView1.setLayoutManager(layoutManager);
 
         recyclerView2 = getActivity().findViewById(R.id.recycle_part2);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false));
+        recyclerView2.setLayoutManager(layoutManager1);
 
         recyclerView3 = getActivity().findViewById(R.id.recycle_part3);
-        recyclerView3.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false));
+        recyclerView3.setLayoutManager(layoutManager2);
         relativeLayout = getActivity().findViewById(R.id.rel_login);
         relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +267,25 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
         });
         mCacheSizeTv.setText(GlideCacheUtil.getInstance().getCacheSize(getActivity()));
     }
+
+    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext()){
+        @Override
+        public boolean canScrollVertically() {
+            return false;
+        }
+    };
+    LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext()){
+        @Override
+        public boolean canScrollVertically() {
+            return false;
+        }
+    };
+    LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext()){
+        @Override
+        public boolean canScrollVertically() {
+            return false;
+        }
+    };
 
     @Override
     protected BasePresenter getPresenter() {
@@ -358,6 +386,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            if(msg.what==1){
             if (login_admin != null) {
                 if(getActivity()!=null) {
                     relativeLayout.setClickable(false);
@@ -374,10 +403,29 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                     tv_name.setText(login_admin.getNickname());
                 }
             }
+        }else if(msg.what==2){
+                relativeLayout.setClickable(true);
+                iv_title = getActivity().findViewById(R.id.title_img);
+                tv_name = getActivity().findViewById(R.id.tv_name);
+                tv_content = getActivity().findViewById(R.id.tv_content);
+                tv_content.setVisibility(View.VISIBLE);
+                Glide.with(getActivity())
+                        .load(R.mipmap.admin)
+                        .apply(new RequestOptions()
+                                .placeholder(R.mipmap.admin)
+                                .error(R.mipmap.admin))
+                        .into(iv_title);
+                tv_content.setText("登录后获得更好体验");
+                tv_name.setText("登录/注册");
+            }
         }
     };
 
     void postMessage() {
+        if(login_admin==null){
+            handler.sendEmptyMessage(2);
+           return;
+        }
         Gson gson = new Gson();
         String url = UrlObtainer.GetUrl() + "api/user/index";
         RequestBody requestBody = new FormBody.Builder()
@@ -416,17 +464,18 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
         if (login_admin != null) {
             postMessage();
         }
-//        if (!isNight) {
-//            strings2[0] = "夜间模式";
-//        } else {
-//            strings2[0] = "白天模式";
-//        }
-//        mainRecyleAdapter2 = new MainRecyleAdapter(getContext(), ints2, strings2);
-//        recyclerView2.setAdapter(mainRecyleAdapter2);
     }
 
     @Override
     public void onThemeChanged() {
 
+    }
+    MyReceiver receiver;
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            login_admin = (Login_admin) SpUtil.readObject(getContext());
+            postMessage();
+        }
     }
 }

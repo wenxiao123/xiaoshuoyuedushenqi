@@ -2,6 +2,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
@@ -11,13 +12,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ScreenUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.CoverPageAnim;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.HorizonPageAnim;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.NonePageAnim;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.PageAnimation;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.ScrollPageAnim;
-import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.SimulationPageAnim;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.SimulationAnimation4;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.SlidePageAnim;
 
 import java.lang.ref.WeakReference;
@@ -118,7 +120,7 @@ public class PageView extends View {
 
         switch (pageMode){
             case PAGE_MODE_SIMULATION:
-                mPageAnim = new SimulationPageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);
+                mPageAnim = new SimulationAnimation4(mViewWidth, mViewHeight,this,mPageAnimListener);
                 break;
             case PAGE_MODE_COVER:
                 mPageAnim = new CoverPageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);
@@ -134,7 +136,7 @@ public class PageView extends View {
                         ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener);
                 break;
             default:
-                mPageAnim = new SimulationPageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);
+                mPageAnim = new SimulationAnimation4(mViewWidth, mViewHeight,this,mPageAnimListener);
         }
     }
 

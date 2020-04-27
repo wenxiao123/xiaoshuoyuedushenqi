@@ -22,14 +22,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.tmall.ultraviewpager.UltraViewPager
+<!--                <com.tmall.ultraviewpager.UltraViewPager-->
+<!--                    android:id="@+id/ultra_viewpager1"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_centerInParent="true"-->
+<!--                    android:background="@android:color/darker_gray"-->
+<!--                    app:upv_autoscroll="3000"-->
+<!--                    app:upv_infiniteloop="true" />-->
+                <com.example.administrator.xiaoshuoyuedushenqi.banner.Banner
                     android:id="@+id/ultra_viewpager1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:background="@android:color/darker_gray"
-                    app:upv_autoscroll="3000"
-                    app:upv_infiniteloop="true" />
+                    android:background="@android:color/darker_gray"/>
                 <!--<com.jude.rollviewpager.RollPagerView-->
                 <!--android:id="@+id/roll"-->
                 <!--android:layout_width="match_parent"-->

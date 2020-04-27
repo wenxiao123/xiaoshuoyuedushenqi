@@ -266,9 +266,11 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         mBookshelfNovelsAdapter.notifyDataSetChanged();
         mIsDeleting = false;
         if(mBookshelfNovelsAdapter.getItemCount()==0){
-            Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
-            intent.putExtra("islaod", "2");
-            startActivity(intent);
+//            Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
+//            intent.putExtra("islaod", "2");
+//            startActivity(intent);
+            finish();
+
         }
     }
 
@@ -301,9 +303,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
-                intent.putExtra("islaod", "2");
-                startActivity(intent);
+                finish();
             }
         });
     }
@@ -418,10 +418,19 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0){
             //code........
-            Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
-            intent.putExtra("islaod", "2");
-            startActivity(intent);
+//            Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
+//            intent.putExtra("islaod", "2");
+//            startActivity(intent);
+            finish();
         }
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent recever = new Intent("com.zhh.android");
+        recever.putExtra("type",1);
+        sendBroadcast(recever);
     }
 }

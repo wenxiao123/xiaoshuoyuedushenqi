@@ -5,10 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/trans"
     android:orientation="vertical">
-    <View
+    <ImageView
         android:id="@+id/v_title"
         android:layout_width="match_parent"
-        android:layout_height="30dp"/>
+        android:scaleType="centerCrop"
+        android:layout_height="0dp"/>
     <FrameLayout
         android:layout_below="@id/v_title"
         android:layout_width="match_parent"
@@ -22,6 +23,7 @@
             android:textColor="@color/word_color"
             android:textSize="12sp"
             android:gravity="right"
+            android:layout_marginTop="30dp"
             android:paddingRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

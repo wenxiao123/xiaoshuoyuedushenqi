@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.arialyy.aria.core.Aria;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.util.CrashHandler;
@@ -67,7 +68,15 @@ public class App extends Application {
     public void setCatalogDataAll(List<Cataloginfo> catalogDataAll) {
         this.catalogDataAll = catalogDataAll;
     }
+    private HttpProxyCacheServer proxy;
 
+    public static HttpProxyCacheServer getProxy(Context context) {
+        App app = (App) context.getApplicationContext();
+        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
+    }
+    private HttpProxyCacheServer newProxy() {
+        return new HttpProxyCacheServer(this);
+    }
     @Override
     public void onCreate() {
         super.onCreate();

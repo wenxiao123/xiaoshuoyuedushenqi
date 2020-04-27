@@ -1030,6 +1030,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         if (noval_details != null) {
             if (adapter == null) {
                 Log.e("WWW", "onResume: " + j);
+
                 adapter = new CategoryzyAdapter(this, novalDetails);
                 adapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
                     @Override

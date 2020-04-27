@@ -18,6 +18,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelD
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -206,7 +207,7 @@ public class DatabaseManager {
                         cursor.getColumnIndex("reurl"));
                 if(novelid.equals(novalid)) {
                     Cataloginfo bookshelfNovelDbData = new Cataloginfo(id, novalid, title, reurl);
-                    Log.e("rrr", "queryAllCataloginfo: "+bookshelfNovelDbData);
+                    //Log.e("rrr", "queryAllCataloginfo: "+bookshelfNovelDbData);
                     res.add(bookshelfNovelDbData);
                 }
             } while (cursor.moveToPrevious());
@@ -677,7 +678,7 @@ public class DatabaseManager {
         if (TextUtils.isEmpty(name)) {
             return false;
         }
-        Log.e("QQQ", "isExistInBookshelfNovelname: " + name);
+        LogUtils.e(name);
         Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null,
                 Constant.TABLE_BOOKSHELF_NOVEL_NAME + " = ?", new String[]{name},
                 null, null, null, null);

@@ -29,57 +29,147 @@ E" />
         tools:replace="android:appComponentFactory,android:name"
         android:appComponentFactory="err"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.AllNovelActivity"></activity>
-        <activity android:name=".view.activity.EpubCatalogActivity" />
-        <activity android:name=".view.activity.CatalogActivity" />
-        <activity android:name=".test.TestActivity"></activity>
-        <activity android:name=".view.activity.FenleiNovelActivity"/>
+
+        <activity android:name=".view.activity.AllNovelActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
+            />
+        <activity android:name=".view.activity.EpubCatalogActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".view.activity.CatalogActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".test.TestActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".view.activity.FenleiNovelActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
         <activity android:name=".view.activity.SearchActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
            />
-        <activity android:name=".view.activity.SuishizhuanxianjinActivity"/>
-        <activity android:name=".view.activity.RankingActivity"/>
-        <activity android:name=".view.activity.LoginActivity"/>
+        <activity android:name=".view.activity.SuishizhuanxianjinActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".view.activity.RankingActivity"
+        android:screenOrientation="portrait"
+        android:configChanges="orientation"
+        tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".view.activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
         <service android:name=".service.CacheService"/>
+
         <activity
             android:name=".view.activity.LauncherActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
             android:theme="@style/SplashStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".view.activity.NovelIntroActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
             />
-        <activity android:name=".view.activity.AdmActivity"/>
+
+        <activity android:name=".view.activity.AdmActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
         <activity
             android:name=".view.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
+            android:launchMode="singleTask"
             />
         <activity
             android:name=".view.activity.ReadActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:launchMode="singleTask"
+            tools:ignore="LockedOrientationActivity"
             />
-        <activity android:name=".view.activity.WebActivity"/>
+        <activity android:name=".view.activity.WebActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".view.activity.BookCataloActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
             />
         <activity
             android:name=".view.activity.TxtPlayActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
             />
         <activity
             android:name=".view.activity.MyBookshelfActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
             />
-        <activity android:name=".view.activity.WYReadActivity"/>
+        <activity android:name=".view.activity.WYReadActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".view.activity.ReadrecoderActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
             />
-        <activity android:name=".view.activity.SearchResultActivity"/>
+        <activity android:name=".view.activity.SearchResultActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".view.activity.LocalCatalogActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"
             />
-        <activity android:name=".view.activity.AdminSetActivity"/>
-        <activity android:name=".view.activity.MdifyNicknameActivity"/>
-        <activity android:name=".view.activity.FeedbackActivity"/>
+        <activity android:name=".view.activity.AdminSetActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".view.activity.MdifyNicknameActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".view.activity.FeedbackActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
             android:authorities="com.example.administrator.xiaoshuoyuedushenqi.BmobContentProvider">

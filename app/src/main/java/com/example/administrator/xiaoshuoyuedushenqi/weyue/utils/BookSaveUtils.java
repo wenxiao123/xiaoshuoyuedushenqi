@@ -42,6 +42,7 @@ public class BookSaveUtils {
         try {
             writer = new BufferedWriter(new FileWriter(file));
             String str=content.replace("</br>","\r\n");
+            //Log.e("WWW", "saveChapterInfo: "+str);
             writer.write(str);
             writer.flush();
         } catch (IOException e) {
@@ -106,6 +107,7 @@ public class BookSaveUtils {
             file1.delete();
         }
         File file = BookManager.getBookFile2(folderName, fileName);
+       // LogUtils.e(file.getAbsolutePath()+" "+file.exists());
        // Log.e("QQQ", "convertTxtChapter: "+file.getPath());
         //获取流并存储
         Writer writer = null;

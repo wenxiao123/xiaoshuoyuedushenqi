@@ -61,6 +61,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ScreenUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
@@ -112,7 +113,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     private LinearLayout mSettingBarCv;
     ImageView mCatalogIv, mDayAndNightModeIv, mSettingIv, mBrightnessIv, iv_read_day_and_night_mode;
     PageView txt_page;
-    View v_title;
+    ImageView v_title;
     private TextView mSys_light;
     private ImageView sys_select;
     private SeekBar mBrightnessProcessSb;
@@ -506,6 +507,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         // 设置相关颜色
         //mNovelTitleTv.setTextColor(textColor);
         mPageLoader.setBgColor(mTheme, v_title);
+        if(mTheme==0) {
+            v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
+        }
     }
 
     /**
@@ -590,7 +594,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-               Log.e("QQQ", "onResponse: " + json);
+                LogUtils.e(json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -863,7 +867,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
                 break;
         }
-        v_title.setBackgroundColor(mPageLoader.getmPageBg());
+        if(mTheme==0) {
+            v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
+        }else {
+            v_title.setBackgroundColor(mPageLoader.getmPageBg());
+        }
         tv_textsize.setText(mPageLoader.getmTextSize() + "");
         tv_jainju.setText(mPageLoader.getmTextInterval()+"");
         mPageLoader.setmCurChapterPos(Integer.parseInt(chpter_id));
@@ -881,10 +889,15 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                    post_adm();
                 }
                 mVmContentInfo.setNoval_id(mCollBook.get_id());
-                if(is_othersite==false) {
-                    mVmContentInfo.loadContent(pos + "", chapters);
-                }else {
+                if(is_othersite==true) {
+                    if(is_all_one==true){
+                        is_othersite=false;
+                    }else {
+                        is_othersite=true;
+                    }
                     mVmContentInfo.loadContent2(pos, chapters,reurl);
+                }else {
+                    mVmContentInfo.loadContent(pos + "", chapters);
                 }
                 if (mPageLoader.getPageStatus() == NetPageLoader.STATUS_LOADING
                         || mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
@@ -1324,8 +1337,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             bgColor = ContextCompat.getColor(App.getAppContext(), R.color.color_001c27);
                             break;
                     }
-
-                    v_title.setBackgroundColor(bgColor);
+                    if(mTheme==0) {
+                        v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
+                    }else {
+                        v_title.setBackgroundColor(bgColor);
+                    }
                 } else {
                     isNightMode = true;
                     v_title.setBackgroundColor(getResources().getColor(R.color.black));

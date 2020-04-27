@@ -6,6 +6,16 @@ public class Wheel {
     String title;
     String novel_id;
 
+    public String getTypes() {
+        return types;
+    }
+
+    public void setTypes(String types) {
+        this.types = types;
+    }
+
+    String types;
+
     public String getNovel_id() {
         return novel_id;
     }

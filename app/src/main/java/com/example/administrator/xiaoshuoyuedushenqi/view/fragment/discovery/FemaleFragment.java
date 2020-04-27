@@ -21,11 +21,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryinfoAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CategoryzyAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.HotRankAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
+import com.example.administrator.xiaoshuoyuedushenqi.banner.Banner;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseTabFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleContract;
@@ -77,7 +80,7 @@ public class FemaleFragment extends BaseTabFragment<MalePresenter>
         return R.layout.fragment_female;
     }
 
-    private UltraViewPager mViewPager4;
+    private Banner banner;
     private UIndicator uIndicator4;
     int mess;
 
@@ -154,7 +157,7 @@ public class FemaleFragment extends BaseTabFragment<MalePresenter>
             }
         });
         frameLayout_banner = getActivity().findViewById(R.id.banner_female);
-        mViewPager4 = getActivity().findViewById(R.id.ultra_viewpager_female);
+        banner = getActivity().findViewById(R.id.ultra_viewpager_female);
 
         uIndicator4 = getActivity().findViewById(R.id.indicator_female);
 //        DemoPagerAdapter mAdapter = new DemoPagerAdapter(getList());
@@ -433,9 +436,11 @@ public class FemaleFragment extends BaseTabFragment<MalePresenter>
         if(novalDetailsList.size()==0){
             return;
         }else {
-            DemoPagerAdapter mAdapter = new DemoPagerAdapter(novalDetailsList);
-            mViewPager4.setAdapter(mAdapter);
-            uIndicator4.attachToViewPager(mViewPager4.getViewPager());
+//            DemoPagerAdapter mAdapter = new DemoPagerAdapter(novalDetailsList);
+//            mViewPager4.setAdapter(mAdapter);
+//            uIndicator4.attachToViewPager(mViewPager4.getViewPager());
+            initData1(novalDetailsList);
+            initView1();
         }
     }
 
@@ -449,5 +454,38 @@ public class FemaleFragment extends BaseTabFragment<MalePresenter>
         // 传递小说名，进入搜查页后直接显示该小说的搜查结果
         intent.putExtra(SearchActivity.KEY_NOVEL_NAME, name);
         startActivity(intent);
+    }
+
+    List list;
+    void initData1(List<Wheel> novalDetailsList){
+        list = new ArrayList<>();
+        for(int i=0;i<novalDetailsList.size();i++) {
+            String url;
+            if(novalDetailsList.get(i).getPicpath().contains("http:")){
+                url=novalDetailsList.get(i).getPicpath();
+            }else {
+                url=UrlObtainer.GetUrl()+novalDetailsList.get(i).getPicpath();
+            }
+            if(novalDetailsList.get(i).getTypes().equals("2")) {
+                HttpProxyCacheServer proxy = App.getProxy(getContext());
+                String proxyUrl = proxy.getProxyUrl(url);
+                list.add(proxyUrl);
+            }else {
+                list.add(url);
+            }
+        }
+    }
+
+    void initView1(){
+        banner.setDataList(list);
+        banner.setImgDelyed(3000);
+        banner.startBanner();
+        uIndicator4.attachToViewPager(banner.getViewPager());
+        banner.startAutoPlay();
+    }
+    @Override
+    public void onDestroy() {
+        banner.destroy();
+        super.onDestroy();
     }
 }

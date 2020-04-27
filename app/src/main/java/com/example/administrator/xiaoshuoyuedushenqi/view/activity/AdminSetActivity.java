@@ -48,6 +48,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.AppUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileSizeUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant;
@@ -336,8 +337,8 @@ public class AdminSetActivity extends BaseActivity {
             public void clickItem(int position) {
                 switch (position) {
                     case 0:
-                        Log.e("WWW", "clickItem: "+ AppUtils.getAppName(AdminSetActivity.this)+" "+AppUtils.getPackageName(AdminSetActivity.this)
-                        +" "+AppUtils.getVersionName(AdminSetActivity.this)+" "+AppUtils.getVersionCode(AdminSetActivity.this));
+                        LogUtils.e(AppUtils.getAppName(AdminSetActivity.this)+" "+AppUtils.getPackageName(AdminSetActivity.this)
+                                +" "+AppUtils.getVersionName(AdminSetActivity.this)+" "+AppUtils.getVersionCode(AdminSetActivity.this));
                         showShortToast("暂无更新");
                         break;
                     case 1:

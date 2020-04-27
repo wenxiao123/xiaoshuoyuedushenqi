@@ -2961,7 +2961,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     private void post_addadm(String id){
         String url = UrlObtainer.GetUrl() + "api/index/add_adm";
-        Log.e("WWW", "post_addadm: "+url);
         RequestBody requestBody = new FormBody.Builder()
                 .add("id",id)
                 .build();
