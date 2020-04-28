@@ -818,7 +818,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     int z = 1;
 
     void postBooks_che() {
-        String url = UrlObtainer.GetUrl() + "api/index/Books_che";
+        String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", pid)
                 .add("page", z + "")
@@ -913,7 +913,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     boolean is_Cache;
 
     public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl() + "api/Userbook/add";
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)
@@ -948,7 +948,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         if (token == null) {
             return;
         }
-        String url = UrlObtainer.GetUrl() + "api/Userbook/del";
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/del";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)
@@ -1086,7 +1086,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             if (noval_details.getPic().contains("http")) {
                 url = noval_details.getPic();
             } else {
-                url = UrlObtainer.GetUrl() + noval_details.getPic();
+                url = UrlObtainer.GetUrl()+"/"+ noval_details.getPic();
             }
             //iv_tuijian
             new QBadgeView(this).bindTarget(img_collect).setBadgeGravity(Gravity.END | Gravity.TOP).setBadgeNumber(noval_details.getFavorites());

@@ -106,7 +106,7 @@ public class MdifyNicknameActivity extends BaseActivity {
         });
     }
     public void postModify(String nickname,String name) {
-        String url = UrlObtainer.GetUrl()+"api/user/profile";
+        String url = UrlObtainer.GetUrl()+"/"+"api/user/profile";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", login_admin.getToken())
                 .add(nickname, name)

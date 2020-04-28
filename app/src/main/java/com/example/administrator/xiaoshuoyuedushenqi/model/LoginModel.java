@@ -38,7 +38,7 @@ public class LoginModel implements ILoginContract.Model {
 
     @Override
     public void getVertical(String moildle) {
-        String url = UrlObtainer.GetUrl() + "api/index/mobilelogin";
+        String url = UrlObtainer.GetUrl() + "/api/index/mobilelogin";
         RequestBody requestBody = new FormBody.Builder()
                 .add("mobile", moildle)
                 .build();
@@ -68,7 +68,7 @@ public class LoginModel implements ILoginContract.Model {
 
     @Override
     public void getLogin(String mobile, String code) {
-            String url = UrlObtainer.GetUrl() + "api/index/mobilelogin";
+            String url = UrlObtainer.GetUrl() + "/api/index/mobilelogin";
             RequestBody requestBody = new FormBody.Builder()
                     .add("mobile", mobile)
                     .add("code", code)

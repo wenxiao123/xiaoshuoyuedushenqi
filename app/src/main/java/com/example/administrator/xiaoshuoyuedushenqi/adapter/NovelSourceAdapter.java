@@ -79,7 +79,7 @@ public class NovelSourceAdapter extends
             if (mNovelSourceDataList.get(i).getPic().contains("http")) {
                 href = mNovelSourceDataList.get(i).getPic();
             } else {
-                href = UrlObtainer.GetUrl() + mNovelSourceDataList.get(i).getPic();
+                href = UrlObtainer.GetUrl() +"/"+ mNovelSourceDataList.get(i).getPic();
             }
         }
         Glide.with(mContext)
@@ -175,7 +175,7 @@ public class NovelSourceAdapter extends
         if(novel_id==null){
             return;
         }
-        String url = UrlObtainer.GetUrl()+"api/Lookbook/del";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/Lookbook/del";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("type", type+"")
@@ -206,7 +206,7 @@ public class NovelSourceAdapter extends
     }
 
     public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl()+"api/Userbook/add";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)

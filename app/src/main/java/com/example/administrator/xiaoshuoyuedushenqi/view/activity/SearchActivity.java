@@ -170,7 +170,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private List<Wheel> mNovelSourceDataList=new ArrayList<>(); // 小说源列表
     public void getNovelsSource(String novelName) {
         Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl()+"api/index/book_cke";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/index/book_cke";
         RequestBody requestBody = new FormBody.Builder()
                 .add("name", novelName)
                 .build();

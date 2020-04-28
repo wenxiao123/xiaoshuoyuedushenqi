@@ -76,7 +76,7 @@ public class BookstoreAdapter extends RecyclerView.Adapter {
         }else if(mDataList.get(i).getIcon().contains("http")){
             href=mDataList.get(i).getIcon();
         }else {
-            href=UrlObtainer.GetUrl()+mDataList.get(i).getIcon();
+            href=UrlObtainer.GetUrl()+"/"+mDataList.get(i).getIcon();
         }
         //Log.e("zzz", "onBindViewHolder: "+href);
         CornerTransform transformation = new CornerTransform(mContext, 10);

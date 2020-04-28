@@ -587,7 +587,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     List<Text> other_website = new ArrayList<>();
     Gson mGson=new Gson();
     private void getCategorys(String id) {
-        String url = UrlObtainer.GetUrl() + "api/index/hua_book";
+        String url = UrlObtainer.GetUrl() + "/api/index/hua_book";
         RequestBody requestBody = new FormBody.Builder()
                 .add("novel_id", id)
                 .build();
@@ -1103,7 +1103,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     }
     int t=0;
     public void post_adm() {
-        String url = UrlObtainer.GetUrl() + "api/index/get_adm";
+        String url = UrlObtainer.GetUrl() + "/api/index/get_adm";
         RequestBody requestBody = new FormBody.Builder()
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
@@ -1124,7 +1124,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + img;
+                                https = UrlObtainer.GetUrl()+"/" + img;
                             }
                             showAdm(id,https, href, false);
                         } else if (img.contains(".mp4")) {
@@ -1132,7 +1132,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + img;
+                                https = UrlObtainer.GetUrl()+"/"+ img;
                             }
                             showAdm(id,https, href, true);
                         }
@@ -1207,7 +1207,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void post_addadm(String id){
-        String url = UrlObtainer.GetUrl() + "api/index/add_adm";
+        String url = UrlObtainer.GetUrl() + "/api/index/add_adm";
         //Log.e("WWW", "post_addadm: "+url);
         RequestBody requestBody = new FormBody.Builder()
                 .add("id",id)
@@ -1553,7 +1553,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         //SpUtil.saveIsSysNightMode(isNightMode);
     }
     public void setReadRecord(String token, String novel_id, String chapter_id) {
-        String url = UrlObtainer.GetUrl()+"api/lookbook/add";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/lookbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)
@@ -1649,7 +1649,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     };
 
     void postBooks_che() {
-        String url = UrlObtainer.GetUrl() + "api/index/Books_che";
+        String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", mCollBook.get_id())
                 .add("page", d + "")

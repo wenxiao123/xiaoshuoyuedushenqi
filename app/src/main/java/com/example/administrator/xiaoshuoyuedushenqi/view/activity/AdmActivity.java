@@ -146,7 +146,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
     AnyRunnModule anyRunnModule;
 
     public void getCategoryNovels() {
-        String url = UrlObtainer.GetUrl() + "api/index/getqadm";
+        String url = UrlObtainer.GetUrl() + "/api/index/getqadm";
         RequestBody requestBody = new FormBody.Builder()
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
@@ -168,7 +168,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + img;
+                                https = UrlObtainer.GetUrl() +"/"+img;
                             }
                             showAdm(time, https, href, false);
                         } else if (img.contains(".mp4")) {
@@ -176,7 +176,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + img;
+                                https = UrlObtainer.GetUrl() +"/"+ img;
                             }
                             Url_gg gg = new Url_gg(href, time, https);
                             //Log.e("QQQ", "onResponse: "+gg);

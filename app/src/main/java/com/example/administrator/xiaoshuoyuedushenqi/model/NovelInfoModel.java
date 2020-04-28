@@ -42,7 +42,7 @@ public class NovelInfoModel implements NovelInfoContract.Model {
      */
     @Override
     public void getNovels(final String  id) {
-        String url = UrlObtainer.GetUrl()+"api/index/Book_data";
+        String url = UrlObtainer.GetUrl()+"/"+"api/index/Book_data";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id)
                 .add("limit", "8")

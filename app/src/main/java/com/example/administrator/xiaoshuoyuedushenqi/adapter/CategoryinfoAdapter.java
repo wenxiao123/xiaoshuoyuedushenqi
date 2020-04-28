@@ -56,7 +56,7 @@ public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapte
         if(novalDetails.get(i).getPic().contains("http")){
             url=novalDetails.get(i).getPic();
         }else {
-            url=UrlObtainer.GetUrl() +novalDetails.get(i).getPic();
+            url=UrlObtainer.GetUrl() +"/"+novalDetails.get(i).getPic();
         }
         CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)

@@ -43,7 +43,7 @@ public class SearchResultModel implements ISearchResultContract.Model {
 
     @Override
     public void getNovelsSource(String novelName,int z) {
-        String url = UrlObtainer.GetUrl()+"api/index/book_cke";
+        String url = UrlObtainer.GetUrl()+"/"+"api/index/book_cke";
         RequestBody requestBody = new FormBody.Builder()
                 .add("name", novelName)
                 .add("page",z+"")

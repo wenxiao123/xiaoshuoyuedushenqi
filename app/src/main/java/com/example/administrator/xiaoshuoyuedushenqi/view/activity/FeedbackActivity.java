@@ -114,7 +114,7 @@ public class FeedbackActivity extends BaseActivity {
     }
 
     public void postExit() {
-        String url = UrlObtainer.GetUrl() + "api/user/contact";
+        String url = UrlObtainer.GetUrl() + "/api/user/contact";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", login_admin.getToken())
                 .add("contact", et_password.getText().toString())

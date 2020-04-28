@@ -74,7 +74,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     List<Noval_Readcored> noval_readcoreds=new ArrayList<>();
     private void queryallBook(String token){
         Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl() + "api/Userbook/index";
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/index";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("page", 1+"")
@@ -208,7 +208,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         mBookshelfNovelsAdapter.notifyDataSetChanged();
     }
     public void delectBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl()+"api/Userbook/del";
+        String url = UrlObtainer.GetUrl()+"/"+"api/Userbook/del";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)

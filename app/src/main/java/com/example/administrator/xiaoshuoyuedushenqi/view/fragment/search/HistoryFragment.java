@@ -72,7 +72,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     List<Wheel> wheelList;
     void postHotbook(){
         Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl() + "api/index/book_name";
+        String url = UrlObtainer.GetUrl() + "/api/index/book_name";
         RequestBody requestBody = new FormBody.Builder()
                 .add("limit", 7+"")
                 .build();

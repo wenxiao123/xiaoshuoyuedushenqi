@@ -1244,7 +1244,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     public void post_adm() {
-        String url = UrlObtainer.GetUrl() + "api/index/get_adm";
+        String url = UrlObtainer.GetUrl() + "/api/index/get_adm";
         RequestBody requestBody = new FormBody.Builder()
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
@@ -1265,7 +1265,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + img;
+                                https = UrlObtainer.GetUrl()+"/"+ img;
                             }
                             showAdm(id,https, href, false);
                         } else if (img.contains(".mp4")) {
@@ -1273,7 +1273,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + img;
+                                https = UrlObtainer.GetUrl()+"/" + img;
                             }
                             showAdm(id,https, href, true);
                         }
@@ -1443,7 +1443,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl() + "api/Userbook/add";
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)
@@ -1915,7 +1915,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     Gson mGson = new Gson();
 
     private void getCategorys(String id) {
-        String url = UrlObtainer.GetUrl() + "api/index/hua_book";
+        String url = UrlObtainer.GetUrl() + "/api/index/hua_book";
         RequestBody requestBody = new FormBody.Builder()
                 .add("novel_id", id)
                 .build();
@@ -2066,7 +2066,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     };
 
     void postBooks_che() {
-        String url = UrlObtainer.GetUrl() + "api/index/Books_che";
+        String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", mNovelUrl)
                 .add("page", d + "")
@@ -2960,7 +2960,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     private void post_addadm(String id){
-        String url = UrlObtainer.GetUrl() + "api/index/add_adm";
+        String url = UrlObtainer.GetUrl() + "/api/index/add_adm";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id",id)
                 .build();

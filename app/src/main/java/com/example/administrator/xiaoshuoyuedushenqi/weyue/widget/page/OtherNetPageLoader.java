@@ -66,7 +66,7 @@ public class OtherNetPageLoader extends PageLoader{
     List<Categorys_one> categorys_ones = new ArrayList<>();
     Gson mGson=new Gson();
     private void getCategorys(String id) {
-        String url = UrlObtainer.GetUrl() + "api/index/hua_book";
+        String url = UrlObtainer.GetUrl() + "/api/index/hua_book";
         RequestBody requestBody = new FormBody.Builder()
                 .add("novel_id", id)
                 .build();
@@ -117,7 +117,7 @@ public class OtherNetPageLoader extends PageLoader{
 
     }
     //    public void getCatalogData(String id,int posion,int type) {
-//        String url = UrlObtainer.GetUrl()+"api/index/Books_List";
+//        String url = UrlObtainer.GetUrl()+"/"+"api/index/Books_List";
 //        RequestBody requestBody = new FormBody.Builder()
 //                .add("id", id)
 //                .add("type", type+"")

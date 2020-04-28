@@ -83,7 +83,7 @@ public class ReadModel implements IReadContract.Model {
 
     @Override
     public void getDetailedChapterData(String id) {
-        String url = UrlObtainer.GetUrl() + "api/index/Books_Info";
+        String url = UrlObtainer.GetUrl() + "/api/index/Books_Info";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id)
 //                .add("uid", id)
@@ -126,7 +126,7 @@ public class ReadModel implements IReadContract.Model {
 
     @Override
     public void getDetailedChapterData(String bookid, String id) {
-        String url = UrlObtainer.GetUrl() + "api/index/Books_Info";
+        String url = UrlObtainer.GetUrl() + "/api/index/Books_Info";
         RequestBody requestBody = new FormBody.Builder()
                 .add("uid", bookid)
                 .add("weigh", id)
@@ -393,7 +393,7 @@ public class ReadModel implements IReadContract.Model {
 
     @Override
     public void setReadRecord(String token, String novel_id, String chapter_id) {
-        String url = UrlObtainer.GetUrl()+"api/lookbook/add";
+        String url = UrlObtainer.GetUrl()+"/"+"api/lookbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)
@@ -425,7 +425,7 @@ public class ReadModel implements IReadContract.Model {
 
     @Override
     public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl()+"api/Userbook/add";
+        String url = UrlObtainer.GetUrl()+"/"+"api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)

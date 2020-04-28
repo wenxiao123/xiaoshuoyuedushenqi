@@ -92,7 +92,7 @@ public class CacheService extends Service {
     private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{0,9})[章节卷集部篇回](\\s*)";
    int f;
    public void postBooks_che() {
-        String url = UrlObtainer.GetUrl() + "api/index/Books_che";
+        String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id+"")
                 .add("page", z + "")

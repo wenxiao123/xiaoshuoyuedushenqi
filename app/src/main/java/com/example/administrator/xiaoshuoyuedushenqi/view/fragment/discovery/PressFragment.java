@@ -498,7 +498,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
             if(novalDetailsList.get(i).getPicpath().contains("http:")){
                 url=novalDetailsList.get(i).getPicpath();
             }else {
-                url=UrlObtainer.GetUrl()+novalDetailsList.get(i).getPicpath();
+                url=UrlObtainer.GetUrl()+"/"+novalDetailsList.get(i).getPicpath();
             }
             LogUtils.e(url);
             if(novalDetailsList.get(i).getTypes().equals("2")) {

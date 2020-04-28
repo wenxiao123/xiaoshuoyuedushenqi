@@ -45,7 +45,7 @@ public class ReadcoredModel implements IReakcoredContract.Model {
 
     @Override
     public void getReadcoredData(String token, String page) {
-        String url = UrlObtainer.GetUrl()+"api/lookbook/index";
+        String url = UrlObtainer.GetUrl()+"/"+"api/lookbook/index";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("page", page)
@@ -102,7 +102,7 @@ public class ReadcoredModel implements IReakcoredContract.Model {
         if(novel_id==null){
             return;
         }
-        String url = UrlObtainer.GetUrl()+"api/Lookbook/del";
+        String url = UrlObtainer.GetUrl()+"/"+"api/Lookbook/del";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("type", type+"")

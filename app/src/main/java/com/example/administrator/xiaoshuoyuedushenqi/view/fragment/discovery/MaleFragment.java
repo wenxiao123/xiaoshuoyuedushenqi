@@ -204,7 +204,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 //            if(views.get(position).getPicpath().contains("http")){
 //                href=views.get(position).getPicpath();
 //            }else {
-//                href=UrlObtainer.GetUrl()+views.get(position).getPicpath();
+//                href=UrlObtainer.GetUrl()+"/"+views.get(position).getPicpath();
 //            }
 //            Glide.with(getContext()).load(href)
 //                    .apply(new RequestOptions()
@@ -469,7 +469,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
             if(novalDetailsList.get(i).getPicpath().contains("http:")){
                 url=novalDetailsList.get(i).getPicpath();
             }else {
-                url=UrlObtainer.GetUrl()+novalDetailsList.get(i).getPicpath();
+                url=UrlObtainer.GetUrl()+"/"+novalDetailsList.get(i).getPicpath();
             }
             if(novalDetailsList.get(i).getTypes().equals("2")) {
                 HttpProxyCacheServer proxy = App.getProxy(getContext());

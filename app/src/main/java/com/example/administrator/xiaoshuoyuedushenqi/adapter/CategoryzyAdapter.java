@@ -55,7 +55,7 @@ public class CategoryzyAdapter extends RecyclerView.Adapter<CategoryzyAdapter.Ca
         if(novalDetails.get(i).getPic().contains("http")){
             href=novalDetails.get(i).getPic();
         }else {
-            href=UrlObtainer.GetUrl()+novalDetails.get(i).getPic();
+            href=UrlObtainer.GetUrl()+"/"+novalDetails.get(i).getPic();
         }
         CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)

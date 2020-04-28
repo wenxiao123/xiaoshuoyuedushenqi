@@ -171,7 +171,7 @@ public class VMBookContentInfo extends BaseViewModel {
 
     public void getDetailedChapterData(String bookid, String id,String title) {
         Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl() + "api/index/Books_Info";
+        String url = UrlObtainer.GetUrl() + "/api/index/Books_Info";
         RequestBody requestBody = new FormBody.Builder()
                 .add("uid", bookid)
                 .add("weigh", id)

@@ -159,6 +159,13 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                         Intent recever = new Intent("com.changebackground.android");
                         getActivity().sendBroadcast(recever);
                         ReadSettingManager.getInstance().setNightMode(!isNight);
+                        isNight = ReadSettingManager.getInstance().isNightMode();
+                        if (!isNight) {
+                            strings2[0] = "夜间模式";
+                        } else {
+                            strings2[0] = "白天模式";
+                        }
+                        mainRecyleAdapter2.notifyDataSetChanged();
                         //SpUtil.saveIsSysNightMode(!isNight);
                         //backgroundAlpha(0.5f);
 
@@ -394,7 +401,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                     tv_name = getActivity().findViewById(R.id.tv_name);
                     tv_content = getActivity().findViewById(R.id.tv_content);
                     Glide.with(getActivity())
-                            .load(UrlObtainer.GetUrl() + login_admin.getAvatar())
+                            .load(UrlObtainer.GetUrl() +"/"+ login_admin.getAvatar())
                             .apply(new RequestOptions()
                                     .placeholder(R.mipmap.admin)
                                     .error(R.mipmap.admin))
@@ -427,7 +434,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
            return;
         }
         Gson gson = new Gson();
-        String url = UrlObtainer.GetUrl() + "api/user/index";
+        String url = UrlObtainer.GetUrl() + "/api/user/index";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", login_admin.getToken())
                 .build();

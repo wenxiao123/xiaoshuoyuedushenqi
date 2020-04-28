@@ -444,7 +444,7 @@ public class AdminSetActivity extends BaseActivity {
     }
 
     public void postModify(String nickname, String name) {
-        String url = UrlObtainer.GetUrl() + "api/user/profile";
+        String url = UrlObtainer.GetUrl() + "/api/user/profile";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", login_admin.getToken())
                 .add(nickname, name)
@@ -473,7 +473,7 @@ public class AdminSetActivity extends BaseActivity {
     }
 
     public void postExit() {
-        String url = UrlObtainer.GetUrl() + "api/user/logout";
+        String url = UrlObtainer.GetUrl() + "/api/user/logout";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", login_admin.getToken())
                 .build();
@@ -510,7 +510,7 @@ public class AdminSetActivity extends BaseActivity {
                     .addFormDataPart("token", login_admin.getToken())
                     .build();
 
-            String url = UrlObtainer.GetUrl() + "api/index/upload";
+            String url = UrlObtainer.GetUrl() + "/api/index/upload";
             OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
                 @Override
                 public void onResponse(String json) {

@@ -42,7 +42,7 @@ public class RankModel implements IRankContract.Model {
         String url;
         RequestBody requestBody;
         if(type.equals("1")) {
-            url = UrlObtainer.GetUrl() + "api/Rmlist/Rem_List";
+            url = UrlObtainer.GetUrl() + "/api/Rmlist/Rem_List";
              requestBody = new FormBody.Builder()
                     .add("type", id)
                     .add("sort", id1)
@@ -50,7 +50,7 @@ public class RankModel implements IRankContract.Model {
                     .add("limit", "8")
                     .build();
         }else if(type.equals("2")) {
-            url = UrlObtainer.GetUrl() + "api/Rmlist/New_List";
+            url = UrlObtainer.GetUrl() + "/api/Rmlist/New_List";
             requestBody = new FormBody.Builder()
                     .add("type", id)
                     .add("sort", id1)
@@ -58,7 +58,7 @@ public class RankModel implements IRankContract.Model {
                     .add("limit", "8")
                     .build();
         }else {
-            url = UrlObtainer.GetUrl() + "api/index/Book_List";
+            url = UrlObtainer.GetUrl() + "/api/index/Book_List";
             requestBody = new FormBody.Builder()
                     .add("type", id)
                     .add("sort", id1)

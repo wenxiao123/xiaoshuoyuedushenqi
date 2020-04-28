@@ -66,7 +66,7 @@ public class NovelAdapter extends RecyclerView.Adapter<NovelAdapter.NovelViewHol
         if (mList.get(position).getPic().contains("http")) {
             href=mList.get(position).getPic();
         } else {
-            href=UrlObtainer.GetUrl() + mList.get(position).getPic();
+            href=UrlObtainer.GetUrl() +"/"+ mList.get(position).getPic();
         }
         CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)

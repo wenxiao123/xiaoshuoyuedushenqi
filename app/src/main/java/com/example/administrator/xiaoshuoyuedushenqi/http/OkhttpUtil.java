@@ -143,7 +143,7 @@ public class OkhttpUtil {
                 .build();
 
         //创建Request
-        final Request request = new Request.Builder().url(UrlObtainer.GetUrl()+"api/index/upload").post(multipartBody).build();
+        final Request request = new Request.Builder().url(UrlObtainer.GetUrl()+"/"+"/api/index/upload").post(multipartBody).build();
         Call call = getOkHttpClient().newCall(request);
         //调用Call的enqueue方法，该方法的回调是在子线程
         call.enqueue(new Callback() {

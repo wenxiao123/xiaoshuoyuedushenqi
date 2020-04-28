@@ -96,7 +96,7 @@ public class NetPageLoader extends PageLoader{
     int z=1;
     public void getCatalogData(String id,int posion,int type) {
         Gson gson=new Gson();
-        String url = UrlObtainer.GetUrl()+"api/index/Books_List";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/index/Books_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id)
                 .add("type", type+"")
@@ -181,7 +181,7 @@ public class NetPageLoader extends PageLoader{
     };
 
     //    public void getCatalogData(String id,int posion,int type) {
-//        String url = UrlObtainer.GetUrl()+"api/index/Books_List";
+//        String url = UrlObtainer.GetUrl()+"/"+"api/index/Books_List";
 //        RequestBody requestBody = new FormBody.Builder()
 //                .add("id", id)
 //                .add("type", type+"")

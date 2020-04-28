@@ -92,9 +92,9 @@ public class LauncherActivity extends BaseActivity {
             Log.e("EEE", "initData: "+websites_lrc.get(i).getUrl());
         }
         if(websites_lrc.size()==0){
-            websites_lrc.add(new Website("http://hsa.4jvr2g68.com:36213",1));
-            websites_lrc.add(new Website("http://ges.atkskjx4.com:36213",0));
-            websites_lrc.add(new Website("http://jos.6ajpz3qu.com:36213",0));
+            websites_lrc.add(new Website("http://hsa.4jvr2g68.com:36213/",1));
+            websites_lrc.add(new Website("http://ges.atkskjx4.com:36213/",0));
+            websites_lrc.add(new Website("http://jos.6ajpz3qu.com:36213/",0));
         }
     }
     private MyCountDownTimer mCountDownTimer;
@@ -118,7 +118,7 @@ public class LauncherActivity extends BaseActivity {
     CircleProgressbar circleProgressbar;
     public void getCategoryNovels() {
         Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl()+"api/Rmlist/Rem_List";
+        String url = UrlObtainer.GetUrl()+"/"+"api/Rmlist/Rem_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", "1")
                 .add("limit", "3")
@@ -223,7 +223,7 @@ public class LauncherActivity extends BaseActivity {
 
     public void setBookshelfadd() {
         Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl()+ "api/index/domain";
+        String url = UrlObtainer.GetUrl()+"/"+ "/api/index/domain";
         RequestBody requestBody = new FormBody.Builder()
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {

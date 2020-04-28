@@ -40,7 +40,7 @@ public class CatalogModel implements ICatalogContract.Model {
 
     @Override
     public void getCatalogData(String id,int posion,int type) {
-        String url = UrlObtainer.GetUrl()+"api/index/Books_List";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/index/Books_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", id)
                 .add("type", type+"")

@@ -32,7 +32,7 @@ public class MaleLikeModel implements IMaleLikeContract.Model {
      */
     @Override
     public void getCategoryNovels() {
-        OkhttpUtil.getRequest(UrlObtainer.GetUrl()+"api/index/List_Type", new OkhttpCall() {
+        OkhttpUtil.getRequest(UrlObtainer.GetUrl()+"/"+"api/index/List_Type", new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 try {

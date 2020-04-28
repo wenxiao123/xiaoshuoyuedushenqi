@@ -525,7 +525,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     }
 
     public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl() + "api/Userbook/add";
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)
@@ -593,7 +593,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 
     private void queryallBook(String token) {
         Gson mGson = new Gson();
-        String url = UrlObtainer.GetUrl() + "api/Userbook/index";
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/index";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("page", 1 + "")

@@ -85,7 +85,7 @@ public class WebActivity extends BaseActivity {
     }
 
     public void getHotRankData(String id) {
-        String url = UrlObtainer.GetUrl() + "api/index/get_link";
+        String url = UrlObtainer.GetUrl() + "/api/index/get_link";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
                 .build();

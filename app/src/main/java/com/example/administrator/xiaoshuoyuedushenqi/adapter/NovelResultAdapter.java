@@ -80,7 +80,7 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
         if(mList.get(position).getPic().contains("http")){
             href=mList.get(position).getPic();
         }else {
-            href=UrlObtainer.GetUrl()+mList.get(position).getPic();
+            href=UrlObtainer.GetUrl()+"/"+mList.get(position).getPic();
         }
         CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)
@@ -145,7 +145,7 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
     private Login_admin login_admin;
 
     public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl()+"api/Userbook/add";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("novel_id", novel_id)

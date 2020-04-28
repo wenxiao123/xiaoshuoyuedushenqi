@@ -48,7 +48,7 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
      */
     @Override
     public void getHotRankData(String id) {
-        String url = UrlObtainer.GetUrl()+"api/Rmlist/Lan_list";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/Rmlist/Lan_list";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
                 .add("sort", "3")
@@ -85,7 +85,7 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
 
     @Override
     public void getNewRankData(String id) {
-        String url = UrlObtainer.GetUrl()+"api/Rmlist/New_List";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/Rmlist/New_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
 //                .add("sort", id1)
@@ -127,7 +127,7 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
      */
     @Override
     public void getCategoryNovels(String id) {
-        String url = UrlObtainer.GetUrl()+"api/Rmlist/New_List";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/Rmlist/New_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
                 .add("sort", "3")
@@ -164,7 +164,7 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
 
     @Override
     public void getCategoryNovels2(String id) {
-        String url = UrlObtainer.GetUrl()+"api/Rmlist/Rem_List";
+        String url = UrlObtainer.GetUrl()+"/"+"/api/Rmlist/Rem_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
                 .add("sort", "1")

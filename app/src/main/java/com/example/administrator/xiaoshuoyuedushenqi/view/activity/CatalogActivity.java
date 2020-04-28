@@ -441,7 +441,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     }
 
 //    public void getCatalogData() {
-//        String url = UrlObtainer.GetUrl()+"upload/chapter_list/20200330/88f675243a69f345260faeeeb7217331.txt";
+//        String url = UrlObtainer.GetUrl()+"/"+"upload/chapter_list/20200330/88f675243a69f345260faeeeb7217331.txt";
 //        OkhttpUtil.getRequest(url, new OkhttpCall() {
 //            @Override
 //            public void onResponse(String json) {

@@ -520,7 +520,7 @@ public class TxtPlayActivity extends AppCompatActivity {
     Gson mGson = new Gson();
 
     private void getCategorys(String id) {
-        String url = UrlObtainer.GetUrl() + "api/index/hua_book";
+        String url = UrlObtainer.GetUrl() + "/api/index/hua_book";
         RequestBody requestBody = new FormBody.Builder()
                 .add("novel_id", id)
                 .build();
