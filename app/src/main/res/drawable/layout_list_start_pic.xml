@@ -9,7 +9,7 @@
     <item >
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/logo" />
+            android:src="@mipmap/laugth" />
     </item>
     <!-- 底部图表 -->
 <!--    <item android:bottom="10dp">-->

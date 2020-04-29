@@ -9,7 +9,7 @@
         android:id="@+id/v_title"
         android:layout_width="match_parent"
         android:scaleType="centerCrop"
-        android:layout_height="0dp"/>
+        android:layout_height="30dp"/>
     <FrameLayout
         android:layout_below="@id/v_title"
         android:layout_width="match_parent"
@@ -23,7 +23,6 @@
             android:textColor="@color/word_color"
             android:textSize="12sp"
             android:gravity="right"
-            android:layout_marginTop="30dp"
             android:paddingRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -67,10 +66,11 @@
                 android:background="@drawable/bachground_lefthalfcricyle"
                 android:gravity="center_vertical"
                 android:paddingLeft="13dp"
-                android:paddingTop="7dp"
                 android:paddingRight="13dp"
-                android:paddingBottom="7dp"
+                android:singleLine="true"
                 android:text="原站"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingBottom="@dimen/dp_2"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -83,9 +83,10 @@
                 android:background="@drawable/bachground_righthalfcricyle"
                 android:gravity="center_vertical"
                 android:paddingLeft="11dp"
-                android:paddingTop="7dp"
                 android:paddingRight="11dp"
-                android:paddingBottom="7dp"
+                android:singleLine="true"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingBottom="@dimen/dp_2"
                 android:text="www.baidu.com"
                 android:textColor="@color/black"
                 android:textSize="14sp" />

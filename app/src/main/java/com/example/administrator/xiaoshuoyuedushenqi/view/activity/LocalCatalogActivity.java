@@ -8,6 +8,7 @@ import android.os.Message;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CatalogNameAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.TxtChapter;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 import com.google.android.material.tabs.TabLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -139,7 +140,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     protected CatalogPresenter getPresenter() {
         return new CatalogPresenter();
     }
-
+    List<TxtChapter> txtChapters;
     @Override
     protected void initData() {
         file_path = getIntent().getStringExtra(KEY_URL);
@@ -148,6 +149,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         pid=getIntent().getStringExtra(KEY_ID);
         mPosition = getIntent().getIntExtra(KEY_POSTION, 0);
         queryBookMarks(pid);
+        txtChapters = (List<TxtChapter>) getIntent().getSerializableExtra("MSPANSCOMMIT");
     }
 
     @Override
@@ -252,20 +254,6 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                         }
                         index++;
                     }
-//                        if (data.trim().startsWith("第") || data.contains("第")) {
-//                            Pattern p = Pattern.compile(ChapterPatternStr);
-//                            Matcher matcher = p.matcher(data);
-//                            while (matcher.find()) {
-//                                count++;
-//                                String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";; //表示一个或多个@
-//                                Pattern pat=Pattern.compile(regEx);
-//                                Matcher mat=pat.matcher(data);
-//                                String s=mat.replaceAll("");
-//                                mChapterNameList.add(s);
-//                            }
-//                        }
-//                        index++;
-                    //   }
                 }
                 initChapterEndIndex(chapters, paragraphData.getParagraphNum());
                 return true;
@@ -426,14 +414,23 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     @Override
     protected void doAfterInit() {
         //formatText(loadText(file_path));
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                IParagraphData paragraphData = new ParagraphData();
-                ReadData(file_path, paragraphData, chapter);
-                handler.sendEmptyMessage(2);
-            }
-        }).start();
+        if(txtChapters==null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    IParagraphData paragraphData = new ParagraphData();
+                    ReadData(file_path, paragraphData, chapter);
+                    handler.sendEmptyMessage(2);
+                }
+            }).start();
+        }else {
+            mProgressBar.setVisibility(View.GONE);
+            mErrorPageTv.setVisibility(View.GONE);
+            mCatalogListRv.setVisibility(View.VISIBLE);
+            initAdapter();
+            mCatalogListRv.setAdapter(mCatalogAdapter);
+            mChapterCountTv.setText("共" + txtChapters.size() + "章");
+        }
     }
 
     @Override
@@ -456,7 +453,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     }
 
     private void initAdapter() {
-        mCatalogAdapter = new CatalogNameAdapter(this, mChapterNameList);
+        mCatalogAdapter = new CatalogNameAdapter(this, txtChapters);
         mCatalogAdapter.setOnCatalogListener(new CatalogNameAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
@@ -475,36 +472,11 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                 if(mIsReverse==false) {
                     bundle.putString(WYReadActivity.CHPTER_ID, position + "");
                 }else {
-                    bundle.putString(WYReadActivity.CHPTER_ID, (mChapterNameList.size()-position-1)+ "");
+                    bundle.putString(WYReadActivity.CHPTER_ID, (txtChapters.size()-position-1)+ "");
                 }
                 //bundle.putString(WYReadActivity.CHPTER_ID,(position)+"");
                 startActivity(WYReadActivity.class, bundle);
                 // 点击 item，跳转到相应小说阅读页
-//                Intent intent = new Intent(LocalCatalogActivity.this, ReadActivity.class);
-//                // 小说 url（本地小说为 filePath），参数类型为 String
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL, pid);
-//                // 小说 url（本地小说为 filePath），参数类型为 String
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN, file_path);
-//                // 小说名，参数类型为 String
-//                intent.putExtra(ReadActivity.KEY_NAME, mName);
-//                // 小说封面 url，参数类型为 String
-//                intent.putExtra(ReadActivity.KEY_COVER, mCover);
-////                 小说类型，0 为网络小说， 1 为本地 txt 小说，2 为本地 epub 小说
-////                 参数类型为 int（非必需，不传的话默认为 0）
-//                intent.putExtra(ReadActivity.KEY_TYPE, 1);
-//                intent.putExtra(ReadActivity.KEY_IS_CATALOG, 1);
-//                intent.putExtra("catalog", (Serializable) mChapterNameList);
-//                intent.putExtra("weigh", count);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                // 开始阅读的章节索引，参数类型为 int（非必需，不传的话默认为 0）
-//                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-//                if (paixuiv.getRotation()==0||paixuiv.getRotation()==360) {
-//                    intent.putExtra(ReadActivity.Catalog_start_Position, (int) longs.get(position));
-//                } else {
-//                    intent.putExtra(ReadActivity.Catalog_start_Position, (int) longs.get(longs.size() - 1 - position));
-//                }
-//
-//                startActivity(intent);
                 // 跳转后活动结束
                 if (mReadActivity != null) {
                     mReadActivity.finish();
@@ -529,25 +501,21 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     return;
                 }
                 // 点击 item，跳转到相应小说阅读页
-                Intent intent = new Intent(LocalCatalogActivity.this, ReadActivity.class);
-                // 小说 url（本地小说为 filePath），参数类型为 String
-                intent.putExtra(ReadActivity.KEY_NOVEL_URL, file_path);
-                // 小说 url（本地小说为 filePath），参数类型为 String
-                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN, file_path);
-                // 小说名，参数类型为 String
-                intent.putExtra(ReadActivity.KEY_NAME, mName);
-                // 小说封面 url，参数类型为 String
-                intent.putExtra(ReadActivity.KEY_COVER, mCover);
-//                 小说类型，0 为网络小说， 1 为本地 txt 小说，2 为本地 epub 小说
-//                 参数类型为 int（非必需，不传的话默认为 0）
-                intent.putExtra(ReadActivity.KEY_TYPE, 1);
-                intent.putExtra("weigh", count);
-                intent.putExtra(ReadActivity.KEY_IS_CATALOG, 1);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                // 开始阅读的章节索引，参数类型为 int（非必需，不传的话默认为 0）
-                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-                intent.putExtra(ReadActivity.Catalog_start_Position, bookmarkNovelDbDatas.get(position).getPosition());
-                startActivity(intent);
+                CollBookBean bookBean=new CollBookBean(file_path, mName, "", "",
+                        mCover, false, 0,0,
+                        "", "", count, "",
+                        false, true);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                bundle.putString(WYReadActivity.LOAD_PATH,pid);
+//                if(mIsReverse==false) {
+                    bundle.putString(WYReadActivity.CHPTER_ID, bookmarkNovelDbDatas.get(position).getChapterid() + "");
+//                }else {
+//                    bundle.putString(WYReadActivity.CHPTER_ID, (mChapterNameList.size()-position-1)+ "");
+//                }
+                //bundle.putString(WYReadActivity.CHPTER_ID,(position)+"");
+                startActivity(WYReadActivity.class, bundle);
                 // 跳转后活动结束
                 if (mReadActivity != null) {
                     mReadActivity.finish();
@@ -698,14 +666,11 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                 refresh();
                 break;
             case R.id.paixu:
-                if (mIsReversing || mIsRefreshing) {
-                    return;
-                }
                 if (mIsReverse) {
                     paixuiv.setRotation(360);
                     // 正序显示章节
                     mIsReversing = true;
-                    Collections.reverse(mChapterNameList);
+                    Collections.reverse(txtChapters);
                     Collections.reverse(mChapterUrlList);
                     mCatalogAdapter.setPosition(0);
                     mCatalogAdapter.notifyDataSetChanged();
@@ -716,7 +681,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     paixuiv.setRotation(180);
                     // 倒序显示章节
                     mIsReversing = true;
-                    Collections.reverse(mChapterNameList);
+                    Collections.reverse(txtChapters);
                     Collections.reverse(mChapterUrlList);
                     mCatalogAdapter.setPosition(0);
                     mCatalogAdapter.notifyDataSetChanged();
@@ -746,10 +711,6 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
      * 刷新页面
      */
     private void refresh() {
-        if (mIsRefreshing) {    // 已经在刷新了
-            return;
-        }
-        mIsRefreshing = true;
         mProgressBar.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override

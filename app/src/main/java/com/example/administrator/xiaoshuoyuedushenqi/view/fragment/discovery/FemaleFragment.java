@@ -233,6 +233,16 @@ public class FemaleFragment extends BaseTabFragment<MalePresenter>
 
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden){
+            banner.stopVideo();
+        }else {
+            banner.stratVideo();
+        }
+    }
+
     private void requestUpdate() {
         mPresenter.getHotRankData(mess + "");
         mPresenter.getCategoryNovels(mess + "");

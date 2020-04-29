@@ -130,6 +130,9 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         chapter_id=getIntent().getIntExtra("chapter_id",0);
         queryBookMarks(mUrl);
         app= (App) getApplication();
+        catalogDataAll = mDbManager.queryAllCataloginfo(mUrl);
+        Collections.reverse(catalogDataAll);
+        databaseManager=DatabaseManager.getInstance();
     }
     String[]  sTitle={"目录","书签"};
     @Override
@@ -193,22 +196,16 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     protected void doAfterInit() {
       isRefresh=false;
       z=1;
-//      if(app.getCatalogDataAll().size()>0){
-//          catalogDataAll= app.getCatalogDataAll();
-//          mProgressBar.setVisibility(View.GONE);
-//          mErrorPageTv.setVisibility(View.GONE);
-//          mChapterOrderTv.setVisibility(View.VISIBLE);
-//          initAdapter();//chapter_id
-//          mCatalogAdapter.setPosition(chapter_id-1);
-//          mCatalogAdapter.notifyDataSetChanged();
-//          mCatalogListRv.scrollToPosition(chapter_id-1);
-//         // Log.e("QQQ", "doAfterInit: "+mName);
-//      }else {
-          mPresenter.getCatalogData(mUrl,z,type);
-//      }
-        mChapterCountTv.setText("共" + weigh + "章");
-        text.setText(mName);
-        //getCatalogData();
+      if(catalogDataAll.size()==0) {
+          mPresenter.getCatalogData(mUrl, z, type);
+      }else {
+          mProgressBar.setVisibility(View.GONE);
+          mErrorPageTv.setVisibility(View.GONE);
+          mChapterOrderTv.setVisibility(View.VISIBLE);
+          initAdapter();
+      }
+      mChapterCountTv.setText("共" + weigh + "章");
+      text.setText(mName);
     }
     private List<BookmarkNovelDbData> bookmarkNovelDbDatas = new ArrayList<>();
     private DatabaseManager mDbManager;
@@ -226,30 +223,42 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 }
                 // 点击 item，跳转到相应小说阅读页
                 String s_id=bookmarkNovelDbDatas.get(position).getChapterid();
-//                Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
-//                intent.putExtra(ReadActivity.KEY_CHPATER_ID, Integer.parseInt(s_id));
-//                intent.putExtra(ReadActivity.KEY_NAME, mName);
-//                intent.putExtra("first_read",2);
-//                intent.putExtra("weigh",weigh);//
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,"");
-//                intent.putExtra(ReadActivity.KEY_COVER, mCover);
-//                intent.putExtra(ReadActivity.KEY_SERIALIZE,serialize);
-//                intent.putExtra(ReadActivity.KEY_AUTHOR,mAuthor);
-//                intent.putExtra(ReadActivity.KEY_POSITION, bookmarkNovelDbDatas.get(position).getPosition());
-//                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-//                intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                // 跳转后活动结束
+//                CollBookBean bookBean=new CollBookBean(bookmarkNovelDbDatas.get(position).getNovelUrl(), bookmarkNovelDbDatas.get(position).getName(), "", "",
+//                        "", false, 0,0,
+//                        "", "", Integer.parseInt(s_id), "",
+//                        false, false);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+//                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+////                bundle.putString(WYReadActivity.CHPTER_ID,s_id);
+////                Log.e("222", "clickItem: "+bookmarkNovelDbDatas.get(position).getPosition()+" "+s_id);
+////                bundle.putString(WYReadActivity.PAGE_ID,bookmarkNovelDbDatas.get(position).getPosition()+"");
+//               // startActivity(WYReadActivity.class, bundle);
+//                Intent intent=new Intent(CatalogActivity.this,WYReadActivity.class);
+//                intent.putExtra(WYReadActivity.CHPTER_ID,s_id);
+//                intent.putExtra(WYReadActivity.PAGE_ID,bookmarkNovelDbDatas.get(position).getPosition()+"");
+//                intent.putExtras(bundle);
 //                startActivity(intent);
+//                if (mReadActivity != null) {
+//                    mReadActivity.finish();
+//                }
+//                finish();
+                // 点击 item，跳转到相应小说阅读页
+                String page_id=(bookmarkNovelDbDatas.get(position).getPosition()+1)+"";
                 // 跳转后活动结束
-                CollBookBean bookBean=new CollBookBean(bookmarkNovelDbDatas.get(position).getNovelUrl(), bookmarkNovelDbDatas.get(position).getName(), "", "",
+                CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
                         "", false, 0,0,
-                        "", "", Integer.parseInt(s_id), "",
+                        "", "", Integer.parseInt(s_id)-1, "",
                         false, false);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                 bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                bundle.putString(WYReadActivity.CHPTER_ID,s_id);
+                bundle.putString(WYReadActivity.CHPTER_ID, s_id);
+//                bundle.putString(WYReadActivity.PAGE_ID, page_id);
+//                Log.e("222", "clickItem: "+bookmarkNovelDbDatas.get(position).getPosition()+" "+s_id);
+                //bundle.putString(WYReadActivity.PAGE_ID,bookmarkNovelDbDatas.get(position).getPosition()+"");
+                //Log.e("QQQ", "clickItem: "+catalogDataAll.get(position));
                 startActivity(WYReadActivity.class, bundle);
                 if (mReadActivity != null) {
                     mReadActivity.finish();
@@ -320,22 +329,6 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 }
                 // 点击 item，跳转到相应小说阅读页
                 String s_id=catalogDataAll.get(position).getWeigh()+"";
-                //Log.e("111", "clickItem: "+s_id);
-//                Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
-//                intent.putExtra(ReadActivity.KEY_CHPATER_ID, Integer.parseInt(s_id));
-//                intent.putExtra(ReadActivity.KEY_NAME, mName);
-//                intent.putExtra("first_read",2);
-//                intent.putExtra("weigh",weigh);//
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,"");
-//                intent.putExtra(ReadActivity.KEY_COVER, mCover);
-//                intent.putExtra(ReadActivity.KEY_SERIALIZE,serialize);
-//                intent.putExtra(ReadActivity.KEY_AUTHOR,mAuthor);
-//                intent.putExtra(ReadActivity.KEY_POSITION, bookmarkNovelDbDatas.get(position).getPosition());
-//                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-//                intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
                 // 跳转后活动结束
                 CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
                         "", false, 0,0,
@@ -344,34 +337,13 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                 bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                if(mIsReverse==false) {
-                    bundle.putString(WYReadActivity.CHPTER_ID, position + "");
-                }else {
-                    bundle.putString(WYReadActivity.CHPTER_ID, (catalogDataAll.size()-position-1)+ "");
-                }
+                bundle.putString(WYReadActivity.CHPTER_ID, catalogDataAll.get(position).getWeigh()-1+ "");
+                //Log.e("QQQ", "clickItem: "+catalogDataAll.get(position));
                 startActivity(WYReadActivity.class, bundle);
                 if (mReadActivity != null) {
                     mReadActivity.finish();
                 }
                 finish();
-//                // 点击 item，跳转到相应小说阅读页
-//                Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
-//                intent.putExtra(ReadActivity.KEY_CHPATER_ID, catalogDataAll.get(position).getWeigh());
-//                intent.putExtra(ReadActivity.KEY_NAME, mName);
-//                intent.putExtra("first_read",2);
-//                intent.putExtra("weigh",weigh);
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN,"");
-//                intent.putExtra(ReadActivity.KEY_COVER, mCover);
-//                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-//                intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-//                // 跳转后活动结束
-//                if (mReadActivity != null) {
-//                    mReadActivity.finish();
-//                }
-//                finish();
             }
         });
         mCatalogListRv.setAdapter(mCatalogAdapter);
@@ -408,10 +380,12 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 mChapterCountTv.setText("共" + weigh + "章");
                 //app.setCatalogDataAll(catalogDataAll);
                 text.setText(mName);
+                databaseManager.insertBookshelfNovel(catalogDataAll);
             }
         }
         isRefresh=true;
     }
+    DatabaseManager databaseManager;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -440,35 +414,6 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mErrorPageTv.setVisibility(View.VISIBLE);
     }
 
-//    public void getCatalogData() {
-//        String url = UrlObtainer.GetUrl()+"/"+"upload/chapter_list/20200330/88f675243a69f345260faeeeb7217331.txt";
-//        OkhttpUtil.getRequest(url, new OkhttpCall() {
-//            @Override
-//            public void onResponse(String json) {
-//               // Log.e("QQQ", "onResponse: "+json);
-//                try {
-//                    JSONObject jsonObject=new JSONObject(json);
-//                    String code=jsonObject.getString("code");
-//                    if(code.equals("1")){
-//                        JSONObject jsonObject1=jsonObject.getJSONObject("data");
-//                        JSONArray object=jsonObject1.getJSONArray("data");
-//                        List<Cataloginfo> catalogData=new ArrayList<>();
-//                        mPresenter.getCatalogDataSuccess(catalogData);
-//                    }else {
-//                        mPresenter.getCatalogDataError("请求数据失败");
-//                    }
-//
-//                } catch (JsonSyntaxException | JSONException e) {
-//                    mPresenter.getCatalogDataError(Constant.JSON_ERROR);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(String errorMsg) {
-//                mPresenter.getCatalogDataError(errorMsg);
-//            }
-//        });
-//    }
 
     @Override
     public void onClick(View v) {
@@ -477,15 +422,12 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 finish();
                 break;
             case R.id.shuaxin:
-                if (isRefresh==false) {
-                    return;
-                }
+//                if (isRefresh==false) {
+//                    return;
+//                }
                 refresh();
                 break;
             case R.id.paixu:
-                if (mIsReversing || mIsRefreshing) {
-                    return;
-                }
                 if (mCatalogAdapter==null) {
                     return;
                 }else {
@@ -501,14 +443,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                         mIsReverse = false;
                         mIsReversing = false;
                     } else {
-                        //isRefresh=false;
-                        // 倒序显示章节
                         mChapterOrderTv.setRotation(180);
                         mIsReversing = true;
                         Collections.reverse(catalogDataAll);
-//                    mCatalogAdapter.setPosition(mCatalogAdapter.getItemCount()-chapter_id);
                         mCatalogAdapter.notifyDataSetChanged();
-//                    mCatalogListRv.scrollToPosition(mCatalogAdapter.getItemCount()-chapter_id);
                         mCatalogAdapter.setPosition(0);
                         mCatalogListRv.scrollToPosition(0);
                         mIsReverse = true;
@@ -525,10 +463,6 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
      * 刷新页面
      */
     private void refresh() {
-        if (mIsRefreshing) {    // 已经在刷新了
-            return;
-        }
-        mIsRefreshing = true;
         mProgressBar.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override

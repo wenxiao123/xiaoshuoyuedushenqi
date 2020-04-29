@@ -25,10 +25,10 @@ public interface ILoginContract {
         void getLoginError(String errorMsg);
 
         void getVertical(String moildle);
-        void getLogin(String mobile,String code);
+        void getLogin(String diveceid,String mobile,String code);
     }
     interface Model {
         void getVertical(String moildle);
-        void getLogin(String mobile,String code);
+        void getLogin(String diveceid,String mobile,String code);
     }
 }

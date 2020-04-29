@@ -6,10 +6,12 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.ICatalogContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CatalogBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.CatalogData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -33,7 +35,6 @@ public class CatalogModel implements ICatalogContract.Model {
 
     private ICatalogContract.Presenter mPresenter;
     private Gson mGson = new Gson();
-
     public CatalogModel(ICatalogContract.Presenter mPresenter) {
         this.mPresenter = mPresenter;
     }

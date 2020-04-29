@@ -172,77 +172,6 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         uIndicator4 = getActivity().findViewById(R.id.indicator);
     }
 
-//    public class DemoPagerAdapter extends PagerAdapter {
-//        private List<Wheel> views;
-//
-//        public DemoPagerAdapter(List<Wheel> views) {
-//            this.views = views;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return views.size();
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//        @Override
-//        public Object instantiateItem(ViewGroup container, int position) {
-//            Wheel view = views.get(position);
-//            if (view.getPicpath().endsWith(".mp4")) {
-//                ImageView imageView = new ImageView(getContext());
-//                SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
-//                    @Override
-//                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-//                        imageView.setBackground(resource);
-//                    }
-//                };
-//                String href = "";
-//                if (views.get(position).getPicpath().contains("http")) {
-//                    href = views.get(position).getPicpath();
-//                } else {
-//                    href = UrlObtainer.GetUrl() + views.get(position).getPicpath();
-//                }
-//                Glide.with(getContext()).load(href)
-//                        .apply(new RequestOptions()
-//                                .placeholder(R.drawable.cover_place_holder)
-//                                .error(R.mipmap.admin))
-//                        .into(simpleTarget);
-//                container.addView(imageView);
-//                imageView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Intent intent = new Intent(getContext(), NovelIntroActivity.class);
-//                        // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-//                        intent.putExtra("pid", views.get(position).getNovel_id() + "");
-//                        startActivity(intent);
-//                    }
-//                });
-//                return imageView;
-//            } else {
-//                MediaController mc = new MediaController(getContext());
-//                VideoView videoView = new VideoView(getContext());
-//                videoView.setMediaController(mc);
-//                String netPlayUrl = "http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4";
-//                HttpProxyCacheServer proxy = App.getProxy(getContext());
-//                String proxyUrl = proxy.getProxyUrl(netPlayUrl);
-//                videoView.setVideoPath(proxyUrl);//播放的是代理服务器返回的url，已经进行了封装处理
-//                videoView.requestFocus();//让VideiView获取焦点
-//                videoView.start();//开始播放
-//                container.addView(videoView);
-//                return videoView;
-//            }
-//        }
-//        // &nbsp     </br>   \n
-//        @Override
-//        public void destroyItem(ViewGroup container, int position, Object object) {
-//            container.removeView((View) instantiateItem(container, position));
-//        }
-//    }
-
     @Override
     protected void doInOnCreate() {
         requestUpdate();
@@ -479,15 +408,27 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
     @Override
     public void onPause() {
-        banner.destroy();
+        Log.e("222", "onPause: "+222);
+        banner.stopVideo();
+        //banner.destroy();
         super.onPause();
         // Log.e("WWW", "onPause: "+222);
     }
 
     @Override
+    public void onResume() {
+        banner.stratVideo();
+        super.onResume();
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-
+        if(hidden){
+            banner.stopVideo();
+        }else {
+            banner.stratVideo();
+        }
     }
     List list;
     void initData1(List<Wheel> novalDetailsList){

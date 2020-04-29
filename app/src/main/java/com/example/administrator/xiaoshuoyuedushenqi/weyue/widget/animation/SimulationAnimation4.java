@@ -171,7 +171,12 @@ public class SimulationAnimation4 extends HorizonPageAnim{
         }
     }
     public void  startAnim() {
-       // super.startAnim();
+        if(is_auto) {
+            if (isRunning) {
+                return;
+            }
+            isRunning = true;
+        }
         int dx;
         int dy;
         // dx 水平方向滑动的距离，负值会使滚动向左滚动

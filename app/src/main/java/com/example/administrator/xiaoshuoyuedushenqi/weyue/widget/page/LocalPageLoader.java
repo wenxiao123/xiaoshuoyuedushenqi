@@ -316,8 +316,12 @@ public class LocalPageLoader extends PageLoader {
         if (mChapterList == null) {
             throw new IllegalArgumentException("Chapter list must not null");
         }
-
-        TxtChapter chapter = mChapterList.get(chapterPos);
+        TxtChapter chapter = null;
+        if(chapterPos<mChapterList.size()) {
+            chapter = mChapterList.get(chapterPos);
+        }else {
+            return null;
+        }
         //从文件中获取数据
         byte[] content = getChapterContent(chapter);
         ByteArrayInputStream bais = new ByteArrayInputStream(content);

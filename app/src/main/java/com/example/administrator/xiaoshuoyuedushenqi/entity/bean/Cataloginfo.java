@@ -17,11 +17,12 @@ public class Cataloginfo implements Serializable {
     int hits;
     int word;
 
-    public Cataloginfo(int id, String novel_id, String title, String reurl) {
+    public Cataloginfo(int id, String novel_id, String title, String reurl,int weigh) {
         this.id = id;
         this.novel_id = novel_id;
         this.title = title;
         this.reurl = reurl;
+        this.weigh=weigh;
     }
 
     @Override

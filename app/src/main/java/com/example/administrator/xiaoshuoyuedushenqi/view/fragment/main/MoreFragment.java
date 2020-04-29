@@ -239,6 +239,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
     @Override
     protected void initData() {
         login_admin = (Login_admin) SpUtil.readObject(getContext());
+        // Log.e("WWW", "initData: "+login_admin.getToken());
     }
 
     @SuppressLint("WrongConstant")

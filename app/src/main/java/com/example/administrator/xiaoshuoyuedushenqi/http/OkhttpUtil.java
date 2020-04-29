@@ -1,8 +1,14 @@
 package com.example.administrator.xiaoshuoyuedushenqi.http;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
+import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +40,10 @@ public class OkhttpUtil {
         if (okHttpClient == null) {
             synchronized (OkhttpUtil.class) {
                 if (okHttpClient == null) {
-                    okHttpClient = new OkHttpClient();
+                    //okHttpClient = new OkHttpClient();
+                    okHttpClient = new OkHttpClient.Builder()
+                            .addInterceptor(new ParamsInterceptor())
+                            .build();
                 }
             }
         }

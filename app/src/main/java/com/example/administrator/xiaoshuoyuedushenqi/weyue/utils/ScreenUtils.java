@@ -27,7 +27,7 @@ public class ScreenUtils {
         return (int) (px / metrics.density);
     }
 
-    public static int spToPx(int sp) {
+    public static int spToPx(float sp) {
         DisplayMetrics metrics = getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, metrics);
     }

@@ -6,6 +6,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.PageView;
+
 /**
  * Created by newbiechen on 17-7-24.
  */
@@ -24,7 +26,6 @@ public class CoverPageAnim extends HorizonPageAnim {
                 GradientDrawable.Orientation.LEFT_RIGHT, mBackShadowColors);
         mBackShadowDrawableLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
     }
-
     @Override
     public void drawStatic(Canvas canvas) {
         if (isCancel){
@@ -68,8 +69,43 @@ public class CoverPageAnim extends HorizonPageAnim {
         mBackShadowDrawableLR.draw(canvas);
     }
 
+//    @Override
+//    public void startAnim() {
+//        int dx = 0;
+//        switch (mDirection){
+//            case NEXT:
+//                if (isCancel){
+//                    int dis = (int) ((mViewWidth - mStartX) + mTouchX);
+//                    if (dis > mViewWidth){
+//                        dis = mViewWidth;
+//                    }
+//                    dx = mViewWidth - dis;
+//                }else{
+//                    dx = (int) -(mTouchX + (mViewWidth - mStartX));
+//                }
+//                break;
+//            default:
+//                if (isCancel){
+//                    dx = (int) -mTouchX;
+//                }else{
+//                    dx = (int) (mViewWidth - mTouchX);
+//                }
+//                break;
+//        }
+//
+//        //滑动速度保持一致
+//        int duration = (int) (((400 * Math.abs(dx)) / mViewWidth)*0.8);
+//        mScroller.startScroll((int) mTouchX, 0, dx, 0, duration);
+//    }
+
     @Override
     public void startAnim() {
+        if(is_auto) {
+            if (isRunning) {
+                return;
+            }
+            isRunning = true;
+        }
         int dx = 0;
         switch (mDirection){
             case NEXT:
@@ -93,7 +129,7 @@ public class CoverPageAnim extends HorizonPageAnim {
         }
 
         //滑动速度保持一致
-        int duration = (int) (((400 * Math.abs(dx)) / mViewWidth)*0.6);
+        int duration = (int) (((400 * Math.abs(dx)) / mViewWidth)*0.8);
         mScroller.startScroll((int) mTouchX, 0, dx, 0, duration);
     }
 }

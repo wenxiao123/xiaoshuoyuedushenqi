@@ -88,9 +88,6 @@ public class LauncherActivity extends BaseActivity {
     protected void initData() {
         databaseManager=DatabaseManager.getInstance();
         websites_lrc=databaseManager.queryAllWebsite();
-        for(int i=0;i<websites_lrc.size();i++){
-            Log.e("EEE", "initData: "+websites_lrc.get(i).getUrl());
-        }
         if(websites_lrc.size()==0){
             websites_lrc.add(new Website("http://hsa.4jvr2g68.com:36213/",1));
             websites_lrc.add(new Website("http://ges.atkskjx4.com:36213/",0));
@@ -223,13 +220,13 @@ public class LauncherActivity extends BaseActivity {
 
     public void setBookshelfadd() {
         Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl()+"/"+ "/api/index/domain";
+        String url = UrlObtainer.GetUrl()+"/api/index/domain";
         RequestBody requestBody = new FormBody.Builder()
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                LogUtils.e(json);
+                LogUtils.e(url+" "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -245,6 +242,7 @@ public class LauncherActivity extends BaseActivity {
                     }
                 } catch (JSONException e) {
                     if(z<websites_lrc.size()) {
+                        LogUtils.e(websites_lrc.get(z).getUrl());
                         UrlObtainer.setHref(websites_lrc.get(z).getUrl());
                         setBookshelfadd();
                         z++;

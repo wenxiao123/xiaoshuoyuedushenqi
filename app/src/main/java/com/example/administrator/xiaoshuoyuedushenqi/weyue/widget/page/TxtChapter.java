@@ -1,10 +1,12 @@
 package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page;
 
+import java.io.Serializable;
+
 /**
  * Created by newbiechen on 17-7-1.
  */
 
-public class TxtChapter {
+public class TxtChapter implements Serializable {
 
     //章节所属的小说(网络)
     String bookId;

@@ -230,6 +230,16 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 //        }
 //    }
 
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden){
+            banner.stopVideo();
+        }else {
+            banner.stratVideo();
+        }
+    }
     @Override
     protected void doInOnCreate() {
             requestUpdate();

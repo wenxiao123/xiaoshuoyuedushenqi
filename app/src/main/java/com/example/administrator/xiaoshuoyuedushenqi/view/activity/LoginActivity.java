@@ -23,6 +23,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.ILoginContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.LoginPresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.util.CarOnlyIdUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.OvalImageView;
@@ -30,6 +31,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.widget.OvalImageView;
 import org.w3c.dom.Text;
 
 import java.util.regex.Pattern;
+
+import javax.security.auth.login.LoginException;
 
 public class LoginActivity extends BaseActivity<LoginPresenter> implements ILoginContract.View {
     EditText et_mobile_phone, et_vertical;
@@ -84,7 +87,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
             @Override
             public void onClick(View view) {
                 if(isPhoneNumber(et_mobile_phone.getText().toString())){
-                    mPresenter.getVertical(et_mobile_phone.getText().toString());
+                   // mPresenter.getVertical(et_mobile_phone.getText().toString());
                 }else {
                     showShortToast("电话号码格式错误！");
                 }
@@ -176,7 +179,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
             @Override
             public void onClick(View view) {
                 if (isChecked) {
-                    mPresenter.getLogin(et_mobile_phone.getText().toString(), et_vertical.getText().toString());
+                    String Diviceid= CarOnlyIdUtils.getOnlyID(LoginActivity.this);
+                    mPresenter.getLogin(Diviceid,et_mobile_phone.getText().toString(), et_vertical.getText().toString());
                 } else {
                     showShortToast("请先同意用户协议与隐私条款");
                 }

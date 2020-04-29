@@ -113,7 +113,6 @@ public class NetPageLoader extends PageLoader{
                         JSONObject jsonObject1=jsonObject.getJSONObject("data");
                         JSONArray object=jsonObject1.getJSONArray("data");
                         weigh=Integer.parseInt(jsonObject1.getString("total"));
-                        //Log.e("QQQ2", "onResponse: "+weigh+" "+posion+" "+json);
                         List<Cataloginfo> catalogData=new ArrayList<>();
                         for(int i=0;i<object.length();i++){
                             catalogData.add(gson.fromJson(object.getJSONObject(i).toString(),Cataloginfo.class));
@@ -147,12 +146,12 @@ public class NetPageLoader extends PageLoader{
         }else {
             if (z < weigh / 50) {
                 // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
-                LogUtils.e(z+" "+weigh/50);
+                //LogUtils.e(z+" "+weigh/50);
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(1);
             } else {
                 // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
-                LogUtils.e(z+" "+weigh/50);
+                //LogUtils.e(z+" "+weigh/50);
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(2);
             }
@@ -180,45 +179,6 @@ public class NetPageLoader extends PageLoader{
         }
     };
 
-    //    public void getCatalogData(String id,int posion,int type) {
-//        String url = UrlObtainer.GetUrl()+"/"+"api/index/Books_List";
-//        RequestBody requestBody = new FormBody.Builder()
-//                .add("id", id)
-//                .add("type", type+"")
-//                .add("page",posion+"")
-//                .add("limit","50")
-//                // .add("limit", id)
-//                .build();
-//        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
-//            @Override
-//            public void onResponse(String json) {
-//                //Log.e("QQQ2", "onResponse: "+json);
-//                try {
-//                    JSONObject jsonObject=new JSONObject(json);
-//                    String code=jsonObject.getString("code");
-//                    if(code.equals("1")){
-//                        JSONObject jsonObject1=jsonObject.getJSONObject("data");
-//                        JSONArray object=jsonObject1.getJSONArray("data");
-//                        List<Cataloginfo> catalogData=new ArrayList<>();
-//                        for(int i=0;i<object.length();i++){
-//                            catalogData.add(mGson.fromJson(object.getJSONObject(i).toString(),Cataloginfo.class));
-//                        }
-//                        mPresenter.getCatalogDataSuccess(catalogData);
-//                    }else {
-//                        mPresenter.getCatalogDataError("请求数据失败");
-//                    }
-//
-//                } catch (JsonSyntaxException | JSONException e) {
-//                    mPresenter.getCatalogDataError(com.example.administrator.xiaoshuoyuedushenqi.constant.Constant.JSON_ERROR);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(String errorMsg) {
-//                mPresenter.getCatalogDataError(errorMsg);
-//            }
-//        });
-//    }
     private List<TxtChapter> convertTxtChapter(List<Cataloginfo> catalogDataAll){
         List<TxtChapter> txtChapters = new ArrayList<>(catalogDataAll.size());
         for (Cataloginfo bean : catalogDataAll){
@@ -274,40 +234,6 @@ public class NetPageLoader extends PageLoader{
         return loadPages(txtChapter,br);
     }
 
-//    public void getDetailedChapterData(String bookid, String id) {
-//        Gson mGson=new Gson();
-//        String url = UrlObtainer.GetUrl() + "api/index/Books_Info";
-//        RequestBody requestBody = new FormBody.Builder()
-//                .add("uid", bookid)
-//                .add("weigh", id+"")
-//                .build();
-//        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
-//            @Override
-//            public void onResponse(String json) {   // 得到 json 数据
-//                try {
-//                    JSONObject jsonObject = new JSONObject(json);
-//                    String code = jsonObject.getString("code");
-//                    if (code.equals("1")) {
-//                        if(jsonObject.isNull("data")){
-//                          return;
-//                        }else {
-//                            JSONObject object = jsonObject.getJSONObject("data");
-//                             data = mGson.fromJson(object.toString(),DetailedChapterData.class);
-//                        }
-//                    } else {
-//                        return;
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(String errorMsg) {
-//               // mPresenter.getDetailedChapterDataError(errorMsg);
-//            }
-//        });
-//    }
     //装载上一章节的内容
     @Override
     boolean prevChapter(){
@@ -375,10 +301,16 @@ public class NetPageLoader extends PageLoader{
             List<TxtChapter> bookChapters = new ArrayList<>(5);
             //提示加载当前章节和前面两章和后面两章
             int current = mCurChapterPos;
-            bookChapters.add(mChapterList.get(current));
-
+            if(current<0||current>mChapterList.size()){
+                return;
+            }
+            if(current>=mChapterList.size()) {
+                bookChapters.add(mChapterList.get(mChapterList.size()-1));
+            }else {
+                bookChapters.add(mChapterList.get(current));
+            }
             //如果当前已经是最后一章，那么就没有必要加载后面章节
-            if (current != mChapterList.size()){
+            if (current < mChapterList.size()){
                 int begin = current + 1;
                 int next = begin + 2;
                 if (next > mChapterList.size()){
@@ -393,6 +325,7 @@ public class NetPageLoader extends PageLoader{
                 if (prev < 0){
                     prev = 0;
                 }
+
                 bookChapters.addAll(mChapterList.subList(prev,current));
             }
             //Log.e("QQQ", "loadCurrentChapter: "+222);

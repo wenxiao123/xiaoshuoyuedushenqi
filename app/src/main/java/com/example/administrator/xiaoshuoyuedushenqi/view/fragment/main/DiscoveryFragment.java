@@ -66,41 +66,9 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         mAllBookTv.setOnClickListener(this);
 
         mTabLayout = getActivity().findViewById(R.id.tv_discovery_tab_layout);
-        // TabLayout + ViewPager
-//        mViewPager = getActivity().findViewById(R.id.vp_discovery_view_pager);
-//        // 在 Fragment 中只能使用 getChildFragmentManager() 获取 FragmentManager 来处理子 Fragment
-//        mViewPager.setAdapter(new NormalViewPagerAdapter(getChildFragmentManager(),
-//                mFragmentList, mPageTitleList));
-//        // 缓存左右两侧的两个页面（很重要！！！，不设置这个切换到前两个的时候就会重新加载数据）
-//        mViewPager.setOffscreenPageLimit(2);
-//        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int i, float v, int i1) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int i) {
-//                select_position=i;
-//                mTabLayout.getmTabLayout().getTabAt(i).select();
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int i) {
-//
-//            }
-//        });
         for(int i=0;i<mPageTitleList.size();i++){
             mTabLayout.addTab(mPageTitleList.get(i));
         }
-//        mTabLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                setScale(0, DiscoveryPageTransformer.MAX_SCALE);
-//            }
-//        });
-        //mTabLayout.setupWithViewPager(mViewPager);
-        //mTabLayout.getmTabLayout().getTabAt(0).select();
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -188,9 +156,17 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         }
         mCurrFragment = showFragment;
 
-        ft.commit();
+        ft.commitAllowingStateLoss();
     }
-
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        //if(hidden){
+            mCurrFragment.onHiddenChanged(hidden);
+            //banner.stopVideo();
+//        }else {
+//            //banner.stratVideo();
+//        }
+    }
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

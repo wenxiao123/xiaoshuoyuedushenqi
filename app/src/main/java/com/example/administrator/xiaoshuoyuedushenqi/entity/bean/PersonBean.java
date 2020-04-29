@@ -37,6 +37,17 @@ public class PersonBean implements Serializable {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "PersonBean{" +
+                "name='" + name + '\'' +
+                ", firstPinYin='" + firstPinYin + '\'' +
+                ", pinYin='" + pinYin + '\'' +
+                ", filepath='" + filepath + '\'' +
+                ", filetype='" + filetype + '\'' +
+                '}';
+    }
+
     public void setName(String name) {
         this.name = name;
     }

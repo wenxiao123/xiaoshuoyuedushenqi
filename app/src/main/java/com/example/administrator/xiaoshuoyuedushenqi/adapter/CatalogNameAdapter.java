@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.TxtChapter;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class CatalogNameAdapter extends RecyclerView.Adapter<CatalogNameAdapter.
     private static final String TAG = "CatalogAdapter";
 
     private Context mContext;
-    private List<String> mChapterNameList;
+    private List<TxtChapter> mChapterNameList;
 
     private CatalogListener mListener;
     public void setPosition(int position) {
@@ -47,9 +48,9 @@ public class CatalogNameAdapter extends RecyclerView.Adapter<CatalogNameAdapter.
         mListener = listener;
     }
 
-    public CatalogNameAdapter(Context mContext, List<String> mChapterNameList) {
+    public CatalogNameAdapter(Context mContext, List<TxtChapter> txtChapters) {
         this.mContext = mContext;
-        this.mChapterNameList = mChapterNameList;
+        this.mChapterNameList = txtChapters;
     }
 
     @NonNull
@@ -61,7 +62,7 @@ public class CatalogNameAdapter extends RecyclerView.Adapter<CatalogNameAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull CatalogViewHolder catalogViewHolder, final int i) {
-        catalogViewHolder.chapterName.setText(mChapterNameList.get(i));
+        catalogViewHolder.chapterName.setText(mChapterNameList.get(i).getTitle());
 //        catalogViewHolder.chapterName.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

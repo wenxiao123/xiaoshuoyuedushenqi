@@ -25,6 +25,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtils;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.PinyinUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SDCardHelper;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SideBar;
@@ -118,12 +119,16 @@ public class BookCataloActivity extends BaseActivity {
                     Collections.sort(data, new PinyinComparator());
                     sortadapter = new SortAdapter(BookCataloActivity.this, data);
                     listView.setAdapter(sortadapter);
-                }else{
-                    Intent intent=new Intent(BookCataloActivity.this,MainActivity.class);
-                    intent.putExtra("islaod","1");
-                    intent.putExtra("personBean", (Serializable) data.get(position));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                }else if(data.get(position).getFilepath().endsWith(".txt")){
+                    File file1=new File(data.get(position).getFilepath());
+                    if(file1.length()>10) {
+                        Intent intent_recever = new Intent("com.zhh.android");
+                        intent_recever.putExtra("type", 2);
+                        intent_recever.putExtra("islaod", "1");
+                        intent_recever.putExtra("personBean", (Serializable) data.get(position));
+                        sendBroadcast(intent_recever);
+                        finish();
+                    }
                 }
             }
         });

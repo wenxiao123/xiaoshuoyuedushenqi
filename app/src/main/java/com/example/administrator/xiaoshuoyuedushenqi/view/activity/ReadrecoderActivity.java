@@ -123,9 +123,6 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         });
         tv_nodata = findViewById(R.id.tv_nodata);
         recyclerView = findViewById(R.id.recycle_readcord);
-        // recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        //  recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        //showSearchResFg();
         mProgressBar = findViewById(R.id.pb_male);
         mRefreshSrv = findViewById(R.id.srv_male_refresh);
 
@@ -136,7 +133,6 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
                 isRefresh = true;
                 requestPost();
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-                //refreshlayout.finishLoadMore(false);
             }
         });
         mRefreshSrv.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -145,24 +141,25 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
                 z++;
                 requestPost();
                 refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-                // refreshlayout.finishLoadMore(false);
             }
         });
         ClassicsHeader classicsHeader = new ClassicsHeader(this);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(new Date());
         classicsHeader.setLastUpdateText("最后更新:" + dateString);
-        //refreshLayout.setRefreshHeader(new BezierRadarHeader(getContext()).setEnableHorizontalDrag(true));
         mRefreshSrv.setRefreshHeader(classicsHeader);
-        //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
         mRefreshSrv.setRefreshFooter(new ClassicsFooter(this));
         btn_jingxuan.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-               Intent intent=new Intent(ReadrecoderActivity.this,MainActivity.class);
-                intent.putExtra("is_naghit","3");
-               startActivity(intent);
+//               Intent intent=new Intent(ReadrecoderActivity.this,MainActivity.class);
+//               intent.putExtra("is_naghit","3");
+//               startActivity(intent);
+                Intent intent_recever = new Intent("com.zhh.android");
+                intent_recever.putExtra("type",3);
+                sendBroadcast(intent_recever);
+                finish();
             }
         });
     }
@@ -209,11 +206,6 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
     public void queryAllBookSuccess(List<Noval_Readcored> novelNameList) {
         mProgressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-//        if (novelNameList.size() == 0) {
-//            tv_nodata.setVisibility(View.VISIBLE);
-//        } else {
-//            tv_nodata.setVisibility(View.GONE);
-//        }
         noval_readcoreds.clear();
         setRecyclerViewData(novelNameList);
     }
@@ -243,7 +235,6 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
                 recyclerView.setVisibility(View.VISIBLE);
             }
             novelSourceAdapter.notifyDataSetChanged();
-            //novelSourceAdapter.notifyItemChanged(last, 0);
         }
     }
 
@@ -268,53 +259,15 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         novelSourceAdapter.setOnNovelSourceListener(new NovelSourceAdapter.NovelSourceListener() {
             @Override
             public void clickItem(int position) {
-//                Log.e("QQQ", "clickItem: " + noval_readcoreds.get(position));
-//                Intent intent = new Intent(ReadrecoderActivity.this, ReadActivity.class);
-//                intent.putExtra(ReadActivity.KEY_NOVEL_URL, noval_readcoreds.get(position).getNovel_id());
-//                intent.putExtra(ReadActivity.KEY_ZJ_ID, noval_readcoreds.get(position).getChapter_id());
-//                intent.putExtra(ReadActivity.KEY_NAME, noval_readcoreds.get(position).getTitle());
-//                intent.putExtra("first_read", 2);
-//                String weigh = noval_readcoreds.get(position).getWeigh();
-//                intent.putExtra("weigh", Integer.parseInt(weigh));//
-//                intent.putExtra(ReadActivity.KEY_COVER, noval_readcoreds.get(position).getPic());
-//                intent.putExtra(ReadActivity.KEY_POSITION, 1);
-//                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-               // if(!mDbManager.isExistInBookshelfNovel(noval_readcoreds.get(position).getNovel_id())){
+
                     Intent intent = new Intent(ReadrecoderActivity.this, NovelIntroActivity.class);
                     // 传递小说名，进入搜查页后直接显示该小说的搜查结果
                     intent.putExtra("pid", noval_readcoreds.get(position).getNovel_id());
                     startActivity(intent);
-               // }
             }
 
             @Override
             public void longclickItem(int position) {
-//                final TipDialog tipDialog = new TipDialog.Builder(ReadrecoderActivity.this)
-//                        .setContent("是否清除阅读记录")
-//                        .setCancel("取消")
-//                        .setEnsure("确定")
-//                        .setOnClickListener(new TipDialog.OnClickListener() {
-//                            @Override
-//                            public void clickEnsure() {
-//                                if (login_admin != null) {
-//                                    mPresenter.getDelectReadcoredData(login_admin.getToken(), noval_readcoreds.get(position).getNovel_id(), 1);
-//                                }
-//
-//                                if (mDbManager.isExistInReadCoderNovel(noval_readcoreds.get(position).getNovel_id())) {
-//                                    mDbManager.deleteBookReadcoderNovel(noval_readcoreds.get(position).getNovel_id());
-//                                }
-                            //   requestPost();
-//                            }
-//
-//                            @Override
-//                            public void clickCancel() {
-//
-//                            }
-//                        })
-//                        .build();
-//                tipDialog.show();
             }
         });
         recyclerView.setAdapter(novelSourceAdapter);

@@ -103,6 +103,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        unregisterReceiver(backgroungReceiver);
         App.removeActivity(this);
         System.gc();
         if (mPresenter != null) {

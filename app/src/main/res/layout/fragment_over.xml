@@ -22,26 +22,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-<!--                <com.tmall.ultraviewpager.UltraViewPager-->
-<!--                    android:id="@+id/ultra_viewpager_over"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_centerInParent="true"-->
-<!--                    android:background="@android:color/darker_gray"-->
-<!--                    app:upv_autoscroll="3000"-->
-<!--                    app:upv_infiniteloop="true" />-->
                 <com.example.administrator.xiaoshuoyuedushenqi.banner.Banner
                     android:id="@+id/ultra_viewpager_over"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:background="@android:color/darker_gray"/>
-                <!--<com.jude.rollviewpager.RollPagerView-->
-                <!--android:id="@+id/roll"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="100dp"-->
-                <!--android:background="@drawable/bachground_white"-->
-                <!--app:rollviewpager_play_delay="5000"/>-->
                 <com.wzh.viewpager.indicator.UIndicator
                     android:id="@+id/indicator_over"
                     android:layout_width="40dp"
@@ -150,6 +136,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
+                android:nestedScrollingEnabled="false"
                 android:overScrollMode="never" />
 
             <RelativeLayout
@@ -189,6 +176,7 @@
                 android:layout_below="@id/rv_new_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintTop_toBottomOf="@id/rv_over_hot_rank_recycler_view" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_over_category_novel_list"
@@ -198,6 +186,7 @@
                 android:layout_marginTop="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintTop_toBottomOf="@id/rv_over_hot_rank_recycler_view" />
 
             <ProgressBar

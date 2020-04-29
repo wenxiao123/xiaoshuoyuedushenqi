@@ -106,7 +106,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     private boolean mIsDeleting = false;
     PersonBean personBean;
 
-    public void setPersonBean(PersonBean personBean) {
+    public void setPersonBean(PersonBean personBean,boolean is_add) {
+        this.is_add = is_add;
         this.personBean = personBean;
     }
 
@@ -310,8 +311,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.popu_item, null);
         ListView lv_appointment = (ListView) view.findViewById(R.id.list_view);
-        final String[] datas = {getString(R.string.manger_bookshelf), getString(R.string.read_reder), getString(R.string.load_local_book)};
-        final Integer[] ints = {R.mipmap.bookshelf, R.mipmap.read_recoder, R.mipmap.load_book};
+        final String[] datas = {getString(R.string.manger_bookshelf), getString(R.string.read_reder)};//, getString(R.string.load_local_book)};
+        final Integer[] ints = {R.mipmap.bookshelf, R.mipmap.read_recoder};//, R.mipmap.load_book};
         PupoAdapter mainAdapter = null;
         if (datas != null) {
             mainAdapter = new PupoAdapter(datas, ints);
@@ -342,8 +343,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                         startActivity(readRecordintent);
                         break;
                     case 2:
-                        Intent intent = new Intent(getContext(), BookCataloActivity.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent(getContext(), BookCataloActivity.class);
+//                        startActivity(intent);
                         break;
                 }
                 popupWindow.dismiss();
@@ -434,9 +435,11 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 return;
             }
             // 将该小说的数据存入数据库
-            BookshelfNovelDbData dbData = new BookshelfNovelDbData(0 + "", personBean.getName(),
+            BookshelfNovelDbData dbData = new BookshelfNovelDbData(personBean.getFilepath(), personBean.getName(),
                     "", 0, 0, 1); //personBean.getFilepath()
             dbData.setFuben_id(personBean.getFilepath());
+            dbData.setPosition(1);
+            dbData.setChapterid(1+"");
             // Log.e("QQQ", "upload: "+personBean.getFilepath());
             mDbManager.insertOrUpdateBook(dbData);
             // 更新列表
@@ -470,6 +473,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         }
         //App.updateNightMode(!SpUtil.getIsNightMode());
         if (personBean != null) {
+            LogUtils.e(personBean.getFiletype());
             upload(personBean);
             personBean = null;
         }
@@ -483,7 +487,6 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
      */
     @Override
     public void queryAllBookSuccess(List<BookshelfNovelDbData> dataList) {
-        //  Log.e("QQQ", "queryAllBookSuccess: " + dataList.size());
         if (mBookshelfNovelsAdapter == null) {
             mDataList = dataList;
             mDataList2 = dataList;
@@ -567,26 +570,6 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             }
         }
         mPresenter.queryAllBook();
-//        dataList.addAll(mDataList2);
-//        if (mBookshelfNovelsAdapter == null) {
-//            mDataList = dataList;
-//            mCheckedList.clear();
-//            for (int i = 0; i < mDataList.size(); i++) {
-//                mCheckedList.add(false);
-//            }
-//            initAdapter();
-//            mBookshelfNovelsRv.setAdapter(mBookshelfNovelsAdapter);
-//        } else {
-//            mDataList.clear();
-//            mDataList.addAll(dataList);
-//            mCheckedList.clear();
-//            for (int i = 0; i < mDataList.size(); i++) {
-//                mCheckedList.add(false);
-//            }
-//            mDataList.add(bookshelfNovelDbData);
-//            mCheckedList.add(false);
-//            mBookshelfNovelsAdapter.notifyDataSetChanged();
-//        }
     }
 
     List<Noval_Readcored> noval_readcoreds = new ArrayList<>();
@@ -627,6 +610,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                         showShortToast("请求数据失败");
                     }
                 } catch (JSONException e) {
+                    queryAllBookSuccess2(mDataList1);
                     e.printStackTrace();
                 }
             }

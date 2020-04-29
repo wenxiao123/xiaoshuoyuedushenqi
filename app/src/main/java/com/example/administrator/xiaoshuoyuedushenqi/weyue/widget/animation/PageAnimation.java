@@ -42,7 +42,7 @@ public abstract class PageAnimation {
     //上一个触碰点
     protected float mLastX;
     protected float mLastY;
-
+    public boolean is_auto;
     public PageAnimation(int w, int h, View view, OnPageChangeListener listener){
         this(w, h, 0, 0, view,listener);
     }

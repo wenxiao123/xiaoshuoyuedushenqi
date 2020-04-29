@@ -321,6 +321,36 @@ public class Banner extends RelativeLayout
             delyedTime = imgDelyed;
         }
     }
+    public void stopVideo(){
+        try {
+            for (int i = 0; i < views.size(); i++) {
+                View view1 = views.get(i);
+                if (view1 instanceof VideoView) {
+                    VideoView videoView = (VideoView) view1;
+                    videoView.pause();
+                }
+            }
+        }catch (Exception ex){
+            return;
+        }
+    }
+    public void stratVideo(){
+        try {
+            for (int i = 0; i < views.size(); i++) {
+                View view1 = views.get(i);
+                if (view1 instanceof VideoView) {
+                    VideoView videoView = (VideoView) view1;
+                    if (!videoView.isPlaying()) {
+                        videoView.start();
+                        videoView.seekTo(0);
+                    }
+                }
+            }
+        }catch (Exception ex){
+            return;
+        }
+
+    }
 
     public void dataChange(List<String> list){
         if (list != null && list.size()>0)
@@ -349,7 +379,9 @@ public class Banner extends RelativeLayout
         mHandler = null;
         time = null;
         runnable = null;
-        views.clear();
+        if(views!=null) {
+            views.clear();
+        }
         views = null;
         viewPager = null;
         mAdapter = null;

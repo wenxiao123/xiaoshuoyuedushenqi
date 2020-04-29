@@ -269,12 +269,12 @@ public class PageView extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-
+                startAutoPlay();
                 if (!isMove){
                     //设置中间区域范围
                     if (mCenterRect == null){
-                        mCenterRect = new RectF(mViewWidth/5,mViewHeight/3,
-                                mViewWidth*4/5,mViewHeight*2/3);
+                        mCenterRect = new RectF(mViewWidth/4,0,
+                                mViewWidth*3/4,mViewHeight);
                     }
 
                     //是否点击了中间
@@ -287,7 +287,7 @@ public class PageView extends View {
                         return true;
                     }
                 }
-                startAutoPlay();
+
                 mPageAnim.onTouchEvent(event);
                 break;
         }
@@ -406,20 +406,26 @@ public class PageView extends View {
     private int mTextInterval=30;
     private AutoPlayTask mAutoPlayTask;
     //自动阅读间隔时间
-    private int mAutoPlayInterval = 3000;
+    private int mAutoPlayInterval = 1000;
     //是否开启自动阅读
     private boolean mAutoPlayAble = false;
 
     public void startAutoPlay() {
         stopAutoPlay();
-        Log.e("auto","------------------------1");
+        Log.e("auto","--------"+mAutoPlayAble);
         if (mAutoPlayAble) {
+            if(mPageAnim instanceof CoverPageAnim || mPageAnim instanceof SimulationAnimation4){
+                mPageAnim.is_auto=true;
+            }
             postDelayed(mAutoPlayTask, mAutoPlayInterval);
         }
     }
 
     public void stopAutoPlay() {
         if (mAutoPlayTask != null) {
+            if(mPageAnim instanceof CoverPageAnim || mPageAnim instanceof SimulationAnimation4){
+                mPageAnim.is_auto=false;
+            }
             removeCallbacks(mAutoPlayTask);
         }
     }

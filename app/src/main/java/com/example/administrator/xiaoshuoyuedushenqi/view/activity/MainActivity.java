@@ -39,6 +39,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.MoreIntoEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.service.CacheService;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.BookshelfFragment;
@@ -168,15 +169,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         // 检查权限
         checkPermission();
         Intent intent=getIntent();
-        isload=intent.getStringExtra("islaod");//
-        personBean= (PersonBean) intent.getSerializableExtra("personBean");
-        if(isload!=null&&isload.equals("1")){
-            if(personBean!=null){
-               updata(personBean);
-            }
-        }else if(isload!=null&&isload.equals("2")){
-            updata2(false);
-        }
         String is_naghit=intent.getStringExtra("is_naghit");
         if(is_naghit!=null&&is_naghit.equals("2")){
             mBookshelfBeforeIv.setVisibility(View.VISIBLE);
@@ -438,9 +430,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         });
     }
-   public void updata(PersonBean personBean){
+   public void updata(PersonBean personBean,boolean isflag){
        if(mBookshelfFragment!=null){
-           ((BookshelfFragment)mBookshelfFragment).setPersonBean(personBean);
+           ((BookshelfFragment)mBookshelfFragment).setPersonBean(personBean,isflag);
        }
    }
 
@@ -507,7 +499,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
         mCurrFragment = showFragment;
 
-        ft.commit();
+        ft.commitAllowingStateLoss();
     }
     /**
      * 检查权限
@@ -572,8 +564,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             int i=intent.getIntExtra("type",0);
             if(i==0) {
                 updata2(false);
-            }else {
+            }else if(i==1){
                 updata2(true);
+            }else if(i==2){
+                isload=intent.getStringExtra("islaod");
+                personBean= (PersonBean) intent.getSerializableExtra("personBean");
+                if(isload!=null&&isload.equals("1")){
+                    if(personBean!=null){
+                        LogUtils.e(personBean.toString());
+                        updata(personBean,true);
+                    }
+                }else if(isload!=null&&isload.equals("2")){
+                    updata2(false);
+                }
+            }else if(i==3){
+                mBookshelfBeforeIv.setVisibility(View.VISIBLE);
+                mBookshelfAfterIv.setVisibility(View.INVISIBLE);
+                mMoreBeforeIv.setVisibility(View.VISIBLE);
+                mMoreAfterIv.setVisibility(View.INVISIBLE);
+                mBookMarkBefore.setVisibility(View.VISIBLE);
+                mBookMarkAfter.setVisibility(View.INVISIBLE);
+                mDiscoveryAfterIv.setVisibility(View.VISIBLE);
+                mDiscoveryBeforeIv.setVisibility(View.INVISIBLE);
+                // 切换 Fragment
+                changeFragment(FG_DISCOVERY);
             }
         }
     }

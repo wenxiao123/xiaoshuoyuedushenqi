@@ -12,6 +12,7 @@ import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -85,6 +86,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,6 +122,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     public static final String EXTRA_COLL_BOOK = "extra_coll_book";
     public static final String EXTRA_IS_COLLECTED = "extra_is_collected";
     public static final String CHPTER_ID = "chpter_id";
+    public static final String PAGE_ID = "page_id";
     public static final String LOAD_PATH = "load_path";
     private PageLoader mPageLoader;
     public View mTheme0;
@@ -136,7 +139,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     private ImageView iv_read_decrease_row_space, iv_read_increase_row_space;
     private TextView mTurnNormalTv,tv_textstyle;
     private TextView mTurnRealTv,tv_website;
-    String chpter_id,load_path;
+    String chpter_id,load_path,page_id;
     TextView tv_title;
     // 监听系统亮度的变化
     private ContentObserver mBrightnessObserver = new ContentObserver(new Handler()) {
@@ -169,6 +172,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     protected void initData() {
         mCollBook = (CollBookBean) getIntent().getSerializableExtra(EXTRA_COLL_BOOK);
         chpter_id=getIntent().getStringExtra(CHPTER_ID);
+        page_id=getIntent().getStringExtra(PAGE_ID);
         load_path=getIntent().getStringExtra(LOAD_PATH);
         mVmContentInfo = new VMBookContentInfo(getApplicationContext(), this);
         mStyle = SpUtil.getTextStyle();
@@ -335,30 +339,16 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onClick(View view) {
                 if (!is_autoRead) {
-                   // z=0;
-                    //starttime();
-                    //sb_auto_read_progress.setProgress(pro);
                     is_autoRead = true;
                     tv_autoread.setImageResource(R.mipmap.kaiguan_open);
-//                    if(mPageLoader.getmPageMode()!=PageView.PAGE_MODE_SCROLL){
-//                        //mPageLoader.autoNextPage();
-//                        z=2;
-//                        handler.sendEmptyMessageDelayed(2,3000);
-//                    }
-                    //txt_page.setmAutoPlayAble(true);
                     txt_page.setmAutoPlayAble(true);
                     txt_page.startAutoPlay();
 
                 } else {
-                    // stopTime();
                     is_autoRead = false;
                     tv_autoread.setImageResource(R.mipmap.icon_auto_close);
                     txt_page.setmAutoPlayAble(false);
                     txt_page.stopAutoPlay();
-//                    if(mPageLoader.getmPageMode()!=PageView.PAGE_MODE_SCROLL&&mPageLoader.autoNextPage()==true){
-//                        z=1;
-//                        handler.sendEmptyMessageDelayed(1,1000);
-//                    }
                 }
             }
         });
@@ -505,17 +495,16 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 break;
         }
         // 设置相关颜色
-        //mNovelTitleTv.setTextColor(textColor);
         mPageLoader.setBgColor(mTheme, v_title);
-        if(mTheme==0) {
-            v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
-        }
     }
 
     /**
      * 显示设置栏
      */
     private void showSettingBar() {
+        if(is_autoRead){
+            txt_page.stopAutoPlay();
+        }
         mIsShowSettingBar = true;
         Animation bottomAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_enter);
@@ -533,10 +522,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     RecyclerView rv_catalog_list;
     @SuppressLint("WrongConstant")
     private void showPupowindpwChangeWebSite(View parent) {
-//        if (mType == 1) {
-//            showShortToast("本地缓存小说不支持换源功能");
-//            return;
-//        }
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.popu_changewebsite, null);
         is_all_one = false;
@@ -575,7 +560,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         popupWindow.showAtLocation(view, Gravity.RIGHT | Gravity.BOTTOM, 0, -location[1]);
-        //popupWindow.showAsDropDown(parent, (int) (parent.getWidth() * 0.7), 35);
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -608,12 +592,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             for (int z = 0; z < jsonArray.length(); z++) {
                                     categorys_ones.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Categorys_one.class));
                             }
-                            // Log.e("qqq", "onResponse: " + categorys_ones.size());
                             getCategorysSuccess(categorys_ones);
                         }
                     } else {
                         getCategorysError();
-                        //mPresenter.getDetailedChapterDataError("请求数据失败");
                     }
                 } catch (JSONException e) {
                     getCategorysError();
@@ -655,60 +637,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 //                        }
                         reurl = categorys_ones.get(word).getElement();
                         ((NetPageLoader)mPageLoader).setCategorys_ones(categorys_ones,word,is_all_one);
-                        //  Log.e("WWW", "clickWord: " + categorys_ones.get(word));
-//                        tv_website.setText(categorys_ones.get(word).getUrl());
-//                        other_website = categorys_ones.get(word).getText();
-//                        String href = other_website.get(Integer.parseInt(weight) - 1).getChapter_url();
-////                weigh = Integer.parseInt(categorys_ones.get(word).getChapter_sum());
-////                mNovelTitleTv1.setText(mChapterIndex+"/"+weigh);
-//                        CollBookBean collBookBean=new CollBookBean(mDataList.get(position).getNovelUrl(), mDataList.get(position).getName(), "", "",
-//                                mDataList.get(position).getCover(), false, 0,0,
-//                                "", "", mDataList.get(position).getWeight(), "",
-//                                false, false);;
-//                        mPageLoader=null;
-//                        mPageLoader = txt_page.getPageLoader(mCollBook.isLocal(),is_othersite);
-//                        //Log.e("QQQ", "clickWord: "+is_othersite);
-//                        mPageLoader.openBook(mCollBook);
-//                        mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
-//                            @Override
-//                            public void onChapterChange(int pos) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onLoadChapter(List<TxtChapter> chapters, int pos) {
-//                                mVmContentInfo.setNoval_id(mCollBook.get_id());
-//                                if(is_othersite==false) {
-//                                    mVmContentInfo.loadContent(pos + "", chapters);
-//                                }else {
-//                                    mVmContentInfo.loadContent2(pos, chapters);
-//                                }
-//                                if (mPageLoader.getPageStatus() == NetPageLoader.STATUS_LOADING
-//                                        || mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
-//                                    //冻结使用
-//                                    //mReadSbChapterProgress.setEnabled(false);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onCategoryFinish(List<TxtChapter> chapters) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onPageCountChange(int count) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onPageChange(int pos) {
-//
-//                            }
-//                        });
-//                        Message message=new Message();
-//                        message.what=2;
-//                        message.obj=href;
-                        //handler1.sendMessage(message);
 
                     }
                 }
@@ -731,6 +659,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
      * 隐藏设置栏
      */
     private void hideSettingBar() {
+//        if(is_autoRead){
+            txt_page.startAutoPlay();
+//        }
         mIsShowSettingBar = false;
         Animation bottomExitAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_exit);
@@ -757,6 +688,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
      * 显示上下栏
      */
     private void showBar() {
+        //if(is_autoRead){
+            txt_page.stopAutoPlay();
+        //}
         Animation topAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_top_enter);
         topAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -789,6 +723,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
      * 隐藏上下栏
      */
     private void hideBar() {
+        txt_page.startAutoPlay();
         Animation topExitAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_top_exit);
         topExitAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -867,14 +802,15 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
                 break;
         }
-        if(mTheme==0) {
-            v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
-        }else {
+//        if(mTheme==0) {
+//            v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
+//        }else {
             v_title.setBackgroundColor(mPageLoader.getmPageBg());
-        }
+//        }
         tv_textsize.setText(mPageLoader.getmTextSize() + "");
         tv_jainju.setText(mPageLoader.getmTextInterval()+"");
-        mPageLoader.setmCurChapterPos(Integer.parseInt(chpter_id));
+        mPageLoader.setmCurChapterPos(Integer.parseInt(chpter_id));//page_id
+        Log.e("222", "doAfterInit: "+chpter_id+" "+page_id);
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
             @Override
             public void onChapterChange(int pos) {
@@ -884,8 +820,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onLoadChapter(List<TxtChapter> chapters, int pos) {
-                t++;
-                if(t%4==0){
+                if(pos>last_pos) {
+                    t++;
+                }
+                if(t>0&&pos>last_pos&&t%4==0){
                    post_adm();
                 }
                 mVmContentInfo.setNoval_id(mCollBook.get_id());
@@ -908,6 +846,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 //隐藏提示
 //                mReadTvPageTip.setVisibility(GONE);
                 mReadSbChapterProgress.setProgress(0);
+                last_pos=pos;
             }
 
             @Override
@@ -993,41 +932,21 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         txt_page.setTouchListener(new PageView.TouchListener() {
             @Override
             public void center() {
-                if(mIsShowSettingBar==false) {
                     if (mIsShowingOrHidingBar == false) {
-                        showBar();
+                        if(!mIsShowSettingBar) {
+                            showBar();
+                        }
                     } else {
                         hideBar();
                     }
-                }
-                if(is_autoRead){
-                    txt_page.startAutoPlay();
-                }
                 if (mIsShowSettingBar) {
                     hideSettingBar();
                     return;
                 }
-//                if ( mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
-//                    mVmContentInfo.setNoval_id(mCollBook.get_id());
-//                    if(is_othersite==false) {
-//                        mVmContentInfo.loadContent(mPageLoader.getChapterPos()+"", mPageLoader.getmChapterList());
-//                    }else {
-//                        mVmContentInfo.loadContent2(mPageLoader.getChapterPos(), mPageLoader.getmChapterList(),reurl);
-//                    }
-//                }
             }
 
             @Override
             public boolean onTouch() {
-                if(mPageLoader.getmPageMode()==PageView.PAGE_MODE_SCROLL) {
-                    if (mIsShowingOrHidingBar != false) {
-                        hideBar();
-                        return false;
-                    }
-                    if (mIsShowSettingBar) {
-                        hideSettingBar();
-                    }
-                }
                 return true;
             }
 
@@ -1060,6 +979,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         });
         mPageLoader.openBook(mCollBook);//chpter_id
+//        if(page_id!=null&&Integer.parseInt(page_id)<mPageLoader.getmCurPageList().size()) {
+//            mPageLoader.setmCurPage(mPageLoader.getmCurPageList().get(Integer.parseInt(page_id)));
+//        }
         Typeface tf = null;
         AssetManager mgr = getAssets();
         if(mStyle.equals("1")) {
@@ -1084,6 +1006,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             tv_textstyle.setText("系统字体");
         }
     }
+    int last_pos;
     boolean is_cliick=false;
     int pro=35,read_speed;
     @Override
@@ -1284,6 +1207,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     intent.putExtra("chapter_id", 0);
                     startActivity(intent);
                 } else if (mCollBook.isLocal() == true) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("MSPANSCOMMIT", (Serializable)mPageLoader.getmChapterList());
                     // 跳转到目录页面，并且将自己的引用传递给它
                     Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
                             new HoldReadActivityEvent(WYReadActivity.this));
@@ -1294,6 +1219,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     intent.putExtra(LocalCatalogActivity.KEY_NAME, mCollBook.getTitle());  // 传递当前小说的名字
                     intent.putExtra(LocalCatalogActivity.KEY_COVER, mCollBook.getCover()); // 传递当前小说的封面
                     intent.putExtra(LocalCatalogActivity.KEY_POSTION, 0);
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 break;
@@ -1337,11 +1263,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             bgColor = ContextCompat.getColor(App.getAppContext(), R.color.color_001c27);
                             break;
                     }
-                    if(mTheme==0) {
-                        v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
-                    }else {
+//                    if(mTheme==0) {
+//                        v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
+//                    }else {
                         v_title.setBackgroundColor(bgColor);
-                    }
+//                    }
                 } else {
                     isNightMode = true;
                     v_title.setBackgroundColor(getResources().getColor(R.color.black));
@@ -1479,11 +1405,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void clickItem(int position) {
                 textStyleAdapter.setPosition(position);
-//                if (textStyles.get(position).getUrl() == null) {
-//                    mStyle = "";
-//                } else {
                 mStyle = textStyles.get(position).getId();
-//                }
                 SpUtil.saveTextStyle(mStyle);
                 mPageLoader.setmSype(mStyle);
                 textStyleAdapter.notifyDataSetChanged();
@@ -1546,11 +1468,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         }
         Intent intent_recever = new Intent("com.zhh.android");
-        //intent_recever.putExtra("type",1);
         sendBroadcast(intent_recever);
         Intent recever = new Intent("com.changebackground.android");
         sendBroadcast(recever);
-        //SpUtil.saveIsSysNightMode(isNightMode);
     }
     public void setReadRecord(String token, String novel_id, String chapter_id) {
         String url = UrlObtainer.GetUrl()+"/"+"/api/lookbook/add";
@@ -1621,7 +1541,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     }
                 }
             } else if (msg.what == 3) {
-                BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(mCollBook.get_id(), mCollBook.getTitle(), mCollBook.getCover(), 1, mTxtChapters.size(), 1 + "");
+                BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(mCollBook.get_id());
+                if(bookshelfNovelDbData==null) {
+                    bookshelfNovelDbData = new BookshelfNovelDbData(mCollBook.get_id(), mCollBook.getTitle(), mCollBook.getCover(), 1, mTxtChapters.size(), 1 + "");
+                }
+                bookshelfNovelDbData.setType(1);
                 bookshelfNovelDbData.setFuben_id(path + mCollBook.getTitle() + ".txt");
                 bookshelfNovelDbData.setChapterid(mPageLoader.getmCurChapterPos() + "");
                 mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
@@ -1825,18 +1749,13 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                         if (mCollBook.isLocal()==true) {
                             boolean isflag = false;
                             List<BookmarkNovelDbData> bookmarkNovelDbData = mDbManager.queryAllBookmarkNovel(mCollBook.get_id());
-                            //Log.e("QQQ", "2222: "+bookmarkNovelDbData.size());
                             for (int i = 0; i < bookmarkNovelDbData.size(); i++) {
-                                // Log.e("QQQ", "onItemClick: "+bookmarkNovelDbData.get(i).getPosition()+" "+mPageView.getPosition());
-                                if (bookmarkNovelDbData.get(i).getPosition() == mPageLoader.getChapterPos()&&bookmarkNovelDbData.get(i).getChapterid().equals(mPageLoader.getChapterPos()+"")) {
-                                    //Log.e("QQQ", "onItemClick: "+111);
+                                if (bookmarkNovelDbData.get(i).getContent().equals(mPageLoader.getmCurPageList().get(mPageLoader.getPagePos()).getLines().get(1))&&bookmarkNovelDbData.get(i).getChapterid().equals(mPageLoader.getChapterPos()+"")) {
                                     isflag = true;
                                     break;
                                 }
                             }
-                            // String progress = mNovelProgressTv.getText().toString().substring(0, mNovelProgressTv.getText().length() - 1);
                             if (isflag == false) {
-                               //String progress = mNovelProgressTv.getText().toString().substring(0, mNovelProgressTv.getText().length() - 1);
                                 Date t = new Date();
                                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 BookmarkNovelDbData dbData = new BookmarkNovelDbData(mCollBook.get_id(), mCollBook.getTitle(),
@@ -1849,16 +1768,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                         } else if (mCollBook.isLocal()==false) {
                             boolean isflag = false;
                             List<BookmarkNovelDbData> bookmarkNovelDbData = mDbManager.queryAllBookmarkNovel(mCollBook.get_id());
-                            //Log.e("QQQ", "2222: "+bookmarkNovelDbData.size());
                             for (int i = 0; i < bookmarkNovelDbData.size(); i++) {
-                                // Log.e("QQQ", "onItemClick: "+bookmarkNovelDbData.get(i).getPosition()+" "+mPageView.getPosition());
-                                if (bookmarkNovelDbData.get(i).getPosition() == mPageLoader.getChapterPos()&&bookmarkNovelDbData.get(i).getChapterid().equals(mPageLoader.getChapterPos()+"")) {
-                                    //Log.e("QQQ", "onItemClick: "+111);
+                                if (bookmarkNovelDbData.get(i).getContent().equals(mPageLoader.getmCurPageList().get(mPageLoader.getPagePos()).getLines().get(1))&&bookmarkNovelDbData.get(i).getChapterid().equals(mPageLoader.getChapterPos()+"")) {
                                     isflag = true;
                                     break;
                                 }
                             }
-                            // String progress = mNovelProgressTv.getText().toString().substring(0, mNovelProgressTv.getText().length() - 1);
                             if (isflag == false) {
                                 Date t = new Date();
                                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -42,6 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_COLALOG_NOVEL = "create table " + Constant.TABLE_COLALOG_NOVEL
             + " ( id int primary key, "
             + " title text , "
+            + " weigh integer , "
             + " novalid text , "
             + " reurl text )";
     // 创建书架书签信息表
@@ -87,6 +88,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+     if(oldVersion==1){
+         db.execSQL("drop table if exists "+Constant.TABLE_COLALOG_NOVEL);
+         db.execSQL("drop table if exists "+Constant.TABLE_HISTORY);
+         db.execSQL("drop table if exists "+Constant.TABLE_WEBSITE);
+         db.execSQL("drop table if exists "+Constant.TABLE_BOOKSHELF_NOVEL);
+         db.execSQL("drop table if exists "+Constant.TABLE_BOOKMARK_NOVEL);
+         db.execSQL("drop table if exists "+Constant.TABLE_READCORDE_NOVEL);
+         onCreate(db);
 
+     }
     }
 }

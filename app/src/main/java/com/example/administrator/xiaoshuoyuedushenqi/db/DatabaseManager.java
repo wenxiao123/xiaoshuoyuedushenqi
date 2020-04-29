@@ -44,7 +44,7 @@ public class DatabaseManager {
 
     private DatabaseManager() {
         SQLiteOpenHelper helper = new DatabaseHelper(
-                App.getContext(), Constant.DB_NAME, null, 1);
+                App.getContext(), Constant.DB_NAME, null, 2);
         mDb = helper.getWritableDatabase();
         //      String path = Constant.FONT_ADRESS;
 //        File pathFile = new File(path);
@@ -180,6 +180,7 @@ public class DatabaseManager {
             values.put("title", dbData.getTitle());
             values.put("novalid", dbData.getNovel_id());//
             values.put("reurl", dbData.getReurl());
+            values.put("weigh", dbData.getWeigh());
             mDb.insert(Constant.TABLE_COLALOG_NOVEL, null, values);
         }
         mDb.setTransactionSuccessful(); // 设置事务处理成功，不设置会自动回滚不提交
@@ -204,9 +205,11 @@ public class DatabaseManager {
                 String novalid = cursor.getString(
                         cursor.getColumnIndex("novalid"));
                 String reurl = cursor.getString(
-                        cursor.getColumnIndex("reurl"));
+                        cursor.getColumnIndex("reurl"));//
+                int weigh=cursor.getInt(
+                        cursor.getColumnIndex("weigh"));
                 if(novelid.equals(novalid)) {
-                    Cataloginfo bookshelfNovelDbData = new Cataloginfo(id, novalid, title, reurl);
+                    Cataloginfo bookshelfNovelDbData = new Cataloginfo(id, novalid, title, reurl,weigh);
                     //Log.e("rrr", "queryAllCataloginfo: "+bookshelfNovelDbData);
                     res.add(bookshelfNovelDbData);
                 }

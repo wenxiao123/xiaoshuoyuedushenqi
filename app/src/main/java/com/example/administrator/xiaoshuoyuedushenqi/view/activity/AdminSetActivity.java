@@ -8,6 +8,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -305,7 +307,24 @@ public class AdminSetActivity extends BaseActivity {
             }
         });
     }
-
+    /**
+     * 按比例缩放图片
+     *
+     * @param origin 原图
+     * @param ratio  比例
+     * @return 新的bitmap
+     */
+    public static Bitmap scaleBitmap(Bitmap origin, float ratio) {
+        if (origin == null) {
+            return null;
+        }
+        int width = origin.getWidth();
+        int height = origin.getHeight();
+        Matrix matrix = new Matrix();
+        matrix.preScale(ratio, ratio);
+        Bitmap newBM = Bitmap.createBitmap(origin, 0, 0, width, height, matrix, false);
+        return newBM;
+    }
     @Override
     protected void doAfterInit() {
         mainRecyleAdapter1 = new MainSetAdapter(this, ints1, strings1);
@@ -396,10 +415,11 @@ public class AdminSetActivity extends BaseActivity {
         if (requestCode == 2) {
             // 从相册返回的数据
             if (data != null) {
-                // 得到图片的全路径
+                //得到图片的全路径
                 Uri uri = data.getData();
                 final String path = getRealPathFromURI(uri);
                 File file = new File(path);
+                //Bitmap bitmap= BitmapFactory.
                 img_name = "img" + System.currentTimeMillis() + "";
                 uploadpost2(file);
                 //upload(file.getPath());
@@ -514,6 +534,7 @@ public class AdminSetActivity extends BaseActivity {
             OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
                 @Override
                 public void onResponse(String json) {
+                    Log.e("QQQ", "onResponse: "+json);
                     try {
                         JSONObject jsonObject = new JSONObject(json);
                         String code = jsonObject.getString("code");
