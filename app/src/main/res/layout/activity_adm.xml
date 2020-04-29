@@ -7,7 +7,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bachground_halfcricyle"
         android:orientation="vertical">
         <VideoView
             android:layout_centerVertical="true"
@@ -30,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerInside"
-        android:background="@drawable/layout_list_start_pic"
+        android:background="@mipmap/laugth"
         />
     <com.example.administrator.xiaoshuoyuedushenqi.widget.CircleProgressbar
         android:layout_marginTop="35dp"

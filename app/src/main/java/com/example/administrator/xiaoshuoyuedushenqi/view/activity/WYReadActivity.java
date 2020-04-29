@@ -810,7 +810,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         tv_textsize.setText(mPageLoader.getmTextSize() + "");
         tv_jainju.setText(mPageLoader.getmTextInterval()+"");
         mPageLoader.setmCurChapterPos(Integer.parseInt(chpter_id));//page_id
-        Log.e("222", "doAfterInit: "+chpter_id+" "+page_id);
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
             @Override
             public void onChapterChange(int pos) {

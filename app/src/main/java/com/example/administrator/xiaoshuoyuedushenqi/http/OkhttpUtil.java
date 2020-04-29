@@ -42,7 +42,7 @@ public class OkhttpUtil {
                 if (okHttpClient == null) {
                     //okHttpClient = new OkHttpClient();
                     okHttpClient = new OkHttpClient.Builder()
-                            .addInterceptor(new ParamsInterceptor())
+                            //.addInterceptor(new ParamsInterceptor())
                             .build();
                 }
             }
