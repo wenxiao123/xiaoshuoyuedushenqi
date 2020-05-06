@@ -318,7 +318,7 @@ public class CatalogActivity_beifen extends BaseActivity<CatalogPresenter>
      * 获取目录数据成功
      */
     @Override
-    public void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
+    public void getCatalogDataSuccess(List<Cataloginfo> catalogData,int weight) {
         mIsRefreshing = false;
         mProgressBar.setVisibility(View.GONE);
         mErrorPageTv.setVisibility(View.GONE);

@@ -112,6 +112,7 @@ public class LauncherActivity extends BaseActivity {
         }
         setBookshelfadd();
     }
+
     CircleProgressbar circleProgressbar;
     public void getCategoryNovels() {
         Gson mGson=new Gson();
@@ -149,6 +150,7 @@ public class LauncherActivity extends BaseActivity {
             }
         });
     }
+
     private void getCategoryNovelsError(String errorMsg) {
         showShortToast(errorMsg);
     }

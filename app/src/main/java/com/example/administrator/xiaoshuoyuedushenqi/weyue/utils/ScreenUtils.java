@@ -25,11 +25,15 @@ public class ScreenUtils {
     public static int pxToDp(int px) {
         DisplayMetrics metrics = getDisplayMetrics();
         return (int) (px / metrics.density);
+//        DisplayMetrics metrics = getDisplayMetrics();
+//        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, metrics);
     }
 
     public static int spToPx(float sp) {
         DisplayMetrics metrics = getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, metrics);
+//        DisplayMetrics metrics = getDisplayMetrics();
+//        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sp, metrics);
     }
 
     public static int pxToSp(int px) {

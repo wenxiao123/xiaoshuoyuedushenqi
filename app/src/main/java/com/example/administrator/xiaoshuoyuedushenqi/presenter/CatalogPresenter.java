@@ -22,9 +22,9 @@ public class CatalogPresenter extends BasePresenter<ICatalogContract.View>
     }
 
     @Override
-    public void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
+    public void getCatalogDataSuccess(List<Cataloginfo> catalogData,int weight) {
         if (isAttachView()) {
-            getMvpView().getCatalogDataSuccess(catalogData);
+            getMvpView().getCatalogDataSuccess(catalogData,weight);
         }
     }
 

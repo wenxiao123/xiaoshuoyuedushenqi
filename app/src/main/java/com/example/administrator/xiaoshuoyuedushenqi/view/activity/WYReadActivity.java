@@ -4,9 +4,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.database.ContentObserver;
 import android.graphics.Color;
@@ -50,6 +52,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Categorys_one;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Text;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.TextStyle;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookmarkNovelDbData;
@@ -380,7 +383,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t = Integer.parseInt(tv_textsize.getText().toString());
                 t--;
-                if(t>= ScreenUtils.spToPx(12)&&t<=ScreenUtils.spToPx(32)){
+                if(t>= 0&&t<=8){
                     tv_textsize.setText(t + "");
                     mPageLoader.setTextSize(t);
                 }
@@ -393,10 +396,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t = Integer.parseInt(tv_textsize.getText().toString());
                 t++;
-                if(t>= ScreenUtils.spToPx(12)&&t<=ScreenUtils.spToPx(32)){
+              if(t>= 0&&t<=8){
                     tv_textsize.setText(t + "");
                     mPageLoader.setTextSize(t);
-                }
+               }
             }
         });
         iv_read_decrease_row_space = findViewById(R.id.iv_read_decrease_row_space);
@@ -405,10 +408,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t=mPageLoader.getmTextInterval();
                 t--;
-                if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
+               // if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
                     tv_jainju.setText(t+"");
                     mPageLoader.setmTextInterval(t);
-                }
+                //}
             }
         });
         iv_read_increase_row_space = findViewById(R.id.iv_read_increase_row_space);
@@ -417,10 +420,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t=mPageLoader.getmTextInterval();
                 t++;
-                if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
+               // if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
                     tv_jainju.setText(t+"");
                     mPageLoader.setmTextInterval(t);
-                }
+               // }
             }
         });
         getContentResolver().registerContentObserver(
@@ -430,6 +433,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 //        txt_page.post(
 //                () -> hideSystemBar()
 //        );
+        myReceiver = new MyReceiver();
+        // 注册广播接受者
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.read.android");//要接收的广播
+        registerReceiver(myReceiver, intentFilter);//注册接收者
     }
     int z=1;
     Handler handler=new Handler(){
@@ -545,7 +553,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         rv_catalog_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         // ts_recyle = view.findViewById(R.id.ts_recyle);
         progressBar.setVisibility(View.VISIBLE);
-        getCategorys(mCollBook.get_id());
+        if(categorys_ones!=null&&categorys_ones.size()>0){
+            getCategorysSuccess(categorys_ones);
+        }else {
+            getCategorys(mCollBook.get_id());
+        }
         // ts_recyle.setLayoutManager(new LinearLayoutManager(this));
         popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.dp_250));
         //post_textStyle();
@@ -802,11 +814,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 mTurnRealTv.setTextColor(getResources().getColor(R.color.black));
                 break;
         }
-//        if(mTheme==0) {
-//            v_title.setBackground(getResources().getDrawable(R.mipmap.img_background2));
-//        }else {
-            v_title.setBackgroundColor(mPageLoader.getmPageBg());
-//        }
+        v_title.setBackgroundColor(mPageLoader.getmPageBg());
         tv_textsize.setText(mPageLoader.getmTextSize() + "");
         tv_jainju.setText(mPageLoader.getmTextInterval()+"");
         mPageLoader.setmCurChapterPos(Integer.parseInt(chpter_id));//page_id
@@ -841,7 +849,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     //冻结使用
                     mReadSbChapterProgress.setEnabled(false);
                 }
-                tv_title.setText((mPageLoader.getChapterPos()+1)+"/"+mTxtChapters.size());
+                if(mPageLoader.getWeight()!=0) {
+                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mPageLoader.getWeight());
+                }else {
+                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mTxtChapters.size());
+                }
                 //隐藏提示
 //                mReadTvPageTip.setVisibility(GONE);
                 mReadSbChapterProgress.setProgress(0);
@@ -1439,6 +1451,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         getContentResolver().unregisterContentObserver(mBrightnessObserver);
+        unregisterReceiver(myReceiver);
         if (mCollBook.isLocal()==true) {
            // Log.e("QQQ", "onDestroy: "+mPageLoader.getmCurChapterPos()+" "+load_path);
             BookshelfNovelDbData dbData = mDbManager.selectBookshelfNovel(load_path);
@@ -1883,6 +1896,13 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             mPageLoader.chapterError();
         }
     }
-
+    MyReceiver myReceiver;
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int i=intent.getIntExtra("chpter",0);
+            mPageLoader.skipToChapter(i);
+        }
+    }
 
 }

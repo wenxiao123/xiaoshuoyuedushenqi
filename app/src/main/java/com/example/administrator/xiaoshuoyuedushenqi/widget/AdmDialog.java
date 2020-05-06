@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -97,17 +98,19 @@ public class AdmDialog extends BaseDialog2 implements View.OnClickListener{
         }else {
             videoView.setVisibility(View.GONE);
             image.setVisibility(View.VISIBLE);
-            CornerTransform transformation = new CornerTransform(getContext(), 30);
-            //只是绘制左上角和右上角圆角
-            transformation.setExceptCorner(false, false, true, true);
-            Glide.with(getContext())
-                    .load(mImg)
-                    .apply(new RequestOptions()
-                            .placeholder(R.mipmap.admin)
-                            .error(R.mipmap.admin)
-                            .transform(transformation))
-                    .into(image);
-            image.setOnClickListener(this);
+            if(!((Activity)context).isDestroyed()) {
+                CornerTransform transformation = new CornerTransform(context, 30);
+                //只是绘制左上角和右上角圆角
+                transformation.setExceptCorner(false, false, true, true);
+                Glide.with(context)
+                        .load(mImg)
+                        .apply(new RequestOptions()
+                                .placeholder(R.mipmap.admin)
+                                .error(R.mipmap.admin)
+                                .transform(transformation))
+                        .into(image);
+                image.setOnClickListener(this);
+            }
         }
         videoView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -113,6 +113,7 @@ public class NetPageLoader extends PageLoader{
                         JSONObject jsonObject1=jsonObject.getJSONObject("data");
                         JSONArray object=jsonObject1.getJSONArray("data");
                         weigh=Integer.parseInt(jsonObject1.getString("total"));
+                        setWeight(weigh);
                         List<Cataloginfo> catalogData=new ArrayList<>();
                         for(int i=0;i<object.length();i++){
                             catalogData.add(gson.fromJson(object.getJSONObject(i).toString(),Cataloginfo.class));
@@ -130,9 +131,11 @@ public class NetPageLoader extends PageLoader{
             @Override
             public void onFailure(String errorMsg) {
                 getCatalogDataError(errorMsg);
+                handler.sendEmptyMessage(2);
             }
         });
     }
+
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
     int weigh;
     private void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
@@ -145,15 +148,24 @@ public class NetPageLoader extends PageLoader{
             handler.sendEmptyMessage(2);
         }else {
             if (z < weigh / 50) {
-                // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
-                //LogUtils.e(z+" "+weigh/50);
+                LogUtils.e(z+" "+weigh/50);
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(1);
+                if(z==1) {
+                    mChapterList=new ArrayList<>(weigh);
+                    handler.sendEmptyMessage(2);
+                }
             } else {
-                // Log.e("WWW", "getCatalogDataSuccess: "+z+" "+weigh/50);
-                //LogUtils.e(z+" "+weigh/50);
-                catalogDataAll.addAll(catalogData);
-                handler.sendEmptyMessage(2);
+                if (z == weigh / 50&&weigh % 50!=0) {
+                    LogUtils.e(z+" "+weigh/50);
+                    catalogDataAll.addAll(catalogData);
+                    handler.sendEmptyMessage(1);
+                }else {
+                    LogUtils.e(z + " " + weigh / 50);
+                    catalogDataAll.addAll(catalogData);
+                    databaseManager.insertBookshelfNovel(catalogDataAll);
+                    handler.sendEmptyMessage(2);
+                }
             }
         }
     }
@@ -169,7 +181,7 @@ public class NetPageLoader extends PageLoader{
                 z++;
                 getCatalogData(mCollBook.get_id(), z, 1);
             }else {
-                databaseManager.insertBookshelfNovel(catalogDataAll);
+//                databaseManager.insertBookshelfNovel(catalogDataAll);
                 mChapterList = convertTxtChapter(catalogDataAll);
                 if (mPageChangeListener != null){
                     mPageChangeListener.onCategoryFinish(mChapterList);

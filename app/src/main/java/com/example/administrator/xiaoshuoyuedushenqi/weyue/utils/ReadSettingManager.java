@@ -1,6 +1,8 @@
 package com.example.administrator.xiaoshuoyuedushenqi.weyue.utils;
 
 
+import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.PageView;
 
 /**
@@ -91,11 +93,11 @@ public class ReadSettingManager {
     }
 
     public int getTextSize(){
-        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE, ScreenUtils.spToPx(27.5f));
+        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE,0);//App.getAppResources().getDimensionPixelOffset(R.dimen.dp_30)
     }
 
     public int getTextRow(){
-        return sharedPreUtils.getInt(SHARED_READ_TEXT_ROW, ScreenUtils.spToPx(17.5f));
+        return sharedPreUtils.getInt(SHARED_READ_TEXT_ROW, ScreenUtils.spToPx(35f));
     }
 
     public String getTextStyle(){

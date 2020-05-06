@@ -2,6 +2,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -143,8 +144,10 @@ public abstract class HorizonPageAnim extends PageAnimation{
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                Log.e("QQQ", "onTouchEvent: "+(x - mStartX));
                 if (!isMove){
                     if (x < mScreenWidth / 2){
+                    //if (x - mStartX<=0){
                         isNext = false;
                     }else{
                         isNext = true;

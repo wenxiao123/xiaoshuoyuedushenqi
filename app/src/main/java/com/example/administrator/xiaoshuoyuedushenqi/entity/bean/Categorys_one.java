@@ -25,7 +25,7 @@ public class Categorys_one {
 
 
     public String getCaptername() {
-        if(getText()==null){
+        if(getText()==null||getText().size()==0){
             return "";
         }else {
             return getText().get(getText().size() - 1).getChapter_name();

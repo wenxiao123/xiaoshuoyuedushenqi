@@ -227,34 +227,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         re_new_catalog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if(!mDbManager.isExistInBookshelfNovel(path+".txt")) {
-//                    Intent read_intent = new Intent(NovelIntroActivity.this, ReadActivity.class);
-//                    read_intent.putExtra(ReadActivity.KEY_NAME, noval_details.getTitle());
-//                    read_intent.putExtra(ReadActivity.KEY_COVER, noval_details.getPic());
-//                    read_intent.putExtra(ReadActivity.KEY_CHPATER_ID, weigh);
-//                    read_intent.putExtra("weigh", weigh);
-//                    read_intent.putExtra("first_read", 2);
-//                    read_intent.putExtra(ReadActivity.KEY_SERIALIZE, noval_details.getSerialize());
-//                    read_intent.putExtra(ReadActivity.KEY_AUTHOR, noval_details.getAuthor());
-//                    read_intent.putExtra(ReadActivity.KEY_NOVEL_URL, noval_details.getId() + "");
-//                    startActivity(read_intent);
-//                }else {
-//                    Intent intent = new Intent(NovelIntroActivity.this, ReadActivity.class);
-//                    // 小说 url
-//                    intent.putExtra(ReadActivity.KEY_NOVEL_URL, path+".txt");
-//                    // 小说名
-//                    intent.putExtra(ReadActivity.KEY_NAME, noval_details.getTitle());
-//                    // 小说封面 url
-//                    intent.putExtra(ReadActivity.KEY_COVER, noval_details.getPic());
-//                    // 小说类型
-//                    intent.putExtra(ReadActivity.KEY_TYPE, 1);
-//                    intent.putExtra(ReadActivity.KEY_IS_CATALOG, 1);
-//                    // 开始阅读的位置
-//                    intent.putExtra(ReadActivity.Catalog_start_Position, (int) longs.get(longs.size() - 1));
-//                    startActivity(intent);
-//                }
                 if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
                     Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                    intent.putExtra("ACTIVITY_TYPE","NovelIntroActivity");
                     intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
                     intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
                     intent.putExtra("weigh", weigh);
@@ -275,29 +250,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 }
             }
         });
-//        findViewById(R.id.tv_time).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-//                    Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
-//                    intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
-//                    intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
-//                    intent.putExtra("weigh", weigh);
-//                    intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
-//                    intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-//                    intent.putExtra(CatalogActivity.KEY_URL, pid);
-//                    startActivity(intent);
-//                } else {
-//                    BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
-//                    Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
-//                    intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
-//                    intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
-//                    intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
-//                    intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
-//                    startActivity(intent);
-//                }
-//            }
-//        });
         findViewById(R.id.rel_more).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -496,6 +448,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             case R.id.l_catalog:
                 if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
                     Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                    intent.putExtra("ACTIVITY_TYPE","NovelIntroActivity");
                     intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
                     intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
                     intent.putExtra("weigh", weigh);
@@ -588,26 +541,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     bundle.putString(WYReadActivity.CHPTER_ID, Integer.parseInt(bookshelfNovelDbData1.getChapterid()) + "");
                     startActivity(WYReadActivity.class, bundle);
                 } else if (bookshelfNovelDbData1 != null && is_Cache == true) {
-                    //BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(pid);
-//                    Intent intent = new Intent(NovelIntroActivity.this, ReadActivity.class);
-//                    // 小说 url
-//                    intent.putExtra(ReadActivity.KEY_NOVEL_URL, pid);
-//                    intent.putExtra(ReadActivity.KEY_NOVEL_URL_FUBEN, bookshelfNovelDbData1.getFuben_id());
-//                    // 小说名
-//                    intent.putExtra(ReadActivity.KEY_NAME, noval_details.getTitle());
-//                    // 小说封面 url
-//                    intent.putExtra(ReadActivity.KEY_COVER, noval_details.getPic());
-//                    // 小说封面 url
-//                    intent.putExtra(ReadActivity.KEY_POSITION, bookshelfNovelDbData1.getPosition());
-//                    // 小说类型
-//                    intent.putExtra(ReadActivity.KEY_TYPE, 1);
-//                    if (bookshelfNovelDbData1 != null) {
-//                        // 开始阅读的位置
-//                        intent.putExtra(ReadActivity.KEY_POSITION, bookshelfNovelDbData1.getPosition());
-//                    } else {
-//                        intent.putExtra(ReadActivity.KEY_POSITION, 1);
-//                    }
-//                    startActivity(intent);
                     CollBookBean bookBean = new CollBookBean(bookshelfNovelDbData1.getFuben_id(), noval_details.getTitle(), noval_details.getAuthor(), "",
                             noval_details.getPic(), false, 0, 0,
                             "", "", weigh, "",
@@ -618,15 +551,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     bundle.putString(WYReadActivity.CHPTER_ID, 0 + "");
                     startActivity(WYReadActivity.class, bundle);
                 } else {
-//                    Intent read_intent = new Intent(NovelIntroActivity.this, ReadActivity.class);
-//                    read_intent.putExtra(ReadActivity.KEY_NAME, noval_details.getTitle());
-//                    read_intent.putExtra(ReadActivity.KEY_COVER, noval_details.getPic());
-//                    read_intent.putExtra("first_read", 1);
-//                    read_intent.putExtra("weigh", weigh);
-//                    read_intent.putExtra(ReadActivity.KEY_SERIALIZE, noval_details.getSerialize());
-//                    read_intent.putExtra(ReadActivity.KEY_AUTHOR, noval_details.getAuthor());
-//                    read_intent.putExtra(ReadActivity.KEY_NOVEL_URL, pid);
-//                    startActivity(read_intent);
                     CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
                             noval_details.getPic(), false, 0, 0,
                             "", "", weigh, "",
@@ -652,6 +576,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             case R.id.tv_novel_intro_catalog:
                 if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
                     Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                    intent.putExtra("ACTIVITY_TYPE","NovelIntroActivity");
                     intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
                     intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
                     intent.putExtra("weigh", weigh);

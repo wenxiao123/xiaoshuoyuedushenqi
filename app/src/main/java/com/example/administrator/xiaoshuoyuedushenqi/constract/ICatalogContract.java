@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface ICatalogContract {
     interface View {
-        void getCatalogDataSuccess(List<Cataloginfo> catalogData);
+        void getCatalogDataSuccess(List<Cataloginfo> catalogData,int weight);
         void getCatalogDataError(String errorMsg);
     }
     interface Presenter {
-        void getCatalogDataSuccess(List<Cataloginfo> catalogData);
+        void getCatalogDataSuccess(List<Cataloginfo> catalogData,int weight);
         void getCatalogDataError(String errorMsg);
 
         void getCatalogData(String url,int posion,int type);

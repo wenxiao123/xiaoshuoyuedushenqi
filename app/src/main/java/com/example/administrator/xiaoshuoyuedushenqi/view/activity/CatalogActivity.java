@@ -119,10 +119,12 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     }
     int serialize;
     App app;
+    String activity_type;
     @Override
     protected void initData() {
         serialize = getIntent().getIntExtra(KEY_SERIALIZE, 0);
         mAuthor=getIntent().getStringExtra(KEY_AUTHOR);
+        activity_type=getIntent().getStringExtra("ACTIVITY_TYPE");
         mUrl = getIntent().getStringExtra(KEY_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
@@ -203,8 +205,9 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
           mErrorPageTv.setVisibility(View.GONE);
           mChapterOrderTv.setVisibility(View.VISIBLE);
           initAdapter();
+          mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
       }
-      mChapterCountTv.setText("共" + weigh + "章");
+     //
       text.setText(mName);
     }
     private List<BookmarkNovelDbData> bookmarkNovelDbDatas = new ArrayList<>();
@@ -328,7 +331,24 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     return;
                 }
                 // 点击 item，跳转到相应小说阅读页
-                String s_id=catalogDataAll.get(position).getWeigh()+"";
+//                String s_id=catalogDataAll.get(position).getWeigh()+"";
+//                // 跳转后活动结束
+//                CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
+//                        "", false, 0,0,
+//                        "", "", Integer.parseInt(s_id)-1, "",
+//                        false, false);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+//                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+//                bundle.putString(WYReadActivity.CHPTER_ID, catalogDataAll.get(position).getWeigh()-1+ "");
+//                //Log.e("QQQ", "clickItem: "+catalogDataAll.get(position));
+//                startActivity(WYReadActivity.class, bundle);
+//                if (mReadActivity != null) {
+//                    mReadActivity.finish();
+//                }
+//                finish();
+                if(activity_type!=null&&activity_type.equals("NovelIntroActivity")){
+                    String s_id=catalogDataAll.get(position).getWeigh()+"";
                 // 跳转后活动结束
                 CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
                         "", false, 0,0,
@@ -338,12 +358,17 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                 bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
                 bundle.putString(WYReadActivity.CHPTER_ID, catalogDataAll.get(position).getWeigh()-1+ "");
-                //Log.e("QQQ", "clickItem: "+catalogDataAll.get(position));
                 startActivity(WYReadActivity.class, bundle);
                 if (mReadActivity != null) {
                     mReadActivity.finish();
                 }
                 finish();
+                }else {
+                    Intent intent_recever = new Intent("com.read.android");
+                    intent_recever.putExtra("chpter", catalogDataAll.get(position).getWeigh() - 1);
+                    sendBroadcast(intent_recever);
+                    finish();
+                }
             }
         });
         mCatalogListRv.setAdapter(mCatalogAdapter);
@@ -353,9 +378,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
      * 获取目录数据成功
      */
     @Override
-    public void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
-        // Log.e("QQQ", "getCatalogDataSuccess: "+catalogData.size());
-        if(weigh<50||(z==1&&catalogData.size()<50)){
+    public void getCatalogDataSuccess(List<Cataloginfo> catalogData,int weight) {
+        if(weight<50||(z==1&&catalogData.size()<50)){
             mIsRefreshing = false;
             mProgressBar.setVisibility(View.GONE);
             mChapterOrderTv.setVisibility(View.GONE);
@@ -364,9 +388,12 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
             initAdapter();
             text.setText(mName);
         }else {
-            if (z <= weigh / 50) {
+            if (z <= weight / 50) {
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(1);
+                if(z==1){
+                    mChapterCountTv.setText("共" + weight + "章");
+                }
             } else {
                 catalogDataAll.addAll(catalogData);
                 mIsRefreshing = false;
@@ -377,7 +404,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 mCatalogAdapter.setPosition(chapter_id - 1);
                 mCatalogAdapter.notifyDataSetChanged();
                 mCatalogListRv.scrollToPosition(chapter_id - 1);
-                mChapterCountTv.setText("共" + weigh + "章");
+                //mChapterCountTv.setText("共" + weigh + "章");
                 //app.setCatalogDataAll(catalogDataAll);
                 text.setText(mName);
                 databaseManager.insertBookshelfNovel(catalogDataAll);
@@ -422,9 +449,6 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 finish();
                 break;
             case R.id.shuaxin:
-//                if (isRefresh==false) {
-//                    return;
-//                }
                 refresh();
                 break;
             case R.id.paixu:

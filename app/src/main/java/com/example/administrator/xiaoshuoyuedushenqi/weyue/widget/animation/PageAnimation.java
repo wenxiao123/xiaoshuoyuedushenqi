@@ -24,6 +24,15 @@ public abstract class PageAnimation {
 
     protected boolean isRunning = false;
 
+    public boolean isIs_last() {
+        return is_last;
+    }
+
+    public void setIs_last(boolean is_last) {
+        this.is_last = is_last;
+    }
+
+    protected boolean is_last;
     //屏幕的尺寸
     protected int mScreenWidth;
     protected int mScreenHeight;

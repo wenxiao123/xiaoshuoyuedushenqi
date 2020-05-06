@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.model;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
@@ -59,11 +60,12 @@ public class CatalogModel implements ICatalogContract.Model {
                     if(code.equals("1")){
                         JSONObject jsonObject1=jsonObject.getJSONObject("data");
                         JSONArray object=jsonObject1.getJSONArray("data");
+                        String weight=jsonObject1.getString("total");
                         List<Cataloginfo> catalogData=new ArrayList<>();
                         for(int i=0;i<object.length();i++){
                             catalogData.add(mGson.fromJson(object.getJSONObject(i).toString(),Cataloginfo.class));
                         }
-                        mPresenter.getCatalogDataSuccess(catalogData);
+                        mPresenter.getCatalogDataSuccess(catalogData, Integer.parseInt(weight));
                     }else {
                         mPresenter.getCatalogDataError("请求数据失败");
                     }
