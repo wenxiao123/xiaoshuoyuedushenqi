@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -209,6 +210,16 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         Intent intent = new Intent(this, activity);
         startActivity(intent, bundle);
     }
+
+    @Override
+    public Resources getResources() {
+        Resources res = super.getResources();
+        Configuration config = new Configuration();
+        config.setToDefaults();
+        res.updateConfiguration(config, res.getDisplayMetrics());
+        return res;
+    }
+
 
     /**
      * 获取 onCreate 方法中的 Bundle 参数 savedInstanceState

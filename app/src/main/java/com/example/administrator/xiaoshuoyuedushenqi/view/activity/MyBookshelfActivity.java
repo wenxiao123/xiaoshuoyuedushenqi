@@ -392,24 +392,26 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                 if (!deleteCheck()) {
                     break;
                 }
-                new TipDialog.Builder(this)
-                        .setContent("确定要删除已选择的书籍吗？")
-                        .setCancel("取消")
-                        .setEnsure("确定")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                multiDelete();
-                                mDeleteTv.setText("删除");
-                            }
+                if(!this.isDestroyed()) {
+                    new TipDialog.Builder(this)
+                            .setContent("确定要删除已选择的书籍吗？")
+                            .setCancel("取消")
+                            .setEnsure("确定")
+                            .setOnClickListener(new TipDialog.OnClickListener() {
+                                @Override
+                                public void clickEnsure() {
+                                    multiDelete();
+                                    mDeleteTv.setText("删除");
+                                }
 
-                            @Override
-                            public void clickCancel() {
+                                @Override
+                                public void clickCancel() {
 
-                            }
-                        })
-                        .build()
-                        .show();
+                                }
+                            })
+                            .build()
+                            .show();
+                }
                 break;
             default:
                 break;

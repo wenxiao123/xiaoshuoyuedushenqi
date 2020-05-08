@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.CatalogNameAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent2;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.TxtChapter;
@@ -149,7 +150,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         pid=getIntent().getStringExtra(KEY_ID);
         mPosition = getIntent().getIntExtra(KEY_POSTION, 0);
         queryBookMarks(pid);
-        txtChapters = (List<TxtChapter>) getIntent().getSerializableExtra("MSPANSCOMMIT");
+        //txtChapters = (List<TxtChapter>) getIntent().getSerializableExtra("MSPANSCOMMIT");
     }
 
     @Override
@@ -442,9 +443,10 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
     public void onStickyEventBusCome(Event event) {
         switch (event.getCode()) {
             case EventBusCode.CATALOG_HOLD_READ_ACTIVITY:
-                if (event.getData() instanceof HoldReadActivityEvent) {
-                    HoldReadActivityEvent holdReadActivityEvent = (HoldReadActivityEvent) event.getData();
+                if (event.getData() instanceof HoldReadActivityEvent2) {
+                    HoldReadActivityEvent2 holdReadActivityEvent = (HoldReadActivityEvent2) event.getData();
                     mReadActivity = holdReadActivityEvent.getReadActivity();
+                    txtChapters=holdReadActivityEvent.getmChapterList();
                 }
                 break;
             default:
@@ -526,27 +528,28 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         bookAdapter.setOnCatalogLongListener(new BookMarkAdapter.CatalogLongListener() {
             @Override
             public void clickItem(int position) {
-                final TipDialog tipDialog = new TipDialog.Builder(LocalCatalogActivity.this)
-                        .setContent("是否删除书签")
-                        .setCancel("取消")
-                        .setEnsure("确定")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                mDbManager.deleteBookmarkNovel(bookmarkNovelDbDatas.get(position).getTime());
-                                queryBookMarks(pid);
-                                initBookMarkAdapter();
-                                mBookMarkListRv.setAdapter(bookAdapter);
-                            }
+                if(!LocalCatalogActivity.this.isDestroyed()) {
+                    final TipDialog tipDialog = new TipDialog.Builder(LocalCatalogActivity.this)
+                            .setContent("是否删除书签")
+                            .setCancel("取消")
+                            .setEnsure("确定")
+                            .setOnClickListener(new TipDialog.OnClickListener() {
+                                @Override
+                                public void clickEnsure() {
+                                    mDbManager.deleteBookmarkNovel(bookmarkNovelDbDatas.get(position).getTime());
+                                    queryBookMarks(pid);
+                                    initBookMarkAdapter();
+                                    mBookMarkListRv.setAdapter(bookAdapter);
+                                }
 
-                            @Override
-                            public void clickCancel() {
+                                @Override
+                                public void clickCancel() {
 
-                            }
-                        })
-                        .build();
-                tipDialog.show();
-
+                                }
+                            })
+                            .build();
+                    tipDialog.show();
+                }
             }
         });
     }

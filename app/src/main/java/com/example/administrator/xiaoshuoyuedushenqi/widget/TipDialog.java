@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -94,6 +95,9 @@ public class TipDialog extends BaseDialog implements View.OnClickListener{
         private Context context;
 
         public Builder(Context context) {
+            if(((Activity)context).isDestroyed()){
+                return ;
+            }
             this.context = context;
         }
 

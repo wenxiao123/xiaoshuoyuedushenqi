@@ -7,6 +7,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import javax.security.auth.login.LoginException;
+
 /**
  * Created by newbiechen on 17-7-24.
  * 横向动画的模板
@@ -90,6 +92,7 @@ public abstract class HorizonPageAnim extends PageAnimation{
                 //判断是否移动了
                 if (!isMove) {
                     isMove = Math.abs(mStartX - x) > slop || Math.abs(mStartY - y) > slop;
+                    Log.e("QQQ", "onTouchEvent: "+isMove);
                 }
 
                 if (isMove){
@@ -123,7 +126,7 @@ public abstract class HorizonPageAnim extends PageAnimation{
                     }else{
                         //判断是否取消翻页
                         if (isNext){
-                            if (x - mMoveX > 0){
+                            if (x - mMoveX >0){
                                 isCancel = true;
                             }else {
                                 isCancel = false;
@@ -144,15 +147,12 @@ public abstract class HorizonPageAnim extends PageAnimation{
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                Log.e("QQQ", "onTouchEvent: "+(x - mStartX));
                 if (!isMove){
                     if (x < mScreenWidth / 2){
-                    //if (x - mStartX<=0){
                         isNext = false;
                     }else{
                         isNext = true;
                     }
-
                     if (isNext) {
                         //判断是否下一页存在
                         boolean hasNext = mListener.hasNext();
@@ -172,7 +172,10 @@ public abstract class HorizonPageAnim extends PageAnimation{
 
                 // 是否取消翻页
                 if (isCancel){
-                    mListener.pageCancel();
+                    if(is_auto){
+                        isCancel=false;
+                    }
+                      mListener.pageCancel();
                 }
 
                 // 开启翻页效果

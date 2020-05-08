@@ -119,25 +119,36 @@ public class NetPageLoader extends PageLoader{
                             catalogData.add(gson.fromJson(object.getJSONObject(i).toString(),Cataloginfo.class));
                         }
                         getCatalogDataSuccess(catalogData);
+                        timecount=0;
                     }else {
                         getCatalogDataError("请求数据失败");
                     }
 
                 } catch (JsonSyntaxException | JSONException e) {
-                   getCatalogDataError("Constant.JSON_ERROR");
+                   if(timecount<6) {
+                       getCatalogData(mCollBook.get_id(), z, 1);
+                   }else {
+                       getCatalogDataError("Constant.JSON_ERROR");
+                   }
+                    timecount++;
                 }
             }
 
             @Override
             public void onFailure(String errorMsg) {
-                getCatalogDataError(errorMsg);
-                handler.sendEmptyMessage(2);
+                if(timecount<6) {
+                    getCatalogData(mCollBook.get_id(), z, 1);
+                }else {
+                    getCatalogDataError(errorMsg);
+                }
+                timecount++;
             }
         });
     }
 
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
     int weigh;
+    int timecount;
     private void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
         if(catalogData.size()==0){
            chapterError();

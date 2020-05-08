@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,6 +50,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.EventBusCode;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Categorys_one;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
@@ -61,6 +63,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DetailedChapter
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.EpubCatalogInitEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent2;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
@@ -92,6 +95,7 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -108,6 +112,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import javax.security.auth.login.LoginException;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -182,6 +188,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         mDbManager = DatabaseManager.getInstance();
         isNightMode = ReadSettingManager.getInstance().isNightMode();
         login_admin = (Login_admin) SpUtil.readObject(this);
+        List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(mCollBook.get_id());
+        Collections.reverse(cataloginfos);
+        mCollBook.setCataloginfos(cataloginfos);
     }
     int read_frist;
     TextView tv_left,tv_right,txt_click;
@@ -383,7 +392,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t = Integer.parseInt(tv_textsize.getText().toString());
                 t--;
-                if(t>= 0&&t<=8){
+                if(t> 0&&t<mPageLoader.text_size()){
                     tv_textsize.setText(t + "");
                     mPageLoader.setTextSize(t);
                 }
@@ -396,7 +405,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t = Integer.parseInt(tv_textsize.getText().toString());
                 t++;
-              if(t>= 0&&t<=8){
+              if(t> 0&&t<mPageLoader.text_size()){
                     tv_textsize.setText(t + "");
                     mPageLoader.setTextSize(t);
                }
@@ -408,10 +417,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t=mPageLoader.getmTextInterval();
                 t--;
-               // if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
+               if(t> 0&&t<mPageLoader.getInterval()){
                     tv_jainju.setText(t+"");
                     mPageLoader.setmTextInterval(t);
-                //}
+               }
             }
         });
         iv_read_increase_row_space = findViewById(R.id.iv_read_increase_row_space);
@@ -420,10 +429,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View v) {
                 int t=mPageLoader.getmTextInterval();
                 t++;
-               // if(t>= ScreenUtils.spToPx(5)&&t<=ScreenUtils.spToPx(32)){
+                if(t> 0&&t<mPageLoader.getInterval()){
                     tv_jainju.setText(t+"");
                     mPageLoader.setmTextInterval(t);
-               // }
+                }
             }
         });
         getContentResolver().registerContentObserver(
@@ -822,7 +831,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onChapterChange(int pos) {
                 //setCategorySelect(pos);
-
             }
 
             @Override
@@ -864,7 +872,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onCategoryFinish(List<TxtChapter> chapters) {
                 mTxtChapters.clear();
                 mTxtChapters.addAll(chapters);
-//                mReadCategoryAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -987,6 +994,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void cancel() {
+
             }
         });
         mPageLoader.openBook(mCollBook);//chpter_id
@@ -1084,60 +1092,61 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         });
     }
-  AdmDialog tipDialog;
+     AdmDialog tipDialog;
     private void showAdm(String id,String href, String url, boolean is_video) {
-        if(tipDialog!=null&&tipDialog.isShowing()){
-            return;
-        }
-        if(is_autoRead){
-           txt_page.stopAutoPlay();
-           new Thread(new Runnable() {
-               @Override
-               public void run() {
-                   try {
-                       Thread.sleep(3000);
-                   } catch (InterruptedException e) {
-                       e.printStackTrace();
-                   }
-                   handler.sendEmptyMessage(7);
-               }
-           }).start();
-        }
-        tipDialog = new AdmDialog.Builder(this)
-                .setContent("www.baidu.com")
-                .setHref(url)
-                .setIs_img(is_video)
-                .setEnsure("继续阅读")
-                .setOnClickListener(new AdmDialog.OnClickListener() {
+        if(tipDialog==null&&((Activity)this).isDestroyed()){
+          return;
+        }else {
+            if (is_autoRead) {
+                txt_page.stopAutoPlay();
+                new Thread(new Runnable() {
                     @Override
-                    public void clickEnsure() {
-                        //mCacheSizeTv.setText(FileUtil.getLocalCacheSize());
+                    public void run() {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        handler.sendEmptyMessage(7);
                     }
-
-                    @Override
-                    public void clickCancel() {
-
-                    }
-
-                    @Override
-                    public void clickAddAdm() {
-                        post_addadm(id);
-                    }
-                })
-                .setImg(href)
-                .build();
-        tipDialog.setCanceledOnTouchOutside(false);
-        tipDialog.show();
-        backgroundAlpha(0.5f);
-        tipDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                backgroundAlpha(1f);
-                if(is_autoRead){
-                    txt_page.startAutoPlay();
-                }
+                }).start();
             }
-        });
+            tipDialog = new AdmDialog.Builder(this)
+                    .setContent("www.baidu.com")
+                    .setHref(url)
+                    .setIs_img(is_video)
+                    .setEnsure("继续阅读")
+                    .setOnClickListener(new AdmDialog.OnClickListener() {
+                        @Override
+                        public void clickEnsure() {
+                            //mCacheSizeTv.setText(FileUtil.getLocalCacheSize());
+                        }
+
+                        @Override
+                        public void clickCancel() {
+
+                        }
+
+                        @Override
+                        public void clickAddAdm() {
+                            post_addadm(id);
+                        }
+                    })
+                    .setImg(href)
+                    .build();
+            tipDialog.setCanceledOnTouchOutside(false);
+            tipDialog.show();
+            backgroundAlpha(0.5f);
+            tipDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    backgroundAlpha(1f);
+                    if (is_autoRead) {
+                        txt_page.startAutoPlay();
+                    }
+                }
+            });
+        }
     }
 
     private void post_addadm(String id){
@@ -1218,11 +1227,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     intent.putExtra("chapter_id", 0);
                     startActivity(intent);
                 } else if (mCollBook.isLocal() == true) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("MSPANSCOMMIT", (Serializable)mPageLoader.getmChapterList());
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("MSPANSCOMMIT", (Serializable)mPageLoader.getmChapterList());
                     // 跳转到目录页面，并且将自己的引用传递给它
-                    Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
-                            new HoldReadActivityEvent(WYReadActivity.this));
+                    Event<HoldReadActivityEvent2> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+                            new HoldReadActivityEvent2(WYReadActivity.this,mPageLoader.getmChapterList()));
                     EventBusUtil.sendStickyEvent(event);
                     Intent intent = new Intent(WYReadActivity.this, LocalCatalogActivity.class);
                     intent.putExtra("file_path", mCollBook.get_id());    // 传递当前小说的 url
@@ -1230,7 +1239,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     intent.putExtra(LocalCatalogActivity.KEY_NAME, mCollBook.getTitle());  // 传递当前小说的名字
                     intent.putExtra(LocalCatalogActivity.KEY_COVER, mCollBook.getCover()); // 传递当前小说的封面
                     intent.putExtra(LocalCatalogActivity.KEY_POSTION, 0);
-                    intent.putExtras(bundle);
+                    //intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 break;
@@ -1570,11 +1579,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 EventBusUtil.sendEvent(event);
             } else if (msg.what == 4) {
                 int j = msg.arg1;
-                if (30 * d <= mTxtChapters.size() && (j + 1) == 30) {
+                if (post_num * d <= mTxtChapters.size() && (j + 1) == post_num) {
                     d++;
                     postBooks_che();
                 }
-                float pressent = (float) (((d - 1) * 30 + (j + 1))) / (mTxtChapters.size()) * 100;
+                float pressent = (float) (((d - 1) * post_num + (j + 1))) / (mTxtChapters.size()) * 100;
                 tv_load.setText("正在缓存:" + (int) pressent + "%");
                 if (pressent >= 100) {
                     tv_load.setVisibility(View.GONE);
@@ -1583,13 +1592,13 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         }
     };
-
+   int post_num=5;
     void postBooks_che() {
         String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
         RequestBody requestBody = new FormBody.Builder()
                 .add("id", mCollBook.get_id())
                 .add("page", d + "")
-                .add("limit", 30 + "")
+                .add("limit", post_num + "")
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
@@ -1621,21 +1630,33 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             message.what = 4;
                             message.arg1 = i;
                             mhandler.sendMessage(message);
+
                         }
+                        time_count=0;
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    if(time_count<Constant.TIME_MAX){
+                        postBooks_che();
+                    }else {
+                        showShortToast("error");
+                    }
+                    time_count++;
                 }
 
             }
 
             @Override
             public void onFailure(String errorMsg) {
-                showShortToast(errorMsg);
+               if(time_count<Constant.TIME_MAX){
+                   postBooks_che();
+               }else {
+                   showShortToast(errorMsg);
+               }
+                time_count++;
             }
         });
     }
-
+    int time_count;
     String path = Constant.BOOK_ADRESS + "/";
 
     private void addTxtToFileBuffered(String content) {
@@ -1812,23 +1833,25 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     }
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (is_load) {
-            final TipDialog tipDialog = new TipDialog.Builder(WYReadActivity.this)
-                    .setContent("正在下载，是否退出？")
-                    .setCancel("取消")
-                    .setEnsure("确定")
-                    .setOnClickListener(new TipDialog.OnClickListener() {
-                        @Override
-                        public void clickEnsure() {
-                            finish();
-                        }
+            if(!WYReadActivity.this.isDestroyed()) {
+                final TipDialog tipDialog = new TipDialog.Builder(WYReadActivity.this)
+                        .setContent("正在下载，是否退出？")
+                        .setCancel("取消")
+                        .setEnsure("确定")
+                        .setOnClickListener(new TipDialog.OnClickListener() {
+                            @Override
+                            public void clickEnsure() {
+                                finish();
+                            }
 
-                        @Override
-                        public void clickCancel() {
+                            @Override
+                            public void clickCancel() {
 
-                        }
-                    })
-                    .build();
-            tipDialog.show();
+                            }
+                        })
+                        .build();
+                tipDialog.show();
+            }
             return false;
         } else {
             return super.onKeyDown(keyCode, event);
@@ -1901,7 +1924,18 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         @Override
         public void onReceive(Context context, Intent intent) {
             int i=intent.getIntExtra("chpter",0);
-            mPageLoader.skipToChapter(i);
+            int j=intent.getIntExtra("page_id",0);
+            if(j==0) {
+                mPageLoader.skipToChapter(i);
+            }else {
+                mPageLoader.skipToChapter(i);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPageLoader.skipToPage(j);
+                    }
+                },500);
+            }
         }
     }
 

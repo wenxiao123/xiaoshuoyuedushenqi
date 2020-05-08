@@ -1,8 +1,10 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -59,8 +61,10 @@ import com.example.administrator.xiaoshuoyuedushenqi.constract.NovelInfoContract
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Chapter;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.DownBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
@@ -71,11 +75,13 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.NovelInfoPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.service.CacheService;
 import com.example.administrator.xiaoshuoyuedushenqi.util.BlurUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main.BookshelfFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -184,18 +190,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void initView() {
         l_collect = findViewById(R.id.l_collect);
-//        l_collect.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (is_checked == false) {
-//                    is_checked = true;
-//                    img_collect.setImageResource(R.mipmap.icon_collection_yes);
-//                } else {
-//                    is_checked = false;
-//                    img_collect.setImageResource(R.mipmap.icon_collection);
-//                }
-//            }
-//        });
         img_collect = findViewById(R.id.img_collect);
         iv_tuijian = findViewById(R.id.iv_tuijian);
         tv_novel_intro_novel_name = findViewById(R.id.tv_novel_intro_novel_name);
@@ -211,8 +205,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         tv_begain_read.setOnClickListener(this);
         txt_book_load = findViewById(R.id.txt_book_load);
         txt_book_load.setOnClickListener(this);
-//        rel_book_add = findViewById(R.id.rel_book_add);
-//        rel_book_add.setOnClickListener(this);
         tv_fonts = findViewById(R.id.novel_counts);
         mBackIv = findViewById(R.id.iv_novel_intro_back);
         mBackIv.setOnClickListener(this);
@@ -300,6 +292,13 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         recycle_book = findViewById(R.id.recycle_book);
         recycle_book.setLayoutManager(new GridLayoutManager(NovelIntroActivity.this, 4));
         //recycle_book.setAdapter(adapter);
+        Intent servive_intent = new Intent(NovelIntroActivity.this, CacheService.class);
+        bindService(servive_intent, conn, BIND_AUTO_CREATE);
+        loadReceiver = new LoadReceiver();
+        // 注册广播接受者
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.load.android");//要接收的广播
+        registerReceiver(loadReceiver, intentFilter);//注册接收者
     }
 
     private void showPupowindpw(int parent) {
@@ -497,37 +496,27 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 break;
             case R.id.txt_book_load:
                 if (!txt_book_load.getText().equals("已缓存")) {
-                    Intent servive_intent = new Intent(NovelIntroActivity.this, CacheService.class);
-                    servive_intent.putExtra("bookname", noval_details.getTitle());
-                    servive_intent.putExtra("id", pid);
-                    servive_intent.putExtra("bookcover", noval_details.getPic());
-                    servive_intent.putExtra("weigh", weigh);
-                    bindService(servive_intent, conn, BIND_AUTO_CREATE);
-                    //iv_load.setVisibility(View.GONE);
+//                    Intent servive_intent = new Intent(NovelIntroActivity.this, CacheService.class);
+//                    bindService(servive_intent, conn, BIND_AUTO_CREATE);
                     txt_book_load.setText("缓存中：0%");
-                    BookshelfNovelDbData bookshelf = new BookshelfNovelDbData(pid, noval_details.getTitle(), noval_details.getPic(), 1, weigh, 1 + "");
-                    bookshelf.setFuben_id(path + ".txt");
-                    bookshelf.setChapterid(1 + "");
-                    mDbManager.insertOrUpdateBook(bookshelf);
-                    Intent recever = new Intent("com.zhh.android");
-                    recever.putExtra("type",1);
-                    sendBroadcast(recever);
+                    txt_book_load.setEnabled(false);
+                    String load_id=App.getInstance().getPosition();
+                    if(load_id!=null&&!load_id.equals(pid)) {
+                        txt_book_load.setText("已加入缓存序列");
+                        DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                        myBinder.che(downBean);
+                        Is_load = true;
+                    }else if(load_id!=null&&load_id.equals(pid)){
+                        txt_book_load.setText("本小说正在缓存中");
+                    }else {
+                        DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                        myBinder.che(downBean);
+                    }
                 }
                 break;
             case R.id.txt_read:
                 BookshelfNovelDbData bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
                 if (bookshelfNovelDbData1 != null && is_Cache == false) {
-//                    Intent read_intent = new Intent(NovelIntroActivity.this, ReadActivity.class);
-//                    read_intent.putExtra(ReadActivity.KEY_NAME, noval_details.getTitle());
-//                    read_intent.putExtra(ReadActivity.KEY_COVER, noval_details.getPic());
-//                    read_intent.putExtra("first_read", 2);
-//                    read_intent.putExtra(ReadActivity.KEY_CHPATER_ID, Integer.parseInt(bookshelfNovelDbData1.getChapterid()));
-//                    read_intent.putExtra(ReadActivity.KEY_SERIALIZE, noval_details.getSerialize());
-//                    read_intent.putExtra(ReadActivity.KEY_TYPE, 0);
-//                    read_intent.putExtra(ReadActivity.KEY_AUTHOR, noval_details.getAuthor());
-//                    read_intent.putExtra("weigh", weigh);
-//                    read_intent.putExtra(ReadActivity.KEY_NOVEL_URL, pid);
-//                    startActivity(read_intent);
                     CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
                             noval_details.getPic(), false, 0, 0,
                             "", "", weigh, "",
@@ -734,9 +723,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        j++;
-        if (j != 1) {
-            //presenter.getNovels(pid);
+        String load_id=App.getInstance().getPosition();
+        if(load_id!=null&&load_id.equals(pid)){
+            txt_book_load.setText("本小说正在缓存中");
         }
     }
 
@@ -912,6 +901,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     String bookname;
     String bookcover;
     private CacheService binder;
+    CacheService.MyBinder myBinder;
     //定义服务链接对象
     final ServiceConnection conn = new ServiceConnection() {
 
@@ -922,18 +912,23 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             binder = ((CacheService.MyBinder) service).getService();
-            //binder = ((CacheService.MyBinder)service).getService();
+            myBinder= ((CacheService.MyBinder) service);
+//            DownBean downBean=new DownBean(weigh,1,noval_details.getTitle(),noval_details.getPic(),pid);
+//            myBinder.che(downBean);
             binder.setCallback(new CacheService.Callback() {
                 @Override
-                public void onDataChange(String data) {
-                    if(is_load==false) {
-                        txt_book_load.setText(data);
-                    }
-                    if (data.equals("已缓存")) {
-                        is_load=true;
-                        tv_book_add.setText("移除书架");
-                        is_Cache = true;
-                        binder.stopSelf();
+                public void onDataChange(String data,String id) {
+                    if(id.equals(pid)) {
+                        if (is_load == false) {
+                            txt_book_load = findViewById(R.id.txt_book_load);
+                            txt_book_load.setText(data);
+                        }
+                        if (data.equals("已缓存")) {
+                            is_load = true;
+                            tv_book_add.setText("移除书架");
+                            is_Cache = true;
+                            Is_load = false;
+                        }
                     }
                 }
             });
@@ -946,16 +941,12 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     public void getNovelsSuccess(Noval_details noval_details, List<Noval_details> novalDetails) {
         if (j <= 1) {
-            //constraintLayout.setVisibility(View.VISIBLE);
-            //relativeLayout.setVisibility(View.VISIBLE);
             l_all.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
         this.noval_details = noval_details;
         if (noval_details != null) {
             if (adapter == null) {
-                Log.e("WWW", "onResume: " + j);
-
                 adapter = new CategoryzyAdapter(this, novalDetails);
                 adapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
                     @Override
@@ -1023,26 +1014,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                             .error(R.drawable.cover_error)
                             .transform(transformation))
                     .into(mTopBgIv);
-//            Glide.with(this)
-//                    .load(url)
-//                    .apply(new RequestOptions()
-//                            .placeholder(R.drawable.cover_place_holder)
-//                            .error(R.drawable.cover_error)
-//                            .transform(new BitmapTransformation() {
-//                                @Override
-//                                protected Bitmap transform(@NonNull BitmapPool pool,
-//                                                           @NonNull Bitmap toTransform, int outWidth, int outHeight) {
-//                                    // 对得到的 Bitmap 进行虚化处理
-//                                    return BlurUtil.blurBitmap(NovelIntroActivity.this,
-//                                            toTransform, 5, 8);
-//                                }
-//
-//                                @Override
-//                                public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
-//
-//                                }
-//                            }))
-//                    .into(mTopBgIv);
 
             if (noval_details.getChapter() != null) {
                 Noval_details.Chapter chapter = noval_details.getChapter();
@@ -1100,15 +1071,21 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         return "刚刚";
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(conn);
+        unregisterReceiver(loadReceiver);
+    }
+
     public static Date ConverToDate(String strDate) throws Exception {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return df.parse(strDate);
     }
 
+    boolean Is_load=false;
     @Override
     public void getNovelsError(String errorMsg) {
-        //constraintLayout.setVisibility(View.VISIBLE);
-        //relativeLayout.setVisibility(View.VISIBLE);
         l_all.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
         showShortToast(errorMsg);
@@ -1127,5 +1104,18 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     @Override
     public void getCategoryNovelsError(String errorMsg) {
 
+    }
+    LoadReceiver loadReceiver;
+    public class LoadReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String id=intent.getStringExtra("load_position");
+            String pressgress=intent.getStringExtra("load_progresss");
+            if(id.equals(pid)) {
+                if (txt_book_load != null) {
+                    txt_book_load.setText(pressgress);
+                }
+            }
+        }
     }
 }

@@ -73,17 +73,9 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mRefreshSrv;
     private FrameLayout frameLayout_banner;
-    private HotRankAdapter mHotRankAdapter;
-    private List<CategoryNovels> mHotRankNovelNameList;
 
     private CategoryAdapter mCategoryAdapter;
-    private List<String> mCategoryNameList = new ArrayList<>();
-    private List<String> mMoreList = new ArrayList<>();
     private List<Noval_details> mNovelDataList = new ArrayList<>();
-
-    private boolean mIsVisited = false;
-    private boolean mIsLoadedData = false;
-    private boolean mIsCreatedView = false;
     private RelativeLayout rel_click_more;
 
     @Override
@@ -97,12 +89,6 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
 
     @Override
     protected void initData() {
-        mCategoryNameList.add("热血玄幻");
-        mCategoryNameList.add("都市生活");
-        mCategoryNameList.add("武侠世界");
-        mMoreList.add("更多玄幻小说");
-        mMoreList.add("更多都市小说");
-        mMoreList.add("更多武侠小说");
         Bundle bundle = this.getArguments();//得到从Activity传来的数据
         if (bundle != null) {
             mess = bundle.getInt("data");
@@ -159,12 +145,20 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
             @Override
             public void onRefresh() {
                 //刷新时的操作
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+                        requestUpdate();
+//                    }
+//                }, 500);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        requestUpdate();
+                        //if (mRefreshSrv.isRefreshing()) {
+                            mRefreshSrv.setRefreshing(false);
+                        //}
                     }
-                }, 500);
+                }, 3000);
             }
         });
         frameLayout_banner = getActivity().findViewById(R.id.banner1);
@@ -177,7 +171,6 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         requestUpdate();
         mProgressBar.setVisibility(View.VISIBLE);
         frameLayout_banner.setVisibility(View.GONE);
-        mIsLoadedData = true;
 
     }
 
@@ -186,14 +179,6 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mPresenter.getCategoryNovels(mess + "");
         mPresenter.getNewRankData(mess + "");
         mPresenter.getListImage(mess + "");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mRefreshSrv.isRefreshing()) {
-                    mRefreshSrv.setRefreshing(false);
-                }
-            }
-        }, 3000);
     }
 
     @Override

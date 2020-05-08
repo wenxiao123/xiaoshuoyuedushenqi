@@ -224,75 +224,58 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     showShortToast("当前无网络，请检查网络后重试");
                     return;
                 }
-                // 点击 item，跳转到相应小说阅读页
                 String s_id=bookmarkNovelDbDatas.get(position).getChapterid();
-//                // 跳转后活动结束
-//                CollBookBean bookBean=new CollBookBean(bookmarkNovelDbDatas.get(position).getNovelUrl(), bookmarkNovelDbDatas.get(position).getName(), "", "",
-//                        "", false, 0,0,
-//                        "", "", Integer.parseInt(s_id), "",
-//                        false, false);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-//                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-////                bundle.putString(WYReadActivity.CHPTER_ID,s_id);
-////                Log.e("222", "clickItem: "+bookmarkNovelDbDatas.get(position).getPosition()+" "+s_id);
-////                bundle.putString(WYReadActivity.PAGE_ID,bookmarkNovelDbDatas.get(position).getPosition()+"");
-//               // startActivity(WYReadActivity.class, bundle);
-//                Intent intent=new Intent(CatalogActivity.this,WYReadActivity.class);
-//                intent.putExtra(WYReadActivity.CHPTER_ID,s_id);
-//                intent.putExtra(WYReadActivity.PAGE_ID,bookmarkNovelDbDatas.get(position).getPosition()+"");
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-//                if (mReadActivity != null) {
-//                    mReadActivity.finish();
-//                }
-//                finish();
-                // 点击 item，跳转到相应小说阅读页
-                String page_id=(bookmarkNovelDbDatas.get(position).getPosition()+1)+"";
-                // 跳转后活动结束
-                CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
-                        "", false, 0,0,
-                        "", "", Integer.parseInt(s_id)-1, "",
-                        false, false);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                bundle.putString(WYReadActivity.CHPTER_ID, s_id);
-//                bundle.putString(WYReadActivity.PAGE_ID, page_id);
-//                Log.e("222", "clickItem: "+bookmarkNovelDbDatas.get(position).getPosition()+" "+s_id);
-                //bundle.putString(WYReadActivity.PAGE_ID,bookmarkNovelDbDatas.get(position).getPosition()+"");
-                //Log.e("QQQ", "clickItem: "+catalogDataAll.get(position));
-                startActivity(WYReadActivity.class, bundle);
-                if (mReadActivity != null) {
-                    mReadActivity.finish();
+                String page_id=(bookmarkNovelDbDatas.get(position).getPosition())+"";
+                if(activity_type!=null&&activity_type.equals("NovelIntroActivity")){
+                    // 点击 item，跳转到相应小说阅读页
+                    // 跳转后活动结束
+                    CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
+                            "", false, 0,0,
+                            "", "", Integer.parseInt(s_id)-1, "",
+                            false, false);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                    bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                    bundle.putString(WYReadActivity.CHPTER_ID, s_id);
+                    startActivity(WYReadActivity.class, bundle);
+                    if (mReadActivity != null) {
+                        mReadActivity.finish();
+                    }
+                    finish();
+                }else {
+                    Intent intent_recever = new Intent("com.read.android");
+                    intent_recever.putExtra("chpter", Integer.parseInt(s_id));
+                    intent_recever.putExtra("page_id", Integer.parseInt(page_id));
+                    sendBroadcast(intent_recever);
+                    finish();
                 }
-                finish();
             }
         });
         bookAdapter.setOnCatalogLongListener(new BookMarkAdapter.CatalogLongListener() {
             @Override
             public void clickItem(int position) {
-                final TipDialog tipDialog = new TipDialog.Builder(CatalogActivity.this)
-                        .setContent("是否删除书签")
-                        .setCancel("取消")
-                        .setEnsure("确定")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                mDbManager.deleteBookmarkNovel(bookmarkNovelDbDatas.get(position).getTime());
-                                queryBookMarks(mUrl);
-                                initBookMarkAdapter();
-                                mBookMarkListRv.setAdapter(bookAdapter);
-                            }
+                if(!CatalogActivity.this.isDestroyed()) {
+                    final TipDialog tipDialog = new TipDialog.Builder(CatalogActivity.this)
+                            .setContent("是否删除书签")
+                            .setCancel("取消")
+                            .setEnsure("确定")
+                            .setOnClickListener(new TipDialog.OnClickListener() {
+                                @Override
+                                public void clickEnsure() {
+                                    mDbManager.deleteBookmarkNovel(bookmarkNovelDbDatas.get(position).getTime());
+                                    queryBookMarks(mUrl);
+                                    initBookMarkAdapter();
+                                    mBookMarkListRv.setAdapter(bookAdapter);
+                                }
 
-                            @Override
-                            public void clickCancel() {
+                                @Override
+                                public void clickCancel() {
 
-                            }
-                        })
-                        .build();
-                tipDialog.show();
-
+                                }
+                            })
+                            .build();
+                    tipDialog.show();
+                }
             }
         });
     }

@@ -114,23 +114,14 @@ public abstract class PageLoader {
     //下一页绘制缓冲区，用户缓解卡顿问题。
     private Bitmap mNextBitmap;
     public int getmTextInterval() {
-        return mTextInterval;
+        return text_interval;
     }
-
+    int text_interval;
     public void setmTextInterval(int mTextInterval) {
-//        if (mTextInterval <= ScreenUtils.spToPx(8)) {
-//            return;
-//        }
-//
-//        if (mTextInterval >= ScreenUtils.spToPx(50)) {
-//            return;
-//        }
-
-       // mPageView.refreshPage();
         if (!isBookOpen) return;
-
-        this.mTextInterval = mTextInterval;
-        mTitleSize = mTextSize + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_30);//ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
+        int interval=intervals[mTextInterval];
+        this.mTextInterval =App.getAppResources().getDimensionPixelOffset(interval);
+        mTitleSize = mTextSize + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_4);//ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
 
         //mTitleInterval = mTitleInterval;
         mTitlePara = mTitleSize;
@@ -139,6 +130,7 @@ public abstract class PageLoader {
         mTextPaint.setTextSize(mTextSize);
         //设置标题的字体大小
         mTitlePaint.setTextSize(mTitleSize);
+        text_interval=mTextInterval;
         //存储状态
         mSettingManager.setTextRow(mTextInterval);
         //取消缓存
@@ -288,8 +280,12 @@ public abstract class PageLoader {
         if(text_index>=ints.length){
             text_index=ints.length-1;
         }
+        text_interval=mSettingManager.getTextRow();
+        if(text_interval>=intervals.length){
+            text_interval=intervals.length-1;
+        }
         mTextSize = App.getAppResources().getDimensionPixelSize(ints[text_index]);
-        mTextInterval= mSettingManager.getTextRow();
+        mTextInterval= App.getAppResources().getDimensionPixelSize(intervals[text_interval]);;
         mTextStyle=mSettingManager.getTextStyle();
         mTitleSize = mTextSize + App.getAppResources().getDimensionPixelOffset(R.dimen.dp_4);//EXTRA_TITLE_SIZE;
         mPageMode = mSettingManager.getPageMode();
@@ -320,7 +316,7 @@ public abstract class PageLoader {
         mTipPaint = new Paint();
         mTipPaint.setColor(mTextColor);
         mTipPaint.setTextAlign(Paint.Align.LEFT);//绘制的起始点
-        mTipPaint.setTextSize(ScreenUtils.pxToDp(DEFAULT_TIP_SIZE));//Tip默认的字体大小
+        mTipPaint.setTextSize(App.getAppResources().getDimensionPixelSize(R.dimen.dp_13));//Tip默认的字体大小
         mTipPaint.setAntiAlias(true);
         mTipPaint.setSubpixelText(true);
 
@@ -438,10 +434,40 @@ public abstract class PageLoader {
         mPageView.refreshPage();
     }
 
+    //跳转到指定章节
+    public void skipToChapter(int pos,int index) {
+        //正在加载
+        mStatus = STATUS_LOADING;
+        //绘制当前的状态
+        mCurChapterPos = pos;
+        //将上一章的缓存设置为null
+        mWeakPrePageList = null;
+
+        //如果当前下一章缓存正在执行，则取消
+        if (mPreLoadDisp != null) {
+            mPreLoadDisp.dispose();
+        }
+        //将下一章缓存设置为null
+        mNextPageList = null;
+
+        if (mPageChangeListener != null) {
+            mPageChangeListener.onChapterChange(mCurChapterPos);
+        }
+        if (mCurPage != null) {
+            //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
+              mCurPage.position = 0;
+        }
+
+        //需要对ScrollAnimation进行重新布局
+        mPageView.refreshPage();
+    }
+
     //跳转到具体的页
     public void skipToPage(int pos) {
-        mCurPage = getCurPage(pos);
-        mPageView.refreshPage();
+        if(pos<mCurPageList.size()){
+            mCurPage = getCurPage(pos);
+            mPageView.refreshPage();
+        }
     }
 
     //自动翻到上一章
@@ -470,7 +496,14 @@ public abstract class PageLoader {
             mPageView.drawCurPage(true);
         }
     }
-    int [] ints={R.dimen.dp_26,R.dimen.dp_28,R.dimen.dp_29,R.dimen.dp_30,R.dimen.dp_32,R.dimen.dp_34,R.dimen.dp_36,R.dimen.dp_38,R.dimen.dp_39};
+    int [] ints={R.dimen.dp_14,R.dimen.dp_16,R.dimen.dp_18,R.dimen.dp_20,R.dimen.dp_22,R.dimen.dp_24,R.dimen.dp_26,R.dimen.dp_28,R.dimen.dp_29,R.dimen.dp_30,R.dimen.dp_32,R.dimen.dp_34,R.dimen.dp_36,R.dimen.dp_38,R.dimen.dp_39};
+    int [] intervals={R.dimen.dp_2,R.dimen.dp_4,R.dimen.dp_6,R.dimen.dp_8,R.dimen.dp_10,R.dimen.dp_12,R.dimen.dp_14,R.dimen.dp_16,R.dimen.dp_18,R.dimen.dp_20};
+    public int text_size(){
+        return ints.length;
+    }
+    public int getInterval(){
+        return intervals.length;
+    }
     //设置文字大小
     public void setTextSize(int textSize) {
         if (!isBookOpen) return;
@@ -480,7 +513,7 @@ public abstract class PageLoader {
         //mTextInterval = mTextSize / 2;
         mTextPara = mTextSize;
 
-        mTitleSize = mTextSize + ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
+        mTitleSize = mTextSize + App.getAppResources().getDimensionPixelOffset(R.dimen.dp_4);
         mTitleInterval = mTitleInterval / 2;
         mTitlePara = mTitleSize;
 
@@ -488,7 +521,7 @@ public abstract class PageLoader {
         mTextPaint.setTextSize(mTextSize);
         //设置标题的字体大小
         mTitlePaint.setTextSize(mTitleSize);
-        text_index=position;
+        text_index=textSize;
         //存储状态
         mSettingManager.setTextSize(text_index);
         //取消缓存
@@ -516,7 +549,7 @@ public abstract class PageLoader {
         //mTextInterval = mTextSize / 2;
         mTextPara = mTextSize;
         mTextStyle=type;
-        mTitleSize = mTextSize + ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
+        mTitleSize = mTextSize + App.getAppResources().getDimensionPixelOffset(R.dimen.dp_4);
         mTitleInterval = mTitleInterval / 2;
         mTitlePara = mTitleSize;
         mSettingManager.setTextStyle(mTextStyle);

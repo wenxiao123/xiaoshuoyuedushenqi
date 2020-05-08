@@ -62,17 +62,11 @@ public class OverFragment extends BaseTabFragment<MalePresenter>
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mRefreshSrv;
     private FrameLayout frameLayout_banner;
-    private HotRankAdapter mHotRankAdapter;
-    private List<CategoryNovels> mHotRankNovelNameList;
 
     private CategoryAdapter mCategoryAdapter;
     private List<String> mCategoryNameList = new ArrayList<>();
     private List<String> mMoreList = new ArrayList<>();
     private List<Noval_details> mNovelDataList = new ArrayList<>();
-
-    private boolean mIsVisited = false;
-    private boolean mIsLoadedData = false;
-    private boolean mIsCreatedView = false;
     private RelativeLayout rel_click_more;
 
     @Override
@@ -148,12 +142,20 @@ public class OverFragment extends BaseTabFragment<MalePresenter>
             @Override
             public void onRefresh() {
                 //刷新时的操作
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+                        requestUpdate();
+//                    }
+//                }, 500);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        requestUpdate();
+                        //if(mRefreshSrv.isRefreshing()) {
+                            mRefreshSrv.setRefreshing(false);
+                        //}
                     }
-                }, 500);
+                }, 3000);
             }
         });
         frameLayout_banner = getActivity().findViewById(R.id.banner_over);
@@ -237,8 +239,6 @@ public class OverFragment extends BaseTabFragment<MalePresenter>
         requestUpdate();
         mProgressBar.setVisibility(View.VISIBLE);
         frameLayout_banner.setVisibility(View.GONE);
-        mIsLoadedData = true;
-
     }
 
     private void requestUpdate() {
@@ -246,14 +246,6 @@ public class OverFragment extends BaseTabFragment<MalePresenter>
         mPresenter.getCategoryNovels(mess + "");
         mPresenter.getNewRankData(mess + "");
         mPresenter.getListImage(mess + "");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(mRefreshSrv.isRefreshing()) {
-                    mRefreshSrv.setRefreshing(false);
-                }
-            }
-        }, 3000);
     }
 
     @Override

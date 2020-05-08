@@ -93,11 +93,11 @@ public class ReadSettingManager {
     }
 
     public int getTextSize(){
-        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE,0);//App.getAppResources().getDimensionPixelOffset(R.dimen.dp_30)
+        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE,4);//App.getAppResources().getDimensionPixelOffset(R.dimen.dp_30)
     }
 
     public int getTextRow(){
-        return sharedPreUtils.getInt(SHARED_READ_TEXT_ROW, ScreenUtils.spToPx(35f));
+        return sharedPreUtils.getInt(SHARED_READ_TEXT_ROW, 2);
     }
 
     public String getTextStyle(){

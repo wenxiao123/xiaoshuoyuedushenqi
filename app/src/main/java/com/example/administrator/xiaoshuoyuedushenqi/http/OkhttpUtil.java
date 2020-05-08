@@ -42,6 +42,8 @@ public class OkhttpUtil {
                 if (okHttpClient == null) {
                     //okHttpClient = new OkHttpClient();
                     okHttpClient = new OkHttpClient.Builder()
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20, TimeUnit.SECONDS)
                             //.addInterceptor(new ParamsInterceptor())
                             .build();
                 }

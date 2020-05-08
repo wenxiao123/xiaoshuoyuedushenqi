@@ -240,23 +240,25 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 if (!deleteCheck()) {
                     break;
                 }
-                new TipDialog.Builder(getActivity())
-                        .setContent("确定要删除这些小说吗？")
-                        .setCancel("不了")
-                        .setEnsure("确定")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                multiDelete();
-                            }
+                if(!getActivity().isDestroyed()) {
+                    new TipDialog.Builder(getActivity())
+                            .setContent("确定要删除这些小说吗？")
+                            .setCancel("不了")
+                            .setEnsure("确定")
+                            .setOnClickListener(new TipDialog.OnClickListener() {
+                                @Override
+                                public void clickEnsure() {
+                                    multiDelete();
+                                }
 
-                            @Override
-                            public void clickCancel() {
+                                @Override
+                                public void clickCancel() {
 
-                            }
-                        })
-                        .build()
-                        .show();
+                                }
+                            })
+                            .build()
+                            .show();
+                }
                 break;
             default:
                 break;
@@ -646,9 +648,6 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                             mDataList.get(position).getCover(), false, 0, 0,
                                             "", "", mDataList.get(position).getWeight(), "",
                                             false, false);
-                                    List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(mDataList.get(position).getNovelUrl());
-                                    Collections.reverse(cataloginfos);
-                                    bookBean.setCataloginfos(cataloginfos);
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);

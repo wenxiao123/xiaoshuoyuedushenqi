@@ -126,24 +126,26 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
             @Override
             public void longclick(int word) {
-                final TipDialog tipDialog = new TipDialog.Builder(getActivity())
-                        .setContent("是否清除搜索历史？")
-                        .setCancel("否")
-                        .setEnsure("是")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                mManager.deleteHistory(mContentList.get(word));
-                                updateHistory();
-                            }
+                if(!getActivity().isDestroyed()) {
+                    final TipDialog tipDialog = new TipDialog.Builder(getActivity())
+                            .setContent("是否清除搜索历史？")
+                            .setCancel("否")
+                            .setEnsure("是")
+                            .setOnClickListener(new TipDialog.OnClickListener() {
+                                @Override
+                                public void clickEnsure() {
+                                    mManager.deleteHistory(mContentList.get(word));
+                                    updateHistory();
+                                }
 
-                            @Override
-                            public void clickCancel() {
-                                //tipDialog.dismiss();
-                            }
-                        })
-                        .build();
-                tipDialog.show();
+                                @Override
+                                public void clickCancel() {
+                                    //tipDialog.dismiss();
+                                }
+                            })
+                            .build();
+                    tipDialog.show();
+                }
             }
         });
         delect_all=getActivity().findViewById(R.id.iv_delect_all);
@@ -218,30 +220,32 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         switch (v.getId()) {
             case R.id.iv_history_clear_all:
                 // 弹出 Dialog 再次确认是否清空
-                TipDialog dialog = new TipDialog.Builder(getActivity())
-                        .setContent("是否清空历史搜索")
-                        .setEnsure("是")
-                        .setCancel("不了")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                // 清空数据库，并更新页面
-                                mManager.deleteAllHistories();
-                                mContentList.clear();
-                                //mHistoryListFv.updateView();
-                                mHistoryAdapter.notifyDataSetChanged();
-                                // 图标隐藏
-                                mClearAllIv.setVisibility(View.GONE);
-                                delect_all.setVisibility(View.GONE);
-                            }
+                if(!getActivity().isDestroyed()) {
+                    TipDialog dialog = new TipDialog.Builder(getActivity())
+                            .setContent("是否清空历史搜索")
+                            .setEnsure("是")
+                            .setCancel("不了")
+                            .setOnClickListener(new TipDialog.OnClickListener() {
+                                @Override
+                                public void clickEnsure() {
+                                    // 清空数据库，并更新页面
+                                    mManager.deleteAllHistories();
+                                    mContentList.clear();
+                                    //mHistoryListFv.updateView();
+                                    mHistoryAdapter.notifyDataSetChanged();
+                                    // 图标隐藏
+                                    mClearAllIv.setVisibility(View.GONE);
+                                    delect_all.setVisibility(View.GONE);
+                                }
 
-                            @Override
-                            public void clickCancel() {
+                                @Override
+                                public void clickCancel() {
 
-                            }
-                        })
-                        .build();
-                dialog.show();
+                                }
+                            })
+                            .build();
+                    dialog.show();
+                }
                 break;
             default:
                 break;

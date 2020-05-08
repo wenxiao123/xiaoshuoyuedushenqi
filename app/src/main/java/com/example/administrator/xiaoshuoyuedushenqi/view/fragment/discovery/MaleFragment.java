@@ -70,13 +70,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private List<CategoryNovels> mHotRankNovelNameList;
 
     private CategoryAdapter mCategoryAdapter;
-    private List<String> mCategoryNameList = new ArrayList<>();
-    private List<String> mMoreList = new ArrayList<>();
     private List<Noval_details> mNovelDataList = new ArrayList<>();
 
-    private boolean mIsVisited = false;
-    private boolean mIsLoadedData = false;
-    private boolean mIsCreatedView = false;
     private RelativeLayout rel_click_more;
 
     @Override
@@ -91,12 +86,6 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private TextView tv_item_new_more;
     @Override
     protected void initData() {
-        mCategoryNameList.add("热血玄幻");
-        mCategoryNameList.add("都市生活");
-        mCategoryNameList.add("武侠世界");
-        mMoreList.add("更多玄幻小说");
-        mMoreList.add("更多都市小说");
-        mMoreList.add("更多武侠小说");
         Bundle bundle = this.getArguments();//得到从Activity传来的数据
         if (bundle != null) {
             mess = bundle.getInt("data");
@@ -156,79 +145,26 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
             @Override
             public void onRefresh() {
                 //刷新时的操作
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        requestUpdate();
+//                    }
+//                }, 500);
+                requestUpdate();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        requestUpdate();
+                        mRefreshSrv.setRefreshing(false);
                     }
-                }, 500);
+                }, 3000);
             }
         });
         frameLayout_banner = getActivity().findViewById(R.id.banner);
         banner = getActivity().findViewById(R.id.ultra_viewpager);
 
         uIndicator4 = getActivity().findViewById(R.id.indicator4);
-//        DemoPagerAdapter mAdapter = new DemoPagerAdapter(getList());
-//        mViewPager4.setAdapter(mAdapter);
-//        uIndicator4.attachToViewPager(mViewPager4.getViewPager());
     }
-
-//    public class DemoPagerAdapter extends PagerAdapter {
-//        private List<Wheel> views;
-//
-//        public DemoPagerAdapter(List<Wheel> views) {
-//            this.views = views;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return views.size();
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//        @Override
-//        public Object instantiateItem(ViewGroup container, int position) {
-//            //View view = views.get(position);
-//            ImageView imageView = new ImageView(getContext());
-//            SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
-//                @Override
-//                public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-//                    imageView.setBackground(resource);
-//                }
-//            };
-//            String href="";
-//            if(views.get(position).getPicpath().contains("http")){
-//                href=views.get(position).getPicpath();
-//            }else {
-//                href=UrlObtainer.GetUrl()+"/"+views.get(position).getPicpath();
-//            }
-//            Glide.with(getContext()).load(href)
-//                    .apply(new RequestOptions()
-//                            .placeholder(R.drawable.cover_place_holder)
-//                            .error(R.mipmap.admin))
-//                    .into(simpleTarget);
-//            container.addView(imageView);
-//            imageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(getContext(), NovelIntroActivity.class);
-//                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-//                    intent.putExtra("pid", views.get(position).getNovel_id() + "");
-//                    startActivity(intent);
-//                }
-//            });
-//            return imageView;
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup container, int position, Object object) {
-//            container.removeView((View) instantiateItem(container, position));
-//        }
-//    }
 
 
     @Override
@@ -244,8 +180,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     protected void doInOnCreate() {
             requestUpdate();
             mProgressBar.setVisibility(View.VISIBLE);
-        frameLayout_banner.setVisibility(View.GONE);
-        mIsLoadedData = true;
+            frameLayout_banner.setVisibility(View.GONE);
 
     }
 
@@ -254,14 +189,6 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         mPresenter.getCategoryNovels(mess + "");
         mPresenter.getNewRankData(mess + "");
         mPresenter.getListImage(mess + "");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(mRefreshSrv.isRefreshing()) {
-                    mRefreshSrv.setRefreshing(false);
-                }
-            }
-        }, 3000);
     }
 
     @Override

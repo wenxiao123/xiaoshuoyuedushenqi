@@ -13,8 +13,11 @@ import java.util.List;
  */
 public class Constant {
     /* 热门榜单相关 */
+    public static final int male=1;//男
+    public static final int female=2;//男
     // 男生热门榜单的榜单数
     public static final int MALE_HOT_RANK_NUM = 5;
+    public static int TIME_MAX = 6;    // 最大次数
     // 男生热门榜单的 id
     private static String sZYHotRankId = "564d8003aca44f4f61850fcd";    // 掌阅热销榜
     private static String sSQHotRankId = "564d80457408cfcd63ae2dd0";    // 书旗热搜榜

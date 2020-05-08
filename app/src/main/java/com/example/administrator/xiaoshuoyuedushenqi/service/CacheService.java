@@ -8,14 +8,17 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.DownBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 
+import org.greenrobot.greendao.annotation.Id;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +28,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.net.IDN;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.security.auth.login.LoginException;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -35,68 +44,81 @@ public class CacheService extends Service {
     private static String TAG = "CacheService";
     int z = 1;
     int weigh;
-    String bookname,bookcover,id;
+    String bookname, bookcover, id;
     String path;
     DatabaseManager mDbManager;
     private MyBinder mBinder = new MyBinder();
+
     //该服务不存在需要被创建时被调用，不管startService()还是bindService()都会启动时调用该方法
     @Override
     public void onCreate() {
-
         super.onCreate();
     }
-    Handler handler=new Handler(){
+
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(msg.what==1) {
-                //tv_book_add.setText("移除书架");
-//                if(mDbManager.isExistInBookshelfNovel(id+"")||mDbManager.isExistInBookshelfNovel(path+".txt")) {
-                    BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(id+"",bookname,bookcover,1,weigh,1+"");
-                    bookshelfNovelDbData.setFuben_id(path+".txt");
-                    bookshelfNovelDbData.setChapterid(1+"");
-                    mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
-//                    mDbManager.updataBookshelfNovel(bookshelfNovelDbData, id+"");
-//                }else {
-//                    BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(path+".txt",bookname,bookcover,1,weigh,1+"");
-//                    bookshelfNovelDbData.setFuben_id(id+"");
-//                    bookshelfNovelDbData.setChapterid(1+"");
-//                    mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
-//                }
+            if (msg.what == 1) {
+                BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(id + "", bookname, bookcover, 1, weigh, 1 + "");
+                bookshelfNovelDbData.setFuben_id(path + ".txt");
+                bookshelfNovelDbData.setChapterid(1 + "");
+                mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
                 Intent intent_recever = new Intent("com.zhh.android");
-                intent_recever.putExtra("type",1);
+                intent_recever.putExtra("type", 1);
                 sendBroadcast(intent_recever);
-                stopSelf();
-            }else if(msg.what==2){
-                int j=msg.arg1;
-                f=((z-1)*30+(j+1));
-                //Log.e("AA2", "handleMessage: "+((z-1)*30+(j+1)));
-                if(30*z<=weigh&&(j+1)==30){
+                for(int i=0;i<downBeanList.size();i++){
+                  if(downBeanList.get(i).getId().equals(id)){
+                      downBeanList.remove(downBeanList.get(i));
+                  }
+                }
+                 if(downBeanList.size()>0){
+                     DownBean downBean=downBeanList.get(0);
+                     weigh=downBean.getWeight();
+                     bookname=downBean.getTitle();
+                     bookcover=downBean.getPic();
+                     id=downBean.getId();
+                     z=1;
+                     path = Constant.BOOK_ADRESS + "/" + bookname;
+                     postBooks_che();
+                 }else {
+                     App.getInstance().setPosition(null);
+                 }
+            } else if (msg.what == 2) {
+                int j = msg.arg1;
+                f = ((z-1)*post_num+(j+1));
+                Log.e("qqq", "handleMessage: "+f+" "+weigh);
+                if (post_num * z <= weigh && (j + 1) == post_num) {
                     z++;
                     postBooks_che();
                 }
-                float pressent = (float) (((z-1)*30+(j+1))) / (weigh) * 100;
-                //tv_che.setText("正在缓存:" + (int) pressent + "%");
-                if((int) pressent<100){
-                    CacheService.this.callback.onDataChange("正在缓存:" + (int) pressent + "%");
-                }else {
-                    CacheService.this.callback.onDataChange("已缓存" );
-                }
-
-                if(((z-1)*30+(j+1))==weigh){
+                float pressent = (float) f/ (weigh) * 100;
+                App.getInstance().setPosition(id);
+                String progress;
+                if (((z-1)*post_num+(j+1)) < weigh) {
+                    //CacheService.this.callback.onDataChange("正在缓存:" +(int)pressent + "%",id);
+                    progress="正在缓存:" +(int)pressent + "%";
+                } else {
+                   // CacheService.this.callback.onDataChange("已缓存",id);
+                    progress="已缓存";
                     handler.sendEmptyMessage(1);
                 }
+                Intent intent_recever = new Intent("com.load.android");
+                intent_recever.putExtra("load_position", id);
+                intent_recever.putExtra("load_progresss", progress);
+                sendBroadcast(intent_recever);
             }
         }
     };
     private static final String ChapterPatternStr = "(^.{0,3}\\s*第)(.{0,9})[章节卷集部篇回](\\s*)";
-   int f;
-   public void postBooks_che() {
+    int f;
+
+    public void postBooks_che() {
         String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
         RequestBody requestBody = new FormBody.Builder()
-                .add("id", id+"")
+                .add("id", id + "")
                 .add("page", z + "")
-                .add("limit", 30 + "")
+                .add("limit", post_num + "")
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
@@ -110,43 +132,61 @@ public class CacheService extends Service {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             String title = jsonArray.getJSONObject(i).getString("title");
                             String content = jsonArray.getJSONObject(i).getString("content");
-                            String load_title=title.replace("&nbsp"," ").replace("</br>","\n");
-                            String load_content=content.replace("&nbsp"," ").replace("</br>","\n");
-                            if(!load_title.contains("第")||!load_title.startsWith("第")){
-                                //String s = Pattern.compile("[^0-9]").matcher(title).replaceAll("");
+                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
+                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
+                            if (!load_title.contains("第") || !load_title.startsWith("第")) {
                                 String s = Pattern.compile(ChapterPatternStr).matcher(title).replaceAll("");
                                 String title2 = "";
-                                if(load_title.contains(s)) {
-                                    title2=load_title.replace(s, "第" + s + "章 ");
-                                  //  Log.e("QQQ", "onResponse: " + s + "***" + title2);
+                                if (load_title.contains(s)) {
+                                    title2 = load_title.replace(s, "第" + s + "章 ");
                                 }
-//                                }
-                                addTxtToFileBuffered( title2+ "\n");
-                                addTxtToFileBuffered( load_content+ "\n");
-                            }else {
-                                addTxtToFileBuffered( load_title+ "\n");
-                                addTxtToFileBuffered( load_content+ "\n");
+                                addTxtToFileBuffered(title2 + "\n");
+                                addTxtToFileBuffered(load_content + "\n");
+                            } else {
+                                addTxtToFileBuffered(load_title + "\n");
+                                addTxtToFileBuffered(load_content + "\n");
                             }
-//                            addTxtToFileBuffered(title.replace("&nbsp"," ").replace("</br>","\n") + "\n");
-//                            addTxtToFileBuffered(content.replace("&nbsp"," ").replace("</br>","\n") + "\n");
                             Message message = new Message();
                             message.what = 2;
                             message.arg1 = i;
                             handler.sendMessage(message);
                         }
+                        if(jsonArray.length()<post_num&&f!=weigh){
+                            handler.sendEmptyMessage(1);
+                            Intent intent_recever = new Intent("com.load.android");
+                            intent_recever.putExtra("load_position", id);
+                            intent_recever.putExtra("load_progresss", "已缓存");
+                            sendBroadcast(intent_recever);
+                        }
+                        time_count = 0;
                     }
+                    Log.e("QQQ", "onResponse: "+111);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e("QQQ", "onResponse: "+222);
+                    if (time_count < Constant.TIME_MAX) {
+                        postBooks_che();
+                    } else {
+                        ToastUtil.showToast(App.getContext(), "errorMsg");
+                    }
+                    time_count++;
                 }
 
             }
 
             @Override
             public void onFailure(String errorMsg) {
-                ToastUtil.showToast(getApplicationContext(),errorMsg);
+                Log.e("QQQ", "onFailure: "+111);
+                if (time_count < Constant.TIME_MAX) {
+                    postBooks_che();
+                } else {
+                    ToastUtil.showToast(App.getContext(), errorMsg);
+                }
+                time_count++;
             }
         });
     }
+    int time_count = 0;
+    int post_num=5;
     /**
      * 使用BufferedWriter进行文本内容的追加
      *
@@ -182,25 +222,21 @@ public class CacheService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         //Log.e("aa2", "onDestroy: "+112);
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
     //其他对象通过bindService 方法通知该Service时该方法被调用
     @Override
     public IBinder onBind(Intent intent) {
-        bookname = intent.getStringExtra("bookname");
-        id = intent.getStringExtra("id");
-        bookcover = intent.getStringExtra("bookcover");
-        weigh = intent.getIntExtra("weigh", 1);
-        path = Constant.BOOK_ADRESS + "/" + bookname;
-        mDbManager=DatabaseManager.getInstance();
-        postBooks_che();
+        mDbManager = DatabaseManager.getInstance();
         return new MyBinder();
     }
 
@@ -210,18 +246,39 @@ public class CacheService extends Service {
         //postBooks_che();
         return super.onUnbind(intent);
     }
-    public String data = "下载中...";
 
+    public String data = "下载中...";
+    List<DownBean> downBeanList=new ArrayList<>();
     public class MyBinder extends Binder {
-        public void  setData(String data) {
+        public void setData(String data) {
             CacheService.this.data = data;
         }
-
+        public void che(DownBean downBean){
+            if(downBeanList.size()==0) {
+                downBeanList.add(downBean);
+                all_che(downBean);
+            }else {
+                for(int i=0;i<downBeanList.size();i++){
+                  if(downBeanList.get(i).getId().equals(downBean.getId())){
+                      downBeanList.remove(downBeanList.get(i));
+                  }
+                }
+                downBeanList.add(downBean);
+            }
+        }
         public CacheService getService() {
             return CacheService.this;
         }
     }
-
+    public void all_che(DownBean downBean){
+          weigh=downBean.getWeight();
+          bookname=downBean.getTitle();
+          bookcover=downBean.getPic();
+          id=downBean.getId();
+          z=downBean.getPosition();
+          path = Constant.BOOK_ADRESS + "/" + bookname;
+          postBooks_che();
+    }
     public Callback getCallback() {
         return callback;
     }
@@ -231,7 +288,7 @@ public class CacheService extends Service {
     }
 
     public interface Callback {
-        void onDataChange(String data);
+        void onDataChange(String data,String pid);
     }
 
     private Callback callback;

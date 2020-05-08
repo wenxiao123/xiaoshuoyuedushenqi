@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -118,6 +119,9 @@ public class ShareDialog extends BaseDialog2 implements View.OnClickListener{
         private Context context;
 
         public Builder(Context context) {
+            if(((Activity)context).isDestroyed()){
+                return ;
+            }
             this.context = context;
         }
 

@@ -64,8 +64,9 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+       // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.check_item, parent,false);
         return new ContentViewHolder(LayoutInflater.from(mContext).inflate(
-                R.layout.item_bookshelf_novel, null));
+                R.layout.item_bookshelf_novel, viewGroup,false));
     }
 
     @Override

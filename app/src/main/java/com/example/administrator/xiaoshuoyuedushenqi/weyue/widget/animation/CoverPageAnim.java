@@ -101,9 +101,9 @@ public class CoverPageAnim extends HorizonPageAnim {
     @Override
     public void startAnim() {
         if(is_auto) {
-            if (isRunning) {
-                return;
-            }
+//            if (isRunning) {
+//                return;
+//            }
             isRunning = true;
         }
         int dx = 0;

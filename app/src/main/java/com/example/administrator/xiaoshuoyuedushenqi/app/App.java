@@ -35,6 +35,15 @@ public class App extends Application {
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
     boolean isNight;
     private static App app;
+    private String position=null;
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public static Context getAppContext() {
         return app;

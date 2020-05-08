@@ -213,6 +213,9 @@ public class AdmDialog extends BaseDialog2 implements View.OnClickListener{
         private Context context;
 
         public Builder(Context context) {
+            if(((Activity)context).isDestroyed()){
+                return;
+            }
             this.context = context;
         }
 

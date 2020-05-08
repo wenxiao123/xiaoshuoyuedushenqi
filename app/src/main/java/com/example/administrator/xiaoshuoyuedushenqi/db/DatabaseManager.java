@@ -412,7 +412,7 @@ public class DatabaseManager {
                         position, type, secondPosition, chperid, weight, status);
                 bookshelfNovelDbData.setFuben_id(title1);
                 res.add(bookshelfNovelDbData);
-                // Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
+                //Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
             } while (cursor.moveToPrevious());
         }
         cursor.close();
@@ -497,7 +497,7 @@ public class DatabaseManager {
                     res = new BookshelfNovelDbData(novelUrl, name, cover,
                             position, type, secondPosition, chperid, weight, status);
                     res.setFuben_id(fuben);
-                    // Log.e("WWW", "selectBookshelfNovel: "+fuben);
+                   // Log.e("WWW", "selectBookshelfNovel: "+res);
                     break;
                 }
 

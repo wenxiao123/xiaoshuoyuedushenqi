@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookstoreAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
+import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleLikeContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Catagorys;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MaleLikePresenter;
@@ -40,7 +41,6 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
     @Override
     protected void initView() {
         verticalTabLayout = getActivity().findViewById(R.id.tablayout1);
-
         verticalTabLayout.addTab(new QTabView(getActivity()));
         verticalTabLayout.addOnTabSelectedListener(new VerticalTabLayout1.OnTabSelectedListener() {
             @Override
@@ -115,9 +115,9 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
     @Override
     public void getCategoryNovelsSuccess(List<Catagorys> dataList) {
         this.dataList = dataList;
-        int z = 0;
+        int z = -1;
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getId()==2) {
+            if (dataList.get(i).getId()== Constant.female) {
                 z = dataList.get(i).getId();
                 break;
             }

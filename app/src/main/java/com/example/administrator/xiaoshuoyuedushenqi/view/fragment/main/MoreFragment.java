@@ -117,23 +117,25 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                         getContext().startActivity(new Intent(getContext(), FeedbackActivity.class));
                         break;
                     case 2:
-                        final ShareDialog tipDialog = new ShareDialog.Builder(getActivity())
-                                .setContent("www.baidu.com")
-                                .setCancel("下次再说")
-                                .setEnsure("去分享")
-                                .setOnClickListener(new ShareDialog.OnClickListener() {
-                                    @Override
-                                    public void clickEnsure() {
-                                        mCacheSizeTv.setText(FileUtil.getLocalCacheSize());
-                                    }
+                        if(!getActivity().isDestroyed()) {
+                            final ShareDialog tipDialog = new ShareDialog.Builder(getActivity())
+                                    .setContent("www.baidu.com")
+                                    .setCancel("下次再说")
+                                    .setEnsure("去分享")
+                                    .setOnClickListener(new ShareDialog.OnClickListener() {
+                                        @Override
+                                        public void clickEnsure() {
+                                            mCacheSizeTv.setText(FileUtil.getLocalCacheSize());
+                                        }
 
-                                    @Override
-                                    public void clickCancel() {
+                                        @Override
+                                        public void clickCancel() {
 
-                                    }
-                                })
-                                .build();
-                        tipDialog.show();
+                                        }
+                                    })
+                                    .build();
+                            tipDialog.show();
+                        }
                         break;
                 }
             }

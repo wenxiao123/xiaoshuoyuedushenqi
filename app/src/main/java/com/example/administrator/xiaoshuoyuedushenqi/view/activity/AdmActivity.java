@@ -2,14 +2,19 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -33,6 +38,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelD
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.AdsUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.AnyRunnModule;
 import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
@@ -47,6 +53,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +110,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initData() {
         databaseManager = DatabaseManager.getInstance();
+        getCategoryNovels();
     }
 
     private MyCountDownTimer mCountDownTimer;
@@ -109,7 +120,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
         circleProgressbar = findViewById(R.id.tv_red_skip);
         videoView = findViewById(R.id.activity_opening_videoview);
         image = findViewById(R.id.img);
-        guodu=findViewById(R.id.guodu);
+        guodu = findViewById(R.id.guodu);
         anyRunnModule = new AnyRunnModule(this);
         //mCountDownTextView = (TextView) findViewById(R.id.start_skip_count_down);
     }
@@ -118,21 +129,25 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
     protected void doAfterInit() {
         circleProgressbar.setOutLineColor(getResources().getColor(R.color.grey_a1));
         circleProgressbar.setProgressColor(getResources().getColor(R.color.red_aa));
-        boolean is_wifi = isWifiActive(this);
-        if (is_wifi == true) {
-            getCategoryNovels();
-        } else {
-            File file=new File(path);
-            File[] files=file.listFiles();
-            if (files!=null&&files.length>0) {
-                Url_gg gg= (Url_gg) SpUtil.readObject2(this);
-                showAdm(gg.getTime(),files[0].getAbsolutePath(),gg.getUrl(),true);
-            }else {
-                Intent intent = new Intent(AdmActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+//      boolean is_wifi = isWifiActive(this);
+//        if (is_wifi == true) {
+//            getCategoryNovels();
+//        } else {
+        Url_gg gg = (Url_gg) SpUtil.readObject2(this);
+        if(gg!=null&&AdsUtils.isAdsLoaded(AdmActivity.this,gg.getHttps())){
+            File file = AdsUtils.getAdsFile(AdmActivity.this,gg.getHttps());
+            if (file.getAbsolutePath().endsWith(".mp4")) {
+                showAdm(gg.getTime(), file.getAbsolutePath(), gg.getUrl(), true);
+            } else {
+                showAdm(gg.getTime(), file.getAbsolutePath(), gg.getUrl(), false);
             }
+            Log.e("QQQ", "doAfterInit: " + file.getAbsolutePath());
+        }else {
+            Intent intent = new Intent(AdmActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         }
+        // }
         circleProgressbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,37 +170,43 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
-                    if(!jsonObject.isNull("data")){
-                    if (code.equals("1")) {
-                        JSONObject object = jsonObject.getJSONObject("data");
-                        String img = object.getString("value");
-                        String href = object.getString("url");
-                        String time = object.getString("time");
-                        String types= object.getString("types");
-                        //String type=img.substring(img.length()-1,img.length()-4);
-                        if (types.equals("1")&&(img.contains(".png") || img.contains(".jpg") || img.contains(".jpeg"))) {
-                            String https;
-                            if (img.contains("http")) {
-                                https = img;
-                            } else {
-                                https = UrlObtainer.GetUrl() +"/"+img;
+                    if (!jsonObject.isNull("data")) {
+                        if (code.equals("1")) {
+                            JSONObject object = jsonObject.getJSONObject("data");
+                            String img = object.getString("value");
+                            String href = object.getString("url");
+                            String time = object.getString("time");
+                            String types = object.getString("types");
+                            //String type=img.substring(img.length()-1,img.length()-4);
+                            if (types.equals("1") && (img.contains(".png") || img.contains(".jpg") || img.contains(".jpeg"))) {
+                                String https;
+                                if (img.contains("http")) {
+                                    https = img;
+                                } else {
+                                    https = UrlObtainer.GetUrl() + "/" + img;
+                                }
+                                //load_video(https);
+                                Url_gg gg = new Url_gg(href, time, https);
+                                SpUtil.saveObject2(AdmActivity.this, gg);
+                                AdsUtils.downLoadAds(AdmActivity.this,https);
+                                //new Task().execute(https);
+                                //showAdm(time, https, href, false);
+                            } else if (img.contains(".mp4")) {
+                                String https;
+                                if (img.contains("http")) {
+                                    https = img;
+                                } else {
+                                    https = UrlObtainer.GetUrl() + "/" + img;
+                                }
+                                Url_gg gg = new Url_gg(href, time, https);
+                                //Log.e("QQQ", "onResponse: "+gg);
+                                SpUtil.saveObject2(AdmActivity.this, gg);
+                                AdsUtils.downLoadAds(AdmActivity.this,https);
+                                //load_video(https);
+                                //showAdm(time, https, href, true);
                             }
-                            showAdm(time, https, href, false);
-                        } else if (img.contains(".mp4")) {
-                            String https;
-                            if (img.contains("http")) {
-                                https = img;
-                            } else {
-                                https = UrlObtainer.GetUrl() +"/"+ img;
-                            }
-                            Url_gg gg = new Url_gg(href, time, https);
-                            //Log.e("QQQ", "onResponse: "+gg);
-                            SpUtil.saveObject2(AdmActivity.this, gg);
-                            load_video(https);
-                            showAdm(time, https, href, true);
                         }
-                    }
-                    }else {
+                    } else {
                         Intent intent = new Intent(AdmActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
@@ -218,11 +239,12 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
     }
 
     VideoView videoView;
-    ImageView image,guodu;
+    ImageView image, guodu;
     private String proxyUrl;
     private HttpProxyCacheServer proxy;
+
     private void showAdm(String time, String https, String href, boolean b) {
-        Log.e("QQQ", "showAdm: "+https);
+        Log.e("QQQ", "showAdm: " + https);
         int s = Integer.parseInt(time);
         if (b == true) {
             videoView.setVisibility(View.VISIBLE);
@@ -231,18 +253,19 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
             MediaController mediaController = new MediaController(this);
             mediaController.setVisibility(View.GONE);//隐藏进度条
             videoView.setMediaController(mediaController);
+            Uri rawUri = Uri.parse(https);
             //String netPlayUrl="http://baobab.wdjcdn.com/145076769089714.mp4";
-            proxy = App.getProxy(getAppContext());
-            proxyUrl = proxy.getProxyUrl(https);
-            videoView.setVideoPath(proxyUrl);//播放的是代理服务器返回的url，已经进行了封装处理
-            //videoView.setVideoURI(uri);
+//            proxy = App.getProxy(getAppContext());
+//            proxyUrl = proxy.getProxyUrl(https);
+//            videoView.setVideoPath(proxyUrl);//播放的是代理服务器返回的url，已经进行了封装处理
+            videoView.setVideoURI(rawUri);
             videoView.requestFocus();
             videoView.start();
             videoView.seekTo(2);
             videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                   // mp.setLooping(true);
+                    // mp.setLooping(true);
                     guodu.setVisibility(View.GONE);
                     circleProgressbar.setVisibility(View.VISIBLE);
                     //mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 10000);
@@ -254,11 +277,9 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
                     mCountDownTimer.start();
                 }
             });
-            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-            {
+            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
-                public void onCompletion(MediaPlayer mp)
-                {
+                public void onCompletion(MediaPlayer mp) {
                     mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, 100);
                 }
             });
@@ -267,7 +288,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
             circleProgressbar.setVisibility(View.VISIBLE);
             guodu.setVisibility(View.GONE);
             mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, s * 1000);
-            circleProgressbar.setTimeMillis(s*1000);
+            circleProgressbar.setTimeMillis(s * 1000);
             circleProgressbar.setText(s + "s 跳过");
             circleProgressbar.start();
             mCountDownTimer = new MyCountDownTimer(s * 1000, 1000);
@@ -298,12 +319,12 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
     String path = Constant.FONT_ADRESS + "/video/";
 
     private void load_video(String https) {
-        File file=new File(path);
-        File[] files=file.listFiles();
+        File file = new File(path);
+        File[] files = file.listFiles();
         file.delete();
         String[] str = https.split("\\/");
         String name = str[str.length - 1];
-        if(files!=null&&files.length!=0&&!files[0].getName().contains(name)) {
+        if (files != null && files.length != 0 && !files[0].getName().contains(name)) {
             anyRunnModule.start(https, path + name);
         }
     }
@@ -329,6 +350,78 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
             }
         }
         return false;
+    }
+
+    /**
+     * 保存位图到本地
+     *
+     * @param bitmap
+     * @param other_path   本地路径
+     * @return void
+     */
+    public void SavaImage(Bitmap bitmap, String other_path) {
+        File fil = new File(path);
+        fil.delete();
+        File file = new File(other_path);
+        FileOutputStream fileOutputStream = null;
+        //文件夹不存在，则创建它
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        try {
+            fileOutputStream = new FileOutputStream(other_path + "/" + System.currentTimeMillis() + ".png");
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    Bitmap bitmap;
+
+    /**
+     * 异步线程下载图片
+     */
+    class Task extends AsyncTask<String, Integer, Void> {
+
+        protected Void doInBackground(String... params) {
+            bitmap = GetImageInputStream((String) params[0]);
+            SavaImage(bitmap, path);
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            Message message = new Message();
+            message.what = 0x123;
+            //handler.sendMessage(message);
+        }
+
+    }
+
+    /**
+     * 获取网络图片
+     *
+     * @param imageurl 图片网络地址
+     * @return Bitmap 返回位图
+     */
+    public Bitmap GetImageInputStream(String imageurl) {
+        URL url;
+        HttpURLConnection connection = null;
+        Bitmap bitmap = null;
+        try {
+            url = new URL(imageurl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(6000); //超时设置
+            connection.setDoInput(true);
+            connection.setUseCaches(false); //设置不使用缓存
+            InputStream inputStream = connection.getInputStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     @Override
@@ -373,7 +466,6 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
 
         public void onFinish() {
             circleProgressbar.setText("跳过");
-            //circleProgressbar.setVisibility(View.GONE);
         }
 
         public void onTick(long millisUntilFinished) {

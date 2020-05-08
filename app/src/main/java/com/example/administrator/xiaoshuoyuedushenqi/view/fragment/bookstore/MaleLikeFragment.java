@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookstoreAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
+import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleLikeContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Catagorys;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MaleLikePresenter;
@@ -113,9 +114,9 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
     @Override
     public void getCategoryNovelsSuccess(List<Catagorys> dataList) {
         this.dataList = dataList;
-        int z = 0;
+        int z = -1;
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getId()==1) {
+            if (dataList.get(i).getId()==Constant.male) {
                 z = dataList.get(i).getId();
                 break;
             }

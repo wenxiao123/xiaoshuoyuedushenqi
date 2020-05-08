@@ -90,24 +90,43 @@ public class SimulationAnimation4 extends HorizonPageAnim {
 
     @Override
     public void drawMove(Canvas canvas) {
-        if (mDirection == Direction.NEXT) {
-            calcPoints();
-            drawCurrentPageArea(canvas, mCurBitmap, mPath0);
-            drawNextPageAreaAndShadow(canvas, mNextBitmap);
-            drawCurrentPageShadow(canvas);
-            drawCurrentBackArea(canvas, mCurBitmap);
-        } else if (mDirection == Direction.PRE) {
-            calcPoints();
-            drawCurrentPageArea(canvas, mCurBitmap, mPath0);
-            drawNextPageAreaAndShadow(canvas, mNextBitmap);
-            drawCurrentPageShadow(canvas);
-            drawCurrentBackArea(canvas, mCurBitmap);
-        } else {
-            calcPoints();
-            drawCurrentPageArea(canvas, mNextBitmap, mPath0);
-            drawNextPageAreaAndShadow(canvas, mCurBitmap);
-            drawCurrentPageShadow(canvas);
-            drawCurrentBackArea(canvas, mNextBitmap);
+//        if (mDirection == Direction.NEXT) {
+//            Log.e("QQQ", "drawMove: "+111);
+//            calcPoints();
+//            drawCurrentPageArea(canvas, mCurBitmap, mPath0);
+//            drawNextPageAreaAndShadow(canvas, mNextBitmap);
+//            drawCurrentPageShadow(canvas);
+//            drawCurrentBackArea(canvas, mCurBitmap);
+//        } else if (mDirection == Direction.PRE) {
+//            Log.e("QQQ", "drawMove: "+222);
+//            calcPoints();
+//            drawCurrentPageArea(canvas, mCurBitmap, mPath0);
+//            drawNextPageAreaAndShadow(canvas, mNextBitmap);
+//            drawCurrentPageShadow(canvas);
+//            drawCurrentBackArea(canvas, mCurBitmap);
+//        } else {
+//            Log.e("QQQ", "drawMove: "+333);
+//            calcPoints();
+//            drawCurrentPageArea(canvas, mNextBitmap, mPath0);
+//            drawNextPageAreaAndShadow(canvas, mCurBitmap);
+//            drawCurrentPageShadow(canvas);
+//            drawCurrentBackArea(canvas, mNextBitmap);
+//        }
+        switch (mDirection) {
+            case NEXT:
+                calcPoints();
+                drawCurrentPageArea(canvas, mCurBitmap, mPath0);
+                drawNextPageAreaAndShadow(canvas, mNextBitmap);
+                drawCurrentPageShadow(canvas);
+                drawCurrentBackArea(canvas, mCurBitmap);
+                break;
+            default:
+                calcPoints();
+                drawCurrentPageArea(canvas, mNextBitmap, mPath0);
+                drawNextPageAreaAndShadow(canvas, mCurBitmap);
+                drawCurrentPageShadow(canvas);
+                drawCurrentBackArea(canvas, mNextBitmap);
+                break;
         }
 
     }
@@ -178,9 +197,9 @@ public class SimulationAnimation4 extends HorizonPageAnim {
 
     public void startAnim() {
         if (is_auto) {
-            if (isRunning) {
-                return;
-            }
+//            if (isRunning) {
+//                return;
+//            }
             isRunning = true;
         }
         int dx;
@@ -188,42 +207,57 @@ public class SimulationAnimation4 extends HorizonPageAnim {
         // dx 水平方向滑动的距离，负值会使滚动向左滚动
         // dy 垂直方向滑动的距离，负值会使滚动向上滚动
         if (isCancel) {
-            if (mCornerX > 0 && mDirection == Direction.NEXT) {
+
+            if (mCornerX > 0 && mDirection.equals(Direction.NEXT)) {
                 dx = (int) (mScreenWidth - mTouchX);
             } else {
-                dx = (int) -mTouchX;
+                dx = -(int) mTouchX;
             }
 
-            if (mDirection != Direction.NEXT) {
+            if (!mDirection.equals(Direction.NEXT)) {
                 dx = (int) -(mScreenWidth + mTouchX);
             }
 
             if (mCornerY > 0) {
                 dy = (int) (mScreenHeight - mTouchY);
             } else {
-                dy = (int) -mTouchY;// 防止mTouchY最终变为0
+                dy = -(int) mTouchY; // 防止mTouchY最终变为0
             }
         } else {
-            if (mCornerX > 0 && mDirection == Direction.NEXT) {
-                dx = (int) -(mScreenWidth + mTouchX);
-                Log.e("QQQ1", "startAnim: " + dx);
-            } else if (mCornerX == 0 && mDirection == Direction.NEXT) {
-                dx = (int) -(mScreenWidth + mTouchX);
-                Log.e("QQQ2", "startAnim: " + dx);
+            if (mCornerX > 0 && mDirection.equals(Direction.NEXT)) {
+                dx = -(int) (mScreenWidth + mTouchX);
             } else {
                 dx = (int) (mScreenWidth - mTouchX + mScreenWidth);
-                Log.e("QQQ3", "startAnim: " + dx);
             }
             if (mCornerY > 0) {
                 dy = (int) (mScreenHeight - mTouchY);
             } else {
-                dy = (int) (1 - mTouchY);// 防止mTouchY最终变为0
+                dy = (int) (1 - mTouchY); // 防止mTouchY最终变为0
             }
         }
         mScroller.startScroll((int) mTouchX, (int) mTouchY, dx, dy, 400);
     }
 
+    @Override
+    public void setDirection(Direction direction) {
+        super.setDirection(direction);
 
+        switch (direction) {
+            case PRE:
+                //上一页滑动不出现对角
+                if (mStartX > mScreenWidth / 2) {
+                    calcCornerXY(mStartX, mScreenHeight);
+                } else {
+                    calcCornerXY(mScreenWidth - mStartX, mScreenHeight);
+                }
+                break;
+            case NEXT:
+                if (mScreenWidth / 2 > mStartX) {
+                    calcCornerXY(mScreenWidth - mStartX, mStartY);
+                }
+                break;
+        }
+    }
     /**
      * 是否能够拖动过去
      *
@@ -547,7 +581,6 @@ public class SimulationAnimation4 extends HorizonPageAnim {
      */
     void calcCornerXY(float x, float y) {
         if (x <= mScreenWidth / 2) {
-        //if (x -mTouchX>10) {
             mCornerX = 0;
         } else {
             mCornerX = mScreenWidth;
@@ -558,12 +591,12 @@ public class SimulationAnimation4 extends HorizonPageAnim {
             mCornerY = mScreenHeight;
         }
 
-        if (mCornerX == 0 && mCornerY == mScreenHeight || mCornerX == mScreenWidth && mCornerY == 0) {
+        if ((mCornerX == 0 && mCornerY == mScreenHeight)
+                || (mCornerX == mScreenWidth && mCornerY == 0)) {
             mIsRTandLB = true;
         } else {
             mIsRTandLB = false;
         }
-
     }
 
     private void calcPoints() {
