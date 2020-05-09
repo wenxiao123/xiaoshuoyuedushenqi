@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="10dp"
-    android:orientation="horizontal">
-<ListView
-    android:id="@+id/list_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:divider="@color/read_night_mode_back_text"
-    android:dividerHeight="@dimen/bottom_bar_icon_text_margin"
-    ></ListView>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <com.example.administrator.xiaoshuoyuedushenqi.util.ArrowRectangleView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@android:color/transparent"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:splitMotionEvents="false"
+        app:arrow_height="8dp"
+        app:arrow_offset="31dp"
+        app:arrow_width="16dp"
+        app:background_color="@color/white"
+        app:radius="5dp"
+        app:shadow_color="#66000000"
+        app:shadow_thickness="5dp">
+
+        <ListView
+            android:id="@+id/list_view"
+            android:divider="@color/trans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></ListView>
+    </com.example.administrator.xiaoshuoyuedushenqi.util.ArrowRectangleView>
 </LinearLayout>

@@ -23,11 +23,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IExclusiveContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.CategoryNovels;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
-import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.ExclusivePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
-import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FenleiNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.RankingActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
@@ -115,13 +112,14 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
         mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                requestUpdate();
                 //刷新时的操作
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        requestUpdate();
+                        mRefreshSrv.setRefreshing(false);
                     }
-                }, 500);
+                }, 3000);
             }
         });
     }

@@ -47,13 +47,12 @@ public class CatalogModel implements ICatalogContract.Model {
                 .add("id", id)
                 .add("type", type+"")
                 .add("page",posion+"")
-                .add("limit","50")
+                .add("limit","30")
                // .add("limit", id)
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {
-               //Log.e("QQQ2", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");

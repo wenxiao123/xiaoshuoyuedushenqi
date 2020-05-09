@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="编辑"
-            android:visibility="gone"
+            android:visibility="visible"
             android:textColor="@color/item_hot_rank_rank_bg"
             android:textSize="16sp" />
 
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="书架管理"
+            android:text="我的书架"
             android:textStyle="bold"
             android:textColor="@color/item_hot_rank_rank_bg"
             android:textSize="18sp" />
@@ -49,13 +49,25 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <com.example.administrator.xiaoshuoyuedushenqi.util.FpShadowLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fp_shadowColor="#29000000"
+            app:fp_shadowRadius="4dp"
+            app:fp_shadowShape="fp_round_rectangle"
+            app:fp_shadowSide="fp_top"
+            app:fp_shadowRoundRadius="0dp"
+            android:visibility="gone"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/v_main_bottom_bar_separator"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
         <LinearLayout
             android:id="@+id/rv_bookshelf_multi_delete_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bookshelf_top_bar_height"
-            android:visibility="gone"
-            android:layout_alignParentBottom="true"
+            android:background="@color/white"
             android:clickable="true"
             android:focusable="true">
 
@@ -72,7 +84,7 @@
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:background="#DAD5D5"
                 android:layout_gravity="center" />
 
@@ -85,16 +97,16 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/bookshelf_multi_delete_delete"
-                android:textColor="@color/red"
+                android:textColor="@color/yellow"
                 android:textSize="16sp" />
 
         </LinearLayout>
-
+        </com.example.administrator.xiaoshuoyuedushenqi.util.FpShadowLayout>
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_above="@id/rv_bookshelf_multi_delete_bar"
+            android:layout_above="@id/v_main_bottom_bar_separator"
             android:background="@drawable/eve"
             android:visibility="gone" />
 
@@ -102,7 +114,7 @@
             android:id="@+id/rv_bookshelf_bookshelf_novels_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/rv_bookshelf_multi_delete_bar"
+            android:layout_above="@id/v_main_bottom_bar_separator"
             android:overScrollMode="never" />
     </RelativeLayout>
 </LinearLayout>

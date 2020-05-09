@@ -19,8 +19,9 @@
         android:clickable="true"
         android:focusable="true"/>
 <View
+    android:layout_below="@id/tv_item_catalog_chapter_name"
     android:layout_width="match_parent"
     android:layout_height="0.8dp"
-    android:background="@color/white"/>
+    android:background="#DCDCDC"/>
 </RelativeLayout>
 

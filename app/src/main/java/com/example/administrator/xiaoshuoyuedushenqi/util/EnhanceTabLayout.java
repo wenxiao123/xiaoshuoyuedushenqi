@@ -228,13 +228,13 @@ public class EnhanceTabLayout extends FrameLayout {
     public static View getTabView(Context context, String text, int indicatorWidth, int indicatorHeight, int textSize) {
         View view = LayoutInflater.from(context).inflate(R.layout.tab_item_layout, null);
         TextView tabText = (TextView) view.findViewById(R.id.tab_item_text);
-        if (indicatorWidth > 0) {
-            View indicator = view.findViewById(R.id.tab_item_indicator);
-            ViewGroup.LayoutParams layoutParams = indicator.getLayoutParams();
-            layoutParams.width = indicatorWidth;
-            layoutParams.height = indicatorHeight;
-            indicator.setLayoutParams(layoutParams);
-        }
+//        if (indicatorWidth > 0) {
+//            View indicator = view.findViewById(R.id.tab_item_indicator);
+//            ViewGroup.LayoutParams layoutParams = indicator.getLayoutParams();
+//            layoutParams.width = indicatorWidth;
+//            layoutParams.height = indicatorHeight;
+//            indicator.setLayoutParams(layoutParams);
+//        }
         //tabText.setTextSize(textSize);
         tabText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         tabText.setText(text);

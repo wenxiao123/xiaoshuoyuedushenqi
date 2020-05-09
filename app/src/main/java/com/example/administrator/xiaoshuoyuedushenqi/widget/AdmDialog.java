@@ -109,6 +109,7 @@ public class AdmDialog extends BaseDialog2 implements View.OnClickListener{
                                 .error(R.mipmap.admin)
                                 .transform(transformation))
                         .into(image);
+                image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 image.setOnClickListener(this);
             }
         }

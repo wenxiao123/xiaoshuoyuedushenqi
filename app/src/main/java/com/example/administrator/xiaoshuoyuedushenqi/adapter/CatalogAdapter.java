@@ -61,14 +61,8 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.CatalogV
     @Override
     public void onBindViewHolder(@NonNull CatalogViewHolder catalogViewHolder, final int i) {
         catalogViewHolder.chapterName.setText(mChapterNameList.get(i).getTitle());
-//        catalogViewHolder.chapterName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.clickItem(i);
-//            }
-//        });
         if(position==i){
-            catalogViewHolder.chapterName.setTextColor(mContext.getResources().getColor(R.color.red));
+            catalogViewHolder.chapterName.setTextColor(mContext.getResources().getColor(R.color.yellow));
         }else {
             catalogViewHolder.chapterName.setTextColor(mContext.getResources().getColor(R.color.black));
         }

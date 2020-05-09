@@ -313,23 +313,6 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     showShortToast("当前无网络，请检查网络后重试");
                     return;
                 }
-                // 点击 item，跳转到相应小说阅读页
-//                String s_id=catalogDataAll.get(position).getWeigh()+"";
-//                // 跳转后活动结束
-//                CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
-//                        "", false, 0,0,
-//                        "", "", Integer.parseInt(s_id)-1, "",
-//                        false, false);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-//                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-//                bundle.putString(WYReadActivity.CHPTER_ID, catalogDataAll.get(position).getWeigh()-1+ "");
-//                //Log.e("QQQ", "clickItem: "+catalogDataAll.get(position));
-//                startActivity(WYReadActivity.class, bundle);
-//                if (mReadActivity != null) {
-//                    mReadActivity.finish();
-//                }
-//                finish();
                 if(activity_type!=null&&activity_type.equals("NovelIntroActivity")){
                     String s_id=catalogDataAll.get(position).getWeigh()+"";
                 // 跳转后活动结束
@@ -362,7 +345,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
      */
     @Override
     public void getCatalogDataSuccess(List<Cataloginfo> catalogData,int weight) {
-        if(weight<50||(z==1&&catalogData.size()<50)){
+        if(weight<30||(z==1&&catalogData.size()<30)){
             mIsRefreshing = false;
             mProgressBar.setVisibility(View.GONE);
             mChapterOrderTv.setVisibility(View.GONE);
@@ -370,8 +353,9 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
             catalogDataAll=catalogData;
             initAdapter();
             text.setText(mName);
+            mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
         }else {
-            if (z <= weight / 50) {
+            if (z <= weight / 30) {
                 catalogDataAll.addAll(catalogData);
                 handler.sendEmptyMessage(1);
                 if(z==1){
@@ -390,9 +374,11 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 //mChapterCountTv.setText("共" + weigh + "章");
                 //app.setCatalogDataAll(catalogDataAll);
                 text.setText(mName);
+                mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
                 databaseManager.insertBookshelfNovel(catalogDataAll);
             }
         }
+        Log.e("QQQ2", "onResponse: "+catalogDataAll.size());
         isRefresh=true;
     }
     DatabaseManager databaseManager;

@@ -32,6 +32,7 @@
 
         <com.example.administrator.xiaoshuoyuedushenqi.widget.LineBreakLayout
             android:id="@+id/lineBreak"
+            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp" />
@@ -86,7 +87,7 @@
             android:id="@+id/fv_history_history_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="20dp"
+            android:paddingStart="15dp"
             android:paddingTop="10dp"
             android:paddingEnd="20dp"
             android:paddingBottom="10dp"

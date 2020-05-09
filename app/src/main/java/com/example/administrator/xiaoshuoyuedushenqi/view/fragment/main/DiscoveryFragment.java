@@ -16,7 +16,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MainActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.fragment.discovery.FemaleFragment;
@@ -196,7 +195,6 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                     showShortToast("当前无网络，请检查网络后重试");
                     return;
                 }
-                jump2Activity(AllNovelActivity.class);
                 break;
             default:
                 break;

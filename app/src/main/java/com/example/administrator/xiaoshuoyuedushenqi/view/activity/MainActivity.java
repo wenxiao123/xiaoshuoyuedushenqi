@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
@@ -80,6 +81,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private Animator mMoreAnim;
     private TimeInterpolator mTimeInterpolator = new AccelerateDecelerateInterpolator();
 
+    private TextView txt_shelf,txt_jingxuan,txt_bookstore,txt_my;//底部导航栏textview
     private FragmentManager mFragmentManager = getSupportFragmentManager();
     private Fragment mBookshelfFragment;//书架
     private Fragment mDiscoveryFragment;//发现
@@ -112,6 +114,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     MyReceiver receiver;
     @Override
     protected void initView() {
+        txt_shelf= findViewById(R.id.tv_main_bottom_bar_bookshelf);
+        txt_jingxuan= findViewById(R.id.tv_main_bottom_bar_discovery);
+        txt_bookstore= findViewById(R.id.tv_main_bottom_bar_bookmark);
+        txt_my= findViewById(R.id.tv_main_bottom_bar_more);
         mBookshelfBg = findViewById(R.id.v_main_bottom_bar_bookshelf_bg);
         mBookshelfBg.setOnClickListener(this);
         mDiscoveryBg = findViewById(R.id.v_main_bottom_bar_discovery_bg);
@@ -136,6 +142,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         intentFilter.addAction("com.zhh.android");//要接收的广播
         registerReceiver(receiver, intentFilter);//注册接收者
         isNightthod=SpUtil.getIsNightMode();
+    }
+    public void initTextColor(TextView textView){
+        txt_shelf.setTextColor(App.getAppResources().getColor(R.color.black));
+        txt_jingxuan.setTextColor(App.getAppResources().getColor(R.color.black));
+        txt_bookstore.setTextColor(App.getAppResources().getColor(R.color.black));
+        txt_my.setTextColor(App.getAppResources().getColor(R.color.black));
+        textView.setTextColor(App.getAppResources().getColor(R.color.red_aa));
     }
     String isload=null;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -461,6 +474,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     ft.add(R.id.fv_main_fragment_container, mBookshelfFragment);
                 }
                 showFragment = mBookshelfFragment;
+                initTextColor(txt_shelf);
                 break;
             case FG_DISCOVERY:
                 if (mDiscoveryFragment == null) {
@@ -468,6 +482,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     ft.add(R.id.fv_main_fragment_container, mDiscoveryFragment);
                 }
                 showFragment = mDiscoveryFragment;
+                initTextColor(txt_jingxuan);
                 break;
             case FG_BOOKMARK:
                 if (mBookmarkFragment == null) {
@@ -475,6 +490,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     ft.add(R.id.fv_main_fragment_container, mBookmarkFragment);
                 }
                 showFragment = mBookmarkFragment;
+                initTextColor(txt_bookstore);
                 break;
             case FG_MORE:
                 if (mMoreFragment == null) {
@@ -482,6 +498,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     ft.add(R.id.fv_main_fragment_container, mMoreFragment);
                 }
                 showFragment = mMoreFragment;
+                initTextColor(txt_my);
                 // 通知 More 页面更新相关信息
                 Event<MoreIntoEvent> moreEvent = new Event<>(EventBusCode.MORE_INTO,
                         new MoreIntoEvent());

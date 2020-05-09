@@ -16,8 +16,8 @@
         />
     <View
         android:id="@+id/tab_item_indicator"
-        android:layout_width="30dp"
-        android:layout_height="2dp"
+        android:layout_width="20dp"
+        android:layout_height="4dp"
         android:layout_marginTop="7dp"
         android:background="@drawable/bachground_yellow"
         android:visibility="invisible"

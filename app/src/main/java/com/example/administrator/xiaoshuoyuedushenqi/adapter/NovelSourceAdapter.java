@@ -26,6 +26,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadrecoderActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
 
 import org.json.JSONException;
@@ -82,9 +83,11 @@ public class NovelSourceAdapter extends
                 href = UrlObtainer.GetUrl() +"/"+ mNovelSourceDataList.get(i).getPic();
             }
         }
+        CornerTransform transformation = new CornerTransform(mContext, 10);
         Glide.with(mContext)
                 .load(href)
-                .apply(new RequestOptions().error(R.drawable.cover_error))
+                .apply(new RequestOptions().error(R.drawable.cover_error)
+                .transform(transformation))
                 .into(novelSourceViewHolder.cover);
         novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getTitle());
         // 作者可能为空
@@ -129,7 +132,7 @@ public class NovelSourceAdapter extends
             @Override
             public void onClick(View view) {
                 final TipDialog tipDialog = new TipDialog.Builder(mContext)
-                        .setContent("是否清除阅读记录")
+                        .setContent("是否清除阅读记录?")
                         .setCancel("取消")
                         .setEnsure("确定")
                         .setOnClickListener(new TipDialog.OnClickListener() {

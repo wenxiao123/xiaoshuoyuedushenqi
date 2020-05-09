@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
         <TextView
+            android:layout_marginTop="3dp"
             android:id="@+id/tv_title"
             android:textColor="@color/word_color"
             android:textSize="12sp"
@@ -30,38 +31,38 @@
     <RelativeLayout
         android:id="@+id/rv_read_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="75dp"
         android:background="#F7F7F7"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
         android:layout_alignParentTop="true">
-
+<RelativeLayout
+    android:layout_marginTop="25dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
         <ImageView
             android:id="@+id/iv_read_back"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="0dp"
-            android:padding="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="15dp"
+            android:layout_centerVertical="true"
             android:tint="@color/gray"
             android:src="@drawable/all_novel_back" />
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="15dp"
-            android:layout_toLeftOf="@id/iv_read_menu"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="54dp"
             android:layout_toRightOf="@id/iv_read_back"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp">
+            >
 
             <TextView
                 android:id="@+id/old_site"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bachground_lefthalfcricyle"
                 android:gravity="center_vertical"
@@ -71,13 +72,13 @@
                 android:text="原站"
                 android:paddingTop="@dimen/dp_2"
                 android:paddingBottom="@dimen/dp_2"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_website"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/old_site"
                 android:background="@drawable/bachground_righthalfcricyle"
@@ -93,16 +94,15 @@
         </RelativeLayout>
 
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_read_menu"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="5dp"
-            android:padding="5dp"
-            android:rotation="90"
-            android:src="@drawable/read_menu" />
-
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:tint="#FF717380"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/icon_more" />
+</RelativeLayout>
     </RelativeLayout>
 
     <!-- bottom bar -->
@@ -120,10 +120,11 @@
         <!-- first -->
 
         <TextView
+            android:layout_marginTop="28dp"
+            android:layout_marginLeft="15dp"
             android:id="@+id/tv_read_previous_chapter"
             android:layout_width="wrap_content"
-            android:padding="10dp"
-            android:layout_height="@dimen/read_bottom_bar_first_height"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/read_previous_chapter"
             android:textColor="@color/black"
@@ -132,10 +133,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:layout_marginTop="28dp"
+            android:layout_marginRight="15dp"
             android:id="@+id/tv_read_next_chapter"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/read_bottom_bar_first_height"
-            android:padding="10dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/read_next_chapter"
             android:textColor="@color/black"
@@ -144,9 +146,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <SeekBar
+            android:layout_marginTop="28dp"
             android:id="@+id/sb_read_novel_progress"
             android:layout_width="0dp"
-            android:layout_height="@dimen/read_bottom_bar_first_height"
+            android:layout_height="wrap_content"
             android:maxHeight="2dp"
             android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
             android:thumb="@drawable/shape_read_seek_bar_thumb"
@@ -162,8 +165,7 @@
             android:layout_height="@dimen/read_bottom_bar_second_height"
             android:paddingTop="22dp"
             android:paddingBottom="12dp"
-            android:tint="@color/gray"
-            android:src="@drawable/read_catalog"
+            android:src="@mipmap/icon_catalog"
             app:layout_constraintEnd_toStartOf="@id/iv_read_brightness"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
@@ -173,7 +175,6 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/read_bottom_bar_second_height"
             android:paddingTop="20dp"
-            android:tint="@color/gray"
             android:paddingBottom="10dp"
             android:src="@mipmap/change_website"
             app:layout_constraintEnd_toStartOf="@id/iv_read_day_and_night_mode"
@@ -186,7 +187,6 @@
             android:layout_height="@dimen/read_bottom_bar_second_height"
             android:paddingTop="22dp"
             android:paddingBottom="12dp"
-            android:tint="@color/gray"
             android:src="@mipmap/icon_night"
             app:layout_constraintEnd_toStartOf="@id/iv_read_setting"
             app:layout_constraintStart_toEndOf="@id/iv_read_brightness"
@@ -198,8 +198,7 @@
             android:layout_height="@dimen/read_bottom_bar_second_height"
             android:paddingTop="22dp"
             android:paddingBottom="12dp"
-            android:tint="@color/gray"
-            android:src="@drawable/setting_read"
+            android:src="@mipmap/icon_set"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_read_day_and_night_mode"
             app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
@@ -212,7 +211,7 @@
             android:layout_height="@dimen/read_bottom_bar_third_height"
             android:gravity="center|top"
             android:text="@string/read_catalog"
-            android:textColor="@color/gray_24"
+            android:textColor="@color/wzread_color"
             android:textSize="@dimen/read_bottom_bar_text_size"
             app:layout_constraintEnd_toStartOf="@id/tv_read_brightness"
             app:layout_constraintStart_toStartOf="parent"
@@ -224,7 +223,7 @@
             android:layout_height="@dimen/read_bottom_bar_third_height"
             android:gravity="center|top"
             android:text="换网址"
-            android:textColor="@color/gray_24"
+            android:textColor="@color/wzread_color"
             android:textSize="@dimen/read_bottom_bar_text_size"
             app:layout_constraintEnd_toStartOf="@id/tv_read_day_and_night_mode"
             app:layout_constraintStart_toEndOf="@id/tv_read_catalog"
@@ -236,7 +235,7 @@
             android:layout_height="@dimen/read_bottom_bar_third_height"
             android:gravity="center|top"
             android:text="@string/read_night_mode"
-            android:textColor="@color/gray_24"
+            android:textColor="@color/wzread_color"
             android:textSize="@dimen/read_bottom_bar_text_size"
             app:layout_constraintEnd_toStartOf="@id/tv_read_setting"
             app:layout_constraintStart_toEndOf="@id/tv_read_brightness"
@@ -248,7 +247,7 @@
             android:layout_height="@dimen/read_bottom_bar_third_height"
             android:gravity="center|top"
             android:text="@string/read_setting"
-            android:textColor="@color/gray_24"
+            android:textColor="@color/wzread_color"
             android:textSize="@dimen/read_bottom_bar_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_read_day_and_night_mode"
@@ -271,7 +270,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:clickable="true"
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
@@ -295,6 +294,7 @@
                 android:id="@+id/sys_select"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
+                android:layout_marginRight="2dp"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/sys_ligin"
                 android:src="@mipmap/sys_select" />
@@ -304,7 +304,7 @@
                 android:layout_width="@dimen/read_brightness_bar_first_height"
                 android:layout_height="@dimen/read_brightness_bar_first_height"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/sys_select"
                 android:src="@mipmap/icon_luminance1" />
 
@@ -321,7 +321,7 @@
 
             <SeekBar
                 android:id="@+id/sb_read_brightness_bar_brightness_progress"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/iv_read_brightness_bar_big"
@@ -332,6 +332,89 @@
 
         </RelativeLayout>
         <!-- first -->
+        <LinearLayout
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:id="@+id/iv_read_decrease_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bachground_line"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingTop="3dp"
+                android:paddingRight="30dp"
+                android:paddingBottom="3dp"
+                android:text="A-"
+                android:textColor="@color/text_size_color"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/tv_textsize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:gravity="center"
+                android:paddingLeft="18dp"
+                android:paddingTop="2dp"
+                android:paddingRight="18dp"
+                android:paddingBottom="2dp"
+                android:text="23"
+                android:textColor="@color/text_size_color"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/iv_read_increase_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bachground_line"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingTop="3dp"
+                android:paddingRight="30dp"
+                android:paddingBottom="3dp"
+                android:text="A+"
+                android:textColor="@color/text_size_color"
+                android:textSize="18sp" />
+
+            <RelativeLayout
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/right"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/bookshelf_add" />
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/tv_textstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_toLeftOf="@id/right"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="2dp"
+                    android:text="苹方字体"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="43dp"
@@ -381,89 +464,6 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_read_theme_4" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:clickable="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp">
-
-            <TextView
-                android:id="@+id/iv_read_decrease_font"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_read_theme_grey_selected"
-                android:gravity="center"
-                android:paddingLeft="25dp"
-                android:paddingTop="5dp"
-                android:paddingRight="25dp"
-                android:paddingBottom="5dp"
-                android:text="A-"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-
-            <TextView
-                android:id="@+id/tv_textsize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:gravity="center"
-                android:paddingLeft="18dp"
-                android:paddingTop="2dp"
-                android:paddingRight="18dp"
-                android:paddingBottom="2dp"
-                android:text="23"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/iv_read_increase_font"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_read_theme_grey_selected"
-                android:gravity="center"
-                android:paddingLeft="25dp"
-                android:paddingTop="5dp"
-                android:paddingRight="25dp"
-                android:paddingBottom="5dp"
-                android:text="A+"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-            <RelativeLayout
-                android:layout_gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/right"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/bookshelf_add" />
-
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:id="@+id/tv_textstyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="1dp"
-                    android:layout_toLeftOf="@id/right"
-                    android:gravity="center"
-                    android:paddingLeft="5dp"
-                    android:paddingTop="2dp"
-                    android:paddingRight="5dp"
-                    android:paddingBottom="2dp"
-                    android:text="苹方字体"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </RelativeLayout>
-
         </LinearLayout>
 
         <RelativeLayout

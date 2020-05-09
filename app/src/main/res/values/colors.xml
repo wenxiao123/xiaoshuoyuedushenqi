@@ -5,13 +5,16 @@
     <color name="colorAccent2">#EA2626</color>
     <color name="red">#e60606</color>
     <color name="yellow">#FA5F4B</color>
+    <color name="green">#FF5ACB74</color>
     <color name="red_aa">#FA5F4B</color>
     <color name="txt_color_2">#9FA2B3</color>
     <color name="blue">#9C6CFE</color>
     <color name="red_a2">#FF4D89</color>
     <color name="word_color">#707070</color>
     <color name="grey_a1">#9FA2B3</color>
+    <color name="text_size_color">#FF717380</color>
     <color name="white">#ffffff</color>
+    <color name="txt_color_history">#5B5C66</color>
     <color name="black">#000000</color>
     <color name="theme1">#dbc8a7</color>
     <color name="hwtxtreader_styleclor1">#d0cdc4</color>
@@ -139,14 +142,14 @@
     <color name="catalog_refresh_bg_pressed">#e1e1e1</color>
     <color name="catalog_title_text">#333333</color>
     <color name="catalog_chapter_count_text">#333333</color>
-    <color name="catalog_chapter_order_text">#333333</color>
+    <color name="catalog_chapter_order_text">#9FA2B3</color>
     <color name="catalog_chapter_order_bg_pressed">#e1e1e1</color>
     <color name="catalog_separator">#f1f1f1</color>
     <color name="catalog_error_page_text">#919191</color>
     <color name="catalog_error_page_bg">#f5f5f5</color>
 
     <!-- item_catalog -->
-    <color name="item_catalog_text">#333333</color>
+    <color name="item_catalog_text">#5B5C66</color>
     <color name="item_catalog_bg_pressed">#e5e5e5</color>
 
     <!-- item_bookshelf_novel -->
@@ -157,8 +160,9 @@
     <color name="read_setting_bg">#2B211F</color>
     <color name="read_bottom_bar_text">#6F6A66</color>
     <color name="read_seek_bar_bg">#5B574E</color>
+    <color name="wzread_color">#717380</color>
     <color name="read_seek_bar_thumb">#f9f9f9</color>
-    <color name="read_brightness_bar_line">#c1c1c1</color>
+    <color name="read_brightness_bar_line">#FFDCDCDC</color>
     <color name="read_brightness_bar_text">#C3BEBA</color>
     <color name="read_switch_thumb_on">#E7544D</color>
     <color name="read_switch_thumb_off">#E6E9E8</color>

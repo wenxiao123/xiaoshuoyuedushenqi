@@ -295,6 +295,7 @@ public class AdmActivity extends BaseActivity implements View.OnClickListener {
             mCountDownTimer.start();
             videoView.setVisibility(View.GONE);
             image.setVisibility(View.VISIBLE);
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             CornerTransform transformation = new CornerTransform(getContext(), 30);
             //只是绘制左上角和右上角圆角
             transformation.setExceptCorner(false, false, true, true);

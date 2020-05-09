@@ -9,6 +9,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -38,7 +40,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Wheel;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MalePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.RankingActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;
@@ -457,7 +458,7 @@ public class FemaleFragment extends BaseTabFragment<MalePresenter>
             if(novalDetailsList.get(i).getPicpath().contains("http:")){
                 url=novalDetailsList.get(i).getPicpath();
             }else {
-                url=UrlObtainer.GetUrl()+"/"+novalDetailsList.get(i).getPicpath();
+                url=UrlObtainer.GetUrl()+novalDetailsList.get(i).getPicpath();
             }
             if(novalDetailsList.get(i).getTypes().equals("2")) {
                 HttpProxyCacheServer proxy = App.getProxy(getContext());

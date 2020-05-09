@@ -58,12 +58,12 @@ public class TipDialog extends BaseDialog implements View.OnClickListener{
 
     @Override
     protected float getWidthScale() {
-        return 0.7f;
+        return 1;
     }
 
     @Override
     protected float getHeightScale() {
-        return 0.6f;
+        return 1;
     }
 
     @Override

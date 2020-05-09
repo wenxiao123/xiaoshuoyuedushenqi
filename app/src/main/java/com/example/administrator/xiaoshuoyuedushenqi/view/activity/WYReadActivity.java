@@ -118,6 +118,9 @@ import javax.security.auth.login.LoginException;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
+import static com.example.administrator.xiaoshuoyuedushenqi.constant.Constant.text_adress2;
+import static com.example.administrator.xiaoshuoyuedushenqi.constant.Constant.text_name1;
+
 public class WYReadActivity extends BaseActivity implements View.OnClickListener ,IBookChapters {
     RelativeLayout rv_read_top_bar;
     ConstraintLayout cv_read_bottom_bar;
@@ -568,7 +571,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             getCategorys(mCollBook.get_id());
         }
         // ts_recyle.setLayoutManager(new LinearLayoutManager(this));
-        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.dp_250));
+        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.dp_302));
         //post_textStyle();
         popupWindow.setFocusable(false);
         popupWindow.setAnimationStyle(R.style.dialog_animation);
@@ -1004,25 +1007,25 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         Typeface tf = null;
         AssetManager mgr = getAssets();
         if(mStyle.equals("1")) {
-            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
             tv_textstyle.setTypeface(tf);
-            tv_textstyle.setText("方正卡通简体");
+            tv_textstyle.setText(text_name1);
         }else if(mStyle.equals("2")){
-            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            tf = Typeface.createFromAsset(mgr, text_adress2);
             tv_textstyle.setTypeface(tf);
-            tv_textstyle.setText("方正楷体");
+            tv_textstyle.setText(Constant.text_name2);
         }else if(mStyle.equals("3")){
-            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            tf = Typeface.createFromAsset(mgr, Constant.text_adress3);
             tv_textstyle.setTypeface(tf);
-            tv_textstyle.setText("流行体简体");
+            tv_textstyle.setText(Constant.text_name3);
         }else if(mStyle.equals("4")){
-            tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
+            tf = Typeface.createFromAsset(mgr, Constant.text_adress4);
             tv_textstyle.setTypeface(tf);
-            tv_textstyle.setText("华康圆体W7");
+            tv_textstyle.setText(Constant.text_name4);
         }else {
             tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             tv_textstyle.setTypeface(tf);
-            tv_textstyle.setText("系统字体");
+            tv_textstyle.setText(Constant.text_name0);
         }
     }
     int last_pos;
@@ -1051,7 +1054,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                //Log.e("QQQ", "onResponse: "+json);
+                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -1432,25 +1435,25 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 Typeface tf = null;
                 AssetManager mgr = getAssets();
                 if(mStyle.equals("1")) {
-                    tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+                    tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
                     tv_textstyle.setTypeface(tf);
-                    tv_textstyle.setText("方正卡通简体");
+                    tv_textstyle.setText(Constant.text_name1);
                 }else if(mStyle.equals("2")){
-                    tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+                    tf = Typeface.createFromAsset(mgr, Constant.text_adress2);
                     tv_textstyle.setTypeface(tf);
-                    tv_textstyle.setText("方正楷体");
+                    tv_textstyle.setText(Constant.text_name2);
                 }else if(mStyle.equals("3")){
-                    tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+                    tf = Typeface.createFromAsset(mgr, Constant.text_adress3);
                     tv_textstyle.setTypeface(tf);
-                    tv_textstyle.setText("流行体简体");
+                    tv_textstyle.setText(Constant.text_name3);
                 }else if(mStyle.equals("4")){
-                    tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
+                    tf = Typeface.createFromAsset(mgr, Constant.text_adress4);
                     tv_textstyle.setTypeface(tf);
-                    tv_textstyle.setText("华康圆体W7");
+                    tv_textstyle.setText(Constant.text_name4);
                 }else {
                     tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
                     tv_textstyle.setTypeface(tf);
-                    tv_textstyle.setText("系统字体");
+                    tv_textstyle.setText(Constant.text_name0);
                 }
             }
         });
@@ -1730,14 +1733,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     private DatabaseManager mDbManager;
     private void showPupowindpw(View parent) {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.popu_item2, null);
+        View view = layoutInflater.inflate(R.layout.popu_item, null);
         ListView lv_appointment = (ListView) view.findViewById(R.id.list_view);
         final String[] datas;
-//        if (mType == 1) {
-//            datas = new String[]{"已缓存", "添加书签"};
-//        } else {
         datas = new String[]{"全本缓存", "添加书签"};
-//        }
         final Integer[] ints = {R.mipmap.img_load, R.mipmap.icon_bookmark};
         PupoAdapter mainAdapter = null;
         if (datas != null) {
@@ -1745,7 +1744,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         }
         lv_appointment.setAdapter(mainAdapter);
         // 创建一个PopuWidow对象,设置宽高
-        final PopupWindow popupWindow = new PopupWindow(view, (int) (parent.getWidth() * 2), ViewGroup.LayoutParams.WRAP_CONTENT);
+        final PopupWindow popupWindow = new PopupWindow(view, getResources().getDimensionPixelOffset(R.dimen.dp_179), ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // 使其聚集,可点击
         popupWindow.setFocusable(true);
@@ -1755,7 +1754,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        popupWindow.showAsDropDown(parent, -(parent.getWidth() * 2), 15);
+        popupWindow.showAsDropDown(parent, -(parent.getWidth() * 2), App.getAppResources().getDimensionPixelOffset(R.dimen.dp_17));
         lv_appointment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

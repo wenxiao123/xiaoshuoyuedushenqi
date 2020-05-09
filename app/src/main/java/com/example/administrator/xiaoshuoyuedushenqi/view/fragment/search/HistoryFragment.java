@@ -59,6 +59,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     private RecyclerView recyclerView_hot_book;
     private LineBreakLayout lineBreakLayout;
     private BookhotAdapter bookhotAdapter;
+    private TextView txt_title;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_history;
@@ -105,10 +106,16 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         });
     }
    void initAdapter(List<Wheel> wheelList){
+        if(wheelList.size()==0){
+            txt_title.setVisibility(View.GONE);
+        }else {
+            txt_title.setVisibility(View.VISIBLE);
+        }
        lineBreakLayout.setLables(wheelList, true);
    }
     @Override
     protected void initView() {
+        txt_title=getActivity().findViewById(R.id.txt_title);
         mHistoryListFv = getActivity().findViewById(R.id.fv_history_history_list);
         // 设置 Adapter
         mHistoryAdapter = new HistoryAdapter(getActivity(), mContentList);

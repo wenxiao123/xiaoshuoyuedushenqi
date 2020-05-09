@@ -9,6 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 
 /**
  * @author
@@ -63,8 +64,8 @@ public abstract class BaseDialog extends Dialog {
         wm.getDefaultDisplay().getMetrics(dm);
         int screenWidth = dm.widthPixels;
         //设置高宽
-        lp.width = (int) (screenWidth * getWidthScale()); // 宽度
-        lp.height = (int) (lp.width * getHeightScale());     // 高度
+        lp.width = App.getAppResources().getDimensionPixelOffset(R.dimen.dp_281); // 宽度
+        lp.height = App.getAppResources().getDimensionPixelOffset(R.dimen.dp_141);;     // 高度
         dialogWindow.setAttributes(lp);
     }
 }

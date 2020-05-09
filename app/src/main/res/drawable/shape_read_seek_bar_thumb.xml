@@ -3,5 +3,5 @@
     android:shape="oval">
     <size android:width="@dimen/read_seek_bar_thumb_width"
         android:height="@dimen/read_seek_bar_thumb_width"/>
-    <solid android:color="@color/read_switch_thumb_on"/>
+    <solid android:color="@color/yellow"/>
 </shape>

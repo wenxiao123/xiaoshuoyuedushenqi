@@ -145,51 +145,6 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
         mBackIv = findViewById(R.id.iv_search_back);
         mBackIv.setOnClickListener(this);
         mSearchBarEt = findViewById(R.id.et_search_search_bar);
-        // 监听内容变化
-//        mSearchBarEt.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                if (s.length() == 0) {
-//                    // 隐藏删除 icon
-//                    mDeleteSearchTextIv.setVisibility(View.GONE);
-//                    fv_search_container.setVisibility(View.VISIBLE);
-//                    tv_search_result_none.setVisibility(View.GONE);
-//                    // 如果此时正在显示搜索结果 Fg，移除它
-//                    if (mIsShowSearchResFg) {
-//
-//                    }
-//                    // 显示软键盘
-//                    EditTextUtil.focusAndShowSoftKeyboard(SearchResultActivity.this, mSearchBarEt);
-//                } else {
-//                    // 显示删除 icon
-//                    mDeleteSearchTextIv.setVisibility(View.VISIBLE);
-//                }
-//                mSearchContent=s.toString();
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
-//        // 监听软键盘
-//        mSearchBarEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                // 点击“完成”或者“下一项”
-//                if (actionId == EditorInfo.IME_ACTION_DONE ||
-//                        actionId == EditorInfo.IME_ACTION_NEXT) {
-//                    // 进行搜索操作
-//                    doSearch();
-//                }
-//                return false;
-//            }
-//        });
         mSearchBarEt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,6 +201,7 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
         // searchResultPresenter.getNovelsSource(mStringContent);
         mPresenter.getNovelsSource(mStringContent,z);
         mSearchBarEt.setText(mStringContent);
+        mSearchBarEt.setSelection(mSearchBarEt.getText().length());
     }
 
     @Override

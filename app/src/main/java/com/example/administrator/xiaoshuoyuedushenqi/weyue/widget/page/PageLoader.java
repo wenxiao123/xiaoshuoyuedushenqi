@@ -975,17 +975,20 @@ public abstract class PageLoader {
                 String s="";
                 if (mChapterList != null && mChapterList.size() != 0) {
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
+                    if(mCurChapterPos>=mChapterList.size()){
+                        mCurChapterPos=mChapterList.size()-1;
+                    }
                     if(mChapterList.get(mCurChapterPos).getTitle()!=null){
-                    if(mChapterList.get(mCurChapterPos).getTitle().length()>12){
-                         s=mChapterList.get(mCurChapterPos).getTitle().substring(0,12)+"...";
+                    if(mChapterList.get(mCurChapterPos).getTitle().length()>8){
+                         s=mChapterList.get(mCurChapterPos).getTitle().substring(0,8)+"...";
                     }else {
                         s=mChapterList.get(mCurChapterPos).getTitle();
                     }
 
                     }
                     String z;
-                    if(mCollBook.getTitle().length()>12){
-                        z=mCollBook.getTitle().substring(0,12)+"...";
+                    if(mCollBook.getTitle().length()>8){
+                        z=mCollBook.getTitle().substring(0,8)+"...";
                     }else {
                         z=mCollBook.getTitle();
                     }
@@ -998,14 +1001,17 @@ public abstract class PageLoader {
                 mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
                // Log.e("QQQ", "drawBackground: "+mCurPage.title);
                 String s;
-                if(mChapterList.get(mCurChapterPos).getTitle().length()>12){
-                    s=mChapterList.get(mCurChapterPos).getTitle().substring(0,12)+"...";
+                if(mCurChapterPos>=mChapterList.size()){
+                    mCurChapterPos=mChapterList.size()-1;
+                }
+                if(mChapterList.get(mCurChapterPos).getTitle().length()>8){
+                    s=mChapterList.get(mCurChapterPos).getTitle().substring(0,8)+"...";
                 }else {
                     s=mChapterList.get(mCurChapterPos).getTitle();
                 }
                 String z;
-                if(mCollBook.getTitle().length()>12){
-                    z=mCollBook.getTitle().substring(0,12)+"...";
+                if(mCollBook.getTitle().length()>8){
+                    z=mCollBook.getTitle().substring(0,8)+"...";
                 }else {
                     z=mCollBook.getTitle();
                 }

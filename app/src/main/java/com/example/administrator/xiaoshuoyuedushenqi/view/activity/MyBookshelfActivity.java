@@ -23,6 +23,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.Delet_book_show;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.BookshelfPresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.util.FpShadowLayout;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.TipDialog;
@@ -40,6 +41,7 @@ import okhttp3.RequestBody;
 
 public class MyBookshelfActivity extends BaseActivity implements Delet_book_show, View.OnClickListener {
     private RecyclerView mBookshelfNovelsRv;
+    private FpShadowLayout fpShadowLayout;
     private TextView mSelectAllTv, mDeleteTv, iv_bookshelf_more;
     BookshelfPresenter bookshelfPresenter = new BookshelfPresenter() {
         @Override
@@ -153,18 +155,12 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
 
                     @Override
                     public void longClick(int position) {
-//                        if (mIsDeleting) {
-//                            return;
-//                        }
-//                        mBookshelfNovelsAdapter.setIsMultiDelete(true);
-//                        mBookshelfNovelsAdapter.notifyDataSetChanged();
                     }
                 },this);
-        mBookshelfNovelsAdapter.setIsMultiDelete(true);
+        mBookshelfNovelsAdapter.setIsMultiDelete(false);
         mBookshelfNovelsAdapter.notifyDataSetChanged();
-        iv_bookshelf_more.setText("取消");
-        rv_bookshelf_multi_delete_bar.setVisibility(View.VISIBLE);
-        findViewById(R.id.line).setVisibility(View.VISIBLE);
+        iv_bookshelf_more.setText("编辑");
+       // rv_bookshelf_multi_delete_bar.setVisibility(View.GONE);
     }
 
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
@@ -172,7 +168,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     private List<Boolean> mCheckedList = new ArrayList<>();
     private BookshelfNovelsAdapter mBookshelfNovelsAdapter;
     private boolean mIsDeleting = false;
-    private LinearLayout rv_bookshelf_multi_delete_bar;
+   // private LinearLayout rv_bookshelf_multi_delete_bar;
     @Override
     protected void doBeforeSetContentView() {
         bookshelfPresenter.queryAllBook();
@@ -286,8 +282,9 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
 
     @Override
     protected void initView() {
+        fpShadowLayout=findViewById(R.id.v_main_bottom_bar_separator);
         mBookshelfNovelsRv = findViewById(R.id.rv_bookshelf_bookshelf_novels_list);
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
         mBookshelfNovelsRv.setLayoutManager(gridLayoutManager);
 
         mSelectAllTv = findViewById(R.id.tv_bookshelf_multi_delete_select_all);
@@ -299,7 +296,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         iv_bookshelf_more = findViewById(R.id.iv_bookshelf_more);
         iv_bookshelf_more.setOnClickListener(this);
 
-        rv_bookshelf_multi_delete_bar=findViewById(R.id.rv_bookshelf_multi_delete_bar);
+       // rv_bookshelf_multi_delete_bar=findViewById(R.id.rv_bookshelf_multi_delete_bar);
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -368,23 +365,23 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                 break;
 
             case R.id.iv_bookshelf_more:
-//                if(iv_bookshelf_more.getText().equals("编辑")){
-//                    mBookshelfNovelsAdapter.setIsMultiDelete(true);
-//                    mBookshelfNovelsAdapter.notifyDataSetChanged();
-//                    iv_bookshelf_more.setText("取消");
-//                    rv_bookshelf_multi_delete_bar.setVisibility(View.VISIBLE);
-//                    findViewById(R.id.line).setVisibility(View.VISIBLE);
-//                }else {
-//                    mBookshelfNovelsAdapter.setIsMultiDelete(false);
-//                    mBookshelfNovelsAdapter.notifyDataSetChanged();
-//                    iv_bookshelf_more.setText("编辑");
-//                    rv_bookshelf_multi_delete_bar.setVisibility(View.GONE);
-//                    findViewById(R.id.line).setVisibility(View.GONE);
+                for (int i = 0; i < mCheckedList.size(); i++) {
+                    mCheckedList.set(i, false);
+                }
+                if(iv_bookshelf_more.getText().equals("编辑")){
+                    mBookshelfNovelsAdapter.setIsMultiDelete(true);
+                    iv_bookshelf_more.setText("取消");
+                    fpShadowLayout.setVisibility(View.VISIBLE);
+                }else {
+                    mBookshelfNovelsAdapter.setIsMultiDelete(false);
+                    iv_bookshelf_more.setText("编辑");
+                    fpShadowLayout.setVisibility(View.GONE);
                     // 全选
-//                    Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
-//                    intent.putExtra("islaod", "2");
-//                    startActivity(intent);
-              //  }
+                }
+                mDeleteTv.setText("删除");
+                for (int i = 0; i < mCheckedList.size(); i++) {
+                    mBookshelfNovelsAdapter.notifyItemChanged(i,mBookshelfNovelsAdapter.NOTIFY_IV);
+                }
                 break;
 
             case R.id.tv_bookshelf_multi_delete_delete:
@@ -402,6 +399,9 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                                 public void clickEnsure() {
                                     multiDelete();
                                     mDeleteTv.setText("删除");
+                                    Intent recever = new Intent("com.zhh.android");
+                                    recever.putExtra("type",1);
+                                    sendBroadcast(recever);
                                 }
 
                                 @Override
@@ -431,8 +431,8 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent recever = new Intent("com.zhh.android");
-        recever.putExtra("type",1);
-        sendBroadcast(recever);
+//        Intent recever = new Intent("com.zhh.android");
+//        recever.putExtra("type",1);
+//        sendBroadcast(recever);
     }
 }

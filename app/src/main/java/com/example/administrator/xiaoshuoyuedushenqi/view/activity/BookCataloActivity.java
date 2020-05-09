@@ -121,7 +121,7 @@ public class BookCataloActivity extends BaseActivity {
                     listView.setAdapter(sortadapter);
                 }else if(data.get(position).getFilepath().endsWith(".txt")){
                     File file1=new File(data.get(position).getFilepath());
-                    if(file1.length()>10) {
+                    if(file1.length()>100) {
                         Intent intent_recever = new Intent("com.zhh.android");
                         intent_recever.putExtra("type", 2);
                         intent_recever.putExtra("islaod", "1");

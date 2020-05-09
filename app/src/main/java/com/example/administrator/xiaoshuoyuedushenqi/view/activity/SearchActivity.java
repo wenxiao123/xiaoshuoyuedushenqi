@@ -210,13 +210,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
         mNovelSourceDataList.clear();
         if(novelSourceDataList.size()==0){
-//            tv_search_result_none.setVisibility(View.GONE);
-//            mNovelSourceRv.setVisibility(View.VISIBLE);
             mNovelSourceRv.setVisibility(View.GONE);
             tv_search_result_none.setVisibility(View.VISIBLE);
-            //mNovelSourceRv.setVisibility(View.GONE);
         }else {
-           // mNovelSourceRv.setVisibility(View.VISIBLE);
             mNovelSourceRv.setVisibility(View.VISIBLE);
             fv_search_container.setVisibility(View.GONE);
             tv_search_result_none.setVisibility(View.GONE);

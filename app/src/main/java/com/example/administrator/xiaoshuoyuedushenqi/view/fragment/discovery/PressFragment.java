@@ -47,7 +47,6 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MalePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
-import com.example.administrator.xiaoshuoyuedushenqi.view.activity.AllNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.NovelIntroActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.RankingActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.SearchActivity;

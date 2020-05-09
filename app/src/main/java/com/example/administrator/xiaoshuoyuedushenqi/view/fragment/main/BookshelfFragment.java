@@ -156,7 +156,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     @Override
     protected void initView() {
         mBookshelfNovelsRv = getActivity().findViewById(R.id.rv_bookshelf_bookshelf_novels_list);
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 4);
         mBookshelfNovelsRv.setLayoutManager(gridLayoutManager);
         l_emputy = getActivity().findViewById(R.id.l_emputy);
         btn_jingxuan=getActivity().findViewById(R.id.btn_jingxuan);
@@ -213,7 +213,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_bookshelf_more:
-                showPupowindpw(mLocalAddTv);
+                showPupowindpw(mBookshelfMore);
                 break;
             case R.id.iv_bookshelf_add:
                 // 导入本机小说
@@ -313,15 +313,15 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.popu_item, null);
         ListView lv_appointment = (ListView) view.findViewById(R.id.list_view);
-        final String[] datas = {getString(R.string.manger_bookshelf), getString(R.string.read_reder)};//, getString(R.string.load_local_book)};
-        final Integer[] ints = {R.mipmap.bookshelf, R.mipmap.read_recoder};//, R.mipmap.load_book};
+        final String[] datas = {getString(R.string.manger_bookshelf), getString(R.string.read_reder), getString(R.string.load_local_book)};
+        final Integer[] ints = {R.mipmap.bookshelf, R.mipmap.read_recoder, R.mipmap.load_book};
         PupoAdapter mainAdapter = null;
         if (datas != null) {
             mainAdapter = new PupoAdapter(datas, ints);
         }
         lv_appointment.setAdapter(mainAdapter);
         // 创建一个PopuWidow对象,设置宽高
-        final PopupWindow popupWindow = new PopupWindow(view, (int) (parent.getWidth() * 4), ViewGroup.LayoutParams.WRAP_CONTENT);
+        final PopupWindow popupWindow = new PopupWindow(view, getResources().getDimensionPixelOffset(R.dimen.dp_179), ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // 使其聚集,可点击
         popupWindow.setFocusable(true);
@@ -329,9 +329,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         popupWindow.setOutsideTouchable(true);
         // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         backgroundAlpha(0.5f);
-        popupWindow.showAsDropDown(parent, (int) (parent.getWidth() * 0.7), 35);
+        popupWindow.showAsDropDown(parent, -280, 35);
         lv_appointment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -345,8 +344,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                         startActivity(readRecordintent);
                         break;
                     case 2:
-//                        Intent intent = new Intent(getContext(), BookCataloActivity.class);
-//                        startActivity(intent);
+                        Intent intent = new Intent(getContext(), BookCataloActivity.class);
+                        startActivity(intent);
                         break;
                 }
                 popupWindow.dismiss();

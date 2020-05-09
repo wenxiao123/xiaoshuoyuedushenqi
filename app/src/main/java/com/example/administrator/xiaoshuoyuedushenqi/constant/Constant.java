@@ -18,18 +18,20 @@ public class Constant {
     // 男生热门榜单的榜单数
     public static final int MALE_HOT_RANK_NUM = 5;
     public static int TIME_MAX = 6;    // 最大次数
-    // 男生热门榜单的 id
-    private static String sZYHotRankId = "564d8003aca44f4f61850fcd";    // 掌阅热销榜
-    private static String sSQHotRankId = "564d80457408cfcd63ae2dd0";    // 书旗热搜榜
-    private static String sZHHotRankId = "54d430962c12d3740e4a3ed2";    // 纵横月票榜
-    private static String sZLHotRankId = "5732aac02dbb268b5f037fc4";    // 逐浪点击榜
-    private static String sBDHotRankId = "564ef4f985ed965d0280c9c2";    // 百度热搜榜
-    public static final List<String> MALE_HOT_RANK_ID = Arrays.asList(sZYHotRankId,
-            sSQHotRankId, sZHHotRankId, sZLHotRankId, sBDHotRankId);
-    // 男生热门榜单的榜单名字
-    public static final List<String> MALE_HOT_RANK_NAME = Arrays.asList("掌阅热销榜",
-            "书旗热搜榜", "纵横月票榜", "逐浪点击榜", "百度热搜榜");
 
+    public static String text_adress1="font/方正卡通简体.ttf";
+    public static String text_name1="方正卡通简体";
+
+    public static String text_adress2="font/方正楷体.ttf";
+    public static String text_name2="方正楷体";
+
+    public static String text_adress3="font/流行体简体.ttf";
+    public static String text_name3="流行体简体";
+
+    public static String text_adress4="font/华康圆体W7.ttf";
+    public static String text_name4="华康圆体W7";
+
+    public static String text_name0="系统字体";
     // 女生热门榜单的榜单数
     public static final int FEMALE_HOT_RANK_NUM = 3;
     // 女生热门榜单的 id
@@ -122,40 +124,6 @@ public class Constant {
     public static final String CATEGORY_TYPE_REPUTATION_TEXT = "评分";
     public static final String CATEGORY_TYPE_OVER_TEXT = "完结";
     public static final String CATEGORY_TYPE_MONTH_TEXT = "包月";
-    // major（男生）
-    public static final String CATEGORY_MAJOR_XH = "玄幻";
-    public static final String CATEGORY_MAJOR_QH = "奇幻";
-    public static final String CATEGORY_MAJOR_  = "武侠";
-    public static final String CATEGORY_MAJOR_XX = "仙侠";
-    public static final String CATEGORY_MAJOR_DS = "都市";
-    public static final String CATEGORY_MAJOR_ZC = "职场";
-    public static final String CATEGORY_MAJOR_LS = "历史";
-    public static final String CATEGORY_MAJOR_JS = "军事";
-    public static final String CATEGORY_MAJOR_YX = "游戏";
-    public static final String CATEGORY_MAJOR_JJ = "竞技";
-    public static final String CATEGORY_MAJOR_KH = "科幻";
-    public static final String CATEGORY_MAJOR_LY = "灵异";
-    public static final String CATEGORY_MAJOR_TR = "同人";
-    public static final String CATEGORY_MAJOR_QXS = "轻小说";
-    // major（女生）
-    public static final String CATEGORY_MAJOR_GDYQ = "古代言情";
-    public static final String CATEGORY_MAJOR_XDYQ = "现代言情";
-    public static final String CATEGORY_MAJOR_QCXY = "青春校园";
-    public static final String CATEGORY_MAJOR_CA = "纯爱";
-    public static final String CATEGORY_MAJOR_XHQH = "玄幻奇幻";
-    public static final String CATEGORY_MAJOR = "武侠仙侠";
-    // major（出版）
-    public static final String CATEGORY_MAJOR_CBXS = "出版小说";
-    public static final String CATEGORY_MAJOR_ZJMZ = "传记名著";
-    public static final String CATEGORY_MAJOR_CGLZ = "成功励志";
-    public static final String CATEGORY_MAJOR_RWSK = "人文社科";
-    public static final String CATEGORY_MAJOR_JGLC = "经管理财";
-    public static final String CATEGORY_MAJOR_SHSS = "生活时尚";
-    public static final String CATEGORY_MAJOR_YEJK = "育儿健康";
-    public static final String CATEGORY_MAJOR_QCYQ = "青春言情";
-    public static final String CATEGORY_MAJOR_WWYB = "外文原版";
-    public static final String CATEGORY_MAJOR_ZZJS = "政治军事";
-
     /* 全部小说 */
     public static final int NOVEL_PAGE_NUM = 10;    // 每页的小说数
 }
