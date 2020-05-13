@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.BookstoreAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleLikeContract;
@@ -149,7 +150,7 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
                 QTabView.TabTitle tabTitle=new QTabView.TabTitle.Builder()
                         .setContent(titles.get(position))
                         .setTextColor(getContext().getResources().getColor(R.color.red_aa), getContext().getResources().getColor(R.color.grey_a1))
-                        .setTextSize(16)
+                        .setTextSize(14)
                         .build();
                 return tabTitle;
             }

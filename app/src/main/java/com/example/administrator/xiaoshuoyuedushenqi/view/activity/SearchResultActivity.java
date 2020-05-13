@@ -145,12 +145,12 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
         mBackIv = findViewById(R.id.iv_search_back);
         mBackIv.setOnClickListener(this);
         mSearchBarEt = findViewById(R.id.et_search_search_bar);
-        mSearchBarEt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SearchResultActivity.this, SearchActivity.class));
-            }
-        });
+//        mSearchBarEt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(SearchResultActivity.this, SearchActivity.class));
+//            }
+//        });
         mSearchTv = findViewById(R.id.tv_search_search_text);
         mSearchTv.setOnClickListener(this);
 
@@ -202,6 +202,7 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
         mPresenter.getNovelsSource(mStringContent,z);
         mSearchBarEt.setText(mStringContent);
         mSearchBarEt.setSelection(mSearchBarEt.getText().length());
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -232,14 +233,19 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
      * 进行搜索
      */
     private void doSearch() {
-        //mPresenter.getNovelsSource(mStringContent);
-        showShortToast("已搜索当前小说");
+        mNovelSourceDataList.clear();
+        mNovelSourceAdapter.notifyDataSetChanged();
+        mStringContent=mSearchBarEt.getText().toString();
+        z=1;
+        mPresenter.getNovelsSource(mStringContent,z);
+        //showShortToast("已搜索当前小说");
     }
 
     private List<NovalInfo> mNovelSourceDataList = new ArrayList<>(); // 小说源列表
 
     @Override
     public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
+        mProgressBar.setVisibility(View.GONE);
         // Log.e("QQQ", "getNovelsSourceSuccess: "+novelSourceDataList.size());
         mProgressBar.setVisibility(View.GONE);
         //mNovelSourceDataList.clear();

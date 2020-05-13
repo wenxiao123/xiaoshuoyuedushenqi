@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="45dp">
 
-    <TextView
-        android:id="@+id/tab_item_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="13sp"
-        android:text="首页"
-        android:textColor="#E3E0E0"
-        />
     <View
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         android:id="@+id/tab_item_indicator"
         android:layout_width="20dp"
         android:layout_height="4dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/bachground_yellow"
         android:visibility="invisible"
         />
-</LinearLayout>
+    <TextView
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/tab_item_indicator"
+        android:id="@+id/tab_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="首页"
+        android:textColor="#E3E0E0"
+        />
+</RelativeLayout>

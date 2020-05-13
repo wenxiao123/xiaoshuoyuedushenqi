@@ -5,26 +5,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
     <LinearLayout
-        android:layout_width="80dp"
+        android:layout_width="85dp"
         android:layout_height="match_parent"
         android:background="@color/white">
     <com.example.administrator.xiaoshuoyuedushenqi.widget.VerticalTabLayout1
         android:id="@+id/tablayout"
         android:layout_marginTop="15dp"
-        android:layout_width="80dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:indicator_color="@color/red_aa"
         app:indicator_width="4dp"
-        app:tab_margin="10dp"
+        app:tab_margin="15dp"
         app:indicator_corners="20dp"
         app:indicator_gravity="left"
-        app:tab_height="50dp"
+        app:tab_height="40dp"
         android:visibility="visible"
         app:tab_mode="scrollable" />
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/grid_fenlei"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="2.5dp"
+        android:layout_marginRight="2.5dp"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

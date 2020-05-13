@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/background_grint"
         android:orientation="horizontal">
 
@@ -31,7 +31,7 @@
             android:text="精选"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
 <!--        <com.example.administrator.xiaoshuoyuedushenqi.rewrite.TabLayout-->
 <!--            -->
@@ -47,7 +47,7 @@
         <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
             android:id="@+id/tv_discovery_tab_layout"
             android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="7dp"
             android:layout_marginRight="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

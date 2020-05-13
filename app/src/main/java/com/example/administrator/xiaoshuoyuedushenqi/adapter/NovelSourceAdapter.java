@@ -98,9 +98,14 @@ public class NovelSourceAdapter extends
         }else {
             novelSourceViewHolder.author.setText(author+" | 连载中 _ "+mNovelSourceDataList.get(i).getWeigh()+"章");
         }
-        novelSourceViewHolder.introduce.setText("阅读至"+mNovelSourceDataList.get(i).getChapter_name());
+        if(mNovelSourceDataList.get(i).getChapter_name()==null){
+            novelSourceViewHolder.introduce.setText("阅读记录丢失");
+        }else {
+            novelSourceViewHolder.introduce.setText("阅读至"+mNovelSourceDataList.get(i).getChapter_name());
+        }
         //novelSourceViewHolder.webSite.setText(mNovelSourceDataList.get(i).getUrl());
-        if(databaseManager.isExistInBookshelfNovel(mNovelSourceDataList.get(i).getNovel_id())){
+        BookshelfNovelDbData bookshelfNovelDbData=databaseManager.selectBookshelfNovel(mNovelSourceDataList.get(i).getNovel_id());
+        if(bookshelfNovelDbData!=null&&bookshelfNovelDbData.getType()>=0){
             novelSourceViewHolder.tv_item_bookshelf.setText("已加入书架");
             novelSourceViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
             novelSourceViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_btn));

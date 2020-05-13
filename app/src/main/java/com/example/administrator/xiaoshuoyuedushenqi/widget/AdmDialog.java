@@ -145,11 +145,11 @@ public class AdmDialog extends BaseDialog2 implements View.OnClickListener{
                 break;
             case R.id.img:
                 dismiss();
-//                Intent intent=new Intent();
-//                intent.setAction("android.intent.action.VIEW");
-//                Uri content_url = Uri.parse("http://www.cnblogs.com");
-//                intent.setData(content_url);
-//                getContext().startActivity(intent);
+                Intent intent=new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse(mContent);
+                intent.setData(content_url);
+                getContext().startActivity(intent);
                 if (mOnClickListener != null){
                     mOnClickListener.clickAddAdm();
                 }

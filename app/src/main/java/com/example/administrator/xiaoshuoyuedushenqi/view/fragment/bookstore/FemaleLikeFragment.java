@@ -150,7 +150,7 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
                 return new QTabView.TabTitle.Builder()
                         .setContent(titles.get(position))
                         .setTextColor(getContext().getResources().getColor(R.color.red_aa), getContext().getResources().getColor(R.color.grey_a1))
-                        .setTextSize(16)
+                        .setTextSize(14)
                         .build();
             }
 

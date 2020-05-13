@@ -10,7 +10,9 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.WrapContentLinearLayoutManager;
 import com.google.android.material.tabs.TabLayout;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -101,7 +103,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     private boolean mIsReverse = false;     // 是否倒序显示章节
     private boolean mIsReversing = false;   // 是否正在倒置，正在倒置时倒置操作无效
     private boolean mIsRefreshing = true;
-    private RefreshLayout mRefreshSrv1,mRefreshSrv2;
+    private RefreshLayout mRefreshSrv;
+
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -112,34 +115,41 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     protected int getLayoutId() {
         return R.layout.activity_catalog;
     }
-    int type=1;
+
+    int type = 1;
+
     @Override
     protected CatalogPresenter getPresenter() {
         return new CatalogPresenter();
     }
+
     int serialize;
     App app;
     String activity_type;
+
     @Override
     protected void initData() {
         serialize = getIntent().getIntExtra(KEY_SERIALIZE, 0);
-        mAuthor=getIntent().getStringExtra(KEY_AUTHOR);
-        activity_type=getIntent().getStringExtra("ACTIVITY_TYPE");
+        mAuthor = getIntent().getStringExtra(KEY_AUTHOR);
+        activity_type = getIntent().getStringExtra("ACTIVITY_TYPE");
         mUrl = getIntent().getStringExtra(KEY_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
-        weigh=getIntent().getIntExtra("weigh",0);
-        chapter_id=getIntent().getIntExtra("chapter_id",0);
+        weigh = getIntent().getIntExtra("weigh", 0);
+        chapter_id = getIntent().getIntExtra("chapter_id", 0);
+        Log.e("QQQ", "initData: "+chapter_id+" "+weigh);
         queryBookMarks(mUrl);
-        app= (App) getApplication();
+        app = (App) getApplication();
         catalogDataAll = mDbManager.queryAllCataloginfo(mUrl);
         Collections.reverse(catalogDataAll);
-        databaseManager=DatabaseManager.getInstance();
+        databaseManager = DatabaseManager.getInstance();
     }
-    String[]  sTitle={"目录","书签"};
+    boolean is_frist;
+    String[] sTitle = {"目录", "书签"};
+
     @Override
     protected void initView() {
-        text=findViewById(R.id.title);
+        text = findViewById(R.id.title);
         mBackIv = findViewById(R.id.iv_catalog_back);
         mBackIv.setOnClickListener(this);
         mRefreshIv = findViewById(R.id.shuaxin);
@@ -167,10 +177,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mEnhanceTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition()==0) {
+                if (tab.getPosition() == 0) {
                     mCatalogListRv.setVisibility(View.VISIBLE);
                     mBookMarkListRv.setVisibility(View.GONE);
-                }else {
+                } else {
                     mCatalogListRv.setVisibility(View.GONE);
                     mBookMarkListRv.setVisibility(View.VISIBLE);
                 }
@@ -186,35 +196,58 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
 
             }
         });
-        for(int i=0;i<sTitle.length;i++){
+        for (int i = 0; i < sTitle.length; i++) {
             mEnhanceTabLayout.addTab(sTitle[i]);
         }
         mEnhanceTabLayout.getmTabLayout().getTabAt(0).select();
+        mRefreshSrv = findViewById(R.id.srv_male_refresh);
+        mRefreshSrv.setEnableRefresh(false);
+        mRefreshSrv.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                z++;
+                mPresenter.getCatalogData(mUrl, z, type);
+                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+            }
+        });
+        ClassicsHeader classicsHeader = new ClassicsHeader(this);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(new Date());
+        classicsHeader.setLastUpdateText("最后更新:" + dateString);
+        mRefreshSrv.setRefreshHeader(classicsHeader);
+        mRefreshSrv.setRefreshFooter(new ClassicsFooter(this));
     }
 
-    int z=1,h=1;
-    boolean isRefresh;
+    int z = 1, h = 1;
+
     @Override
     protected void doAfterInit() {
-      isRefresh=false;
-      z=1;
-      if(catalogDataAll.size()==0) {
-          mPresenter.getCatalogData(mUrl, z, type);
-      }else {
-          mProgressBar.setVisibility(View.GONE);
-          mErrorPageTv.setVisibility(View.GONE);
-          mChapterOrderTv.setVisibility(View.VISIBLE);
-          initAdapter();
-          mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
-      }
-     //
-      text.setText(mName);
+        z = 1;
+        if (catalogDataAll.size() == 0) {
+            is_frist=true;
+            mPresenter.getCatalogData(mUrl, z, type);
+        } else {
+            is_frist=false;
+            mRefreshSrv.setEnableLoadMore(false);
+            mProgressBar.setVisibility(View.GONE);
+            mErrorPageTv.setVisibility(View.GONE);
+            mChapterOrderTv.setVisibility(View.VISIBLE);
+            initAdapter();
+            mCatalogAdapter.setPosition(chapter_id);
+            mCatalogListRv.scrollToPosition(chapter_id);
+            mChapterCountTv.setText("共" + catalogDataAll.size() + "章");
+        }
+        //
+        text.setText(mName);
     }
+
     private List<BookmarkNovelDbData> bookmarkNovelDbDatas = new ArrayList<>();
     private DatabaseManager mDbManager;
+
     private void queryBookMarks(String bookname) {
         bookmarkNovelDbDatas = mDbManager.queryAllBookmarkNovel(bookname);
     }
+
     private void initBookMarkAdapter() {
         bookAdapter = new BookMarkAdapter(this, bookmarkNovelDbDatas, mChapterNameList, new ArrayList());
         bookAdapter.setOnCatalogListener(new BookMarkAdapter.CatalogListener() {
@@ -224,25 +257,23 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     showShortToast("当前无网络，请检查网络后重试");
                     return;
                 }
-                String s_id=bookmarkNovelDbDatas.get(position).getChapterid();
-                String page_id=(bookmarkNovelDbDatas.get(position).getPosition())+"";
-                if(activity_type!=null&&activity_type.equals("NovelIntroActivity")){
-                    // 点击 item，跳转到相应小说阅读页
-                    // 跳转后活动结束
-                    CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
-                            "", false, 0,0,
-                            "", "", Integer.parseInt(s_id)-1, "",
+                String s_id = bookmarkNovelDbDatas.get(position).getChapterid();
+                String page_id = (bookmarkNovelDbDatas.get(position).getPosition()) + "";
+                if (activity_type != null && activity_type.equals("NovelIntroActivity")) {
+//                    // 点击 item，跳转到相应小说阅读页
+//                    // 跳转后活动结束
+                    CollBookBean bookBean = new CollBookBean(mUrl, mName, "", "",
+                            "", false, 0, 0,
+                            "", "", Integer.parseInt(s_id) - 1, "",
                             false, false);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
                     bundle.putString(WYReadActivity.CHPTER_ID, s_id);
+                    bundle.putString(WYReadActivity.PAGE_ID, page_id);
                     startActivity(WYReadActivity.class, bundle);
-                    if (mReadActivity != null) {
-                        mReadActivity.finish();
-                    }
                     finish();
-                }else {
+                } else {
                     Intent intent_recever = new Intent("com.read.android");
                     intent_recever.putExtra("chpter", Integer.parseInt(s_id));
                     intent_recever.putExtra("page_id", Integer.parseInt(page_id));
@@ -254,7 +285,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         bookAdapter.setOnCatalogLongListener(new BookMarkAdapter.CatalogLongListener() {
             @Override
             public void clickItem(int position) {
-                if(!CatalogActivity.this.isDestroyed()) {
+                if (!CatalogActivity.this.isDestroyed()) {
                     final TipDialog tipDialog = new TipDialog.Builder(CatalogActivity.this)
                             .setContent("是否删除书签")
                             .setCancel("取消")
@@ -285,6 +316,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
     @Override
     protected boolean isRegisterEventBus() {
         return true;
@@ -313,23 +345,23 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     showShortToast("当前无网络，请检查网络后重试");
                     return;
                 }
-                if(activity_type!=null&&activity_type.equals("NovelIntroActivity")){
-                    String s_id=catalogDataAll.get(position).getWeigh()+"";
-                // 跳转后活动结束
-                CollBookBean bookBean=new CollBookBean(mUrl, mName, "", "",
-                        "", false, 0,0,
-                        "", "", Integer.parseInt(s_id)-1, "",
-                        false, false);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                bundle.putString(WYReadActivity.CHPTER_ID, catalogDataAll.get(position).getWeigh()-1+ "");
-                startActivity(WYReadActivity.class, bundle);
-                if (mReadActivity != null) {
-                    mReadActivity.finish();
-                }
-                finish();
-                }else {
+                if (activity_type != null && activity_type.equals("NovelIntroActivity")) {
+                    String s_id = catalogDataAll.get(position).getWeigh() + "";
+                    // 跳转后活动结束
+                    CollBookBean bookBean = new CollBookBean(mUrl, mName, "", "",
+                            "", false, 0, 0,
+                            "", "", Integer.parseInt(s_id) - 1, "",
+                            false, false);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                    bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                    bundle.putString(WYReadActivity.CHPTER_ID, catalogDataAll.get(position).getWeigh() - 1 + "");
+                    startActivity(WYReadActivity.class, bundle);
+                    if (mReadActivity != null) {
+                        mReadActivity.finish();
+                    }
+                    finish();
+                } else {
                     Intent intent_recever = new Intent("com.read.android");
                     intent_recever.putExtra("chpter", catalogDataAll.get(position).getWeigh() - 1);
                     sendBroadcast(intent_recever);
@@ -339,57 +371,69 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         });
         mCatalogListRv.setAdapter(mCatalogAdapter);
     }
-    List<Cataloginfo> catalogDataAll=new ArrayList<>();
+
+    List<Cataloginfo> catalogDataAll = new ArrayList<>();
+
     /**
      * 获取目录数据成功
      */
     @Override
-    public void getCatalogDataSuccess(List<Cataloginfo> catalogData,int weight) {
-        if(weight<30||(z==1&&catalogData.size()<30)){
-            mIsRefreshing = false;
-            mProgressBar.setVisibility(View.GONE);
-            mChapterOrderTv.setVisibility(View.GONE);
-            mChapterOrderTv.setVisibility(View.VISIBLE);
-            catalogDataAll=catalogData;
+    public void getCatalogDataSuccess(List<Cataloginfo> catalogData, int weight) {
+//        if(weight<30||(z==1&&catalogData.size()<30)){
+//            mIsRefreshing = false;
+//            mProgressBar.setVisibility(View.GONE);
+//            mChapterOrderTv.setVisibility(View.GONE);
+//            mChapterOrderTv.setVisibility(View.VISIBLE);
+//            catalogDataAll=catalogData;
+//            initAdapter();
+//            text.setText(mName);
+//            mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
+//        }else {
+//            if (z <= weight / 30) {
+//                catalogDataAll.addAll(catalogData);
+//                handler.sendEmptyMessage(1);
+//                if(z==1){
+//                    mChapterCountTv.setText("共" + weight + "章");
+//                }
+//            } else {
+//                catalogDataAll.addAll(catalogData);
+//                mIsRefreshing = false;
+//                mProgressBar.setVisibility(View.GONE);
+//                mErrorPageTv.setVisibility(View.GONE);
+//                mChapterOrderTv.setVisibility(View.VISIBLE);
+//                initAdapter();//chapter_id
+//                mCatalogAdapter.setPosition(chapter_id - 1);
+//                mCatalogAdapter.notifyDataSetChanged();
+//                mCatalogListRv.scrollToPosition(chapter_id - 1);
+//                //mChapterCountTv.setText("共" + weigh + "章");
+//                //app.setCatalogDataAll(catalogDataAll);
+//                text.setText(mName);
+//                mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
+//                databaseManager.insertBookshelfNovel(catalogDataAll);
+//            }
+//        }
+//        Log.e("QQQ2", "onResponse: "+catalogDataAll.size());
+//        isRefresh=true;
+        mIsRefreshing = false;
+        mProgressBar.setVisibility(View.GONE);
+        mChapterOrderTv.setVisibility(View.GONE);
+        mChapterOrderTv.setVisibility(View.VISIBLE);
+        mChapterCountTv.setText("共" + weight+ "章");
+        catalogDataAll.addAll(catalogData);//new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        WrapContentLinearLayoutManager linearLayoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        int last = linearLayoutManager.findLastVisibleItemPosition();
+        if (mCatalogAdapter == null) {
+            mCatalogListRv.setLayoutManager(linearLayoutManager);
             initAdapter();
-            text.setText(mName);
-            mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
-        }else {
-            if (z <= weight / 30) {
-                catalogDataAll.addAll(catalogData);
-                handler.sendEmptyMessage(1);
-                if(z==1){
-                    mChapterCountTv.setText("共" + weight + "章");
-                }
-            } else {
-                catalogDataAll.addAll(catalogData);
-                mIsRefreshing = false;
-                mProgressBar.setVisibility(View.GONE);
-                mErrorPageTv.setVisibility(View.GONE);
-                mChapterOrderTv.setVisibility(View.VISIBLE);
-                initAdapter();//chapter_id
-                mCatalogAdapter.setPosition(chapter_id - 1);
-                mCatalogAdapter.notifyDataSetChanged();
-                mCatalogListRv.scrollToPosition(chapter_id - 1);
-                //mChapterCountTv.setText("共" + weigh + "章");
-                //app.setCatalogDataAll(catalogDataAll);
-                text.setText(mName);
-                mChapterCountTv.setText("共" + catalogDataAll.size()+ "章");
-                databaseManager.insertBookshelfNovel(catalogDataAll);
-            }
+            mCatalogListRv.setFocusableInTouchMode(false);
+            mCatalogListRv.setScrollingTouchSlop(last);
+        } else {
+            mCatalogAdapter.notifyItemChanged(last, 0);
+
         }
-        Log.e("QQQ2", "onResponse: "+catalogDataAll.size());
-        isRefresh=true;
     }
     DatabaseManager databaseManager;
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            z++;
-            mPresenter.getCatalogData(mUrl,z,type);
-        }
-    };
+
     /**
      * 获取目录数据失败
      */
@@ -399,7 +443,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mProgressBar.setVisibility(View.GONE);
         mChapterOrderTv.setVisibility(View.GONE);
         if (errorMsg.equals(Constant.NOT_FOUND_CATALOG_INFO)
-            || errorMsg.equals(Constant.JSON_ERROR)) {
+                || errorMsg.equals(Constant.JSON_ERROR)) {
             String s = "很抱歉，该小说链接已失效，请阅读其他源";
             mErrorPageTv.setText(s);
         } else {
@@ -421,29 +465,46 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 refresh();
                 break;
             case R.id.paixu:
-                if (mCatalogAdapter==null) {
-                    return;
-                }else {
-                    isRefresh=true;
-                    if (mIsReverse) {
-                        // 正序显示章节
-                        mChapterOrderTv.setRotation(360);
-                        mIsReversing = true;
-                        Collections.reverse(catalogDataAll);
-                        mCatalogAdapter.notifyDataSetChanged();
-                        mCatalogAdapter.setPosition(0);
-                        mCatalogListRv.scrollToPosition(0);
-                        mIsReverse = false;
-                        mIsReversing = false;
+                if(is_frist==false) {
+                    if (mCatalogAdapter == null) {
+                        return;
                     } else {
-                        mChapterOrderTv.setRotation(180);
-                        mIsReversing = true;
-                        Collections.reverse(catalogDataAll);
-                        mCatalogAdapter.notifyDataSetChanged();
-                        mCatalogAdapter.setPosition(0);
-                        mCatalogListRv.scrollToPosition(0);
+                        if (mIsReverse) {
+                            // 正序显示章节
+                            mChapterOrderTv.setRotation(360);
+                            mIsReversing = true;
+                            Collections.reverse(catalogDataAll);
+                            mCatalogAdapter.notifyDataSetChanged();
+                            mCatalogAdapter.setPosition(0);
+                            mCatalogListRv.scrollToPosition(0);
+                            mIsReverse = false;
+                            mIsReversing = false;
+                        } else {
+                            mChapterOrderTv.setRotation(180);
+                            mIsReversing = true;
+                            Collections.reverse(catalogDataAll);
+                            mCatalogAdapter.notifyDataSetChanged();
+                            mCatalogAdapter.setPosition(0);
+                            mCatalogListRv.scrollToPosition(0);
+                            mIsReverse = true;
+                            mIsReversing = false;
+                        }
+                    }
+                }else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    catalogDataAll.clear();
+                    mCatalogAdapter.notifyDataSetChanged();
+                    if (mIsReverse) {
+                        mIsReverse = false;
+                        // 正序显示章节
+                       type=1;
+                       z=1;
+                        mPresenter.getCatalogData(mUrl, z, type);
+                    } else {
                         mIsReverse = true;
-                        mIsReversing = false;
+                        type=2;
+                        z=1;
+                        mPresenter.getCatalogData(mUrl, z, type);
                     }
                 }
                 break;
@@ -456,14 +517,16 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
      * 刷新页面
      */
     private void refresh() {
+        catalogDataAll.clear();
+        mCatalogAdapter.notifyDataSetChanged();
         mProgressBar.setVisibility(View.VISIBLE);
+        z = 1;
+        mPresenter.getCatalogData(mUrl, z, type);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                isRefresh=false;
-                z=1;
-                mPresenter.getCatalogData(mUrl,z,type);
+                mRefreshSrv.setEnableRefresh(false);
             }
-        }, 300);
+        },3000);
     }
 }

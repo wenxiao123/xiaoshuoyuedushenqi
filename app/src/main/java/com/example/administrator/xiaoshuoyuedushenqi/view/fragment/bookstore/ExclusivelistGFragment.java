@@ -36,8 +36,6 @@ import java.util.List;
 public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> implements IExclusiveContract.View {
     RecyclerView recyclerView1, recyclerView2, recyclerView3, recyclerView4;
     private CategoryAdapter mCategoryAdapter;
-    private List<String> mCategoryNameList = new ArrayList<>();
-    private List<String> mMoreList = new ArrayList<>();
     private List<Noval_details> mNovelDataList = new ArrayList<>();
     private List<Noval_details> mNovelDataList2 = new ArrayList<>();
     List<CategoryNovels> novelNameList = new ArrayList<>();
@@ -54,12 +52,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
 
     @Override
     protected void initData() {
-        mCategoryNameList.add("人气排行榜");
-        mCategoryNameList.add("推荐排行榜");
-        mCategoryNameList.add("新书人气榜");
-        mMoreList.add("更多");
-        mMoreList.add("更多");
-        mMoreList.add("更多");
     }
 
     @Override
@@ -135,14 +127,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
         mPresenter.getCategoryNovels(1 + "");
         mPresenter.getCategoryNovels2(1 + "");
         mPresenter.getNewRankData(1 + "");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(mRefreshSrv.isRefreshing()) {
-                    mRefreshSrv.setRefreshing(false);
-                }
-            }
-        }, 3000);
     }
 
     @Override
@@ -201,19 +185,21 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
     private List<CategoryNovels> mHotRankNovelNameList=new ArrayList<>();
     @Override
     public void getHotRankDataSuccess(List<CategoryNovels> novelNameList) {
-       // Log.e("QQQ", "getHotRankDataSuccess: "+novelNameList.size());
+        mHotRankNovelNameList.clear();
+        for(int i=0;i<novelNameList.size();i++){
+            if(novelNameList.get(i).getData_list().size()!=0){
+                mHotRankNovelNameList.add(novelNameList.get(i));
+            }
+        }
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
-        if (novelNameList.isEmpty()) {
+        if (mHotRankNovelNameList.isEmpty()) {
             return;
         }
-        //this.novelNameList = novelNameList;
+        this.novelNameList=mHotRankNovelNameList;
         if (mCategoryAdapter == null) {
-           this.novelNameList = novelNameList;
             initCategoryAdapter();
         } else {
-            this.novelNameList.clear();
-            this.novelNameList.addAll(novelNameList);
             mCategoryAdapter.notifyDataSetChanged();
         }
     }

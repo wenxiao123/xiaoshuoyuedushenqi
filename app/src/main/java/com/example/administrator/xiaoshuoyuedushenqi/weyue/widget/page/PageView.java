@@ -19,6 +19,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.Hori
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.NonePageAnim;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.PageAnimation;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.ScrollPageAnim;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.ScrollPageAnim2;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.SimulationAnimation4;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.SlidePageAnim;
 
@@ -132,7 +133,7 @@ public class PageView extends View {
                 mPageAnim = new NonePageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);
                 break;
             case PAGE_MODE_SCROLL:
-                mPageAnim = new ScrollPageAnim(mViewWidth, mViewHeight, 0,
+                mPageAnim = new ScrollPageAnim2(mViewWidth, mViewHeight, 0,
                         ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener);
                 break;
             default:
@@ -153,7 +154,7 @@ public class PageView extends View {
 
     public boolean autoPrevPage(){
         //滚动暂时不支持自动翻页
-        if (mPageAnim instanceof ScrollPageAnim){
+        if (mPageAnim instanceof ScrollPageAnim2){
             return false;
         }
         else {
@@ -184,7 +185,7 @@ public class PageView extends View {
             mPageAnim.setStartPoint(x, y);
             //设置点击点
             mPageAnim.setTouchPoint(x, y);
-            ((ScrollPageAnim) mPageAnim).startAutoRead(mTextSize+mTextInterval);
+            ((ScrollPageAnim2) mPageAnim).startAutoRead(mTextSize+mTextInterval);
             this.postInvalidate();
             return;
         }
@@ -356,8 +357,8 @@ public class PageView extends View {
      *
      */
     public void refreshPage(){
-        if (mPageAnim instanceof ScrollPageAnim){
-            ((ScrollPageAnim) mPageAnim).refreshBitmap();
+        if (mPageAnim instanceof ScrollPageAnim2){
+            ((ScrollPageAnim2) mPageAnim).refreshBitmap();
         }
         drawCurPage(false);
     }
@@ -373,8 +374,6 @@ public class PageView extends View {
 
     //获取PageLoader
     public PageLoader getPageLoader(boolean isLocal,boolean isother){
-       // Log.e("QQQ", "getPageLoader: "+isLocal+" "+isother);
-        //if (mPageLoader == null){
             if (isLocal){
                 mPageLoader = new LocalPageLoader(this);
             }
@@ -385,7 +384,6 @@ public class PageView extends View {
                     mPageLoader = new OtherNetPageLoader(this);
                 }
             }
-       // }
         return mPageLoader;
     }
 

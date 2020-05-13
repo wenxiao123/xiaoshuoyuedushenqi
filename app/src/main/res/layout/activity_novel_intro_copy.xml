@@ -7,6 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -34,7 +35,7 @@
                 android:maxLines="1"
                 android:text=""
                 android:textColor="@color/novel_intro_novel_name_text"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
@@ -170,7 +171,7 @@
                         android:id="@+id/txt_read"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_margin="10dp"
+                        android:layout_marginStart="15dp"
                         android:layout_weight="1"
                         android:background="@drawable/bachground_read"
                         android:gravity="center"
@@ -186,7 +187,7 @@
                         android:id="@+id/tv_book_add"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_margin="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:background="@drawable/bachground_btn"
                         android:gravity="center"
@@ -202,13 +203,15 @@
                         android:id="@+id/txt_book_load"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_margin="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="15dp"
                         android:layout_weight="1"
                         android:background="@drawable/bachground_btn"
                         android:gravity="center"
-                        android:paddingLeft="20dp"
+                        android:maxLines="1"
+                        android:paddingLeft="10dp"
                         android:paddingTop="10dp"
-                        android:paddingRight="20dp"
+                        android:paddingRight="10dp"
                         android:paddingBottom="10dp"
                         android:text="全本缓存"
                         android:textColor="#9FA2B3"
@@ -227,14 +230,16 @@
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <ImageView
                             android:id="@+id/img_collect"
                             android:layout_width="wrap_content"
-                            android:layout_height="35dp"
-                            android:padding="5dp"
+                            android:layout_height="42dp"
                             android:layout_gravity="center"
+                            android:padding="6dp"
                             android:scaleType="centerInside"
                             android:src="@mipmap/icon_collection" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -255,8 +260,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="5dp"
                             android:scaleType="fitXY"
@@ -284,9 +289,9 @@
                         <ImageView
                             android:id="@+id/iv_tuijian"
                             android:layout_width="wrap_content"
-                            android:layout_height="35dp"
+                            android:layout_height="42dp"
                             android:layout_gravity="center_horizontal"
-                            android:padding="5dp"
+                            android:padding="6dp"
                             android:scaleType="centerInside"
                             android:src="@mipmap/icon_recommended" />
 
@@ -310,8 +315,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="5dp"
                             android:scaleType="fitXY"
@@ -338,12 +343,12 @@
                         android:id="@+id/tv_novel_intro_novel_introduce"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="15dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginEnd="@dimen/novel_intro_margin_start_and_end"
+                        android:layout_marginEnd="15dp"
                         android:maxLines="3"
                         android:text="@string/item_novel_source_introduce"
-                        android:textColor="@color/black"
+                        android:textColor="#5B5C66"
                         android:textSize="16sp" />
 
                     <TextView
@@ -359,6 +364,12 @@
                         android:textColor="#FA5F4B"
                         android:textSize="16sp" />
                 </LinearLayout>
+
+                <View
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.8dp"
+                    android:background="@color/background_color"/>
 
                 <RelativeLayout
                     android:id="@+id/r_catalog"
@@ -396,11 +407,14 @@
                         android:padding="2dp"
                         android:src="@mipmap/icon_back" />
                 </RelativeLayout>
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:background="@color/background_color"/>
                 <RelativeLayout
                     android:id="@+id/title_rel"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -409,7 +423,7 @@
                         android:padding="10dp"
                         android:text="热门奇幻玄幻小说"
                         android:textColor="@color/black"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <RelativeLayout
@@ -429,6 +443,7 @@
                             android:src="@mipmap/icon_back" />
 
                         <TextView
+                            android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_toLeftOf="@id/txt_back"

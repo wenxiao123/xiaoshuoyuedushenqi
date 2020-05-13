@@ -2,6 +2,7 @@ package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
+import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.BookRecordBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.helper.BookRecordHelper;
@@ -265,7 +266,6 @@ public abstract class PageLoader {
     /*****************************init params*******************************/
     public PageLoader(PageView pageView) {
         mPageView = pageView;
-
         //初始化数据
         initData();
         //初始化画笔
@@ -278,11 +278,11 @@ public abstract class PageLoader {
         mSettingManager = ReadSettingManager.getInstance();
         text_index= mSettingManager.getTextSize();
         if(text_index>=ints.length){
-            text_index=ints.length-1;
+            text_index=1;
         }
         text_interval=mSettingManager.getTextRow();
         if(text_interval>=intervals.length){
-            text_interval=intervals.length-1;
+            text_interval=1;
         }
         mTextSize = App.getAppResources().getDimensionPixelSize(ints[text_index]);
         mTextInterval= App.getAppResources().getDimensionPixelSize(intervals[text_interval]);;
@@ -349,15 +349,15 @@ public abstract class PageLoader {
         Typeface tf = null;
         if(mTextStyle!=null&&!mTextStyle.equals("")) {
             AssetManager mgr = getContext().getAssets();
-//根据路径得到Typeface
+            //根据路径得到Typeface
             if(mTextStyle.equals("1")) {
-                tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
             }else if(mTextStyle.equals("2")){
-                tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress2);
             }else if(mTextStyle.equals("3")){
-                tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress3);
             }else if(mTextStyle.equals("4")){
-                tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress4);
             }else if(mTextStyle.equals("-1")){
                 tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             }
@@ -563,13 +563,13 @@ public abstract class PageLoader {
             AssetManager mgr = getContext().getAssets();
 //根据路径得到Typeface
             if(type.equals("1")) {
-                tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
-            }else if(type.equals("2")){
-                tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
-            }else if(type.equals("3")){
-                tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
-            }else if(type.equals("4")){
-                tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
+            }else if(type.equals("2")) {
+                tf = Typeface.createFromAsset(mgr,  Constant.text_adress2);
+            }else if(type.equals("3")) {
+                tf = Typeface.createFromAsset(mgr,  Constant.text_adress3);
+            }else if(type.equals("4")) {
+                tf = Typeface.createFromAsset(mgr,  Constant.text_adress4);
             }else if(type.equals("-1")){
                 tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
             }
@@ -609,6 +609,7 @@ public abstract class PageLoader {
             setBgColor(ReadSettingManager.NIGHT_MODE);
            // view.setBackgroundColor(ReadSettingManager.NIGHT_MODE);
         } else {
+            mBgTheme=mSettingManager.getReadBgTheme();
             mBatteryPaint.setColor(Color.BLACK);
             setBgColor(mBgTheme);
             //view.setBackgroundColor(mBgTheme);
@@ -630,43 +631,38 @@ public abstract class PageLoader {
             switch (theme) {
                 case ReadSettingManager.READ_BG_DEFAULT:
                     mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.theme1);
-                   // mPageBg=0;
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor1);
                     break;
                 case ReadSettingManager.READ_BG_1:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2f332d);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_ccebcc);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor2);
                     break;
                 case ReadSettingManager.READ_BG_2:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_92918c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_aaa);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor3);
                     break;
                 case ReadSettingManager.READ_BG_3:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_383429);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_d1cec5);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor4);
                     break;
                 case ReadSettingManager.READ_BG_4:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_627176);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_001c27);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor5);
                     break;
             }
         }
 
         if (isBookOpen) {
-//            if(mPageBg==ContextCompat.getColor(App.getAppContext(), R.color.color_cec29c)){
-//               isbackground=true;
-//            }else {
-//                isbackground=false;
-//            }
             //设置参数
             mPageView.setBgColor(mPageBg);
             mTextPaint.setColor(mTextColor);
+            mTitlePaint.setColor(mTextColor);
             //重绘
             mPageView.refreshPage();
         }
     }
 
-    public void setBgColor(int theme, View v) {
+    public void setBgColor(int theme, View v,View tv) {
 //        if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
 //            mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_fff_99);
 //            mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.black);
@@ -679,23 +675,23 @@ public abstract class PageLoader {
             switch (theme) {
                 case ReadSettingManager.READ_BG_DEFAULT:
                     mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.theme1);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor1);
                     break;
                 case ReadSettingManager.READ_BG_1:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2f332d);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_ccebcc);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor2);
                     break;
                 case ReadSettingManager.READ_BG_2:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_92918c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_aaa);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor3);
                     break;
                 case ReadSettingManager.READ_BG_3:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_383429);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_d1cec5);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor4);
                     break;
                 case ReadSettingManager.READ_BG_4:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_627176);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.color_001c27);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor5);
                     break;
                }
 //        }
@@ -707,11 +703,13 @@ public abstract class PageLoader {
 //                v.setBackground(getAppResources().getDrawable(R.mipmap.img_background2));
 //            }else {
 //                isbackground=false;
-                v.setBackgroundColor(mPageBg);
+            v.setBackgroundColor(mPageBg);
+            tv.setBackgroundColor(mPageBg);
 //            }
             //设置参数
             mPageView.setBgColor(mPageBg);
             mTextPaint.setColor(mTextColor);
+            mTitlePaint.setColor(mTextColor);
             //重绘
             mPageView.refreshPage();
         }
@@ -743,7 +741,11 @@ public abstract class PageLoader {
 
     //获取当前页的页码
     public int getPagePos() {
-        return mCurPage.position;
+        if(mCurPage==null){
+            return 1;
+        }else {
+            return mCurPage.position;
+        }
     }
 
     //保存阅读记录
@@ -760,50 +762,72 @@ public abstract class PageLoader {
     }
 
     //打开书本，初始化书籍
-    public void openBook(CollBookBean collBook) {
+    public void openBook(CollBookBean collBook,BookRecordBean bookRecordBean) {
         mCollBook = collBook;
-        //init book record
-
-      //  从数据库取阅读数据
-        mBookRecord = BookRecordHelper.getsInstance()
-                .findBookRecordById(mCollBook.get_id());
-        if (mBookRecord == null) {
-            mBookRecord = new BookRecordBean();
-        }
-
-        //mCurChapterPos = chpter_id;
+        mBookRecord=bookRecordBean;
+        mCurChapterPos = mBookRecord.getChapter();
         mLastChapter = mCurChapterPos;
     }
-
+    public void make_loading(){
+        mStatus = STATUS_LOADING;
+    }
   //  打开具体章节
     public void openChapter() {
+//        mCurPageList = loadPageList(mCurChapterPos);
+//        if(mCurPageList!=null&&mCurPageList.size()>0) {
+//            //进行预加载
+//            preLoadNextChapter();
+//            //加载完成
+//            mStatus = STATUS_FINISH;
+//            //Log.e("QQQ", "openChapter: "+mCurChapterPos+" "+isBookOpen);
+//            //获取制定页面
+//            if (!isBookOpen) {
+//                isBookOpen = true;
+//                //可能会出现当前页的大小大于记录页的情况。
+//                int position = mBookRecord.getPagePos();
+//                if (position >= mCurPageList.size()) {
+//                    position = mCurPageList.size() - 1;
+//                }
+//                mCurPage = getCurPage(position);
+//                mCancelPage = mCurPage;
+//                if (mPageChangeListener != null) {
+//                    mPageChangeListener.onChapterChange(mCurChapterPos);
+//                }
+//                mCurPage = getCurPage(0);
+//            } else {
+//                if (mCurPageList != null && mCurPageList.size() != 0) {
+//                    mCurPage = getCurPage(0);
+//                } else {
+//                    chapterError();
+//                }
+//            }
+//        }else {
+//            mStatus=STATUS_ERROR;
+//        }
+//        mPageView.drawCurPage(false);
+        Log.e("WWW", "openChapter: "+mCurChapterPos);
         mCurPageList = loadPageList(mCurChapterPos);
-        if(mCurPageList!=null&&mCurPageList.size()>0) {
-            //进行预加载
-            preLoadNextChapter();
-            //加载完成
-            mStatus = STATUS_FINISH;
-            //Log.e("QQQ", "openChapter: "+mCurChapterPos+" "+isBookOpen);
-            //获取制定页面
-            if (!isBookOpen) {
-                isBookOpen = true;
-                //可能会出现当前页的大小大于记录页的情况。
-                mCurPage = getCurPage(0);
-                mCancelPage = mCurPage;
-                if (mPageChangeListener != null) {
-                    mPageChangeListener.onChapterChange(mCurChapterPos);
-                }
-                mCurPage = getCurPage(0);
-            } else {
-                if (mCurPageList != null && mCurPageList.size() != 0) {
-                    mCurPage = getCurPage(0);
-                } else {
-                    chapterError();
-                }
+        //进行预加载
+        preLoadNextChapter();
+        //加载完成
+        mStatus = STATUS_FINISH;
+        //获取制定页面
+        if (!isBookOpen) {
+            isBookOpen = true;
+            //可能会出现当前页的大小大于记录页的情况。
+            int position = mBookRecord.getPagePos();
+            if (position >= mCurPageList.size()) {
+                position = mCurPageList.size() - 1;
             }
-        }else {
-            mStatus=STATUS_ERROR;
+            mCurPage = getCurPage(position);
+            mCancelPage = mCurPage;
+            if (mPageChangeListener != null) {
+                mPageChangeListener.onChapterChange(mCurChapterPos);
+            }
+        } else {
+            mCurPage = getCurPage(0);
         }
+        Log.e("www", "openChapter: "+222);
         mPageView.drawCurPage(false);
     }
 
@@ -952,17 +976,19 @@ public abstract class PageLoader {
     }
 
     void onDraw(Bitmap bitmap, boolean isUpdate) {
-        drawBackground(mPageView.getBgBitmap(), isUpdate);
-        if (!isUpdate) {
-            drawContent(bitmap);
+        if(mChapterList != null && mChapterList.size() != 0&&mCurChapterPos>=mChapterList.size()){
+            mCurChapterPos=mChapterList.size()-1;
         }
+            drawBackground(mPageView.getBgBitmap(), isUpdate);
+            if (!isUpdate) {
+                drawContent(bitmap);
+            }
         //更新绘制
         mPageView.invalidate();
     }
     boolean isbackground;
     void drawBackground(Bitmap bitmap, boolean isUpdate) {
         Canvas canvas = new Canvas(bitmap);
-
         int tipMarginHeight = ScreenUtils.dpToPx(3);
         if (!isUpdate) {
             /****绘制背景****/
@@ -972,50 +998,23 @@ public abstract class PageLoader {
             float tipTop = tipMarginHeight - mTipPaint.getFontMetrics().top;
             //根据状态不一样，数据不一样
             if (mStatus != STATUS_FINISH) {
-                String s="";
                 if (mChapterList != null && mChapterList.size() != 0) {
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
-                    if(mCurChapterPos>=mChapterList.size()){
-                        mCurChapterPos=mChapterList.size()-1;
+                    mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
+                    String  s=mChapterList.get(mCurChapterPos).getTitle()+"/"+mCollBook.getTitle();
+                    if(s.length()>15){
+                        s=s.substring(0,15);
                     }
-                    if(mChapterList.get(mCurChapterPos).getTitle()!=null){
-                    if(mChapterList.get(mCurChapterPos).getTitle().length()>8){
-                         s=mChapterList.get(mCurChapterPos).getTitle().substring(0,8)+"...";
-                    }else {
-                        s=mChapterList.get(mCurChapterPos).getTitle();
-                    }
-
-                    }
-                    String z;
-                    if(mCollBook.getTitle().length()>8){
-                        z=mCollBook.getTitle().substring(0,8)+"...";
-                    }else {
-                        z=mCollBook.getTitle();
-                    }
-                    canvas.drawText(z+"/"+s, mMarginWidth, tipTop, mTipPaint);
-//                    String sth=(getChapterPos()+1)+"/"+mChapterList.size();
-//                    canvas.drawText(sth, mVisibleWidth-mMarginWidth-sth.length(), tipTop, mTipPaint);
+                    canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
                 }
                 mTipPaint.setColor(mTextColor);
             } else {
                 mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
-               // Log.e("QQQ", "drawBackground: "+mCurPage.title);
-                String s;
-                if(mCurChapterPos>=mChapterList.size()){
-                    mCurChapterPos=mChapterList.size()-1;
+                String  s=mChapterList.get(mCurChapterPos).getTitle()+"/"+mCollBook.getTitle();
+                if(s.length()>15){
+                    s=s.substring(0,15);
                 }
-                if(mChapterList.get(mCurChapterPos).getTitle().length()>8){
-                    s=mChapterList.get(mCurChapterPos).getTitle().substring(0,8)+"...";
-                }else {
-                    s=mChapterList.get(mCurChapterPos).getTitle();
-                }
-                String z;
-                if(mCollBook.getTitle().length()>8){
-                    z=mCollBook.getTitle().substring(0,8)+"...";
-                }else {
-                    z=mCollBook.getTitle();
-                }
-                canvas.drawText(z+"/"+s, mMarginWidth, tipTop, mTipPaint);
+                canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
 //                String sth=(getChapterPos()+1)+"/"+mChapterList.size();
 //                canvas.drawText(sth, mVisibleWidth-mMarginWidth-sth.length(), tipTop, mTipPaint);
                 mTipPaint.setColor(mTextColor);

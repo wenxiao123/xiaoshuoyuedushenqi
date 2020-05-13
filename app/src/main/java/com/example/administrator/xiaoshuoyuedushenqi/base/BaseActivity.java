@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +22,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.MainActivity;
@@ -55,26 +59,24 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
         App.getInstance().addActivity(this);
         mSavedInstanceState = savedInstanceState;
-        initData();
-        initView();
-        doAfterInit();
-//        String is_naghit=intent.getStringExtra("is_naghit");
-//        if(is_naghit!=null&&is_naghit.equals("2")){
-//            mBookshelfBeforeIv.setVisibility(View.VISIBLE);
-//            mBookshelfAfterIv.setVisibility(View.INVISIBLE);
-//            mDiscoveryBeforeIv.setVisibility(View.VISIBLE);
-//            mDiscoveryAfterIv.setVisibility(View.INVISIBLE);
-//            mBookMarkBefore.setVisibility(View.VISIBLE);
-//            mBookMarkAfter.setVisibility(View.INVISIBLE);
-//            mMoreAfterIv.setVisibility(View.VISIBLE);
-//            mMoreBeforeIv.setVisibility(View.INVISIBLE);
-//            changeFragment(FG_MORE);
-//        }
+        try {
+            initData();
+            initView();
+            doAfterInit();
+        }catch (Exception ex){
+            finish();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if(NetUtil.hasInternet(this)){
+
+        }else {
+           onCreate(mSavedInstanceState);
+        }
+
         if(!(this instanceof WYReadActivity)) {
             isNight = ReadSettingManager.getInstance().isNightMode();
             if (isNight == true) {
@@ -83,28 +85,12 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                 backgroundAlpha(1f);
             }
         }
-//        App app= (App) getApplication();
-//        App.init(this);
-//        if(app.isNight()==true) {
-//            app.setNight(false);
-//            App.updateNightMode(!SpUtil.getIsNightMode());
-//            finish();
-//            SpUtil.saveIsNightMode(!SpUtil.getIsNightMode());
-////            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-////                AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO ?
-////                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-//            Intent intent = new Intent(this, this.getClass());
-//            //intent.putExtra("is_naghit", "2");
-//            startActivity(intent);
-//            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
-//        }
     }
     boolean isNight;
     MyBackgroungReceiver backgroungReceiver;
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         unregisterReceiver(backgroungReceiver);
         App.removeActivity(this);
         System.gc();
@@ -224,10 +210,45 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     /**
      * 获取 onCreate 方法中的 Bundle 参数 savedInstanceState
      *
-     * @return
+     * @returnnovelid
      */
     protected Bundle getSavedInstanceState() {
         return mSavedInstanceState;
+    }
+
+    private void initNetworkReceiver() {
+        mNetReceiver = new NetworkReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mNetReceiver, filter);
+    }
+    NetworkReceiver mNetReceiver;
+    public class NetworkReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                //说明当前有网络
+                if (networkInfo != null && networkInfo.isAvailable()) {
+                    int type = networkInfo.getType();
+                    switch (type) {
+                        case ConnectivityManager.TYPE_MOBILE:
+                            Toast.makeText(context, "当前移动网络正常", Toast.LENGTH_SHORT).show();
+                            break;
+                        case ConnectivityManager.TYPE_WIFI:
+                            Toast.makeText(context, "当前WIFI网络正常", Toast.LENGTH_SHORT).show();
+                            break;
+                        case ConnectivityManager.TYPE_ETHERNET:
+                            Toast.makeText(context, "当前以太网网络正常", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                } else {
+                    //说明当前没有网络
+                    Toast.makeText(context, "当前网络异常", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
 }

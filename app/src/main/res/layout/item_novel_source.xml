@@ -25,7 +25,7 @@
             android:text="@string/item_novel_source_name"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:maxEms="12"
+            android:maxLength="12"
             android:singleLine="true"
             android:ellipsize="end"/>
 
@@ -43,6 +43,7 @@
         android:textSize="12sp"
         android:layout_below="@id/tv_item_novel_source_name"
         android:layout_toEndOf="@id/iv_item_novel_source_cover"
+        android:maxLength="12"
         android:singleLine="true"
         android:ellipsize="end"/>
 
@@ -59,7 +60,8 @@
         android:textSize="14sp"
         android:layout_below="@id/tv_item_novel_source_author"
         android:layout_toEndOf="@id/iv_item_novel_source_cover"
-        android:maxLines="1"
+        android:maxLength="12"
+        android:singleLine="true"
         android:ellipsize="end"/>
     <TextView
         android:paddingLeft="20dp"

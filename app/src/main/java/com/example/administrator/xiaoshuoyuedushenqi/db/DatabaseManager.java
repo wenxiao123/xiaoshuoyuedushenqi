@@ -192,6 +192,9 @@ public class DatabaseManager {
      * 查询所有书架书籍信息
      */
     public List<Cataloginfo> queryAllCataloginfo(String novelid) {
+        if(novelid==null){
+          return null;
+        }
         // 查询表中所有数据
         Cursor cursor = mDb.query(Constant.TABLE_COLALOG_NOVEL, null, null, null,
                 null, null, null);
@@ -210,7 +213,6 @@ public class DatabaseManager {
                         cursor.getColumnIndex("weigh"));
                 if(novelid.equals(novalid)) {
                     Cataloginfo bookshelfNovelDbData = new Cataloginfo(id, novalid, title, reurl,weigh);
-                    //Log.e("rrr", "queryAllCataloginfo: "+bookshelfNovelDbData);
                     res.add(bookshelfNovelDbData);
                 }
             } while (cursor.moveToPrevious());
@@ -411,7 +413,9 @@ public class DatabaseManager {
                 BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(novelUrl, name, cover,
                         position, type, secondPosition, chperid, weight, status);
                 bookshelfNovelDbData.setFuben_id(title1);
-                res.add(bookshelfNovelDbData);
+                if(type>=0){
+                    res.add(bookshelfNovelDbData);
+                }
                 //Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
             } while (cursor.moveToPrevious());
         }
@@ -467,10 +471,14 @@ public class DatabaseManager {
      * 查询所有书架书籍信息
      */
     public BookshelfNovelDbData selectBookshelfNovel(String url) {
+        if(url==null){
+           return null;
+        }
         // 查询表中所有数据
         Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null, null, null,
                 null, null, null);
         BookshelfNovelDbData res = null;
+        try {
         if (cursor.moveToLast()) {
             do {
                 String novelUrl = cursor.getString(
@@ -505,6 +513,9 @@ public class DatabaseManager {
         }
         cursor.close();
 
+        }catch (Exception ex){
+            return null;
+        }
         return res;
     }
 
@@ -537,7 +548,7 @@ public class DatabaseManager {
                 String weigh = cursor.getString(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_WIGH));
                 res.add(new Noval_Readcored(novelUrl, chapter_id, status,
-                        title, author, pic, is_che, chapter_name, weigh));
+                            title, author, pic, is_che, chapter_name, weigh));
             } while (cursor.moveToPrevious());
         }
         cursor.close();

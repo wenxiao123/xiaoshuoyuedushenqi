@@ -9,6 +9,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -126,7 +128,7 @@ public class OverFragment extends BaseTabFragment<MalePresenter>
             }
         });
         mHotRankRv = getActivity().findViewById(R.id.rv_over_hot_rank_recycler_view);
-        mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 4));
         mCategoryNovelRv = getActivity().findViewById(R.id.rv_over_category_novel_list);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         mNewRv=getActivity().findViewById(R.id.rv_over_new_novel_list);
@@ -360,20 +362,24 @@ public class OverFragment extends BaseTabFragment<MalePresenter>
     /**
      * 获取热门排行榜数据成功
      */
+    List<CategoryNovels> categoryNovelsList=new ArrayList<>();
     @Override
-    public void getHotRankDataSuccess(List<CategoryNovels> novelNameList) {
+    public void getHotRankDataSuccess(List<CategoryNovels> novelNameList_one) {
+        categoryNovelsList.clear();
+        for(int i=0;i<novelNameList_one.size();i++){
+            if(novelNameList_one.get(i).getData_list().size()!=0){
+                categoryNovelsList.add(novelNameList_one.get(i));
+            }
+        }
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
-        if (novelNameList.isEmpty()) {
+        if (categoryNovelsList.isEmpty()) {
             return;
         }
-        this.novelNameList = novelNameList;
+        this.novelNameList = categoryNovelsList;
         if (mCategoryAdapter == null) {
-            this.novelNameList = novelNameList;
             initCategoryAdapter();
         } else {
-            this.novelNameList.clear();
-            this.novelNameList.addAll(novelNameList);
             mCategoryAdapter.notifyDataSetChanged();
         }
     }

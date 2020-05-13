@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="修改姓名"
-        android:textColor="@color/black"
+        android:textColor="@color/tc1"
         android:textSize="16sp"/>
     <ImageView
         android:id="@+id/iv_right"
@@ -41,5 +41,5 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_a3"/>
+        android:background="#CECED9"/>
 </RelativeLayout>

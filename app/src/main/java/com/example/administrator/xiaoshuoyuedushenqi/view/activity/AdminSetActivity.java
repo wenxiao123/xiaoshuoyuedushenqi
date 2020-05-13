@@ -141,23 +141,27 @@ public class AdminSetActivity extends BaseActivity {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final TipDialog tipDialog = new TipDialog.Builder(AdminSetActivity.this)
-                        .setContent("是否退出登录？")
-                        .setCancel("否")
-                        .setEnsure("是")
-                        .setOnClickListener(new TipDialog.OnClickListener() {
-                            @Override
-                            public void clickEnsure() {
-                                postExit();
-                            }
+                if(login_admin == null){
+                    showShortToast("还未登录！");
+                }else {
+                    final TipDialog tipDialog = new TipDialog.Builder(AdminSetActivity.this)
+                            .setContent("是否退出登录？")
+                            .setCancel("否")
+                            .setEnsure("是")
+                            .setOnClickListener(new TipDialog.OnClickListener() {
+                                @Override
+                                public void clickEnsure() {
+                                    postExit();
+                                }
 
-                            @Override
-                            public void clickCancel() {
+                                @Override
+                                public void clickCancel() {
 
-                            }
-                        })
-                        .build();
-                tipDialog.show();
+                                }
+                            })
+                            .build();
+                    tipDialog.show();
+                }
             }
         });
         TextView camera = findViewById(R.id.camera);
@@ -404,9 +408,9 @@ public class AdminSetActivity extends BaseActivity {
                 }
             }
         });
-        if (login_admin == null) {
-            exit.setVisibility(View.GONE);
-        }
+//        if (login_admin == null) {
+//            exit.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -500,6 +504,7 @@ public class AdminSetActivity extends BaseActivity {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");

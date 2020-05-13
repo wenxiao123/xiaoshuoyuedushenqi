@@ -1,6 +1,7 @@
 package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page;
 
 
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.BookRecordBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.model.Void;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Charset;
@@ -71,8 +72,8 @@ public class LocalPageLoader extends PageLoader {
     }
 
     @Override
-    public void openBook(CollBookBean collBookBean) {
-        super.openBook(collBookBean);
+    public void openBook(CollBookBean collBookBean, BookRecordBean bookRecordBean) {
+        super.openBook(collBookBean,bookRecordBean);
         mBookFile = new File(collBookBean.get_id());
         //这里id表示本地文件的路径
 

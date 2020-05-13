@@ -561,11 +561,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     }
 
     public void queryAllBookSuccess2(List<BookshelfNovelDbData> dataList) {
-        //   Log.e("QQQ", "queryAllBookSuccess2: "+333);
         for (int i = 0; i < dataList.size(); i++) {
             if (!mDbManager.isExistInBookshelfNovelname(dataList.get(i).getNovelUrl())) {
-//               BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
-//                       mCover, mPageView.getPosition(), mType, mNovelContent.length(), mChapterIndex + "", serialize + "");
                 mDbManager.insertOrUpdateBook(new BookshelfNovelDbData(dataList.get(i).getNovelUrl(),
                         dataList.get(i).getName(), dataList.get(i).getCover(), 1, 0, dataList.get(i).getWeight(), 1 + "", dataList.get(i).getWeight(), dataList.get(i).getStatus()));
             }
@@ -595,12 +592,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                         } else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             JSONArray jsonArray = object.getJSONArray("data");
-//                            if (jsonArray.length() == 0) {
-//                                return;
-//                            }
                             mDataList1.clear();
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                //String novelUrl, String name, String cover,  int position, int type, int secondPosition, String chapterid, int weight
                                 noval_readcoreds.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(), Noval_Readcored.class));
                                 mDataList1.add(new BookshelfNovelDbData(noval_readcoreds.get(i).getNovel_id(), noval_readcoreds.get(i).getTitle(), noval_readcoreds.get(i).getPic()
                                         , 0, 0, 0, noval_readcoreds.get(i).getChapter_id(), noval_readcoreds.get(i).getChapter_count(), noval_readcoreds.get(i).getSerialize()));
@@ -651,6 +644,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
                                     bundle.putString(WYReadActivity.CHPTER_ID, mDataList.get(position).getChapterid());
+                                    bundle.putString(WYReadActivity.PAGE_ID, mDataList.get(position).getPosition()+"");
+                                    LogUtils.e(mDataList.get(position).getPosition()+" "+mDataList.get(position).getChapterid());
                                     startActivity(WYReadActivity.class, bundle);
                                 } else {
                                     CollBookBean bookBean = new CollBookBean(mDataList.get(position).getFuben_id(), mDataList.get(position).getName(), "", "",
@@ -661,7 +656,9 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);//
                                     bundle.putString(WYReadActivity.LOAD_PATH, mDataList.get(position).getNovelUrl());
-                                    bundle.putString(WYReadActivity.CHPTER_ID, mDataList.get(position).getPosition() + "");
+                                    bundle.putString(WYReadActivity.CHPTER_ID, mDataList.get(position).getChapterid());
+                                    bundle.putString(WYReadActivity.PAGE_ID, mDataList.get(position).getPosition()+"");
+                                    LogUtils.e(mDataList.get(position).getPosition()+" "+mDataList.get(position).getChapterid());
                                     startActivity(WYReadActivity.class, bundle);
                                 }
                             }

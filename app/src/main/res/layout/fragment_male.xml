@@ -2,15 +2,14 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/srv_male_refresh"
-    android:fitsSystemWindows="true"
-    android:background="@color/background_color"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:fitsSystemWindows="true">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,26 +23,26 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-<!--                <com.tmall.ultraviewpager.UltraViewPager-->
-<!--                    android:id="@+id/ultra_viewpager"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_centerInParent="true"-->
-<!--                    android:background="@android:color/darker_gray"-->
-<!--                    app:upv_autoscroll="3000"-->
-<!--                    app:upv_infiniteloop="true" />-->
+                <!--                <com.tmall.ultraviewpager.UltraViewPager-->
+                <!--                    android:id="@+id/ultra_viewpager"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_centerInParent="true"-->
+                <!--                    android:background="@android:color/darker_gray"-->
+                <!--                    app:upv_autoscroll="3000"-->
+                <!--                    app:upv_infiniteloop="true" />-->
                 <com.example.administrator.xiaoshuoyuedushenqi.banner.Banner
                     android:id="@+id/ultra_viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:background="@android:color/darker_gray"/>
+                    android:background="@android:color/darker_gray" />
                 <!--<com.jude.rollviewpager.RollPagerView-->
-                    <!--android:id="@+id/roll"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="100dp"-->
-                    <!--android:background="@drawable/bachground_white"-->
-                    <!--app:rollviewpager_play_delay="5000"/>-->
+                <!--android:id="@+id/roll"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:background="@drawable/bachground_white"-->
+                <!--app:rollviewpager_play_delay="5000"/>-->
                 <com.wzh.viewpager.indicator.UIndicator
                     android:id="@+id/indicator4"
                     android:layout_width="40dp"
@@ -78,11 +77,11 @@
                 android:layout_below="@id/banner"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:textStyle="bold"
                 android:layout_toRightOf="@id/iv_male_hot_rank_title"
                 android:text="@string/male_hot_rank_title"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/iv_item_category_more"
@@ -109,46 +108,51 @@
 
             <RelativeLayout
                 android:id="@+id/rv_new_title"
-                android:layout_below="@id/click_more"
                 android:layout_width="match_parent"
-                android:background="@color/background_color"
-                android:layout_height="50dp">
-            <View
-                android:layout_marginLeft="10dp"
-                android:layout_width="3dp"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:layout_height="20dp"
-                android:background="@color/red_aa"/>
-            <TextView
-                android:id="@+id/tv_item_category_category_name"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/item_category_second_height"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
-                android:text="新书快递"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:gravity="center"/>
-            <ImageView
-                android:id="@+id/iv_item_new_more"
-                android:layout_width="15dp"
-                android:layout_height="@dimen/item_category_second_height"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/item_category_more"
-                android:layout_marginEnd="17dp"
-                android:scaleType="centerInside"/>
-            <TextView
-                android:id="@+id/tv_item_new_more"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/item_category_second_height"
-                android:layout_toLeftOf="@id/iv_item_new_more"
-                android:text="更多"
-                android:textColor="@color/item_category_more"
-                android:textSize="@dimen/item_category_more_size"
-                android:gravity="center"/>
+                android:layout_height="50dp"
+                android:layout_below="@id/click_more"
+                android:background="@color/background_color">
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@color/red_aa" />
+
+                <TextView
+                    android:id="@+id/tv_item_category_category_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="25dp"
+                    android:gravity="center"
+                    android:text="新书快递"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/iv_item_new_more"
+                    android:layout_width="15dp"
+                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="17dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/item_category_more" />
+
+                <TextView
+                    android:id="@+id/tv_item_new_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_toLeftOf="@id/iv_item_new_more"
+                    android:gravity="center"
+                    android:text="更多"
+                    android:textColor="@color/item_category_more"
+                    android:textSize="@dimen/item_category_more_size" />
             </RelativeLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_male_hot_rank_recycler_view"
                 android:layout_width="match_parent"
@@ -162,52 +166,62 @@
 
             <RelativeLayout
                 android:id="@+id/click_more"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rv_male_hot_rank_recycler_view"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/bachground_btn"
                 android:textColor="@color/black"
-                android:visibility="gone"
-                android:background="@drawable/bachground_btn">
-
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:id="@+id/txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                android:visibility="gone">
+                <RelativeLayout
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:text="超多火爆热书看不停 "
-                    android:textSize="13sp"
-                    android:textColor="#FA5F4B" />
-                <ImageView
-                    android:layout_toRightOf="@id/txt"
-                    android:layout_width="20dp"
-                    android:tint="@color/red_aa"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/item_category_more"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="10dp"
+                        android:text="超多火爆热书看不停 "
+                        android:textColor="#FA5F4B"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/txt"
+                        android:src="@drawable/item_category_more"
+                        android:tint="@color/red_aa" />
+                </RelativeLayout>
             </RelativeLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_male_new_novel_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rv_new_title"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:nestedScrollingEnabled="false"
                 app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_male_category_novel_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rv_male_new_novel_list"
                 android:layout_marginTop="30dp"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:nestedScrollingEnabled="false"
                 app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view" />
 
             <ProgressBar

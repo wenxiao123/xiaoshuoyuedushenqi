@@ -52,6 +52,15 @@ public class BookRecordBean {
         return pagePos;
     }
 
+    @Override
+    public String toString() {
+        return "BookRecordBean{" +
+                "bookId='" + bookId + '\'' +
+                ", chapter=" + chapter +
+                ", pagePos=" + pagePos +
+                '}';
+    }
+
     public void setPagePos(int pagePos) {
         this.pagePos = pagePos;
     }

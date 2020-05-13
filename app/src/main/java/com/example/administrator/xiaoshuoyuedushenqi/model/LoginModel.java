@@ -47,17 +47,18 @@ public class LoginModel implements ILoginContract.Model {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
                     if(code.equals("1")){
-                        String data=jsonObject.getString("data");
+                        String data=jsonObject.getString("msg");
                         mPresenter.getVerticalSuccess(data);
                     }else {
                         mPresenter.getVerticalError("请求失败");
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                        mPresenter.getVerticalError("请求失败");
                 }
             }
 

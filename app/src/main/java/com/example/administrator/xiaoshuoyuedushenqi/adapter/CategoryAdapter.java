@@ -94,9 +94,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 mListener.clickMore(i);
             }
         });
-        Random myRandom = new Random();
-        int ranColor = 0xff000000 | myRandom.nextInt(0x00ffffff);
-        categoryViewHolder.colorv.setBackgroundColor(ranColor);
+        if(i==0){
+            categoryViewHolder.colorv.setBackgroundColor(mContext.getResources().getColor(R.color.js_color1));
+        }else if(i==1){
+            categoryViewHolder.colorv.setBackgroundColor(mContext.getResources().getColor(R.color.js_color2));
+        }else if(i==2){
+            categoryViewHolder.colorv.setBackgroundColor(mContext.getResources().getColor(R.color.js_color3));
+        }
+//        Random myRandom = new Random();
+//        int ranColor = 0xff000000 | myRandom.nextInt(0x00ffffff);
+//        categoryViewHolder.colorv.setBackgroundColor(ranColor);
     }
 
     @Override

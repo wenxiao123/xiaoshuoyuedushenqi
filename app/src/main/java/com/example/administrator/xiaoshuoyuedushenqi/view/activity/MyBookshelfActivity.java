@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,6 +205,9 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         mBookshelfNovelsAdapter.notifyDataSetChanged();
     }
     public void delectBookshelfadd(String token, String novel_id) {
+        if(novel_id==null){
+            return;
+        }
         String url = UrlObtainer.GetUrl()+"/"+"api/Userbook/del";
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
@@ -243,6 +247,12 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         for (int i = mDataList.size() - 1; i >= 0; i--) {
             if (mCheckedList.get(i)) {
                 // 从数据库中删除该小说
+                if(mDataList.get(i).getType()==1){
+                File file=new File((mDataList.get(i).getFuben_id()));
+                if(file.exists()){
+                    file.delete();
+                }
+                }
                 mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
                 mDbManager.deleteBookCalotaNovel(mDataList.get(i).getNovelUrl());
                 if(login_admin!=null){

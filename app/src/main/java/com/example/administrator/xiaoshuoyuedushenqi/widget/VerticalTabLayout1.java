@@ -516,7 +516,7 @@ public class VerticalTabLayout1 extends NestedScrollView {
             if (mIndicatorGravity == Gravity.LEFT) {
                 mIndicatorX = 0;
                 if (mLastWidth != 0) mIndicatorWidth = mLastWidth;
-                setPadding(mIndicatorWidth, 0, 0, 0);
+                setPadding(mIndicatorWidth, 0, 10, 0);
             } else if (mIndicatorGravity == Gravity.RIGHT) {
                 if (mLastWidth != 0) mIndicatorWidth = mLastWidth;
                 setPadding(0, 0, mIndicatorWidth, 0);

@@ -3,20 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-
-    <View
-        android:id="@+id/v_item_category_top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_category_first_height"
-        android:background="@color/background_color"/>
     <RelativeLayout
         android:id="@+id/rv_title"
-        android:layout_below="@id/v_item_category_top_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp">
     <View
         android:id="@+id/color"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_width="3dp"
         android:layout_centerVertical="true"
         android:layout_marginTop="12dp"
@@ -29,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/item_category_second_height"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="25dp"
         android:text="@string/item_category_category_name"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -61,5 +54,10 @@
         android:layout_below="@id/rv_title"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"/>
-
+    <View
+        android:layout_below="@id/rv_item_category_novel_list"
+        android:id="@+id/v_item_category_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@color/background_color"/>
 </RelativeLayout>

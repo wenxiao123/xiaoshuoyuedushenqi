@@ -29,6 +29,9 @@ import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.ReadcoredPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
@@ -42,10 +45,16 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implements IReakcoredContract.View {
     private DatabaseManager mDbManager;
@@ -153,9 +162,6 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-//               Intent intent=new Intent(ReadrecoderActivity.this,MainActivity.class);
-//               intent.putExtra("is_naghit","3");
-//               startActivity(intent);
                 Intent intent_recever = new Intent("com.zhh.android");
                 intent_recever.putExtra("type",3);
                 sendBroadcast(intent_recever);
@@ -208,8 +214,42 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         recyclerView.setVisibility(View.VISIBLE);
         noval_readcoreds.clear();
         setRecyclerViewData(novelNameList);
+//        for(int i=0;i<novelNameList.size();i++){
+//            if (login_admin != null) {
+//                setReadRecord(login_admin.getToken(), novelNameList.get(i).getNovel_id(), novelNameList.get(i).getChapter_id()+ "");
+//            }
+//        }
     }
+    public void setReadRecord(String token, String novel_id, String chapter_id) {
+        String url = UrlObtainer.GetUrl() + "/" + "/api/lookbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("novel_id", novel_id)
+                .add("chapter_id", chapter_id)
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        String message = jsonObject.getString("msg");
+                        //getReadRecordSuccess(message);
+                    } else {
+                        showShortToast("请求错误");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast("请求错误");
+            }
+        });
+    }
     public void setRecyclerViewData(List<Noval_Readcored> novelNameList) {
         if (isRefresh == true) {
             noval_readcoreds.clear();

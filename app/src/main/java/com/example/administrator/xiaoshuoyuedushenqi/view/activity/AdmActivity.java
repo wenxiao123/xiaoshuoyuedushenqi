@@ -28,6 +28,7 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
+import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity_other;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BasePresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
@@ -69,7 +70,7 @@ import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getAppContex
 import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getContext;
 
 
-public class AdmActivity extends BaseActivity implements View.OnClickListener {
+public class AdmActivity extends BaseActivity_other implements View.OnClickListener {
     public final int MSG_FINISH_LAUNCHERACTIVITY = 500;
     DatabaseManager databaseManager;
     //private TextView mCountDownTextView;

@@ -242,14 +242,6 @@ public class PageView extends View {
         //根据路径得到Typeface
         Typeface tf = null;
         if(type!=null&&!type.equals("")) {
-//            File file = new File(path);
-//            if (!file.exists()) {
-//                file.getParentFile().mkdirs();
-//            }
-//            if(file.exists()) {
-//                tf = Typeface.createFromFile(file);
-//                textPaint.setTypeface(tf);
-//            }
             //从asset 读取字体
             AssetManager mgr = getContext().getAssets();
 //根据路径得到Typeface

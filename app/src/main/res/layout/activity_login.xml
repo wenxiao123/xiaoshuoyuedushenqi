@@ -48,13 +48,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:scaleY="0.9"
-            android:scaleX="0.9"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
             android:src="@mipmap/phone_number" />
 
         <TextView
+            android:layout_marginLeft="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -98,9 +98,10 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="50dp"
-        android:background="@color/gray_a3" />
+        android:background="#CECED9" />
 
     <TextView
+        android:layout_marginTop="5dp"
         android:id="@+id/tv_notice_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -124,13 +125,12 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:scaleY="0.9"
-                android:scaleX="0.9"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@mipmap/yanzhengma" />
 
             <EditText
+                android:layout_marginLeft="10dp"
                 android:id="@+id/et_vertical"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -165,14 +165,14 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="50dp"
-        android:background="@color/gray_a3" />
+        android:background="#CECED9" />
 
     <TextView
         android:id="@+id/tv_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="50dp"
         android:background="@drawable/bachground_ash"
         android:gravity="center"
@@ -186,7 +186,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="15dp">
 
         <ImageView
             android:id="@+id/img_select"

@@ -12,6 +12,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Text;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.BookRecordBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.helper.CollBookHelper;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Charset;
@@ -51,8 +52,8 @@ public class OtherNetPageLoader extends PageLoader{
 
     //初始化书籍
     @Override
-    public void openBook(CollBookBean collBook){
-        super.openBook(collBook);
+    public void openBook(CollBookBean collBook, BookRecordBean bookRecordBean){
+        super.openBook(collBook,bookRecordBean);
        // Log.e("QQQ2", "openBook: "+222);
         isBookOpen = false;
         //if (collBook.getBookChapters() == null) return;

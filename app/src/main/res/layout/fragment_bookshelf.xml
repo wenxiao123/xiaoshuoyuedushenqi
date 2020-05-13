@@ -48,7 +48,7 @@
                 android:text="@string/main_bottom_bar_bookshelf"
                 android:textStyle="bold"
                 android:textColor="@color/item_hot_rank_rank_bg"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:gravity="center" />
         </RelativeLayout>
     </LinearLayout>

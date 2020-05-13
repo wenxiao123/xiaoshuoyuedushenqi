@@ -109,6 +109,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                             .error(R.drawable.cover_error)
                             .transform(transformation))
                     .into(contentViewHolder.cover);
+            Log.e("QQQ", "onBindViewHolder: "+mDataList.get(i).getCover());
             contentViewHolder.img_add.setVisibility(View.GONE);
             //contentViewHolder.tv_status.setVisibility(View.VISIBLE);
             contentViewHolder.tv_position.setVisibility(View.VISIBLE);

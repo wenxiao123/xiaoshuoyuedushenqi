@@ -54,7 +54,7 @@ public class BookstoreAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         return new ContentViewHolder(LayoutInflater.from(mContext).inflate(
-                R.layout.item_bookstore, null));
+                R.layout.item_bookstore, viewGroup,false));
     }
 
     @Override

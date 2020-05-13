@@ -253,6 +253,7 @@ public class VMBookContentInfo extends BaseViewModel {
     String content;
 
     private void Analysisbiquge(String svrInfo, String div) throws IOException {
+        Log.e("QQQ", "Analysisbiquge: "+svrInfo+" "+div);
        try {
            Document doc = Jsoup.connect(svrInfo).get();
            title = doc.body().select("h1").text();
@@ -260,11 +261,9 @@ public class VMBookContentInfo extends BaseViewModel {
            if(div==null){
                div="#content";
            }
-           String regFormat = "\\s*|\t|\r|\n";
-           String regTag = "<[^>]*>";
            elements = doc.body().select(div);
            content = "转码阅读：" +getTextFromHtml(elements.html());// elements.html().replaceAll(regFormat,"").replaceAll(regTag,"");
-           Log.e("QQQ", "Analysisbiquge: "+getTextFromHtml(elements.html()));
+           Log.e("QQQ2", "Analysisbiquge: "+content);
            BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title.replace(" ",""), content);
            //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
            iBookChapters.finishChapters();

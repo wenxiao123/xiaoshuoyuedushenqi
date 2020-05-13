@@ -106,9 +106,13 @@ public class EnhanceTabLayout extends FrameLayout {
                     if (i == tab.getPosition()) { // 选中状态
                         text.setTextColor(mSelectTextColor);
                         text.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                        text.setScaleX(1.1F);
+                        text.setScaleY(1.1F);
                         //indicator.setBackgroundColor(mSelectIndicatorColor);
                         indicator.setVisibility(View.VISIBLE);
                     } else {// 未选中状态
+                        text.setScaleX(1F);
+                        text.setScaleY(1F);
                         text.setTypeface(Typeface.DEFAULT);
                         text.setTextColor(mUnSelectTextColor);
                         indicator.setVisibility(View.INVISIBLE);
@@ -235,7 +239,7 @@ public class EnhanceTabLayout extends FrameLayout {
 //            layoutParams.height = indicatorHeight;
 //            indicator.setLayoutParams(layoutParams);
 //        }
-        //tabText.setTextSize(textSize);
+        tabText.setTextSize(textSize);
         tabText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         tabText.setText(text);
         return view;

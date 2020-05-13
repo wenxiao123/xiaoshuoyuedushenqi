@@ -147,8 +147,11 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         file_path = getIntent().getStringExtra(KEY_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
+        activity_type = getIntent().getStringExtra("ACTIVITY_TYPE");
         pid=getIntent().getStringExtra(KEY_ID);
+        chapter_id = getIntent().getIntExtra("chapter_id", 0);
         mPosition = getIntent().getIntExtra(KEY_POSTION, 0);
+        Log.e("QQQ", "initData: "+chapter_id);
         queryBookMarks(pid);
         //txtChapters = (List<TxtChapter>) getIntent().getSerializableExtra("MSPANSCOMMIT");
     }
@@ -409,7 +412,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
 
         return charset;
     }
-
+    int chapter_id;
     List<Chapter> chapter = new ArrayList<>();
 
     @Override
@@ -429,6 +432,8 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
             mErrorPageTv.setVisibility(View.GONE);
             mCatalogListRv.setVisibility(View.VISIBLE);
             initAdapter();
+            mCatalogAdapter.setPosition(chapter_id);
+            mCatalogListRv.scrollToPosition(chapter_id);
             mCatalogListRv.setAdapter(mCatalogAdapter);
             mChapterCountTv.setText("共" + txtChapters.size() + "章");
         }
@@ -493,6 +498,7 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         intent.putExtras(bundle);
         startActivity(intent);
     }
+    String activity_type;
     private void initBookMarkAdapter() {
         bookAdapter = new BookMarkAdapter(this, bookmarkNovelDbDatas, mChapterNameList, longs);
         bookAdapter.setOnCatalogListener(new BookMarkAdapter.CatalogListener() {
@@ -502,6 +508,9 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     showShortToast("当前无网络，请检查网络后重试");
                     return;
                 }
+                String s_id = bookmarkNovelDbDatas.get(position).getChapterid();
+                String page_id = (bookmarkNovelDbDatas.get(position).getPosition()) + "";
+                if (activity_type != null && activity_type.equals("NovelIntroActivity")) {
                 // 点击 item，跳转到相应小说阅读页
                 CollBookBean bookBean=new CollBookBean(file_path, mName, "", "",
                         mCover, false, 0,0,
@@ -523,6 +532,13 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
                     mReadActivity.finish();
                 }
                 finish();
+            }else {
+                    Intent intent_recever = new Intent("com.read.android");
+                    intent_recever.putExtra("chpter", Integer.parseInt(s_id));
+                    intent_recever.putExtra("page_id", Integer.parseInt(page_id));
+                    sendBroadcast(intent_recever);
+                    finish();
+                }
             }
         });
         bookAdapter.setOnCatalogLongListener(new BookMarkAdapter.CatalogLongListener() {

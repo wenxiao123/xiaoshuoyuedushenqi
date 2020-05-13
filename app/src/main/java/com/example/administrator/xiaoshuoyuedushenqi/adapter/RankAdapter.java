@@ -100,6 +100,11 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.NovelViewHolde
         novelViewHolder.author.setText(mList.get(position).getCategory_name());
         novelViewHolder.cata.setText(" | "+mList.get(position).getAuthor());
         novelViewHolder.tv_item_rating.setVisibility(View.GONE);
+        if(position==0){
+            novelViewHolder.v_line.setVisibility(View.GONE);
+        }else {
+            novelViewHolder.v_line.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -116,6 +121,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.NovelViewHolde
         ImageView cover,iv_rank;
         TextView title;
         TextView author,cata;
+        View v_line;
         TextView shortInfo,tv_item_rating;
 
         public NovelViewHolder(@NonNull View itemView) {
@@ -127,6 +133,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.NovelViewHolde
             author = itemView.findViewById(R.id.tv_item_novel_author);
             shortInfo = itemView.findViewById(R.id.tv_item_novel_short_info);
             cata=itemView.findViewById(R.id.tv_item_novel_cata);
+            v_line=itemView.findViewById(R.id.v_line);
         }
     }
 }

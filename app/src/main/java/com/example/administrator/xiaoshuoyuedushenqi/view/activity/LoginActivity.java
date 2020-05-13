@@ -87,7 +87,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
             @Override
             public void onClick(View view) {
                 if(isPhoneNumber(et_mobile_phone.getText().toString())){
-                   // mPresenter.getVertical(et_mobile_phone.getText().toString());
+                    mPresenter.getVertical(et_mobile_phone.getText().toString());
+                    showShortToast("已发送");
+                    tv_verification.setEnabled(false);
                 }else {
                     showShortToast("电话号码格式错误！");
                 }
@@ -250,22 +252,31 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
 
     @Override
     public void getVerticalSuccess(String code) {
-        if(code!=null&&code.equals("1")) {
-            //time.start();
+        if(code!=null) {
+           showShortToast(code);
         }
+        tv_verification.setEnabled(true);
+        time.start();
     }
 
     @Override
     public void getVerticalError(String errorMsg) {
         showShortToast(errorMsg);
+        tv_verification.setEnabled(true);
     }
 
     @Override
     public void getLoginSuccess(Login_admin loginAdminl) {
         SpUtil.saveObject(this, loginAdminl);
+        Log.e("EEE", "getLoginSuccess: "+loginAdminl.getToken());
         if (loginAdminl != null) {
             startActivity(new Intent(this, MainActivity.class));
         }
+        Intent recever = new Intent("com.name.android");
+        sendBroadcast(recever);
+        Intent intent_recever = new Intent("com.zhh.android");
+        intent_recever.putExtra("type", 1);
+        sendBroadcast(intent_recever);
         //Login_admin login_admin= (Login_admin) SpUtil.readObject(this);
         //Log.e("AAA", "getLoginSuccess: "+login_admin);
     }
@@ -315,7 +326,5 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent recever = new Intent("com.name.android");
-        sendBroadcast(recever);
     }
 }

@@ -97,7 +97,7 @@ public class CacheService extends Service {
                 String progress;
                 if (((z-1)*post_num+(j+1)) < weigh) {
                     //CacheService.this.callback.onDataChange("正在缓存:" +(int)pressent + "%",id);
-                    progress="正在缓存:" +(int)pressent + "%";
+                    progress="缓存中:" +(int)pressent + "%";
                 } else {
                    // CacheService.this.callback.onDataChange("已缓存",id);
                     progress="已缓存";
@@ -123,7 +123,7 @@ public class CacheService extends Service {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                //Log.e("QQQ", "onResponse: "+json);
+              //  Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");

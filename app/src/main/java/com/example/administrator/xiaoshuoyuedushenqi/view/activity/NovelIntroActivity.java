@@ -147,6 +147,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     private LinearLayout l_all;
     String pid;
     RelativeLayout r_share;
+    RelativeLayout title_rel;
     //ConstraintLayout constraintLayout;
     ProgressBar progressBar;
     Login_admin login_admin;
@@ -189,6 +190,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initView() {
+        title_rel=findViewById(R.id.title_rel);
         l_collect = findViewById(R.id.l_collect);
         img_collect = findViewById(R.id.img_collect);
         iv_tuijian = findViewById(R.id.iv_tuijian);
@@ -426,166 +428,178 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_novel_intro_novel_introduce:
-                // 是否显示小说简介的全部内容
-                if (mMoreIntroduceIv.getVisibility() != View.VISIBLE &&
-                        mNovelIntroduceTv.getMaxLines() != Integer.MAX_VALUE) {
-                    return;
-                }
-                if (mNovelIntroduceTv.getMaxLines() != Integer.MAX_VALUE) {
-                    mMoreIntroduceIv.setVisibility(View.GONE);
-                    mNovelIntroduceTv.setMaxLines(Integer.MAX_VALUE);
-                } else {
-                    mNovelIntroduceTv.setMaxLines(NOVEL_INTRODUCE_MAX_LINES);
-                    mMoreIntroduceIv.setVisibility(View.VISIBLE);
-                }
-                break;
-            case R.id.iv_novel_intro_back:
-                finish();
-                break;
-            case R.id.l_catalog:
-                if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-                    Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
-                    intent.putExtra("ACTIVITY_TYPE","NovelIntroActivity");
-                    intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
-                    intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
-                    intent.putExtra("weigh", weigh);
-                    intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
-                    intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-                    intent.putExtra(CatalogActivity.KEY_URL, pid);
-                    startActivity(intent);
-                } else {
-                    BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
-                    Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
-                    intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
-                    intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
-                    intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
-                    intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
-                    startActivity(intent);
-                }
-                break;
-            case R.id.tv_book_add:
-                if (mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-                    tv_book_add.setText("加入书架");
-                    File file = new File(path + ".txt");
-                    file.delete();
-                    mDbManager.deleteBookshelfNovel(path + ".txt");
-                } else {
-                    if (mDbManager.isExistInBookshelfNovel(pid)) {
-                        tv_book_add.setText("加入书架");
-                        mDbManager.deleteBookshelfNovel(pid.trim());
-                        // Log.e("QQQ", "onClick: "+pid);
-                        if (login_admin != null) {
-                            delectBookshelfadd(login_admin.getToken(), pid);
-                        }
+        try {
+            switch (v.getId()) {
+                case R.id.tv_novel_intro_novel_introduce:
+                    // 是否显示小说简介的全部内容
+                    if (mMoreIntroduceIv.getVisibility() != View.VISIBLE &&
+                            mNovelIntroduceTv.getMaxLines() != Integer.MAX_VALUE) {
+                        return;
+                    }
+                    if (mNovelIntroduceTv.getMaxLines() != Integer.MAX_VALUE) {
+                        mMoreIntroduceIv.setVisibility(View.GONE);
+                        mNovelIntroduceTv.setMaxLines(Integer.MAX_VALUE);
                     } else {
-                        tv_book_add.setText("移出书架");
-                        //String novelUrl, String name, String cover, int position, int type, int secondPosition, String chapterid, int weight, String status
-                        BookshelfNovelDbData dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
-                                noval_details.getPic(), 0, 0, 0, 0 + "", weigh, noval_details.getSerialize() + "");
-                        mDbManager.insertOrUpdateBook(dbData);
-                        if (login_admin != null) {
-                            setBookshelfadd(login_admin.getToken(), pid);
+                        mNovelIntroduceTv.setMaxLines(NOVEL_INTRODUCE_MAX_LINES);
+                        mMoreIntroduceIv.setVisibility(View.VISIBLE);
+                    }
+                    break;
+                case R.id.iv_novel_intro_back:
+                    finish();
+                    break;
+                case R.id.l_catalog:
+                    if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                        intent.putExtra("weigh", weigh);
+                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
+                        intent.putExtra(CatalogActivity.KEY_URL, pid);
+                        startActivity(intent);
+                    } else {
+                        BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+                        Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
+                        intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
+                        intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
+                        intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
+                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+                        startActivity(intent);
+                    }
+                    break;
+                case R.id.tv_book_add:
+                    if (mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+                        tv_book_add.setText("加入书架");
+                        File file = new File(path + ".txt");
+                        file.delete();
+                        mDbManager.deleteBookshelfNovel(path + ".txt");
+                    } else {
+                        if (mDbManager.isExistInBookshelfNovel(pid)) {
+                            tv_book_add.setText("加入书架");
+                            mDbManager.deleteBookshelfNovel(pid.trim());
+                            // Log.e("QQQ", "onClick: "+pid);
+                            if (login_admin != null) {
+                                delectBookshelfadd(login_admin.getToken(), pid);
+                            }
+                        } else {
+                            tv_book_add.setText("移出书架");
+                            //String novelUrl, String name, String cover, int position, int type, int secondPosition, String chapterid, int weight, String status
+                            BookshelfNovelDbData dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
+                                    noval_details.getPic(), 0, 0, 0, 0 + "", weigh, noval_details.getSerialize() + "");
+                            mDbManager.insertOrUpdateBook(dbData);
+                            if (login_admin != null) {
+                                setBookshelfadd(login_admin.getToken(), pid);
+                            }
                         }
                     }
-                }
-                Intent intent_recever = new Intent("com.zhh.android");
-                intent_recever.putExtra("type",1);
-                sendBroadcast(intent_recever);
-                break;
-            case R.id.txt_book_load:
-                if (!txt_book_load.getText().equals("已缓存")) {
+                    Intent intent_recever = new Intent("com.zhh.android");
+                    intent_recever.putExtra("type", 1);
+                    sendBroadcast(intent_recever);
+                    break;
+                case R.id.txt_book_load:
+                    if (!txt_book_load.getText().equals("已缓存")) {
 //                    Intent servive_intent = new Intent(NovelIntroActivity.this, CacheService.class);
 //                    bindService(servive_intent, conn, BIND_AUTO_CREATE);
-                    txt_book_load.setText("缓存中：0%");
-                    txt_book_load.setEnabled(false);
-                    String load_id=App.getInstance().getPosition();
-                    if(load_id!=null&&!load_id.equals(pid)) {
-                        txt_book_load.setText("已加入缓存序列");
-                        DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
-                        myBinder.che(downBean);
-                        Is_load = true;
-                    }else if(load_id!=null&&load_id.equals(pid)){
-                        txt_book_load.setText("本小说正在缓存中");
-                    }else {
-                        DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
-                        myBinder.che(downBean);
+                        txt_book_load.setText("缓存中：0%");
+                        txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
+                        txt_book_load.setEnabled(false);
+                        String load_id = App.getInstance().getPosition();
+                        if (load_id != null && !load_id.equals(pid)) {
+                            txt_book_load.setText("已加入缓存序列");
+                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                            myBinder.che(downBean);
+                            Is_load = true;
+                        } else if (load_id != null && load_id.equals(pid)) {
+                            txt_book_load.setText("缓存中...");
+                        } else {
+                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                            myBinder.che(downBean);
+                        }
                     }
-                }
-                break;
-            case R.id.txt_read:
-                BookshelfNovelDbData bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
-                if (bookshelfNovelDbData1 != null && is_Cache == false) {
-                    CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
-                            noval_details.getPic(), false, 0, 0,
-                            "", "", weigh, "",
-                            false, false);
-                    List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
-                    Collections.reverse(cataloginfos);
-                    bookBean.setCataloginfos(cataloginfos);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                    bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                    bundle.putString(WYReadActivity.CHPTER_ID, Integer.parseInt(bookshelfNovelDbData1.getChapterid()) + "");
-                    startActivity(WYReadActivity.class, bundle);
-                } else if (bookshelfNovelDbData1 != null && is_Cache == true) {
-                    CollBookBean bookBean = new CollBookBean(bookshelfNovelDbData1.getFuben_id(), noval_details.getTitle(), noval_details.getAuthor(), "",
-                            noval_details.getPic(), false, 0, 0,
-                            "", "", weigh, "",
-                            false, true);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                    bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                    bundle.putString(WYReadActivity.CHPTER_ID, 0 + "");
-                    startActivity(WYReadActivity.class, bundle);
-                } else {
-                    CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
-                            noval_details.getPic(), false, 0, 0,
-                            "", "", weigh, "",
-                            false, false);
-                    List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
-                    Collections.reverse(cataloginfos);
-                    bookBean.setCataloginfos(cataloginfos);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                    bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                    bundle.putString(WYReadActivity.CHPTER_ID, 0 + "");
-                    startActivity(WYReadActivity.class, bundle);
-                }
+                    break;
+                case R.id.txt_read:
+                    BookshelfNovelDbData bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
+                    if (bookshelfNovelDbData1 != null && is_Cache == false) {
+                        CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
+                                noval_details.getPic(), false, 0, 0,
+                                "", "", weigh, "",
+                                false, false);
+                        List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
+                        Collections.reverse(cataloginfos);
+                        bookBean.setCataloginfos(cataloginfos);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                        bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                        bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
+                        bundle.putString(WYReadActivity.CHPTER_ID, bookshelfNovelDbData1.getChapterid() + "");
+                        bundle.putString(WYReadActivity.PAGE_ID, bookshelfNovelDbData1.getPosition() + "");
+                        startActivity(WYReadActivity.class, bundle);
+                    }
+//                    else if (bookshelfNovelDbData1 != null && is_Cache == true) {
+//                        CollBookBean bookBean = new CollBookBean(bookshelfNovelDbData1.getFuben_id(), noval_details.getTitle(), noval_details.getAuthor(), "",
+//                                noval_details.getPic(), false, 0, 0,
+//                                "", "", weigh, "",
+//                                false, true);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+//                        bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+//                        bundle.putString(WYReadActivity.CHPTER_ID, bookshelfNovelDbData1.getChapterid() + "");
+//                        bundle.putString(WYReadActivity.PAGE_ID, bookshelfNovelDbData1.getPosition() + "");
+//                        bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
+//                        startActivity(WYReadActivity.class, bundle);
+//                    }
+                    else {
+                        CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
+                                noval_details.getPic(), false, 0, 0,
+                                "", "", weigh, "",
+                                false, false);
+                        List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
+                        Collections.reverse(cataloginfos);
+                        bookBean.setCataloginfos(cataloginfos);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                        bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                        bundle.putString(WYReadActivity.CHPTER_ID, 0 + "");
+                        bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
+                        startActivity(WYReadActivity.class, bundle);
+                    }
 
-                break;
-            case R.id.l_share:
-                WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                DisplayMetrics metric = new DisplayMetrics();
-                wm.getDefaultDisplay().getMetrics(metric);
-                int viewWidth = metric.widthPixels;
-                showPupowindpw(viewWidth);
-                break;
-            case R.id.tv_novel_intro_catalog:
-                if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-                    Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
-                    intent.putExtra("ACTIVITY_TYPE","NovelIntroActivity");
-                    intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
-                    intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
-                    intent.putExtra("weigh", weigh);
-                    intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
-                    intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-                    intent.putExtra(CatalogActivity.KEY_URL, pid);
-                    startActivity(intent);
-                } else {
-                    BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
-                    Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
-                    intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
-                    intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
-                    intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
-                    intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
-                    startActivity(intent);
-                }
-                break;
-            default:
-                // hideSettingBar();
-                break;
+                    break;
+                case R.id.l_share:
+                    WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+                    DisplayMetrics metric = new DisplayMetrics();
+                    wm.getDefaultDisplay().getMetrics(metric);
+                    int viewWidth = metric.widthPixels;
+                    showPupowindpw(viewWidth);
+                    break;
+                case R.id.tv_novel_intro_catalog:
+                    if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                        intent.putExtra("weigh", weigh);
+                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
+                        intent.putExtra(CatalogActivity.KEY_URL, pid);
+                        startActivity(intent);
+                    } else {
+                        BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+                        Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
+                        intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
+                        intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
+                        intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
+                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+                        startActivity(intent);
+                    }
+                    break;
+                default:
+                    // hideSettingBar();
+                    break;
+            }
+        }catch (Exception ex){
+            finish();
         }
     }
 
@@ -725,7 +739,8 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         super.onResume();
         String load_id=App.getInstance().getPosition();
         if(load_id!=null&&load_id.equals(pid)){
-            txt_book_load.setText("本小说正在缓存中");
+            txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
+            txt_book_load.setText("缓存中...");
         }
     }
 
@@ -940,6 +955,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void getNovelsSuccess(Noval_details noval_details, List<Noval_details> novalDetails) {
+       if(novalDetails.size()==0){
+           title_rel.setVisibility(View.GONE);
+       }
         if (j <= 1) {
             l_all.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -962,24 +980,24 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             } else {
                 adapter.notifyDataSetChanged();
             }
+            Log.e("QQQ", "getNovelsSuccess: "+noval_details.getId());
             BookshelfNovelDbData novelDbData = mDbManager.selectBookshelfNovel(noval_details.getId() + "");
-            // Log.e("QQQ", "getNovelsSuccess: "+noval_details.getId()+" "+novelDbData);
             path = Constant.BOOK_ADRESS + "/" + noval_details.getTitle();
             File file = new File(path + ".txt");
-            if (novelDbData != null && file.exists() && novelDbData.getNovelUrl().equals(noval_details.getId() + "")) {
-                txt_book_load.setText("已缓存");
-                tv_book_add.setText("移除书架");
-                is_Cache = true;
-                txt_book_load.setClickable(false);
-                if (mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ReadData(path + ".txt", paragraphData);
-                        }
-                    }).start();
-                }
-            }
+            //            if (novelDbData != null && file.exists() && novelDbData.getNovelUrl().equals(noval_details.getId() + "")) {
+//                txt_book_load.setText("已缓存");
+//                tv_book_add.setText("移除书架");
+//                is_Cache = true;
+//                txt_book_load.setClickable(false);
+//                if (mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            ReadData(path + ".txt", paragraphData);
+//                        }
+//                    }).start();
+//                }
+//            }
             recycle_book.setAdapter(adapter);
             mNovelIntroduceTv.setText(noval_details.getContent());
             mNovelNameTv.setText(noval_details.getTitle());
@@ -1005,8 +1023,8 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 url = UrlObtainer.GetUrl()+"/"+ noval_details.getPic();
             }
             //iv_tuijian
-            new QBadgeView(this).bindTarget(img_collect).setBadgeGravity(Gravity.END | Gravity.TOP).setBadgeNumber(noval_details.getFavorites());
-            new QBadgeView(this).bindTarget(iv_tuijian).setBadgeGravity(Gravity.END | Gravity.TOP).setBadgeNumber(noval_details.getPosition());
+            new QBadgeView(this).bindTarget(img_collect).setBadgeGravity(Gravity.END | Gravity.TOP).setBadgeBackgroundColor(Color.parseColor("#FF0000")).setBadgeNumber(noval_details.getFavorites());
+            new QBadgeView(this).bindTarget(iv_tuijian).setBadgeGravity(Gravity.END | Gravity.TOP).setBadgeBackgroundColor(Color.parseColor("#FF0000")).setBadgeNumber(noval_details.getPosition());
             CornerTransform transformation = new CornerTransform(this, 10);
             Glide.with(this)
                     .load(url)

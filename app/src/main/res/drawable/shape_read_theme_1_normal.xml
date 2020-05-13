@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@color/hwtxtreader_styleclor2"/>
+    <solid android:color="@color/hwtxtreader_styleclor1"/>
     <corners android:radius="@dimen/read_theme_radius"/>
 </shape>

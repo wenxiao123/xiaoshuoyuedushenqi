@@ -85,20 +85,21 @@ public class TextStyleAdapter extends RecyclerView.Adapter<TextStyleAdapter.Scre
         if(i==0) {
             tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
         }else if(i==1) {
-            tf = Typeface.createFromAsset(mgr, "font/方正卡通简体.ttf");
+            tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
         }else if(i==2) {
-            tf = Typeface.createFromAsset(mgr, "font/方正楷体.ttf");
+            tf = Typeface.createFromAsset(mgr,  Constant.text_adress2);
         }else if(i==3) {
-            tf = Typeface.createFromAsset(mgr, "font/流行体简体.ttf");
+            tf = Typeface.createFromAsset(mgr,  Constant.text_adress3);
         }else if(i==4) {
-            tf = Typeface.createFromAsset(mgr, "font/华康圆体W7.ttf");
+            tf = Typeface.createFromAsset(mgr,  Constant.text_adress4);
         }
         screenViewHolder.text.setTypeface(tf);
         screenViewHolder.text.setText(textStyles.get(i).getName());
-       // Log.e("WWW", "onBindViewHolder: "+textStyles.get(i));
         if (position == i) {
+            screenViewHolder.text.setTextColor(mContext.getResources().getColor(R.color.yellow));
             screenViewHolder.img.setVisibility(View.VISIBLE);
         } else {
+            screenViewHolder.text.setTextColor(mContext.getResources().getColor(R.color.black));
             screenViewHolder.img.setVisibility(View.GONE);
         }
             screenViewHolder.txt.setVisibility(View.GONE);

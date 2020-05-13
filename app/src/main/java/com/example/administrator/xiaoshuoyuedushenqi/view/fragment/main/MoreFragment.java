@@ -484,7 +484,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
     public class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            login_admin = (Login_admin) SpUtil.readObject(getContext());
+            login_admin = (Login_admin) SpUtil.readObject(context);
+            Log.e("EEE", "onReceive: "+login_admin.getToken());
             postMessage();
         }
     }

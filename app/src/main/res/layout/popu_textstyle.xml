@@ -44,7 +44,7 @@ android:orientation="vertical"
     android:id="@+id/ts_recyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp" />
+    />
     <ProgressBar
         android:id="@+id/pb_novel"
         style="?android:attr/progressBarStyle"

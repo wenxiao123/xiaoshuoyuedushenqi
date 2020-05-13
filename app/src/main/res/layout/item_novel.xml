@@ -2,33 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:scaleY="0.9"
-    android:scaleX="0.9"
-    android:padding="10dp">
+    android:paddingBottom="25dp">
 
     <!-- cover -->
     <ImageView
+        android:layout_marginTop="25dp"
         android:id="@+id/iv_item_novel_cover"
-        android:layout_width="95dp"
-        android:layout_height="128dp"
-        android:scaleX="0.9"
-        android:scaleY="0.9"
+        android:layout_marginStart="15dp"
+        android:layout_width="75dp"
+        android:layout_height="100dp"
         android:scaleType="fitXY"
         android:src="@drawable/default_cover"
         android:layout_alignParentStart="true" />
     <ImageView
+        android:layout_marginTop="25dp"
         android:visibility="gone"
         android:layout_alignParentRight="true"
         android:id="@+id/iv_rank"
-        android:layout_width="25dp"
-        android:layout_height="30dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="27dp"
+        android:layout_height="32dp"
         android:src="@mipmap/no_1"
        />
     <TextView
+        android:layout_marginTop="25dp"
         android:id="@+id/tv_item_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="9.5"
+        android:layout_marginRight="15dp"
         android:textColor="@color/red_aa"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -38,6 +40,7 @@
         android:ellipsize="end"/>
     <!-- name -->
     <TextView
+        android:layout_marginTop="25dp"
         android:id="@+id/tv_item_novel_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/item_novel_source_text_margin_start"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="0dp"
         android:text="@string/item_novel_source_author"
         android:textColor="@color/text_color"
@@ -75,7 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="@dimen/item_novel_source_text_margin_end"
         android:text="@string/item_novel_source_author"
         android:textColor="@color/text_color"
@@ -89,20 +92,19 @@
     <TextView
         android:id="@+id/tv_item_novel_short_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="@dimen/item_novel_source_text_margin_start"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/item_novel_source_text_margin_end"
         android:text="@string/item_novel_source_introduce"
         android:textColor="@color/item_novel_source_introduce"
         android:textSize="14sp"
         android:layout_below="@id/tv_item_novel_author"
         android:layout_toEndOf="@id/iv_item_novel_cover"
-        android:maxLines="4"
+        android:maxLines="2"
         android:ellipsize="end"/>
 <View
-    android:layout_marginTop="20dp"
-    android:layout_below="@id/iv_item_novel_cover"
+    android:id="@+id/v_line"
     android:background="#AFB4B8"
     android:layout_width="match_parent"
     android:layout_height="0.5dp"/>

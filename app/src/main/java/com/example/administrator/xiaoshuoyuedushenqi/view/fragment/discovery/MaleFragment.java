@@ -130,7 +130,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
             }
         });
         mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view);
-        mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 4));
         mCategoryNovelRv = getActivity().findViewById(R.id.rv_male_category_novel_list);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         mNewRv=getActivity().findViewById(R.id.rv_male_new_novel_list);
@@ -304,24 +304,27 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     /**
      * 获取热门排行榜数据成功
      */
+    List<CategoryNovels> categoryNovelsList=new ArrayList<>();
     @Override
-    public void getHotRankDataSuccess(List<CategoryNovels> novelNameList) {
+    public void getHotRankDataSuccess(List<CategoryNovels> novelNameList_one) {
+        categoryNovelsList.clear();
+        for(int i=0;i<novelNameList_one.size();i++){
+            if(novelNameList_one.get(i).getData_list().size()!=0){
+                categoryNovelsList.add(novelNameList_one.get(i));
+            }
+        }
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
-        if (novelNameList.isEmpty()) {
+        if (categoryNovelsList.isEmpty()) {
             return;
         }
-        //this.novelNameList = novelNameList;
+        this.novelNameList = categoryNovelsList;
         if (mCategoryAdapter == null) {
-            this.novelNameList = novelNameList;
             initCategoryAdapter();
         } else {
-            this.novelNameList.clear();
-            this.novelNameList.addAll(novelNameList);
             mCategoryAdapter.notifyDataSetChanged();
         }
     }
-
     /**
      * 获取热门排行榜数据失败
      */
