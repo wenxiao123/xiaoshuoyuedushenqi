@@ -21,16 +21,23 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.security.auth.login.LoginException;
@@ -166,6 +173,7 @@ public class VMBookContentInfo extends BaseViewModel {
     public void loadContent2(int bookId, List<TxtChapter> bookChapterList,String div) {
             TxtChapter bookChapter = bookChapterList.get(0);
             this.div=div;
+            title=bookChapter.getTitle();
             new Thread(new LoadRunable(bookChapter.getLink())).start();
     }
 
@@ -220,17 +228,17 @@ public class VMBookContentInfo extends BaseViewModel {
 
     class LoadRunable implements Runnable {
 
-        String svrInfo;
+        String link;
 
-        public LoadRunable(String href) {
-            this.svrInfo = href;
+        public LoadRunable(String link) {
+            this.link = link;
         }
 
         @Override
 
         public void run() {
             try {
-                Analysisbiquge(svrInfo,div);
+                Analysisbiquge(link,div);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -252,18 +260,34 @@ public class VMBookContentInfo extends BaseViewModel {
     };
     String content;
 
-    private void Analysisbiquge(String svrInfo, String div) throws IOException {
-        Log.e("QQQ", "Analysisbiquge: "+svrInfo+" "+div);
+    private void Analysisbiquge(String link, String div) throws IOException {
+        Log.e("QQQ", "Analysisbiquge: "+link+" "+div);
        try {
-           Document doc = Jsoup.connect(svrInfo).get();
-           title = doc.body().select("h1").text();
+//           Document doc = Jsoup.connect(svrInfo).header("Accept-Encoding", "gzip, deflate")
+//                   .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20100101 Firefox/23.0")
+//                   .maxBodySize(0)
+//                   .timeout(600000)
+//                   .get();
+//           Connection.Response resp = Jsoup.connect(bookChapter.getLink())
+//                   .timeout(60000)
+//                   .method(Connection.Method.GET)
+//                   .maxBodySize(0)
+//                   .followRedirects(false)
+//                   .execute();
+//           String htmlStr = new String(resp.bodyAsBytes());
+//           Document doc = Jsoup.parse(htmlStr);
+           Document doc = Jsoup.parse(new URL(link), 5000);
+           //title = bookChapter.getTitle();
            Elements elements;
            if(div==null){
                div="#content";
            }
            elements = doc.body().select(div);
            content = "转码阅读：" +getTextFromHtml(elements.html());// elements.html().replaceAll(regFormat,"").replaceAll(regTag,"");
-           Log.e("QQQ2", "Analysisbiquge: "+content);
+           Log.e("QQQ2", "Analysisbiquge: "+title+" "+doc.outerHtml());
+           if(getTextFromHtml(elements.html())==null||getTextFromHtml(elements.html()).trim().equals("")){
+               content="该网站已失效，请换网址阅读";
+           }
            BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title.replace(" ",""), content);
            //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
            iBookChapters.finishChapters();
@@ -272,6 +296,31 @@ public class VMBookContentInfo extends BaseViewModel {
            //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
            iBookChapters.finishChapters();
        }
+    }
+    /**
+     * 根据网址返回网页的源码
+     *
+     * @param htmlUrl
+     * @return
+     */
+    public String getHtmlSource(String htmlUrl) {
+        URL url;
+        StringBuffer sb = new StringBuffer();
+        try {
+            url = new URL(htmlUrl);
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    url.openStream(), "UTF-8"));// 读取网页全部内容
+            String temp;
+            while ((temp = in.readLine()) != null) {
+                sb.append(temp);
+            }
+            in.close();
+        } catch (MalformedURLException e) {
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 
     /**
@@ -293,6 +342,8 @@ public class VMBookContentInfo extends BaseViewModel {
         htmlStr = htmlStr.replaceAll(scriptRegex, "");
         // 过滤style标签
         htmlStr = htmlStr.replaceAll(styleRegex, "");
+        // 过滤&nbsp
+        htmlStr = htmlStr.replaceAll("&nbsp", "");
         // 过滤html标签
         htmlStr = htmlStr.replaceAll(htmlRegex, "\r\n");
         // 过滤空格等
@@ -310,6 +361,10 @@ public class VMBookContentInfo extends BaseViewModel {
         //去除空格" "
         htmlStr = htmlStr.replaceAll(" ","");
         return htmlStr;
+    }
+    public String getHtmlString(){
+
+          return " ";
     }
 
 }

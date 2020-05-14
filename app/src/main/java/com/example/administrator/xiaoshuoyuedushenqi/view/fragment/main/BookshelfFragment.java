@@ -1,8 +1,10 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.main;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -74,6 +76,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
 import cn.bmob.v3.http.bean.Collect;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -99,7 +103,6 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
     private List<BookshelfNovelDbData> mDataList1 = new ArrayList<>();
-    private List<BookshelfNovelDbData> mDataList2 = new ArrayList<>();
     private BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData("", "", "", 0, 2, -1);
     private List<Boolean> mCheckedList = new ArrayList<>();
     private BookshelfNovelsAdapter mBookshelfNovelsAdapter;
@@ -124,11 +127,14 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     }
 
     boolean is_add;
-
-    public void updata2(boolean flag) {
+    int select_position;
+    public void updata2(boolean flag,int position) {
         is_add = flag;
+        if(position>=0) {
+            select_position = position;
+        }
+        login_admin= (Login_admin) SpUtil.readObject(getContext());
         if (mPresenter != null) {
-            mDataList.clear();
             if (login_admin == null) {
                 mPresenter.queryAllBook();
             } else {
@@ -186,6 +192,11 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 ((MainActivity) getActivity()).checked();
             }
         });
+        receiver = new MyReceiver();
+        // 注册广播接受者
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.zhh.android");//要接收的广播
+        getActivity().registerReceiver(receiver, intentFilter);//注册接收者
     }
 
     @Override
@@ -313,8 +324,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.popu_item, null);
         ListView lv_appointment = (ListView) view.findViewById(R.id.list_view);
-        final String[] datas = {getString(R.string.manger_bookshelf), getString(R.string.read_reder), getString(R.string.load_local_book)};
-        final Integer[] ints = {R.mipmap.bookshelf, R.mipmap.read_recoder, R.mipmap.load_book};
+        final String[] datas = {getString(R.string.manger_bookshelf), getString(R.string.read_reder)};//, getString(R.string.load_local_book)};
+        final Integer[] ints = {R.mipmap.bookshelf, R.mipmap.read_recoder};//, R.mipmap.load_book};
         PupoAdapter mainAdapter = null;
         if (datas != null) {
             mainAdapter = new PupoAdapter(datas, ints);
@@ -465,20 +476,11 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     @Override
     public void onResume() {
         super.onResume();
-        //mPresenter.queryAllBook();
-//       if(mDataList.size()>0&&mDataList.get(mDataList.size()-1).getType()!=-1){
-//           mDataList.add(bookshelfNovelDbData);
-//           mCheckedList.add(false);
-        if (mBookshelfNovelsAdapter != null) {
-            //mPresenter.queryAllBook();
-        }
-        //App.updateNightMode(!SpUtil.getIsNightMode());
         if (personBean != null) {
             LogUtils.e(personBean.getFiletype());
             upload(personBean);
             personBean = null;
         }
-//       }
     }
 
     Login_admin login_admin;
@@ -488,9 +490,11 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
      */
     @Override
     public void queryAllBookSuccess(List<BookshelfNovelDbData> dataList) {
+        Log.e("QQQ", "queryAllBookSuccess: "+dataList.size());
+        mDataList.clear();
+        mLoadingRv.setVisibility(View.GONE);
         if (mBookshelfNovelsAdapter == null) {
             mDataList = dataList;
-            mDataList2 = dataList;
             mCheckedList.clear();
             for (int i = 0; i < mDataList.size(); i++) {
                 mCheckedList.add(false);
@@ -514,18 +518,25 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 mCheckedList.add(false);
             }
             if (is_add == false) {
-                for (int i = 0; i < mBookshelfNovelsAdapter.getItemCount(); i++) {
-                    //mBookshelfNovelsAdapter.notifyDataSetChanged();
-                    mBookshelfNovelsAdapter.notifyItemChanged(i, mBookshelfNovelsAdapter.
-                            NOTIFY_ET);
-                }
+//                for (int i = 0; i < mBookshelfNovelsAdapter.getItemCount(); i++) {
+//                    mBookshelfNovelsAdapter.notifyItemChanged(i, mBookshelfNovelsAdapter.
+//                            NOTIFY_ET);
+//                }
+                mBookshelfNovelsAdapter.notifyItemChanged(select_position, mBookshelfNovelsAdapter.
+                           NOTIFY_ET);
             } else {
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
             }
         }
-//        if (login_admin != null) {
-//            queryallBook(login_admin.getToken());
-//        }
+        if(login_admin!=null){
+            for(int i=0;i<dataList.size();i++){
+                try {
+                    setBookshelfadd(login_admin.getToken(),dataList.get(i).getNovelUrl());
+                }catch (Exception ex){
+                    continue;
+                }
+            }
+        }
     }
 
     public void setBookshelfadd(String token, String novel_id) {
@@ -562,9 +573,10 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 
     public void queryAllBookSuccess2(List<BookshelfNovelDbData> dataList) {
         for (int i = 0; i < dataList.size(); i++) {
-            if (!mDbManager.isExistInBookshelfNovelname(dataList.get(i).getNovelUrl())) {
+            Log.e("WWW", "queryAllBookSuccess2: "+dataList.get(i).getName());
+            if (!mDbManager.isExistInBookshelfNovel(dataList.get(i).getNovelUrl())) {
                 mDbManager.insertOrUpdateBook(new BookshelfNovelDbData(dataList.get(i).getNovelUrl(),
-                        dataList.get(i).getName(), dataList.get(i).getCover(), 1, 0, dataList.get(i).getWeight(), 1 + "", dataList.get(i).getWeight(), dataList.get(i).getStatus()));
+                        dataList.get(i).getName(), dataList.get(i).getCover(), 0, 0, dataList.get(i).getWeight(), 0 + "", dataList.get(i).getWeight(), dataList.get(i).getStatus()));
             }
         }
         mPresenter.queryAllBook();
@@ -624,18 +636,19 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void clickItem(int position) {
+                        Log.e("QQQ", "clickItem: "+position);
                         try {
                             if (position == mDataList.size() - 1) {
                                 ((MainActivity) getActivity()).checked();
                             } else {
-                                if (!NetUtil.hasInternet(getActivity())) {
-                                    showShortToast("当前无网络，请检查网络后重试");
-                                    return;
-                                }
                                 if (mIsDeleting || (mDataList.size() > 0 && mDataList.get(position).getType() == -1)) {
                                     return;
                                 }
                                 if (mDataList.get(position).getType() == 0) {
+                                    if (!NetUtil.hasInternet(getActivity())) {
+                                        showShortToast("当前无网络，请检查网络后重试");
+                                        return;
+                                    }
                                     CollBookBean bookBean = new CollBookBean(mDataList.get(position).getNovelUrl(), mDataList.get(position).getName(), "", "",
                                             mDataList.get(position).getCover(), false, 0, 0,
                                             "", "", mDataList.get(position).getWeight(), "",
@@ -647,6 +660,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                     bundle.putString(WYReadActivity.PAGE_ID, mDataList.get(position).getPosition()+"");
                                     LogUtils.e(mDataList.get(position).getPosition()+" "+mDataList.get(position).getChapterid());
                                     startActivity(WYReadActivity.class, bundle);
+                                    Log.e("QQQ", "clickItem: "+mDataList.get(position).getChapterid()+" "+mDataList.get(position).getPosition());
                                 } else {
                                     CollBookBean bookBean = new CollBookBean(mDataList.get(position).getFuben_id(), mDataList.get(position).getName(), "", "",
                                             mDataList.get(position).getCover(), false, 0, 0,
@@ -760,5 +774,33 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             return convertView;
         }
     }
+    MyReceiver receiver;
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int i=intent.getIntExtra("type",0);
+            String position=intent.getStringExtra("position");
+            int z = -1;
+            if(position!=null) {
+                for (int j = 0; j < mDataList.size(); j++) {
+                    if (mDataList.get(j).getType()==0&&mDataList.get(j).getNovelUrl().equals(position)) {
+                        z = j;
+                    }else if(mDataList.get(j).getType()==1&&mDataList.get(j).getFuben_id().equals(position)){
+                        z = j;
+                    }
+                }
+            }
+            if(i==0) {
+                updata2(false,z);
+            }else if(i==1){
+                updata2(true,z);
+            }
+            }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(receiver);
+    }
 }

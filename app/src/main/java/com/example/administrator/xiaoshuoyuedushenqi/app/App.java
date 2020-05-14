@@ -90,19 +90,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         // 为应用设置异常处理
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init();
         app=this;
         context = getApplicationContext();
         Aria.init(this);
-//        init(getContext());//
-//        if(SpUtil.getIsSysNightMode()==true){
-//            AppCompatDelegate.setDefaultNightMode( AppCompatDelegate.MODE_NIGHT_YES );
-//        }else {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//        }
-//        Bmob.initialize(this, "ce63bdbbd4197409b82920b0835a42eb");
-//        BmobUpdateAgent.setUpdateCheckConfig(false);
         new Thread(new Runnable() {
             @Override
             public void run() {

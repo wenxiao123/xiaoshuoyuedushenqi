@@ -22,20 +22,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="50dp" />
-
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_gravity="bottom">
         <RelativeLayout
             android:id="@+id/rel_ads"
-            android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="50dp" >
             <ImageView
+                android:padding="3dp"
                 android:layout_centerVertical="true"
-                android:id="@+id/img_ad"
+                android:id="@+id/img_bottom_ad"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
                 android:layout_margin="@dimen/dp_3"
-                android:src="@mipmap/icon_catalogue"
-                android:background="@drawable/bachground_line"/>
+                android:src="@mipmap/logo"
+                android:background="@drawable/bachground_white"/>
             <TextView
                 android:id="@+id/ads_load"
                 android:layout_marginRight="10dp"
@@ -53,22 +56,36 @@
             <TextView
                 android:layout_marginTop="@dimen/dp_3"
                 android:id="@+id/txt_ad"
-                android:layout_toRightOf="@id/img_ad"
+                android:layout_toRightOf="@id/img_bottom_ad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="抖音极速版"/>
+                android:text="小说宝"/>
             <TextView
-                android:layout_toRightOf="@id/img_ad"
+                android:id="@+id/txt_adm_content"
+                android:layout_toRightOf="@id/img_bottom_ad"
                 android:layout_toLeftOf="@id/ads_load"
                 android:layout_below="@id/txt_ad"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:paddingRight="5dp"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:maxLines="1"
-                android:text="看抖音极速版视频，赚取..."/>
+                android:text="看小说宝，赚取..."/>
         </RelativeLayout>
-
+        <TextView
+            android:id="@+id/tv_load"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bachground_white"
+            android:gravity="center"
+            android:text="缓存中..."
+            android:textColor="@color/red_aa"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"></TextView>
+</FrameLayout>
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
@@ -788,20 +805,6 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_load"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/bachground_white"
-        android:gravity="center"
-        android:text="缓存中..."
-        android:textColor="@color/red_aa"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:visibility="gone"></TextView>
-
     <LinearLayout
         android:id="@+id/l_yingdaoye"
         android:layout_width="match_parent"

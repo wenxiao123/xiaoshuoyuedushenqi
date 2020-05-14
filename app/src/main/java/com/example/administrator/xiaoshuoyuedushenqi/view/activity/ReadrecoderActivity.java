@@ -163,7 +163,7 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
             @Override
             public void onClick(View view) {
                 Intent intent_recever = new Intent("com.zhh.android");
-                intent_recever.putExtra("type",3);
+                intent_recever.putExtra("type",1);
                 sendBroadcast(intent_recever);
                 finish();
             }

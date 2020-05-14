@@ -277,8 +277,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         Intent intent_recever = new Intent("com.zhh.android");
         intent_recever.putExtra("type", 1);
         sendBroadcast(intent_recever);
-        //Login_admin login_admin= (Login_admin) SpUtil.readObject(this);
-        //Log.e("AAA", "getLoginSuccess: "+login_admin);
     }
 
     @Override

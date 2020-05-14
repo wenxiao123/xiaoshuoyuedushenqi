@@ -111,7 +111,7 @@ public class LauncherActivity extends BaseActivity_other {
         if(!website.trim().equals("")){
             UrlObtainer.setHref(website);
         }
-        setBookshelfadd();
+        checkNetIsReal();
     }
 
     CircleProgressbar circleProgressbar;
@@ -221,7 +221,10 @@ public class LauncherActivity extends BaseActivity_other {
 
     }
 
-    public void setBookshelfadd() {
+    /**
+     * 检查可用的网址
+     */
+    public void checkNetIsReal() {
         Gson mGson=new Gson();
         String url = UrlObtainer.GetUrl()+"/api/index/domain";
         RequestBody requestBody = new FormBody.Builder()
@@ -247,10 +250,11 @@ public class LauncherActivity extends BaseActivity_other {
                     if(z<websites_lrc.size()) {
                         LogUtils.e(websites_lrc.get(z).getUrl());
                         UrlObtainer.setHref(websites_lrc.get(z).getUrl());
-                        setBookshelfadd();
+                        checkNetIsReal();
                         z++;
                     }else {
                         showShortToast("网络数据接口有误");
+                        finish();
                     }
                 }
             }
@@ -260,10 +264,11 @@ public class LauncherActivity extends BaseActivity_other {
                 LogUtils.e(url);
                 if(z<websites_lrc.size()) {
                     UrlObtainer.setHref(websites_lrc.get(z).getUrl());
-                    setBookshelfadd();
+                    checkNetIsReal();
                     z++;
                 }else {
                     showShortToast("网络数据接口有误");
+                    finish();
                 }
             }
         });

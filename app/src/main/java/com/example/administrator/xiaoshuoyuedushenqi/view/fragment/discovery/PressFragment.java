@@ -413,25 +413,25 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
             banner.stratVideo();
         }
     }
-    List list;
+    List<Wheel> list;
     void initData1(List<Wheel> novalDetailsList){
-        list = new ArrayList<>();
-        HttpProxyCacheServer proxy = App.getProxy(getContext());
-        for(int i=0;i<novalDetailsList.size();i++) {
-            String url;
-            if(novalDetailsList.get(i).getPicpath().contains("http:")){
-                url=novalDetailsList.get(i).getPicpath();
-            }else {
-                url=UrlObtainer.GetUrl()+"/"+novalDetailsList.get(i).getPicpath();
-            }
-            LogUtils.e(url);
-            if(novalDetailsList.get(i).getTypes().equals("2")) {
-                String proxyUrl = proxy.getProxyUrl(url);
-                list.add(proxyUrl);
-            }else {
-                list.add(url);
-            }
-        }
+        list = novalDetailsList;
+//        HttpProxyCacheServer proxy = App.getProxy(getContext());
+//        for(int i=0;i<novalDetailsList.size();i++) {
+//            String url;
+//            if(novalDetailsList.get(i).getPicpath().contains("http:")){
+//                url=novalDetailsList.get(i).getPicpath();
+//            }else {
+//                url=UrlObtainer.GetUrl()+"/"+novalDetailsList.get(i).getPicpath();
+//            }
+//            LogUtils.e(url);
+//            if(novalDetailsList.get(i).getTypes().equals("2")) {
+//                String proxyUrl = proxy.getProxyUrl(url);
+//                list.add(proxyUrl);
+//            }else {
+//                list.add(url);
+//            }
+//        }
     }
 
     void initView1(){

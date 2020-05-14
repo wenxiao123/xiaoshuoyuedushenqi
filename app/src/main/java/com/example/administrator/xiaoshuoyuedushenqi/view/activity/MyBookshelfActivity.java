@@ -194,16 +194,6 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         login_admin= (Login_admin) SpUtil.readObject(this);
     }
 
-    /**
-     * 取消多选删除
-     */
-    private void cancelMultiDelete() {
-        for (int i = 0; i < mCheckedList.size(); i++) {
-            mCheckedList.set(i, false);
-        }
-        mBookshelfNovelsAdapter.setIsMultiDelete(false);
-        mBookshelfNovelsAdapter.notifyDataSetChanged();
-    }
     public void delectBookshelfadd(String token, String novel_id) {
         if(novel_id==null){
             return;
@@ -256,12 +246,9 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                 mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
                 mDbManager.deleteBookCalotaNovel(mDataList.get(i).getNovelUrl());
                 if(login_admin!=null){
-//                    BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(mDataList.get(i).getNovelUrl());
-//                    if(bookshelfNovelDbData!=null) {
-                        delectBookshelfadd(login_admin.getToken(), mDataList.get(i).getNovelUrl());
-//                    }
+                  delectBookshelfadd(login_admin.getToken(), mDataList.get(i).getNovelUrl());
                 }
-                mDataList.remove(i);
+                  mDataList.remove(i);
             }
         }
         mCheckedList.clear();

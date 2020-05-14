@@ -80,8 +80,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i, @NonNull List payloads) {
         final ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
         if (payloads.isEmpty()) {
-            //为空，即不是调用notifyItemChanged(position,payloads)后执行的，也即在初始化时执行的
-//        // 多选删除时显示 CheckBox
+            Log.e("SSS", "queryAllBookSuccess: "+4444);
         if (mIsMultiDelete) {
             contentViewHolder.checkBox.setVisibility(View.VISIBLE);
             // 先设置 CheckBox 的状态，解决 RecyclerView 对 CheckBox 的复用所造成的影响
@@ -109,7 +108,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                             .error(R.drawable.cover_error)
                             .transform(transformation))
                     .into(contentViewHolder.cover);
-            Log.e("QQQ", "onBindViewHolder: "+mDataList.get(i).getCover());
+            //Log.e("QQQ", "onBindViewHolder: "+mDataList.get(i).getCover());
             contentViewHolder.img_add.setVisibility(View.GONE);
             //contentViewHolder.tv_status.setVisibility(View.VISIBLE);
             contentViewHolder.tv_position.setVisibility(View.VISIBLE);
@@ -218,8 +217,8 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                 }
             }
         }
-        } else if (payloads.size() > 0 && payloads.get(0) instanceof Integer) {
-            CornerTransform transformation = new CornerTransform(mContext, 10);
+        } else if (payloads.size() > 0) { //&& payloads.get(0) instanceof Integer
+            Log.e("SSS", "queryAllBookSuccess: "+555);
             //不为空，即调用notifyItemChanged(position,payloads)后执行的，可以在这里获取payloads中的数据进行局部刷新
             int type = (int) payloads.get(0);// 刷新哪个部分 标志位
             switch (type) {
@@ -227,11 +226,11 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                     //holder.tv.setText(data);//只刷新tv
                     break;
                 case NOTIFY_ET:
-                    if (mDataList.get(i).getStatus() == null || mDataList.get(i).getStatus().equals("1")) {
-                        contentViewHolder.tv_status.setText("完结");
-                    } else {
-                        contentViewHolder.tv_status.setText("连载");
-                    }
+//                    if (mDataList.get(i).getStatus() == null || mDataList.get(i).getStatus().equals("1")) {
+//                        contentViewHolder.tv_status.setText("完结");
+//                    } else {
+//                        contentViewHolder.tv_status.setText("连载");
+//                    }
 
                     if (mDataList.get(i).getType() == 1 && mDataList.get(i).getWeight() != 0) {
                         float chpid =  Float.parseFloat(mDataList.get(i).getChapterid());
@@ -240,11 +239,9 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
                         NumberFormat nf = NumberFormat.getNumberInstance();
                         nf.setMaximumFractionDigits(2);
                         contentViewHolder.tv_position.setText("已读 "+nf.format(prent) + "%");
-                    } else {
+                    } else if(mDataList.get(i).getType() == 1&& mDataList.get(i).getWeight() == 0){
                         contentViewHolder.tv_position.setText("已读 "+0 + "%");
-                    }
-
-                    if (mDataList.get(i).getType() == 0) {
+                    }else if (mDataList.get(i).getType() == 0) {
                         if (mDataList.get(i).getChapterid() == null || mDataList.get(i).getWeight() == 0) {
                             contentViewHolder.tv_position.setText("已读 "+0 + "%");
                         } else {

@@ -517,6 +517,8 @@ public class AdminSetActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                Intent recever = new Intent("com.name.android");
+                sendBroadcast(recever);
             }
 
             @Override

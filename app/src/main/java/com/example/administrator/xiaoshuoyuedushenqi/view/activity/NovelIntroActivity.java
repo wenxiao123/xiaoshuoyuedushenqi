@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -42,6 +43,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bifan.txtreaderlib.interfaces.IParagraphData;
 import com.bifan.txtreaderlib.main.ParagraphData;
@@ -391,8 +393,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void doAfterInit() {
-        //constraintLayout.setVisibility(View.GONE);
-        // relativeLayout.setVisibility(View.GONE);
         l_all.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         presenter.getNovels(pid);
@@ -499,8 +499,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     break;
                 case R.id.txt_book_load:
                     if (!txt_book_load.getText().equals("已缓存")) {
-//                    Intent servive_intent = new Intent(NovelIntroActivity.this, CacheService.class);
-//                    bindService(servive_intent, conn, BIND_AUTO_CREATE);
                         txt_book_load.setText("缓存中：0%");
                         txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
                         txt_book_load.setEnabled(false);
@@ -1102,11 +1100,12 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     }
 
     boolean Is_load=false;
+    @SuppressLint("WrongConstant")
     @Override
     public void getNovelsError(String errorMsg) {
-        l_all.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-        showShortToast(errorMsg);
+        l_all.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        Toast.makeText(this, errorMsg, 2000).show();
     }
 
     @Override

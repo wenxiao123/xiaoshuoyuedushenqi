@@ -63,17 +63,17 @@ public class NovelInfoModel implements NovelInfoContract.Model {
                         }
                         mPresenter.getNovelsSuccess(noval_details,novalDetailsList);
                     }else {
-                        mPresenter.getNovelsError("请求错误");
+                        mPresenter.getNovelsError("请求失败,请检查网络");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    mPresenter.getNovelsError("请求错误");
+                    mPresenter.getNovelsError("请求失败,请检查网络");
                 }
             }
 
             @Override
             public void onFailure(String errorMsg) {
-                mPresenter.getNovelsError(errorMsg);
+                mPresenter.getNovelsError("请求失败,请检查网络");
             }
         });
     }

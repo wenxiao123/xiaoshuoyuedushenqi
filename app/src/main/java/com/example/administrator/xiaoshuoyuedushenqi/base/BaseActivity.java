@@ -71,12 +71,6 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onResume() {
         super.onResume();
-        if(NetUtil.hasInternet(this)){
-
-        }else {
-           onCreate(mSavedInstanceState);
-        }
-
         if(!(this instanceof WYReadActivity)) {
             isNight = ReadSettingManager.getInstance().isNightMode();
             if (isNight == true) {

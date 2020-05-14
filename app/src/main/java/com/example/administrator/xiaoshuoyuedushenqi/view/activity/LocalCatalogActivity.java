@@ -151,7 +151,6 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         pid=getIntent().getStringExtra(KEY_ID);
         chapter_id = getIntent().getIntExtra("chapter_id", 0);
         mPosition = getIntent().getIntExtra(KEY_POSTION, 0);
-        Log.e("QQQ", "initData: "+chapter_id);
         queryBookMarks(pid);
         //txtChapters = (List<TxtChapter>) getIntent().getSerializableExtra("MSPANSCOMMIT");
     }

@@ -137,7 +137,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mCover = getIntent().getStringExtra(KEY_COVER);
         weigh = getIntent().getIntExtra("weigh", 0);
         chapter_id = getIntent().getIntExtra("chapter_id", 0);
-        Log.e("QQQ", "initData: "+chapter_id+" "+weigh);
+        //Log.e("QQQ", "initData: "+chapter_id+" "+weigh);
         queryBookMarks(mUrl);
         app = (App) getApplication();
         catalogDataAll = mDbManager.queryAllCataloginfo(mUrl);

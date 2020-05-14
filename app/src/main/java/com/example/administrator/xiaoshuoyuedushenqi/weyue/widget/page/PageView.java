@@ -13,6 +13,10 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.app.App;
+import com.example.administrator.xiaoshuoyuedushenqi.util.NetUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.ToastUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.NetworkUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ScreenUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.CoverPageAnim;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.HorizonPageAnim;
@@ -406,7 +410,7 @@ public class PageView extends View {
     //自动阅读间隔时间
     private int mAutoPlayInterval = 1000;
     //是否开启自动阅读
-    private boolean mAutoPlayAble = false;
+    private static boolean mAutoPlayAble = false;
 
     public void startAutoPlay() {
         stopAutoPlay();
@@ -484,6 +488,12 @@ public class PageView extends View {
             if (pageView != null) {
                 pageView.autoNextPage();
                 pageView.startAutoPlay();
+            }
+            if (!NetUtil.hasInternet(App.getContext())) {
+                ToastUtil.showToast(App.getContext(),"当前无网络，请检查网络后重试");
+                mAutoPlayAble=false;
+                pageView.stopAutoPlay();
+                return;
             }
         }
     }

@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     protected void initData() {
 
     }
-    MyReceiver receiver;
+    //MyReceiver receiver;
     @Override
     protected void initView() {
         txt_shelf= findViewById(R.id.tv_main_bottom_bar_bookshelf);
@@ -136,11 +136,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mDiscoveryAfterIv = findViewById(R.id.iv_main_bottom_bar_discovery_after);
         mBookMarkAfter = findViewById(R.id.iv_main_bottom_bar_bookmark_after);
         mMoreAfterIv = findViewById(R.id.iv_main_bottom_bar_more_after);
-        receiver = new MyReceiver();
-        // 注册广播接受者
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.zhh.android");//要接收的广播
-        registerReceiver(receiver, intentFilter);//注册接收者
+//        receiver = new MyReceiver();
+//        // 注册广播接受者
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction("com.zhh.android");//要接收的广播
+//        registerReceiver(receiver, intentFilter);//注册接收者
         isNightthod=SpUtil.getIsNightMode();
     }
     public void initTextColor(TextView textView){
@@ -154,7 +154,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void doAfterInit() {
-
         if (getSavedInstanceState() != null) {
             // 取出保存的 Fragment，并用 mCurrFragment 记录当前显示的 Fragment
             mBookshelfFragment = mFragmentManager.getFragment(getSavedInstanceState(), KEY_BOOKSHELF_FG);
@@ -178,7 +177,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             // 第一次 onCreate 时默认加载该页面
             changeFragment(FG_BOOKSHELF);
         }
-
         // 检查权限
         checkPermission();
         Intent intent=getIntent();
@@ -451,7 +449,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     public void updata2(boolean flag){
         if(mBookshelfFragment!=null){
-            ((BookshelfFragment)mBookshelfFragment).updata2(flag);
+            ((BookshelfFragment)mBookshelfFragment).updata2(flag,0);
         }
     }
     /**
@@ -575,39 +573,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    public class MyReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int i=intent.getIntExtra("type",0);
-            if(i==0) {
-                updata2(false);
-            }else if(i==1){
-                updata2(true);
-            }else if(i==2){
-                isload=intent.getStringExtra("islaod");
-                personBean= (PersonBean) intent.getSerializableExtra("personBean");
-                if(isload!=null&&isload.equals("1")){
-                    if(personBean!=null){
-                        LogUtils.e(personBean.toString());
-                        updata(personBean,true);
-                    }
-                }else if(isload!=null&&isload.equals("2")){
-                    updata2(false);
-                }
-            }else if(i==3){
-                mBookshelfBeforeIv.setVisibility(View.VISIBLE);
-                mBookshelfAfterIv.setVisibility(View.INVISIBLE);
-                mMoreBeforeIv.setVisibility(View.VISIBLE);
-                mMoreAfterIv.setVisibility(View.INVISIBLE);
-                mBookMarkBefore.setVisibility(View.VISIBLE);
-                mBookMarkAfter.setVisibility(View.INVISIBLE);
-                mDiscoveryAfterIv.setVisibility(View.VISIBLE);
-                mDiscoveryBeforeIv.setVisibility(View.INVISIBLE);
-                // 切换 Fragment
-                changeFragment(FG_DISCOVERY);
-            }
-        }
-    }
+//    public class MyReceiver extends BroadcastReceiver {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            int i=intent.getIntExtra("type",0);
+//            if(i==0) {
+//                updata2(false);
+//            }else if(i==1){
+//                updata2(true);
+//            }else if(i==2){
+//                isload=intent.getStringExtra("islaod");
+//                personBean= (PersonBean) intent.getSerializableExtra("personBean");
+//                if(isload!=null&&isload.equals("1")){
+//                    if(personBean!=null){
+//                        LogUtils.e(personBean.toString());
+//                        updata(personBean,true);
+//                    }
+//                }else if(isload!=null&&isload.equals("2")){
+//                    updata2(false);
+//                }
+//            }else if(i==3){
+//                mBookshelfBeforeIv.setVisibility(View.VISIBLE);
+//                mBookshelfAfterIv.setVisibility(View.INVISIBLE);
+//                mMoreBeforeIv.setVisibility(View.VISIBLE);
+//                mMoreAfterIv.setVisibility(View.INVISIBLE);
+//                mBookMarkBefore.setVisibility(View.VISIBLE);
+//                mBookMarkAfter.setVisibility(View.INVISIBLE);
+//                mDiscoveryAfterIv.setVisibility(View.VISIBLE);
+//                mDiscoveryBeforeIv.setVisibility(View.INVISIBLE);
+//                // 切换 Fragment
+//                changeFragment(FG_DISCOVERY);
+//            }
+//        }
+//    }
     boolean isNightthod;
 
     @Override
@@ -629,7 +627,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     protected void onDestroy() {
         super.onDestroy();
         //取消注册
-        unregisterReceiver(receiver);
+//        unregisterReceiver(receiver);
         finish();
     }
 }
