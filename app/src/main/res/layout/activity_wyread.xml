@@ -22,7 +22,91 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="50dp" />
-<FrameLayout
+        <LinearLayout
+            android:layout_margin="5dp"
+            android:id="@+id/adm_lin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/bachground_trans"
+            android:layout_margin="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bachground_halfcricyle"
+               >
+               <ImageView
+                android:id="@+id/img_adm"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/logo"
+                />
+                <VideoView
+                    android:id="@+id/activity_opening_videoview"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                >
+                <TextView
+                    android:id="@+id/adm_title"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="小说宝"/>
+                <TextView
+                    android:layout_below="@id/adm_title"
+                    android:layout_marginTop="15dp"
+                    android:textSize="15sp"
+                    android:id="@+id/txt_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="常读 赞助正版章节"/>
+                <TextView
+                    android:id="@+id/txt_adm_load"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/adm_title"
+                    android:layout_marginTop="15dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bachground_read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="立即试玩"/>
+            </RelativeLayout>
+        </LinearLayout>
+            <TextView
+                android:id="@+id/txt_color"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/txt_color_2"
+                android:text="点击/滑动可继续阅读"/>
+        </LinearLayout>
+        <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_gravity="bottom">
@@ -38,7 +122,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="@dimen/dp_3"
                 android:src="@mipmap/logo"
-                android:background="@drawable/bachground_white"/>
+                />
             <TextView
                 android:id="@+id/ads_load"
                 android:layout_marginRight="10dp"
@@ -54,13 +138,18 @@
                 android:background="@drawable/bachground_read"
                 android:text="立即下载"/>
             <TextView
+                android:layout_marginLeft="4dp"
                 android:layout_marginTop="@dimen/dp_3"
                 android:id="@+id/txt_ad"
+                android:textSize="16sp"
+                android:textColor="@color/black"
                 android:layout_toRightOf="@id/img_bottom_ad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="小说宝"/>
             <TextView
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/txt_adm_content"
                 android:layout_toRightOf="@id/img_bottom_ad"
                 android:layout_toLeftOf="@id/ads_load"
@@ -68,6 +157,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingRight="5dp"
+                android:textSize="14sp"
+                android:textColor="@color/bookshelf_add_text"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:maxLines="1"

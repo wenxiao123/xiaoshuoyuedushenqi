@@ -13,6 +13,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.ReadActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.BookManager;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.BookSaveUtils;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.Constant;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.FileUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.BaseViewModel;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.IBookChapters;
@@ -178,6 +180,12 @@ public class VMBookContentInfo extends BaseViewModel {
     }
 
     public void getDetailedChapterData(String bookid, String id,String title) {
+        File file = new File(Constant.BOOK_CACHE_PATH + bookid
+                + File.separator + title.replace(" ", "") + FileUtils.SUFFIX_WY);
+        if(file.exists()){
+            handler.sendEmptyMessage(2);
+            return;
+        }
         Gson mGson=new Gson();
         String url = UrlObtainer.GetUrl() + "/api/index/Books_Info";
         RequestBody requestBody = new FormBody.Builder()
@@ -187,7 +195,7 @@ public class VMBookContentInfo extends BaseViewModel {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-               //Log.e("qqq", "onResponse: "+bookid+" "+id+" "+url+" "+json);
+              // Log.e("qqq", "onResponse: "+bookid+" "+id+" "+url+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -199,17 +207,17 @@ public class VMBookContentInfo extends BaseViewModel {
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
-                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), data.getContent().replace("&nbsp"," "));
+                            BookSaveUtils.getInstance().saveChapterInfo(bookid, data.getTitle().replace(" ", ""), data.getContent().replace("&nbsp", " "));
                             handler.sendEmptyMessage(2);
                         }
                     } else {
-                        BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
+                        BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "内容为空");
                         iBookChapters.finishChapters();
                         return;
 
                     }
                 } catch (JSONException e) {
-                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
+                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "内容为空");
                     iBookChapters.finishChapters();
                     return;
                 }
@@ -217,7 +225,10 @@ public class VMBookContentInfo extends BaseViewModel {
 
             @Override
             public void onFailure(String errorMsg) {
-                BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
+                File file = BookManager.getBookFile(bookid, title.replace(" ", ""));
+                if(!file.exists()||file.length()==0) {
+                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "内容为空");
+                }
                 iBookChapters.finishChapters();
                 return;
                 // mPresenter.getDetailedChapterDataError(errorMsg);

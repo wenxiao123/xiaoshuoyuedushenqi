@@ -112,7 +112,7 @@ public class ReadSettingManager {
     }
 
     public int getReadBgTheme(){
-        return sharedPreUtils.getInt(SHARED_READ_BG, READ_BG_DEFAULT);
+        return sharedPreUtils.getInt(SHARED_READ_BG, READ_BG_4);
     }
 
     public boolean isNightMode(){

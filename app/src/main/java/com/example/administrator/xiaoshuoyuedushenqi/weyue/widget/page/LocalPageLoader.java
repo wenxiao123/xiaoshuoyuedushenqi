@@ -332,7 +332,7 @@ public class LocalPageLoader extends PageLoader {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return loadPages(chapter, br);
+        return loadPages(chapter, br,position);
     }
 
     /**

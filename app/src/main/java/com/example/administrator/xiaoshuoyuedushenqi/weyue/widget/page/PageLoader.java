@@ -12,6 +12,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ScreenUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.StringUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ToastUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.rxhelper.RxUtils;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.ScrollPageAnim;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.ScrollPageAnim2;
 
 import java.util.List;
 
@@ -291,11 +293,6 @@ public abstract class PageLoader {
         mPageMode = mSettingManager.getPageMode();
         isNightMode = mSettingManager.isNightMode();
         mBgTheme = mSettingManager.getReadBgTheme();
-//        if(mBgTheme==ReadSettingManager.READ_BG_DEFAULT) {
-//            isbackground=true;
-//        }else {
-//            isbackground=false;
-//        }
         if (isNightMode) {
             setBgColor(ReadSettingManager.NIGHT_MODE);
         } else {
@@ -856,7 +853,7 @@ public abstract class PageLoader {
 
     /***********************************default method***********************************************/
     //通过流获取Page的方法
-    List<TxtPage> loadPages(TxtChapter chapter, BufferedReader br) {
+    List<TxtPage> loadPages(TxtChapter chapter, BufferedReader br,int position) {
         //生成的页面
         List<TxtPage> pages = new ArrayList<>();
         //使用流的方式加载
@@ -958,7 +955,6 @@ public abstract class PageLoader {
         } finally {
             IOUtils.close(br);
         }
-
         //可能出现内容为空的情况
         if (pages.size() == 0) {
             TxtPage page = new TxtPage();
@@ -971,6 +967,17 @@ public abstract class PageLoader {
         //提示章节数量改变了。
         if (mPageChangeListener != null) {
             mPageChangeListener.onPageCountChange(pages.size());
+        }
+        if (position >= 0&&!(mPageView.getmPageAnim() instanceof ScrollPageAnim2)&&position%3==0) {
+            TxtPage txtPage=pages.get(pages.size()-1);
+            if(txtPage.lines.size()>4) {
+                TxtPage page = new TxtPage();
+                page.position = pages.size();
+                page.title = chapter.getTitle();
+                page.lines = new ArrayList<>();
+                page.titleLines = 0;
+                pages.add(page);
+            }
         }
         return pages;
     }
@@ -1002,8 +1009,8 @@ public abstract class PageLoader {
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
                     String  s=mChapterList.get(mCurChapterPos).getTitle()+"/"+mCollBook.getTitle();
-                    if(s.length()>15){
-                        s=s.substring(0,15);
+                    if(s.length()>14){
+                        s=s.substring(0,14)+"...";
                     }
                     canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
                 }
@@ -1011,8 +1018,8 @@ public abstract class PageLoader {
             } else {
                 mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
                 String  s=mChapterList.get(mCurChapterPos).getTitle()+"/"+mCollBook.getTitle();
-                if(s.length()>15){
-                    s=s.substring(0,15);
+                if(s.length()>14){
+                    s=s.substring(0,14)+"...";
                 }
                 canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
 //                String sth=(getChapterPos()+1)+"/"+mChapterList.size();

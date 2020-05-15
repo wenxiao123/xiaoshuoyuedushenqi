@@ -256,7 +256,7 @@ public class NetPageLoader extends PageLoader{
             e.printStackTrace();
         }
         BufferedReader br = new BufferedReader(reader);
-        return loadPages(txtChapter,br);
+        return loadPages(txtChapter,br,chapter);
     }
 
     //装载上一章节的内容

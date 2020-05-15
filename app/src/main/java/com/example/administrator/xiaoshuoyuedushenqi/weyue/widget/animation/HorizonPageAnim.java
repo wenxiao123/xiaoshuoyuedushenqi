@@ -92,7 +92,7 @@ public abstract class HorizonPageAnim extends PageAnimation{
                 //判断是否移动了
                 if (!isMove) {
                     isMove = Math.abs(mStartX - x) > slop || Math.abs(mStartY - y) > slop;
-                    Log.e("QQQ", "onTouchEvent: "+isMove);
+                    //Log.e("QQQ", "onTouchEvent: "+isMove);
                 }
 
                 if (isMove){

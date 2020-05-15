@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
+import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
 
 import java.io.File;
 
@@ -26,10 +27,11 @@ public class ImageLoaderUtils {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)).into(imageView);
     }
     public static void display(Context context, ImageView imageView, String url) {
+        CornerTransform transformation = new CornerTransform(context, 10);
         if (imageView == null) {
             throw new IllegalArgumentException("argument error");
         }
         Glide.with(context).load(url).apply(new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)).into(imageView);
+                .diskCacheStrategy(DiskCacheStrategy.ALL).transform(transformation)).into(imageView);
     }
 }

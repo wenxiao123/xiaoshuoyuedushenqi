@@ -63,6 +63,15 @@ public class PageView extends View {
 
     //动画类
     private PageAnimation mPageAnim;
+
+    public PageAnimation getmPageAnim() {
+        return mPageAnim;
+    }
+
+    public void setmPageAnim(PageAnimation mPageAnim) {
+        this.mPageAnim = mPageAnim;
+    }
+
     //动画监听类
     private PageAnimation.OnPageChangeListener mPageAnimListener = new PageAnimation.OnPageChangeListener() {
         @Override

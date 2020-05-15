@@ -15,6 +15,8 @@ import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,11 +38,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
@@ -167,6 +171,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     TextView ads_load,txt_ad,txt_adm_content;//底部广告控件
     ImageView img_bottom_ad;//底部广告图片
     RelativeLayout rel_ads;
+    LinearLayout adm_lin;
+    TextView txt_color;
     // 监听系统亮度的变化
     private ContentObserver mBrightnessObserver = new ContentObserver(new Handler()) {
         @Override
@@ -236,13 +242,23 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             animatorSetsuofang.cancel();
         }
         animatorSetsuofang = new AnimatorSet();//组合动画
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(tv, "scaleX", 1, 1.3f, 1);//后几个参数是放大的倍数
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(tv, "scaleY", 1, 1.3f, 1);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(tv, "scaleX", 1, 1.1f, 1);//后几个参数是放大的倍数
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(tv, "scaleY", 1, 1.1f, 1);
         scaleX.setRepeatCount(ValueAnimator.INFINITE);//永久循环
         scaleY.setRepeatCount(ValueAnimator.INFINITE);
-        animatorSetsuofang.setDuration(3000);//时间
+        animatorSetsuofang.setDuration(1500);//时间
         animatorSetsuofang.play(scaleX).with(scaleY);//两个动画同时开始
         animatorSetsuofang.start();//开始
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(adm_lin.getVisibility()==View.GONE){
+            Log.e("QQQ", "onPageChange: "+222);
+            activity_opening_videoview.pause();
+            activity_opening_videoview.suspend();
+        }
     }
 
     @Override
@@ -259,6 +275,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 l_yingdaoye.setVisibility(View.GONE);
             }
         });
+        adm_lin=findViewById(R.id.adm_lin);
+        txt_color=findViewById(R.id.txt_color);
         rel_ads=findViewById(R.id.rel_ads);
         img = findViewById(R.id.iv_read_menu);
         img.setOnClickListener(new View.OnClickListener() {
@@ -404,6 +422,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
+        img_adm=findViewById(R.id.img_adm);
+        adm_title=findViewById(R.id.adm_title);
+        activity_opening_videoview=findViewById(R.id.activity_opening_videoview);
+        txt_content=findViewById(R.id.txt_content);
+        txt_adm_load=findViewById(R.id.txt_adm_load);
         tv_read_next_chapter = findViewById(R.id.tv_read_next_chapter);
         tv_read_next_chapter.setOnClickListener(this);
         tv_read_previous_chapter = findViewById(R.id.tv_read_previous_chapter);
@@ -487,6 +510,16 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         });
+        txt_adm_load.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse(load_url);
+                intent.setData(content_url);
+                startActivity(intent);
+            }
+        });
         getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS),
                 true,
@@ -497,7 +530,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         intentFilter.addAction("com.read.android");//要接收的广播
         registerReceiver(myReceiver, intentFilter);//注册接收者
     }
-
+    String load_url;
     int z = 1;
     Handler handler = new Handler() {
         @Override
@@ -897,11 +930,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onLoadChapter(List<TxtChapter> chapters, int pos) {
-                if (pos > last_pos) {
-                    t++;
-                }
-                if (t > 0 && pos > last_pos && t % 4 == 0) {
-                    post_adm(2);
+                if (pos%3==0) {
+                    post_adm(1);
                 }
                 mVmContentInfo.setNoval_id(mCollBook.get_id());
                 if (is_othersite == true) {
@@ -945,6 +975,27 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onPageChange(int pos) {
+                //Log.e("QQQ", "onPageChange: "+(pos+" "+(mPageLoader.getmCurPageList().size()-1)));
+                if (mPageLoader.getmCurPageList()!=null&&pos==mPageLoader.getmCurPageList().size()-1&&mPageLoader.getChapterPos()%3==0) {
+                    Log.e("QQQ", "onPageChange: "+111);
+                    post_adm(2);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            adm_lin.setVisibility(View.VISIBLE);
+                        }
+                    },500);
+//                    if(!activity_opening_videoview.isPlaying()){
+//                        activity_opening_videoview.resume();
+//                    }
+                    //txt_color.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.color_2c));
+                }else {
+                    if(activity_opening_videoview.isPlaying()){
+                       // activity_opening_videoview.stopPlayback();
+                        activity_opening_videoview.suspend();
+                    }
+                    adm_lin.setVisibility(View.GONE);
+                }
                 mReadSbChapterProgress.post(() -> {
                     mReadSbChapterProgress.setProgress(pos);
                 });
@@ -1007,6 +1058,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         txt_page.setTouchListener(new PageView.TouchListener() {
             @Override
             public void center() {
+                if(adm_lin.getVisibility()==View.VISIBLE){
+                    mPageLoader.autoNextPage();
+                }
                 if (mIsShowingOrHidingBar == false) {
                     if (!mIsShowSettingBar) {
                         showBar();
@@ -1034,6 +1088,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 if (mIsShowingOrHidingBar != false) {
                     hideBar();
                 }
+                adm_lin.setVisibility(View.VISIBLE);
                 return true;
             }
 
@@ -1079,7 +1134,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         }
     }
-
+    ImageView img_adm;//广告图片
+    TextView adm_title,txt_content,txt_adm_load;
     int t = 0;
     String adm_id="0";
     public void post_adm(int type) {
@@ -1091,7 +1147,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ", "onResponse: " + json);
+                Log.e("QQQ", "onResponse: " +adm_id+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -1112,17 +1168,25 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             } else {
                                 https = UrlObtainer.GetUrl() + "/" + img;
                             }
+                            load_url=href;
                             if(type==1){
                             initBottomAdm(https,title,content,href,is_download);
                             }else {
                             AdsUtils.downLoadAds(WYReadActivity.this,https);
                             if(AdsUtils.isAdsLoaded(WYReadActivity.this,https)){
                                 File file = AdsUtils.getAdsFile(WYReadActivity.this,https);
-                                showAdm(id, file.getAbsolutePath(), href, false);
+                                ImageLoaderUtils.display(WYReadActivity.this,img_adm,file.getAbsolutePath());
+                                activity_opening_videoview.setVisibility(View.GONE);
+                                img_adm.setVisibility(View.VISIBLE);
+                                adm_title.setText(title);
+                                txt_content.setText(content);
+                                ScleAnimtion(txt_adm_load);
+                                //showAdm(id, file.getAbsolutePath(), href, false);
                             }
                             }
                             //showAdm(id, https, href, false);
                         } else if (img.contains(".mp4")) {
+                            load_url=href;
                             String https;
                             if (img.contains("http")) {
                                 https = img;
@@ -1132,7 +1196,28 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             AdsUtils.downLoadAds(WYReadActivity.this,https);
                             if(AdsUtils.isAdsLoaded(WYReadActivity.this,https)){
                                 File file = AdsUtils.getAdsFile(WYReadActivity.this,https);
-                                showAdm(id, file.getAbsolutePath(), href, true);
+                                activity_opening_videoview.setVisibility(View.VISIBLE);
+                                img_adm.setVisibility(View.GONE);
+                                //Uri uri = Uri.parse(https);
+                                MediaController mediaController = new MediaController(WYReadActivity.this);
+                                mediaController.setVisibility(View.GONE);//隐藏进度条
+                                activity_opening_videoview.setMediaController(mediaController);
+                                Uri rawUri = Uri.parse(file.getAbsolutePath());
+                                activity_opening_videoview.setVideoURI(rawUri);
+                                activity_opening_videoview.requestFocus();
+                                activity_opening_videoview.start();
+                                activity_opening_videoview.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                                    @Override
+                                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                                        //异常回调
+                                        activity_opening_videoview.pause();
+                                        return false;//如果方法处理了错误，则为true；否则为false。返回false或根本没有OnErrorListener，将导致调用OnCompletionListener。
+                                    }
+                                });
+                                adm_title.setText(title);
+                                txt_content.setText(content);
+                                ScleAnimtion(txt_adm_load);
+                                //showAdm(id, file.getAbsolutePath(), href, true);
                             }
                             //showAdm(id, https, href, true);
                         }
@@ -1155,9 +1240,20 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         ImageLoaderUtils.display(this,img_bottom_ad,https);
         if(is_download.equals("2")){
             ads_load.setVisibility(View.VISIBLE);
+            ScleAnimtion(ads_load);
         }else {
             ads_load.setVisibility(View.GONE);
         }
+        ads_load.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse(href);
+                intent.setData(content_url);
+                startActivity(intent);
+            }
+        });
         if(content!=null) {
            txt_adm_content.setText(content);
         }
@@ -1165,9 +1261,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     }
 
     AdmDialog tipDialog;
-
+    VideoView activity_opening_videoview;
     private void showAdm(String id, String href, String url, boolean is_video) {
-        //Log.e("QQQ", "showAdm: "+href);
+        Log.e("QQQ", "showAdm: "+href);
         if (tipDialog == null && ((Activity) this).isDestroyed()) {
             return;
         } else {
@@ -1210,7 +1306,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     .build();
             tipDialog.setCanceledOnTouchOutside(false);
             tipDialog.show();
-            backgroundAlpha(0.5f);
+            //backgroundAlpha(0.5f);
             tipDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialogInterface) {
@@ -1600,7 +1696,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     dbData.setChapterid(mPageLoader.getmCurChapterPos() + "");
                     dbData.setWeight(mTxtChapters.size());
                     mDbManager.insertOrUpdateBook(dbData);
-                    Log.e("QQQ", "onDestroy: "+mPageLoader.getPagePos()+" "+mPageLoader.getmCurChapterPos());
+                    //Log.e("QQQ", "onDestroy: "+mPageLoader.getPagePos()+" "+mPageLoader.getmCurChapterPos());
                 } else {
                     dbData = new BookshelfNovelDbData(mCollBook.get_id(), mCollBook.getTitle(), mCollBook.getCover(), mPageLoader.getPagePos(), -2, mTxtChapters.size(), mPageLoader.getmCurChapterPos() + "", mTxtChapters.size(), status);
                     mDbManager.insertOrUpdateBook(dbData);

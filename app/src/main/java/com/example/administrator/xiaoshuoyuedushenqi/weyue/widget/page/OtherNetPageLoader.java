@@ -204,7 +204,7 @@ public class OtherNetPageLoader extends PageLoader{
         }
         BufferedReader br = new BufferedReader(reader);
 
-        return loadPages(txtChapter,br);
+        return loadPages(txtChapter,br,position);
     }
 
 //    public void getDetailedChapterData(String bookid, String id) {
