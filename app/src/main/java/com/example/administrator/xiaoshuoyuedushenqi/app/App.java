@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.update.BmobUpdateAgent;
+//import cn.bmob.v3.Bmob;
+//import cn.bmob.v3.update.BmobUpdateAgent;
 
 /**
  * @author

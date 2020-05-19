@@ -256,8 +256,8 @@ public class AdmActivity extends BaseActivity_other implements View.OnClickListe
             videoView.setMediaController(mediaController);
             Uri rawUri = Uri.parse(https);
             //String netPlayUrl="http://baobab.wdjcdn.com/145076769089714.mp4";
-//            proxy = App.getProxy(getAppContext());
-//            proxyUrl = proxy.getProxyUrl(https);
+            proxy = App.getProxy(getAppContext());
+            proxyUrl = proxy.getProxyUrl(https);
 //            videoView.setVideoPath(proxyUrl);//播放的是代理服务器返回的url，已经进行了封装处理
             videoView.setVideoURI(rawUri);
             videoView.requestFocus();
@@ -276,6 +276,13 @@ public class AdmActivity extends BaseActivity_other implements View.OnClickListe
                     //创建倒计时类
                     mCountDownTimer = new MyCountDownTimer(s * 1000, 1000);
                     mCountDownTimer.start();
+                }
+            });
+            videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    videoView.stopPlayback(); //播放异常，则停止播放，防止弹窗使界面阻塞
+                    return true;
                 }
             });
             videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

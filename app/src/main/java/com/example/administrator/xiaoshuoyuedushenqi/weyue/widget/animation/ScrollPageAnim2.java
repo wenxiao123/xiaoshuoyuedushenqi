@@ -59,7 +59,6 @@ public class ScrollPageAnim2 extends PageAnimation {
             view.destRect = new Rect(0, 0, mViewWidth, mViewHeight);
             view.top = 0;
             view.bottom = view.bitmap.getHeight();
-
             mScrapViews.push(view);
         }
         onLayout();

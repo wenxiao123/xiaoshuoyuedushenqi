@@ -21,7 +21,7 @@
             android:id="@+id/txt_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp" />
+            />
         <LinearLayout
             android:layout_margin="5dp"
             android:id="@+id/adm_lin"
@@ -44,6 +44,7 @@
                 android:background="@drawable/bachground_halfcricyle"
                >
                <ImageView
+                android:visibility="gone"
                 android:id="@+id/img_adm"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -51,6 +52,7 @@
                 android:src="@mipmap/logo"
                 />
                 <VideoView
+                    android:layout_margin="7dp"
                     android:id="@+id/activity_opening_videoview"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
@@ -107,6 +109,7 @@
                 android:text="点击/滑动可继续阅读"/>
         </LinearLayout>
         <FrameLayout
+            android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_gravity="bottom">

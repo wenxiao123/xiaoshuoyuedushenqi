@@ -78,7 +78,7 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-import cn.bmob.v3.http.bean.Collect;
+//import cn.bmob.v3.http.bean.Collect;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -573,7 +573,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 
     public void queryAllBookSuccess2(List<BookshelfNovelDbData> dataList) {
         for (int i = 0; i < dataList.size(); i++) {
-            Log.e("WWW", "queryAllBookSuccess2: "+dataList.get(i).getName());
+            Log.e("OOO", "queryAllBookSuccess2: "+dataList.get(i).getName());
             if (!mDbManager.isExistInBookshelfNovel(dataList.get(i).getNovelUrl())) {
                 mDbManager.insertOrUpdateBook(new BookshelfNovelDbData(dataList.get(i).getNovelUrl(),
                         dataList.get(i).getName(), dataList.get(i).getCover(), 0, 0, dataList.get(i).getWeight(), 0 + "", dataList.get(i).getWeight(), dataList.get(i).getStatus()));
@@ -594,7 +594,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                LogUtils.e(json);
+                LogUtils.e(url+" "+token+" ");
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -605,6 +605,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                             JSONObject object = jsonObject.getJSONObject("data");
                             JSONArray jsonArray = object.getJSONArray("data");
                             mDataList1.clear();
+                            noval_readcoreds.clear();
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 noval_readcoreds.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(), Noval_Readcored.class));
                                 mDataList1.add(new BookshelfNovelDbData(noval_readcoreds.get(i).getNovel_id(), noval_readcoreds.get(i).getTitle(), noval_readcoreds.get(i).getPic()
@@ -623,6 +624,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
 
             @Override
             public void onFailure(String errorMsg) {
+                queryAllBookSuccess2(mDataList1);
                 showShortToast(errorMsg);
             }
         });
@@ -702,7 +704,8 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
      */
     @Override
     public void queryAllBookError(String errorMsg) {
-
+        showShortToast(errorMsg);
+        mLoadingRv.setVisibility(View.GONE);
     }
 
     public void startActivity(Class<?> className, Bundle bundle) {

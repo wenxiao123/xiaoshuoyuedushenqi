@@ -373,7 +373,7 @@ public class AdminSetActivity extends BaseActivity {
                 }
             }
         });
-        ints3[0] = FileSizeUtil.getFileOrFilesSize(Constant.BOOK_OTHER_CACHE_PATH, FileSizeUtil.SIZETYPE_MB) + " MB";
+        ints3[0] = FileSizeUtil.getFileOrFilesSize(FileUtils.getCachePath()+ File.separator, FileSizeUtil.SIZETYPE_MB) + " MB";
         mainRecyleAdapter3 = new MainSetAdapter(this, ints3, strings3);
         recyclerView3.setAdapter(mainRecyleAdapter3);
 

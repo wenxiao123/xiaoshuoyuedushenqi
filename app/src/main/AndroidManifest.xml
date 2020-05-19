@@ -166,9 +166,5 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation"
             tools:ignore="LockedOrientationActivity"/>
-        <provider
-            android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="com.example.administrator.xiaoshuoyuedushenqi.BmobContentProvider">
-        </provider>
     </application>
 </manifest>

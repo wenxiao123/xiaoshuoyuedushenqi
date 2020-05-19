@@ -301,7 +301,6 @@ public class PageView extends View {
                         return true;
                     }
                 }
-
                 mPageAnim.onTouchEvent(event);
                 break;
         }
@@ -362,9 +361,25 @@ public class PageView extends View {
         if (mPageAnim instanceof HorizonPageAnim){
             ((HorizonPageAnim) mPageAnim).changePage();
         }
-        mPageLoader.onDraw(getNextPage(), false);
+//        if(adm_bitmap!=null){
+//            drawAdminPage(adm_bitmap);
+//        }else {
+            mPageLoader.onDraw(getNextPage(), false);
+//        }
     }
 
+    public void drawAdminPage(Bitmap bitmap){
+        mPageLoader.onDraw(getNextPage(),bitmap, false);
+    }
+    public Bitmap getAdm_bitmap() {
+        return adm_bitmap;
+    }
+
+    public void setAdm_bitmap(Bitmap adm_bitmap) {
+        this.adm_bitmap = adm_bitmap;
+    }
+
+    Bitmap adm_bitmap;
     /**
      * 刷新当前页(主要是为了ScrollAnimation)
      *
@@ -375,7 +390,6 @@ public class PageView extends View {
         }
         drawCurPage(false);
     }
-
     //refreshPage和drawCurPage容易造成歧义,后面需要修改
     /**
      * 绘制当前页。

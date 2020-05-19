@@ -1,12 +1,12 @@
 package com.example.administrator.xiaoshuoyuedushenqi.entity.bean;
 
-import cn.bmob.v3.BmobObject;
+//import cn.bmob.v3.BmobObject;
 
 /**
  * @author
  * Created on 2020/1/3
  */
-public class Version extends BmobObject {
+public class Version  {
     private int id;
     private int versionCode;
     private String addr;

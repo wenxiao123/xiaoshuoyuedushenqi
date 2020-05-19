@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="热门书籍"
+            android:visibility="gone"
             android:textStyle="bold"
             android:textColor="@color/red_a2"
             android:textSize="16sp" />

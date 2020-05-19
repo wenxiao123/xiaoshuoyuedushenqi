@@ -141,12 +141,10 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             //contentViewHolder.tv_status.setVisibility(View.VISIBLE);
             contentViewHolder.tv_position.setVisibility(View.VISIBLE);
         } else if (mDataList.get(i).getType() == -1) {
-            Glide.with(mContext)
+                     Glide.with(mContext)
                     .load(R.drawable.grey)
-                    .apply(new RequestOptions()
-                            .error(R.drawable.cover_error)
-                            .transform(transformation))
                     .into(contentViewHolder.cover);
+            contentViewHolder.cover.setBackground(mContext.getResources().getDrawable(R.drawable.grey));
             contentViewHolder.img_add.setVisibility(View.VISIBLE);
             contentViewHolder.tv_status.setVisibility(View.GONE);
             contentViewHolder.tv_position.setVisibility(View.GONE);

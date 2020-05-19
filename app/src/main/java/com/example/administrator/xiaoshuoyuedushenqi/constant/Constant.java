@@ -18,7 +18,7 @@ public class Constant {
     // 男生热门榜单的榜单数
     public static final int MALE_HOT_RANK_NUM = 5;
     public static int TIME_MAX = 6;    // 最大次数
-
+    public static int ADM_MAX=3;
     public static String text_adress1="font/方正卡通简体.ttf";
     public static String text_name1="方正卡通简体";
 

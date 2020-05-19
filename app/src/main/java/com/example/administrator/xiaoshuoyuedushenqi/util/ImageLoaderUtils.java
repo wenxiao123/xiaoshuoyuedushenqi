@@ -31,7 +31,11 @@ public class ImageLoaderUtils {
         if (imageView == null) {
             throw new IllegalArgumentException("argument error");
         }
-        Glide.with(context).load(url).apply(new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.ALL).transform(transformation)).into(imageView);
+        try {
+            Glide.with(context).load(url).apply(new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).transform(transformation)).into(imageView);
+        }catch (Exception ex){
+            return;
+        }
     }
 }

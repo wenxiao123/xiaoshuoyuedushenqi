@@ -59,9 +59,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListener;
+//import cn.bmob.v3.BmobQuery;
+//import cn.bmob.v3.exception.BmobException;
+//import cn.bmob.v3.listener.QueryListener;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -327,43 +327,43 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
                     break;
                 }
                 final int currVersionCode = VersionUtil.getVersionCode(getActivity());
-                BmobQuery<Version> bmobQuery = new BmobQuery<>();
-                bmobQuery.getObject("A7ht0006", new QueryListener<Version>() {
-                    @Override
-                    public void done(final Version version, BmobException e) {
-                        if (version != null) {
-                            if (version.getVersionCode() > currVersionCode) {
-                                new TipDialog.Builder(getActivity())
-                                        .setContent("检测到有新版本，是否进行更新（注意：更新后书架数据将清除）")
-                                        .setEnsure("是")
-                                        .setCancel("不了")
-                                        .setOnClickListener(new TipDialog.OnClickListener() {
-                                            @Override
-                                            public void clickEnsure() {
-                                                try {
-                                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                                    intent.setData(Uri.parse(version.getAddr()));
-                                                    startActivity(intent);
-                                                } catch (NullPointerException e) {
-                                                    showShortToast("抱歉，下载地址出错");
-                                                }
-                                            }
-
-                                            @Override
-                                            public void clickCancel() {
-
-                                            }
-                                        })
-                                        .build()
-                                        .show();
-                            } else {
-                                showShortToast("已经是最新版本");
-                            }
-                        } else {
-                            showShortToast("已经是最新版本");
-                        }
-                    }
-                });
+//                BmobQuery<Version> bmobQuery = new BmobQuery<>();
+//                bmobQuery.getObject("A7ht0006", new QueryListener<Version>() {
+//                    @Override
+//                    public void done(final Version version, BmobException e) {
+//                        if (version != null) {
+//                            if (version.getVersionCode() > currVersionCode) {
+//                                new TipDialog.Builder(getActivity())
+//                                        .setContent("检测到有新版本，是否进行更新（注意：更新后书架数据将清除）")
+//                                        .setEnsure("是")
+//                                        .setCancel("不了")
+//                                        .setOnClickListener(new TipDialog.OnClickListener() {
+//                                            @Override
+//                                            public void clickEnsure() {
+//                                                try {
+//                                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+//                                                    intent.setData(Uri.parse(version.getAddr()));
+//                                                    startActivity(intent);
+//                                                } catch (NullPointerException e) {
+//                                                    showShortToast("抱歉，下载地址出错");
+//                                                }
+//                                            }
+//
+//                                            @Override
+//                                            public void clickCancel() {
+//
+//                                            }
+//                                        })
+//                                        .build()
+//                                        .show();
+//                            } else {
+//                                showShortToast("已经是最新版本");
+//                            }
+//                        } else {
+//                            showShortToast("已经是最新版本");
+//                        }
+//                    }
+//                });
                 break;
             case R.id.v_more_clear:
                 final TipDialog tipDialog = new TipDialog.Builder(getActivity())

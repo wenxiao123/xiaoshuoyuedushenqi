@@ -3,6 +3,11 @@ package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.util.AdsUtils;
+import com.example.administrator.xiaoshuoyuedushenqi.view.activity.WYReadActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.BookRecordBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.entity.CollBookBean;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.db.helper.BookRecordHelper;
@@ -15,6 +20,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.rxhelper.RxUtil
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.ScrollPageAnim;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation.ScrollPageAnim2;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 
@@ -24,13 +31,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -43,6 +55,8 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getAppResources;
 import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getContext;
@@ -116,14 +130,17 @@ public abstract class PageLoader {
 
     //下一页绘制缓冲区，用户缓解卡顿问题。
     private Bitmap mNextBitmap;
+
     public int getmTextInterval() {
         return text_interval;
     }
+
     int text_interval;
+
     public void setmTextInterval(int mTextInterval) {
         if (!isBookOpen) return;
-        int interval=intervals[mTextInterval];
-        this.mTextInterval =App.getAppResources().getDimensionPixelOffset(interval);
+        int interval = intervals[mTextInterval];
+        this.mTextInterval = App.getAppResources().getDimensionPixelOffset(interval);
         mTitleSize = mTextSize + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_4);//ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
 
         //mTitleInterval = mTitleInterval;
@@ -133,7 +150,7 @@ public abstract class PageLoader {
         mTextPaint.setTextSize(mTextSize);
         //设置标题的字体大小
         mTitlePaint.setTextSize(mTitleSize);
-        text_interval=mTextInterval;
+        text_interval = mTextInterval;
         //存储状态
         mSettingManager.setTextRow(mTextInterval);
         //取消缓存
@@ -219,7 +236,9 @@ public abstract class PageLoader {
     public int getmTextSize() {
         return text_index;
     }
-    int text_index=0;
+
+    int text_index = 0;
+
     public void setmTextSize(int mTextSize) {
         this.mTextSize = mTextSize;
     }
@@ -278,17 +297,18 @@ public abstract class PageLoader {
 
     private void initData() {
         mSettingManager = ReadSettingManager.getInstance();
-        text_index= mSettingManager.getTextSize();
-        if(text_index>=ints.length){
-            text_index=1;
+        text_index = mSettingManager.getTextSize();
+        if (text_index >= ints.length) {
+            text_index = 1;
         }
-        text_interval=mSettingManager.getTextRow();
-        if(text_interval>=intervals.length){
-            text_interval=1;
+        text_interval = mSettingManager.getTextRow();
+        if (text_interval >= intervals.length) {
+            text_interval = 1;
         }
         mTextSize = App.getAppResources().getDimensionPixelSize(ints[text_index]);
-        mTextInterval= App.getAppResources().getDimensionPixelSize(intervals[text_interval]);;
-        mTextStyle=mSettingManager.getTextStyle();
+        mTextInterval = App.getAppResources().getDimensionPixelSize(intervals[text_interval]);
+        ;
+        mTextStyle = mSettingManager.getTextStyle();
         mTitleSize = mTextSize + App.getAppResources().getDimensionPixelOffset(R.dimen.dp_4);//EXTRA_TITLE_SIZE;
         mPageMode = mSettingManager.getPageMode();
         isNightMode = mSettingManager.isNightMode();
@@ -344,24 +364,24 @@ public abstract class PageLoader {
             mBatteryPaint.setColor(Color.BLACK);
         }
         Typeface tf = null;
-        if(mTextStyle!=null&&!mTextStyle.equals("")) {
+        if (mTextStyle != null && !mTextStyle.equals("")) {
             AssetManager mgr = getContext().getAssets();
             //根据路径得到Typeface
-            if(mTextStyle.equals("1")) {
+            if (mTextStyle.equals("1")) {
                 tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
-            }else if(mTextStyle.equals("2")){
+            } else if (mTextStyle.equals("2")) {
                 tf = Typeface.createFromAsset(mgr, Constant.text_adress2);
-            }else if(mTextStyle.equals("3")){
+            } else if (mTextStyle.equals("3")) {
                 tf = Typeface.createFromAsset(mgr, Constant.text_adress3);
-            }else if(mTextStyle.equals("4")){
+            } else if (mTextStyle.equals("4")) {
                 tf = Typeface.createFromAsset(mgr, Constant.text_adress4);
-            }else if(mTextStyle.equals("-1")){
-                tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            } else if (mTextStyle.equals("-1")) {
+                tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
             }
             mTitlePaint.setTypeface(tf);
             mTextPaint.setTypeface(tf);
-        }else {
-            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+        } else {
+            tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
             mTitlePaint.setTypeface(tf);
             mTextPaint.setTypeface(tf);
         }
@@ -432,7 +452,7 @@ public abstract class PageLoader {
     }
 
     //跳转到指定章节
-    public void skipToChapter(int pos,int index) {
+    public void skipToChapter(int pos, int index) {
         //正在加载
         mStatus = STATUS_LOADING;
         //绘制当前的状态
@@ -452,7 +472,7 @@ public abstract class PageLoader {
         }
         if (mCurPage != null) {
             //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
-              mCurPage.position = 0;
+            mCurPage.position = 0;
         }
 
         //需要对ScrollAnimation进行重新布局
@@ -461,7 +481,7 @@ public abstract class PageLoader {
 
     //跳转到具体的页
     public void skipToPage(int pos) {
-        if(pos<mCurPageList.size()){
+        if (pos < mCurPageList.size()) {
             mCurPage = getCurPage(pos);
             mPageView.refreshPage();
         }
@@ -493,18 +513,22 @@ public abstract class PageLoader {
             mPageView.drawCurPage(true);
         }
     }
-    int [] ints={R.dimen.dp_14,R.dimen.dp_16,R.dimen.dp_18,R.dimen.dp_20,R.dimen.dp_22,R.dimen.dp_24,R.dimen.dp_26,R.dimen.dp_28,R.dimen.dp_29,R.dimen.dp_30,R.dimen.dp_32,R.dimen.dp_34,R.dimen.dp_36,R.dimen.dp_38,R.dimen.dp_39};
-    int [] intervals={R.dimen.dp_2,R.dimen.dp_4,R.dimen.dp_6,R.dimen.dp_8,R.dimen.dp_10,R.dimen.dp_12,R.dimen.dp_14,R.dimen.dp_16,R.dimen.dp_18,R.dimen.dp_20};
-    public int text_size(){
+
+    int[] ints = {R.dimen.dp_14, R.dimen.dp_16, R.dimen.dp_18, R.dimen.dp_20, R.dimen.dp_22, R.dimen.dp_24, R.dimen.dp_26, R.dimen.dp_28, R.dimen.dp_29, R.dimen.dp_30, R.dimen.dp_32, R.dimen.dp_34, R.dimen.dp_36, R.dimen.dp_38, R.dimen.dp_39};
+    int[] intervals = {R.dimen.dp_2, R.dimen.dp_4, R.dimen.dp_6, R.dimen.dp_8, R.dimen.dp_10, R.dimen.dp_12, R.dimen.dp_14, R.dimen.dp_16, R.dimen.dp_18, R.dimen.dp_20};
+
+    public int text_size() {
         return ints.length;
     }
-    public int getInterval(){
+
+    public int getInterval() {
         return intervals.length;
     }
+
     //设置文字大小
     public void setTextSize(int textSize) {
         if (!isBookOpen) return;
-        int position=ints[textSize];
+        int position = ints[textSize];
         //设置textSize
         mTextSize = App.getAppResources().getDimensionPixelSize(position);
         //mTextInterval = mTextSize / 2;
@@ -518,7 +542,7 @@ public abstract class PageLoader {
         mTextPaint.setTextSize(mTextSize);
         //设置标题的字体大小
         mTitlePaint.setTextSize(mTitleSize);
-        text_index=textSize;
+        text_index = textSize;
         //存储状态
         mSettingManager.setTextSize(text_index);
         //取消缓存
@@ -545,7 +569,7 @@ public abstract class PageLoader {
 
         //mTextInterval = mTextSize / 2;
         mTextPara = mTextSize;
-        mTextStyle=type;
+        mTextStyle = type;
         mTitleSize = mTextSize + App.getAppResources().getDimensionPixelOffset(R.dimen.dp_4);
         mTitleInterval = mTitleInterval / 2;
         mTitlePara = mTitleSize;
@@ -555,25 +579,25 @@ public abstract class PageLoader {
         //设置标题的字体大小
         mTitlePaint.setTextSize(mTitleSize);
         Typeface tf = null;
-        if(type!=null&&!type.equals("")) {
+        if (type != null && !type.equals("")) {
             //从asset 读取字体
             AssetManager mgr = getContext().getAssets();
 //根据路径得到Typeface
-            if(type.equals("1")) {
+            if (type.equals("1")) {
                 tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
-            }else if(type.equals("2")) {
-                tf = Typeface.createFromAsset(mgr,  Constant.text_adress2);
-            }else if(type.equals("3")) {
-                tf = Typeface.createFromAsset(mgr,  Constant.text_adress3);
-            }else if(type.equals("4")) {
-                tf = Typeface.createFromAsset(mgr,  Constant.text_adress4);
-            }else if(type.equals("-1")){
-                tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+            } else if (type.equals("2")) {
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress2);
+            } else if (type.equals("3")) {
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress3);
+            } else if (type.equals("4")) {
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress4);
+            } else if (type.equals("-1")) {
+                tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
             }
             mTitlePaint.setTypeface(tf);
             mTextPaint.setTypeface(tf);
-        }else {
-            tf=Typeface.create("sans-serif-medium",Typeface.NORMAL);
+        } else {
+            tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
             mTitlePaint.setTypeface(tf);
             mTextPaint.setTypeface(tf);
         }
@@ -604,9 +628,9 @@ public abstract class PageLoader {
         if (isNightMode) {
             mBatteryPaint.setColor(Color.WHITE);
             setBgColor(ReadSettingManager.NIGHT_MODE);
-           // view.setBackgroundColor(ReadSettingManager.NIGHT_MODE);
+            // view.setBackgroundColor(ReadSettingManager.NIGHT_MODE);
         } else {
-            mBgTheme=mSettingManager.getReadBgTheme();
+            mBgTheme = mSettingManager.getReadBgTheme();
             mBatteryPaint.setColor(Color.BLACK);
             setBgColor(mBgTheme);
             //view.setBackgroundColor(mBgTheme);
@@ -619,7 +643,7 @@ public abstract class PageLoader {
         if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
             mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_fff_99);
             mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.black);
-            isbackground=false;
+            isbackground = false;
         } else if (isNightMode) {
             mBgTheme = theme;
             mSettingManager.setReadBackground(theme);
@@ -659,7 +683,7 @@ public abstract class PageLoader {
         }
     }
 
-    public void setBgColor(int theme, View v,View tv) {
+    public void setBgColor(int theme, View v, View tv) {
 //        if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
 //            mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_fff_99);
 //            mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.black);
@@ -667,30 +691,30 @@ public abstract class PageLoader {
 //            mBgTheme = theme;
 //            mSettingManager.setReadBackground(theme);
 //        } else {
-            mSettingManager.setReadBackground(theme);
-            mSettingManager.setNightMode(false);
-            switch (theme) {
-                case ReadSettingManager.READ_BG_DEFAULT:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor1);
-                    break;
-                case ReadSettingManager.READ_BG_1:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor2);
-                    break;
-                case ReadSettingManager.READ_BG_2:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor3);
-                    break;
-                case ReadSettingManager.READ_BG_3:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor4);
-                    break;
-                case ReadSettingManager.READ_BG_4:
-                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor5);
-                    break;
-               }
+        mSettingManager.setReadBackground(theme);
+        mSettingManager.setNightMode(false);
+        switch (theme) {
+            case ReadSettingManager.READ_BG_DEFAULT:
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor1);
+                break;
+            case ReadSettingManager.READ_BG_1:
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor2);
+                break;
+            case ReadSettingManager.READ_BG_2:
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor3);
+                break;
+            case ReadSettingManager.READ_BG_3:
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor4);
+                break;
+            case ReadSettingManager.READ_BG_4:
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor5);
+                break;
+        }
 //        }
 
         if (isBookOpen) {
@@ -738,9 +762,9 @@ public abstract class PageLoader {
 
     //获取当前页的页码
     public int getPagePos() {
-        if(mCurPage==null){
+        if (mCurPage == null) {
             return 1;
-        }else {
+        } else {
             return mCurPage.position;
         }
     }
@@ -759,16 +783,18 @@ public abstract class PageLoader {
     }
 
     //打开书本，初始化书籍
-    public void openBook(CollBookBean collBook,BookRecordBean bookRecordBean) {
+    public void openBook(CollBookBean collBook, BookRecordBean bookRecordBean) {
         mCollBook = collBook;
-        mBookRecord=bookRecordBean;
+        mBookRecord = bookRecordBean;
         mCurChapterPos = mBookRecord.getChapter();
         mLastChapter = mCurChapterPos;
     }
-    public void make_loading(){
+
+    public void make_loading() {
         mStatus = STATUS_LOADING;
     }
-  //  打开具体章节
+
+    //  打开具体章节
     public void openChapter() {
 //        mCurPageList = loadPageList(mCurChapterPos);
 //        if(mCurPageList!=null&&mCurPageList.size()>0) {
@@ -802,7 +828,7 @@ public abstract class PageLoader {
 //            mStatus=STATUS_ERROR;
 //        }
 //        mPageView.drawCurPage(false);
-        Log.e("WWW", "openChapter: "+mCurChapterPos);
+        Log.e("WWW", "openChapter: " + mCurChapterPos);
         mCurPageList = loadPageList(mCurChapterPos);
         //进行预加载
         preLoadNextChapter();
@@ -824,7 +850,7 @@ public abstract class PageLoader {
         } else {
             mCurPage = getCurPage(0);
         }
-        Log.e("www", "openChapter: "+222);
+        Log.e("www", "openChapter: " + 222);
         mPageView.drawCurPage(false);
     }
 
@@ -846,20 +872,20 @@ public abstract class PageLoader {
 
     /*******************************abstract method***************************************/
     //设置章节
-   // public abstract void setChapterList(List<BookChapterBean> bookChapters);
-
+    // public abstract void setChapterList(List<BookChapterBean> bookChapters);
     @Nullable
     protected abstract List<TxtPage> loadPageList(int chapter);
 
     /***********************************default method***********************************************/
     //通过流获取Page的方法
-    List<TxtPage> loadPages(TxtChapter chapter, BufferedReader br,int position) {
+    List<TxtPage> loadPages(TxtChapter chapter, BufferedReader br, int position) {
         //生成的页面
         List<TxtPage> pages = new ArrayList<>();
         //使用流的方式加载
         List<String> lines = new ArrayList<>();
         int rHeight = mVisibleHeight; //由于匹配到最后，会多删除行间距，所以在这里多加个行间距
         int titleLinesCount = 0;
+        int line_total = 0;
         boolean isTitle = true; //不存在没有 Title 的情况，所以默认设置为 true。
         String paragraph = chapter.getTitle();//默认展示标题
         try {
@@ -887,7 +913,8 @@ public abstract class PageLoader {
                     }
 
                     //一页已经填充满了，创建 TextPage
-                    if (rHeight <mTextInterval/3) {
+                    if (rHeight < mTextInterval / 3) {
+                        line_total = lines.size();
                         //创建Page
                         TxtPage page = new TxtPage();
                         page.position = pages.size();
@@ -938,6 +965,11 @@ public abstract class PageLoader {
             }
 
             if (lines.size() != 0) {
+//                if(lines.size()<line_total){
+//                    for(int i=0;i<line_total;i++){
+//                        lines.add("qqqqqqqq");
+//                    }
+//                }
                 //创建Page
                 TxtPage page = new TxtPage();
                 page.position = pages.size();
@@ -968,32 +1000,58 @@ public abstract class PageLoader {
         if (mPageChangeListener != null) {
             mPageChangeListener.onPageCountChange(pages.size());
         }
-        if (position >= 0&&!(mPageView.getmPageAnim() instanceof ScrollPageAnim2)&&position%3==0) {
-            TxtPage txtPage=pages.get(pages.size()-1);
-            if(txtPage.lines.size()>4) {
-                TxtPage page = new TxtPage();
-                page.position = pages.size();
-                page.title = chapter.getTitle();
-                page.lines = new ArrayList<>();
-                page.titleLines = 0;
-                pages.add(page);
-            }
-        }
+
+//        if (position >= 0 && !(mPageView.getmPageAnim() instanceof ScrollPageAnim2) && position % Constant.ADM_MAX == 0) {
+//            TxtPage txtPage = pages.get(pages.size() - 1);
+//            if (txtPage.lines.size() > 4) {
+//                TxtPage page = new TxtPage();
+//                page.position = pages.size();
+//                page.title = chapter.getTitle();
+//                page.lines = new ArrayList<>();
+//                page.titleLines = 0;
+//                pages.add(page);
+//            }
+//        }
+//        if (position >= 0&&(mPageView.getmPageAnim() instanceof ScrollPageAnim2)) {
+//            TxtPage txtPage=pages.get(pages.size()-1);
+//            if(txtPage.lines.size()<lines.size()) {
+//                TxtPage page = new TxtPage();
+//                page.position = pages.size();
+//                page.title = chapter.getTitle();
+//                page.lines = new ArrayList<>();
+//                page.titleLines = 0;
+//                pages.add(page);
+//            }
+//        }
         return pages;
     }
 
     void onDraw(Bitmap bitmap, boolean isUpdate) {
-        if(mChapterList != null && mChapterList.size() != 0&&mCurChapterPos>=mChapterList.size()){
-            mCurChapterPos=mChapterList.size()-1;
+        if (mChapterList != null && mChapterList.size() != 0 && mCurChapterPos >= mChapterList.size()) {
+            mCurChapterPos = mChapterList.size() - 1;
         }
-            drawBackground(mPageView.getBgBitmap(), isUpdate);
-            if (!isUpdate) {
-                drawContent(bitmap);
-            }
+        drawBackground(mPageView.getBgBitmap(), isUpdate);
+        if (!isUpdate) {
+            drawContent(bitmap);
+        }
         //更新绘制
         mPageView.invalidate();
     }
+
+    void onDraw(Bitmap bitmap, Bitmap adm_bitmap, boolean isUpdate) {
+        if (mChapterList != null && mChapterList.size() != 0 && mCurChapterPos >= mChapterList.size()) {
+            mCurChapterPos = mChapterList.size() - 1;
+        }
+        drawBackground(mPageView.getBgBitmap(), isUpdate);
+        if (!isUpdate) {
+            drawContent(bitmap, adm_bitmap);
+        }
+        //更新绘制
+        mPageView.invalidate();
+    }
+
     boolean isbackground;
+
     void drawBackground(Bitmap bitmap, boolean isUpdate) {
         Canvas canvas = new Canvas(bitmap);
         int tipMarginHeight = ScreenUtils.dpToPx(3);
@@ -1008,18 +1066,18 @@ public abstract class PageLoader {
                 if (mChapterList != null && mChapterList.size() != 0) {
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
-                    String  s=mChapterList.get(mCurChapterPos).getTitle()+"/"+mCollBook.getTitle();
-                    if(s.length()>14){
-                        s=s.substring(0,14)+"...";
+                    String s = mChapterList.get(mCurChapterPos).getTitle() + "/" + mCollBook.getTitle();
+                    if (s.length() > 14) {
+                        s = s.substring(0, 14) + "...";
                     }
                     canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
                 }
                 mTipPaint.setColor(mTextColor);
             } else {
                 mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
-                String  s=mChapterList.get(mCurChapterPos).getTitle()+"/"+mCollBook.getTitle();
-                if(s.length()>14){
-                    s=s.substring(0,14)+"...";
+                String s = mChapterList.get(mCurChapterPos).getTitle() + "/" + mCollBook.getTitle();
+                if (s.length() > 14) {
+                    s = s.substring(0, 14) + "...";
                 }
                 canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
 //                String sth=(getChapterPos()+1)+"/"+mChapterList.size();
@@ -1089,13 +1147,116 @@ public abstract class PageLoader {
     }
 
     void drawContent(Bitmap bitmap) {
-        Canvas canvas = new Canvas(bitmap);;
+        Canvas canvas = new Canvas(bitmap);
         if (mPageMode == PageView.PAGE_MODE_SCROLL) {
 //            if(mCurPageList!=null&&mCurPage.position==mCurPageList.size()-1) {
 //                canvas.clipRect(0, 0, mVisibleWidth, mVisibleHeight/2);
 //                canvas.drawColor( ContextCompat.getColor(App.getAppContext(), R.color.color_ccebcc));
 //            }else {
-                canvas.drawColor(mPageBg);
+            canvas.drawColor(mPageBg);
+//            }
+
+        }
+       // mPageChangeListener.onShowAdm(true);
+        /******绘制内容****/
+        if (mStatus != STATUS_FINISH) {
+            //绘制字体
+            String tip = "";
+            switch (mStatus) {
+                case STATUS_LOADING:
+                    tip = "正在拼命加载中...";
+                    break;
+                case STATUS_ERROR:
+                    tip = "加载失败(点击边缘重试)";
+                    break;
+                case STATUS_EMPTY:
+                    tip = "文章内容为空";
+                    break;
+                case STATUS_PARSE:
+                    tip = "正在排版请等待...";
+                    break;
+                case STATUS_PARSE_ERROR:
+                    tip = "文件解析错误";
+                    break;
+            }
+
+            //将提示语句放到正中间
+            Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
+            float textHeight = fontMetrics.top - fontMetrics.bottom;
+            float textWidth = mTextPaint.measureText(tip);
+            float pivotX = (mDisplayWidth - textWidth) / 2;
+            float pivotY = (mDisplayHeight - textHeight) / 2;
+            canvas.drawText(tip, pivotX, pivotY, mTextPaint);
+        } else {
+            float top;
+
+            if (mPageMode == PageView.PAGE_MODE_SCROLL) {
+                top = -mTextPaint.getFontMetrics().top;
+            } else {
+                top = mMarginHeight - mTextPaint.getFontMetrics().top;
+            }
+
+            //设置总距离
+            int interval = mTextInterval + (int) mTextPaint.getTextSize();
+            int para = mTextPara + (int) mTextPaint.getTextSize();
+            int titleInterval = mTitleInterval + (int) mTitlePaint.getTextSize();
+            int titlePara = mTitlePara + (int) mTextPaint.getTextSize();
+            String str = null;
+
+            //对标题进行绘制
+            for (int i = 0; i < mCurPage.titleLines; ++i) {
+                str = mCurPage.lines.get(i);
+
+                //设置顶部间距
+                if (i == 0) {
+                    top += mTitlePara;
+                }
+
+                //计算文字显示的起始点
+                int start = (int) (mDisplayWidth - mTitlePaint.measureText(str)) / 2;
+                //进行绘制
+                canvas.drawText(str, start, top, mTitlePaint);
+
+                //设置尾部间距
+                if (i == mCurPage.titleLines - 1) {
+                    top += titlePara;
+                } else {
+                    //行间距
+                    top += titleInterval;
+                }
+            }
+            if (mCurPage.lines.size() > 0) {
+                //对内容进行绘制
+                for (int i = mCurPage.titleLines; i < mCurPage.lines.size(); ++i) {
+                    str = mCurPage.lines.get(i);
+                    canvas.drawText(str, mMarginWidth, top, mTextPaint);
+                    if (str.endsWith("\n")) {
+                        top += para;
+                    } else {
+                        top += interval;
+                    }
+                }
+//                if (mCurPage.lines.size() < 4) {
+//                    mPageChangeListener.onShowAdm(true);
+//                } else {
+                  mPageChangeListener.onShowAdm(false);
+//                }
+            } else {
+//               Bitmap bitmap1 = ((BitmapDrawable)getContext().getResources().getDrawable(R.mipmap.logo)).getBitmap();
+//               canvas.drawBitmap(bitmap1, mVisibleWidth/3, top, null);
+                  mPageChangeListener.onShowAdm(true);
+            }
+        }
+    }
+
+    void drawContent(Bitmap bitmap, Bitmap adm_bitmap) {
+        Canvas canvas = new Canvas(bitmap);
+        if (mPageMode == PageView.PAGE_MODE_SCROLL) {
+//            if(mCurPageList!=null&&mCurPage.position==mCurPageList.size()-1) {
+//                canvas.clipRect(0, 0, mVisibleWidth, mVisibleHeight/2);
+//                canvas.drawColor( ContextCompat.getColor(App.getAppContext(), R.color.color_ccebcc));
+//            }else {
+            canvas.drawColor(mPageBg);
 //            }
 
         }
@@ -1166,19 +1327,41 @@ public abstract class PageLoader {
                     top += titleInterval;
                 }
             }
-
-            //对内容进行绘制
-            for (int i = mCurPage.titleLines; i < mCurPage.lines.size(); ++i) {
-                str = mCurPage.lines.get(i);
-
-                canvas.drawText(str, mMarginWidth, top, mTextPaint);
-                if (str.endsWith("\n")) {
-                    top += para;
-                } else {
-                    top += interval;
+            if (mCurPage.lines.size() > 0) {
+                //对内容进行绘制
+                for (int i = mCurPage.titleLines; i < mCurPage.lines.size(); ++i) {
+                    str = mCurPage.lines.get(i);
+                    canvas.drawText(str, mMarginWidth, top, mTextPaint);
+                    if (str.endsWith("\n")) {
+                        top += para;
+                    } else {
+                        top += interval;
+                    }
                 }
+                //if(mCurPage.lines.size()==0) {
+//                   if(mPageView.getmPageAnim() instanceof ScrollPageAnim2){
+
+//                   }
+                //mPageChangeListener.onShowAdm(true);
+                // }
+                //else {
+                // mPageChangeListener.onShowAdm(false);
+                // }
+            } else {
+                canvas.drawBitmap(adm_bitmap, mDisplayWidth / 2 - adm_bitmap.getWidth() / 2, mVisibleHeight / 2 - adm_bitmap.getHeight() / 2, null);
+                canvas.drawText("小说宝支持正版", mDisplayWidth / 2 - adm_bitmap.getWidth() / 2, mVisibleHeight / 2 - adm_bitmap.getHeight() + 20, mTitlePaint);
+                //mPageChangeListener.onShowAdm(true);
             }
         }
+    }
+
+    private Bitmap cropBitmap(Bitmap bitmap, int croph) {
+        int w = bitmap.getWidth(); // 得到图片的宽，高
+        int h = bitmap.getHeight();
+        int cropWidth = w;// 裁切后所取的正方形区域边长
+        cropWidth /= 2;
+        int cropHeight = (int) (cropWidth / 1.2);
+        return Bitmap.createBitmap(bitmap, 0, 0, cropWidth, croph, null, false);
     }
 
     void setDisplaySize(int w, int h) {
@@ -1248,7 +1431,7 @@ public abstract class PageLoader {
 //        }
 //        //如果不存在则加载数据
 //        else {
-            mCurPageList = loadPageList(prevChapter);
+        mCurPageList = loadPageList(prevChapter);
 //        }
 
         mLastChapter = mCurChapterPos;
@@ -1282,7 +1465,7 @@ public abstract class PageLoader {
             if (!nextChapter()) {
                 return false;
             } else {
-               //return nextChapter();
+                //return nextChapter();
                 mCancelPage = mCurPage;
                 mCurPage = getCurPage(0);
                 mPageView.drawNextPage();
@@ -1307,6 +1490,7 @@ public abstract class PageLoader {
     }
 
     boolean nextChapter() {
+        // post_adm();
         //加载一章
         //加载一章
         if (mCurChapterPos + 1 >= mChapterList.size()) {
@@ -1442,8 +1626,8 @@ public abstract class PageLoader {
         if (mPageChangeListener != null) {
             mPageChangeListener.onPageChange(pos);
         }
-        if(mCurPageList==null){
-          return new TxtPage();
+        if (mCurPageList == null) {
+            return new TxtPage();
         }
         return mCurPageList.get(pos);
     }
@@ -1473,20 +1657,21 @@ public abstract class PageLoader {
             int pos = mCurPage.position + 1;
             if (pos > mCurPageList.size()) {
                 return null;
-            }else if(pos == mCurPageList.size()){
-               //mPageView.get.
+            } else if (pos == mCurPageList.size()) {
+                //mPageView.get.
                 return null;
             }
             if (mPageChangeListener != null) {
                 mPageChangeListener.onPageChange(pos);
             }
-            position=pos;
+            position = pos;
             return mCurPageList.get(pos);
         }
         return new TxtPage();
     }
 
-   int position;
+    int position;
+
     /**
      * @return:获取上一个章节的最后一页
      */
@@ -1530,6 +1715,9 @@ public abstract class PageLoader {
 
         //页面改变
         void onPageChange(int pos);
+
+        //页面改变
+        void onShowAdm(boolean isflag);
     }
 }
 

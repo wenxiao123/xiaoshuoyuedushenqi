@@ -151,7 +151,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                 new BookshelfNovelsAdapter.BookshelfNovelListener() {
                     @Override
                     public void clickItem(int position) {
-
+                        mCheckedList.set(position,true);
                     }
 
                     @Override
@@ -206,6 +206,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -236,6 +237,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         mIsDeleting = true;
         for (int i = mDataList.size() - 1; i >= 0; i--) {
             if (mCheckedList.get(i)) {
+                Log.e("WWW", "multiDelete: "+mDataList.get(i).getName());
                 // 从数据库中删除该小说
                 if(mDataList.get(i).getType()==1){
                 File file=new File((mDataList.get(i).getFuben_id()));
@@ -244,11 +246,17 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                 }
                 }
                 mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
-                mDbManager.deleteBookCalotaNovel(mDataList.get(i).getNovelUrl());
+                //mDbManager.deleteBookCalotaNovel(mDataList.get(i).getNovelUrl());
                 if(login_admin!=null){
                   delectBookshelfadd(login_admin.getToken(), mDataList.get(i).getNovelUrl());
                 }
-                  mDataList.remove(i);
+                mDataList.remove(i);
+            }
+            if(i==0) {
+                mDeleteTv.setText("删除");
+                Intent recever = new Intent("com.zhh.android");
+                recever.putExtra("type", 1);
+                sendBroadcast(recever);
             }
         }
         mCheckedList.clear();
@@ -395,10 +403,6 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                                 @Override
                                 public void clickEnsure() {
                                     multiDelete();
-                                    mDeleteTv.setText("删除");
-                                    Intent recever = new Intent("com.zhh.android");
-                                    recever.putExtra("type",1);
-                                    sendBroadcast(recever);
                                 }
 
                                 @Override

@@ -416,7 +416,7 @@ public class DatabaseManager {
                 if(type>=0){
                     res.add(bookshelfNovelDbData);
                 }
-                //Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
+                Log.e("QQQ", "isBookmarkNovel: "+bookshelfNovelDbData);
             } while (cursor.moveToPrevious());
         }
         cursor.close();
@@ -652,6 +652,7 @@ public class DatabaseManager {
      * 根据小说 url 删除一条书架书籍数据集
      */
     public void deleteBookshelfNovel(String novelUrl) {
+        Log.e("WWW", "deleteBookshelfNovel: "+novelUrl);
         mDb.delete(Constant.TABLE_BOOKSHELF_NOVEL,
                 Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?",
                 new String[]{novelUrl});

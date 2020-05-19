@@ -7,6 +7,14 @@ import java.util.List;
  */
 
 public class TxtPage {
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     int position;
     String title;
     int titleLines; //当前 lines 中为 title 的行数。

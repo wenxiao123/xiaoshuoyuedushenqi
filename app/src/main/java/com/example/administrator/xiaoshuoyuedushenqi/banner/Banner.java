@@ -137,6 +137,13 @@ public class Banner extends RelativeLayout {
                             //ToastUtil.showToast(getContext(), finalDataList3.get(0).getNovel_id()+"");
                         }
                     });
+                    videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                        @Override
+                        public boolean onError(MediaPlayer mp, int what, int extra) {
+                            videoView.stopPlayback(); //播放异常，则停止播放，防止弹窗使界面阻塞
+                            return true;
+                        }
+                    });
                 } else {
                     if (url.contains("http:")) {
                         url = url;

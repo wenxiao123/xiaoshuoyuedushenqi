@@ -57,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import static cn.bmob.v3.Bmob.getApplicationContext;
+//import static cn.bmob.v3.Bmob.getApplicationContext;
 
 /**
  * 发现页面的出版页

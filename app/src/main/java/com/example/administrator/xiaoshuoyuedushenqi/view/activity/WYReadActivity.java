@@ -12,9 +12,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -106,6 +108,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -255,7 +258,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         if(adm_lin.getVisibility()==View.GONE){
-            Log.e("QQQ", "onPageChange: "+222);
             activity_opening_videoview.pause();
             activity_opening_videoview.suspend();
         }
@@ -884,7 +886,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void doAfterInit() {
-        if(!isNightMode){
+        if(isNightMode){
             iv_read_day_and_night_mode.setImageResource(R.mipmap.icon_day);
             tv_read_day_and_night_mode.setText("日间");
         }else {
@@ -925,12 +927,17 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
             @Override
             public void onChapterChange(int pos) {
+                if (mPageLoader.getWeight() != 0) {
+                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mPageLoader.getWeight());
+                } else {
+                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mTxtChapters.size());
+                }
                 setCategorySelect(pos);
             }
 
             @Override
             public void onLoadChapter(List<TxtChapter> chapters, int pos) {
-                if (pos%3==0) {
+                if (pos%Constant.ADM_MAX==0) {
                     post_adm(1);
                 }
                 mVmContentInfo.setNoval_id(mCollBook.get_id());
@@ -949,11 +956,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     //冻结使用
                     mReadSbChapterProgress.setEnabled(false);
                 }
-                if (mPageLoader.getWeight() != 0) {
-                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mPageLoader.getWeight());
-                } else {
-                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mTxtChapters.size());
-                }
+//                if (mPageLoader.getWeight() != 0) {
+//                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mPageLoader.getWeight());
+//                } else {
+//                    tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mTxtChapters.size());
+//                }
                 //隐藏提示
 //                mReadTvPageTip.setVisibility(GONE);
                 mReadSbChapterProgress.setProgress(0);
@@ -975,30 +982,30 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onPageChange(int pos) {
-                //Log.e("QQQ", "onPageChange: "+(pos+" "+(mPageLoader.getmCurPageList().size()-1)));
-                if (mPageLoader.getmCurPageList()!=null&&pos==mPageLoader.getmCurPageList().size()-1&&mPageLoader.getChapterPos()%3==0) {
-                    Log.e("QQQ", "onPageChange: "+111);
-                    post_adm(2);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            adm_lin.setVisibility(View.VISIBLE);
-                        }
-                    },500);
-//                    if(!activity_opening_videoview.isPlaying()){
-//                        activity_opening_videoview.resume();
-//                    }
-                    //txt_color.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.color_2c));
-                }else {
-                    if(activity_opening_videoview.isPlaying()){
-                       // activity_opening_videoview.stopPlayback();
-                        activity_opening_videoview.suspend();
-                    }
-                    adm_lin.setVisibility(View.GONE);
-                }
                 mReadSbChapterProgress.post(() -> {
                     mReadSbChapterProgress.setProgress(pos);
                 });
+            }
+
+            @Override
+            public void onShowAdm(boolean pos) {
+//                is_adm=pos;
+//                if (pos==true) {
+//                    Log.e("zzz", "onPageChange: "+((mPageLoader.getmCurPage().getPosition())+" "+(mPageLoader.getmCurPageList().size())));
+//                    post_adm(2);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            adm_lin.setVisibility(View.VISIBLE);
+//                        }
+//                    }, 50);
+//                }else {
+//                    if(activity_opening_videoview.isPlaying()){
+//                        // activity_opening_videoview.stopPlayback();
+//                        activity_opening_videoview.suspend();
+//                    }
+//                    adm_lin.setVisibility(View.GONE);
+//                }
             }
         });
         mReadSbChapterProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -1088,7 +1095,23 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 if (mIsShowingOrHidingBar != false) {
                     hideBar();
                 }
-                adm_lin.setVisibility(View.VISIBLE);
+//                if(adm_lin.getVisibility()==View.VISIBLE){
+//                    if (activity_opening_videoview.isPlaying()) {
+//                        // activity_opening_videoview.stopPlayback();
+//                        activity_opening_videoview.suspend();
+//                    }
+//                    adm_lin.setVisibility(View.GONE);
+//                }
+                //Log.e("WWW", "prePage: "+mPageLoader.getPagePos());
+//                if(mPageLoader.getPagePos()==0) {
+//                    post_adm(2);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            adm_lin.setVisibility(View.VISIBLE);
+//                        }
+//                    },500);
+//                }
                 return true;
             }
 
@@ -1098,6 +1121,13 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     hideSettingBar();
                     return true;
                 }
+//                if(adm_lin.getVisibility()==View.VISIBLE){
+//                    if (activity_opening_videoview.isPlaying()) {
+//                        // activity_opening_videoview.stopPlayback();
+//                        activity_opening_videoview.suspend();
+//                    }
+//                    adm_lin.setVisibility(View.GONE);
+//                }
                 if (mIsShowingOrHidingBar != false) {
                     hideBar();
                 }
@@ -1106,15 +1136,50 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void cancel() {
-
+//             Log.e("zzz", "onPageChange: "+((mPageLoader.getmCurPage().getPosition())+" "+(mPageLoader.getmCurPageList().size())));
+//             if((mPageLoader.getmCurPage().getPosition()==0&&mPageLoader.getChapterPos()%3==1)||
+//                ((mPageLoader.getmCurPage().getPosition()==mPageLoader.getmCurPageList().size()-2)&&mPageLoader.getChapterPos()%3==0)){
+//                 post_adm(2);
+//                 new Handler().postDelayed(new Runnable() {
+//                     @Override
+//                     public void run() {
+//                         adm_lin.setVisibility(View.VISIBLE);
+//                     }
+//                 }, 50);
+//             }
             }
+
+//            @Override
+//            public void touch_down() {
+////                if(adm_lin.getVisibility()==View.VISIBLE) {
+//                    int currentPosition = activity_opening_videoview.getCurrentPosition(); //in millisecond
+//                    //Bitmap bitmap = mmr.getFrameAtTime(videoView.getCurrentPosition(), MediaMetadataRetriever.OPTION_CLOSEST);
+//                    Bitmap bmFrame = mmr.getFrameAtTime(currentPosition * 1000);
+//                    txt_page.setAdm_bitmap(bmFrame);
+//                    activity_opening_videoview.pause();
+////                    adm_lin.setVisibility(View.GONE);
+////                }
+//            }
+//
+//            @Override
+//            public void touch_up() {
+////                if(adm_lin.getVisibility()==View.GONE) {
+//////                    int currentPosition = activity_opening_videoview.getCurrentPosition(); //in millisecond
+//////                    //Bitmap bitmap = mmr.getFrameAtTime(videoView.getCurrentPosition(), MediaMetadataRetriever.OPTION_CLOSEST);
+//////                    Bitmap bmFrame = mmr
+//////                            .getFrameAtTime(currentPosition * 1000);
+//////                    txt_page.setAdm_bitmap(bmFrame);
+////                    activity_opening_videoview.resume();
+////                    adm_lin.setVisibility(View.VISIBLE);
+////                }
+//            }
         });
         BookRecordBean bookRecordBean=new BookRecordBean(mCollBook.get_id(), Integer.parseInt(chpter_id), Integer.parseInt(page_id));
         mPageLoader.openBook(mCollBook,bookRecordBean);//chpter_id
     }
 
     int last_pos;
-    boolean is_cliick = false;
+    boolean is_adm = false;
     int pro = 35, read_speed;
 
     @Override
@@ -1196,9 +1261,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             AdsUtils.downLoadAds(WYReadActivity.this,https);
                             if(AdsUtils.isAdsLoaded(WYReadActivity.this,https)){
                                 File file = AdsUtils.getAdsFile(WYReadActivity.this,https);
-                                activity_opening_videoview.setVisibility(View.VISIBLE);
+                                    activity_opening_videoview.setVisibility(View.VISIBLE);
                                 img_adm.setVisibility(View.GONE);
-                                //Uri uri = Uri.parse(https);
+                                mmr = new MediaMetadataRetriever();
+                                mmr.setDataSource(file.getAbsolutePath());
                                 MediaController mediaController = new MediaController(WYReadActivity.this);
                                 mediaController.setVisibility(View.GONE);//隐藏进度条
                                 activity_opening_videoview.setMediaController(mediaController);
@@ -1217,6 +1283,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                                 adm_title.setText(title);
                                 txt_content.setText(content);
                                 ScleAnimtion(txt_adm_load);
+                                //img_adm.setImageBitmap(bmFrame);
                                 //showAdm(id, file.getAbsolutePath(), href, true);
                             }
                             //showAdm(id, https, href, true);
@@ -1235,7 +1302,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         });
     }
-
+    MediaMetadataRetriever mmr;
     private void initBottomAdm(String https, String title,String content, String href,String is_download) {
         ImageLoaderUtils.display(this,img_bottom_ad,https);
         if(is_download.equals("2")){
@@ -1493,12 +1560,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     }
                     v_title.setBackgroundColor(bgColor);
                     rel_ads.setBackgroundColor(bgColor);
+                    iv_read_day_and_night_mode.setImageResource(R.mipmap.icon_night);
+                    tv_read_day_and_night_mode.setText("夜间");
+                } else {
                     iv_read_day_and_night_mode.setImageResource(R.mipmap.icon_day);
                     tv_read_day_and_night_mode.setText("日间");
-                } else {
-                    iv_read_day_and_night_mode.setImageResource(R.mipmap.icon_night);
                     isNightMode = true;
-                    tv_read_day_and_night_mode.setText("夜间");
                     v_title.setBackgroundColor(getResources().getColor(R.color.black));
                     rel_ads.setBackgroundColor(getResources().getColor(R.color.black));
                 }//ReadSettingManager.NIGHT_MODE
@@ -1685,6 +1752,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     LogUtils.e(mPageLoader.getPagePos() + " " + mPageLoader.getmCurChapterPos() + "");
                     mDbManager.insertOrUpdateBook(dbData);
                 }
+                LogUtils.e(dbData + " "+load_path);
 //                else {
 //                    dbData = new BookshelfNovelDbData(load_path, mCollBook.getTitle(), mCollBook.getCover(), mPageLoader.getPagePos(), 1, mTxtChapters.size(), mPageLoader.getmCurChapterPos() + "", mTxtChapters.size(), status);
 //                    mDbManager.insertOrUpdateBook(dbData);
