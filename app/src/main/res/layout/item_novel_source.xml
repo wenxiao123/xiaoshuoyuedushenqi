@@ -43,7 +43,7 @@
         android:textSize="12sp"
         android:layout_below="@id/tv_item_novel_source_name"
         android:layout_toEndOf="@id/iv_item_novel_source_cover"
-        android:maxLength="12"
+        android:maxEms="25"
         android:singleLine="true"
         android:ellipsize="end"/>
 

@@ -120,7 +120,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     @Override
     protected void doInOnCreate() {
         if (login_admin == null) {
-            mPresenter.queryAllBook();
+           mPresenter.queryAllBook();
         } else {
             queryallBook(login_admin.getToken());
         }
@@ -228,10 +228,6 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 break;
             case R.id.iv_bookshelf_add:
                 // 导入本机小说
-//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent.setType("*/*");      // 最近文件（任意类型）
-//                intent.addCategory(Intent.CATEGORY_OPENABLE);
-//                startActivityForResult(intent, 1);
                 Intent intent = new Intent(getContext(), SearchActivity.class);
                 startActivity(intent);
                 break;
@@ -481,6 +477,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             upload(personBean);
             personBean = null;
         }
+       // Log.e("QQQ8", "onResume: "+999);
     }
 
     Login_admin login_admin;
@@ -553,6 +550,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
                         String message = jsonObject.getString("msg");
+
                         //mPresenter.(message);
                     } else {
                         //mPresenter.getReadRecordError("请求错误");

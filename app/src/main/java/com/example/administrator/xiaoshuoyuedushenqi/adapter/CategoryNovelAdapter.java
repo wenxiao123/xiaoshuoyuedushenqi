@@ -53,7 +53,7 @@ public class CategoryNovelAdapter extends RecyclerView.Adapter<CategoryNovelAdap
         Glide.with(mContext)
                 .load(mCoverList.get(i))
                 .apply(new RequestOptions()
-                    )
+                        .dontAnimate())
                 .into(categoryNovelViewHolder.cover);
         categoryNovelViewHolder.cover.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -52,7 +52,7 @@ public class ListNovelModel implements IListNovelContract.Model {
                 .add("order", type)
                 .add("limit", "8")
                 .build();
-        OkhttpUtil.getpostRequest(UrlObtainer.GetUrl()+"/"+"/api/index/Book_List",requestBody, new OkhttpCall() {
+        OkhttpUtil.getpostRequest(UrlObtainer.GetUrl()+"/api/index/Book_List",requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 //Log.e("qqq", "onResponse: "+json);

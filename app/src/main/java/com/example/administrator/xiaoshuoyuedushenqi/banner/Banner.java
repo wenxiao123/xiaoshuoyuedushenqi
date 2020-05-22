@@ -153,7 +153,7 @@ public class Banner extends RelativeLayout {
                     ImageView imageView = new ImageView(getContext());
                     imageView.setLayoutParams(lp);
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Glide.with(getContext()).load(url).apply(options).into(imageView);
+                    Glide.with(getContext()).load(url).apply(options.dontAnimate()).into(imageView);
                     views.add(imageView);
                     List<Wheel> finalDataList2 = dataList;
                     imageView.setOnClickListener(new OnClickListener() {
@@ -205,7 +205,7 @@ public class Banner extends RelativeLayout {
                 ImageView imageView = new ImageView(getContext());
                 imageView.setLayoutParams(lp);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Glide.with(getContext()).load(url).apply(options).into(imageView);
+                Glide.with(getContext()).load(url).apply(options.dontAnimate()).into(imageView);
                 views.add(imageView);
                 List<Wheel> finalDataList1 = dataList;
                 imageView.setOnClickListener(new OnClickListener() {

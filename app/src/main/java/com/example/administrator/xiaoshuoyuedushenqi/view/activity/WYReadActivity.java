@@ -51,6 +51,7 @@ import android.widget.VideoView;
 
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.ChangeCategoryAdapter;
+import com.example.administrator.xiaoshuoyuedushenqi.adapter.ChangeOtherCategoryAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.adapter.TextStyleAdapter;
 import com.example.administrator.xiaoshuoyuedushenqi.app.App;
 import com.example.administrator.xiaoshuoyuedushenqi.base.BaseActivity;
@@ -62,6 +63,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Categorys_one;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Login_admin;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_Readcored;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Other_chpter;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Text;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.TextStyle;
@@ -198,7 +200,14 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     protected int getLayoutId() {
         return R.layout.activity_wyread;
     }
+    public  void keepScreenLongLight(boolean isOpenLight) {
+        if (isOpenLight) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
 
+    }
     @Override
     protected BasePresenter getPresenter() {
         return null;
@@ -257,9 +266,27 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
+        initNetworkReceiver();
         if(adm_lin.getVisibility()==View.GONE){
             activity_opening_videoview.pause();
             activity_opening_videoview.suspend();
+        }
+    }
+
+    @Override
+    public void NetConect() {
+        super.NetConect();
+        if(is_autoRead){
+            txt_page.setmAutoPlayAble(true);
+            txt_page.startAutoPlay();
+        }
+    }
+    @Override
+    public void DisNetConect() {
+        super.NetConect();
+        if(is_autoRead){
+            txt_page.setmAutoPlayAble(false);
+            txt_page.stopAutoPlay();
         }
     }
 
@@ -412,11 +439,13 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onClick(View view) {
                 if (!is_autoRead) {
                     is_autoRead = true;
+                    keepScreenLongLight(true);
                     tv_autoread.setImageResource(R.mipmap.kaiguan_open);
                     txt_page.setmAutoPlayAble(true);
                     txt_page.startAutoPlay();
 
                 } else {
+                    keepScreenLongLight(false);
                     is_autoRead = false;
                     tv_autoread.setImageResource(R.mipmap.icon_auto_close);
                     txt_page.setmAutoPlayAble(false);
@@ -608,6 +637,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     PopupWindow popupWindow;
     boolean is_othersite = false, is_all_one = false;
     ChangeCategoryAdapter changeCategoryAdapter;
+    ChangeOtherCategoryAdapter changeOtherCategoryAdapter;
     private TextView tv_jainju, tv_nodata;
     private View s_line, m_line;
     private TextView tvCatalog, mBookMark;
@@ -640,11 +670,13 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         rv_catalog_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         // ts_recyle = view.findViewById(R.id.ts_recyle);
         progressBar.setVisibility(View.VISIBLE);
-        if (categorys_ones != null && categorys_ones.size() > 0) {
-            getCategorysSuccess(categorys_ones);
+        if (other_website != null && other_website.size() > 0) {
+            //getCategorysSuccess(categorys_ones);
+            getOtherchpterCategorysSuccess(other_website);
         } else {
             getCategorys(mCollBook.get_id());
         }
+        //getCategorys(mCollBook.get_id());
         // ts_recyle.setLayoutManager(new LinearLayoutManager(this));
         popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.dp_302));
         //post_textStyle();
@@ -668,7 +700,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     }
 
     List<Categorys_one> categorys_ones = new ArrayList<>();
-    List<Text> other_website = new ArrayList<>();
+    List<Other_chpter> other_website = new ArrayList<>();
     Gson mGson = new Gson();
 
     private void getCategorys(String id) {
@@ -689,11 +721,60 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                         } else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             JSONArray jsonArray = object.getJSONArray("data");
-                            categorys_ones.clear();
+                            other_website.clear();
                             for (int z = 0; z < jsonArray.length(); z++) {
-                                categorys_ones.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Categorys_one.class));
+                                other_website.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Other_chpter.class));
                             }
-                            getCategorysSuccess(categorys_ones);
+                            getOtherchpterCategorysSuccess(other_website);
+//                            categorys_ones.clear();
+//                            for (int z = 0; z < jsonArray.length(); z++) {
+//                                categorys_ones.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Categorys_one.class));
+//                            }
+//                            getCategorysSuccess(categorys_ones);
+                        }
+                    } else {
+                        getCategorysError();
+                    }
+                } catch (JSONException e) {
+                    getCategorysError();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                getCategorysError();
+            }
+        });
+    }
+    private void getCategorys(String id,int position) {
+        String url = UrlObtainer.GetUrl() + "/api/index/hua_book";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("novel_id", id)
+                .add("weigh", position+"")
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                LogUtils.e(json);
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        if (jsonObject.isNull("data")) {
+                            getCategorysError();
+                        } else {
+                            JSONObject object = jsonObject.getJSONObject("data");
+                            JSONArray jsonArray = object.getJSONArray("data");
+                            other_website.clear();
+                            for (int z = 0; z < jsonArray.length(); z++) {
+                                other_website.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Other_chpter.class));
+                            }
+                            getOtherchpterCategorysSuccess(other_website);
+//                            categorys_ones.clear();
+//                            for (int z = 0; z < jsonArray.length(); z++) {
+//                                categorys_ones.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Categorys_one.class));
+//                            }
+//                            getCategorysSuccess(categorys_ones);
                         }
                     } else {
                         getCategorysError();
@@ -750,6 +831,46 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 }
             });
             rv_catalog_list.setAdapter(changeCategoryAdapter);
+        }
+    }
+
+    public void getOtherchpterCategorysSuccess(List<Other_chpter> categorys_one) {
+        for(int i=0;i<categorys_one.size();i++){
+            if(categorys_one.get(i).getChapter_sum()==null||categorys_one.get(i).getReurl()==null){
+                categorys_one.remove(i);
+            }
+        }
+        progressBar.setVisibility(View.GONE);
+        if (categorys_one.size() == 0) {
+            tv_nodata.setVisibility(View.VISIBLE);
+            rv_catalog_list.setVisibility(View.GONE);
+        } else {
+            tv_nodata.setVisibility(View.GONE);
+            rv_catalog_list.setVisibility(View.VISIBLE);
+            this.other_website = categorys_one;
+//            for(int i=0;i<categorys_ones.size();i++){
+//                if(categorys_ones.get(i).getText().size()==0){
+//                    categorys_ones.remove(i);
+//                }
+//            }
+            changeOtherCategoryAdapter = new ChangeOtherCategoryAdapter(this, other_website);
+            changeOtherCategoryAdapter.setOnHistoryAdapterListener(new ChangeOtherCategoryAdapter.HistoryAdapterListener() {
+                @Override
+                public void clickWord(int word) {
+                    if (other_website.get(word).getId() == null) {
+                        showShortToast("数据源错误！");
+                    } else {
+                        if (popupWindow.isShowing()) {
+                            popupWindow.dismiss();
+                        }
+                        is_othersite = true;
+                        reurl = other_website.get(word).getElement();
+                        ((NetPageLoader) mPageLoader).setOtherCategorys_ones(other_website.get(word).getId(), is_all_one);
+
+                    }
+                }
+            });
+            rv_catalog_list.setAdapter(changeOtherCategoryAdapter);
         }
     }
 
@@ -927,12 +1048,24 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
             @Override
             public void onChapterChange(int pos) {
+                Log.e("QQQ22", "onChapterChange: "+pos);
                 if (mPageLoader.getWeight() != 0) {
                     tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mPageLoader.getWeight());
                 } else {
                     tv_title.setText((mPageLoader.getChapterPos() + 1) + "/" + mTxtChapters.size());
                 }
                 setCategorySelect(pos);
+            }
+
+            @Override
+            public void closeAutoRead() {
+                if(is_autoRead){
+                    keepScreenLongLight(false);
+                    is_autoRead = false;
+                    tv_autoread.setImageResource(R.mipmap.icon_auto_close);
+                    txt_page.setmAutoPlayAble(false);
+                    txt_page.stopAutoPlay();
+                }
             }
 
             @Override
@@ -1121,13 +1254,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     hideSettingBar();
                     return true;
                 }
-//                if(adm_lin.getVisibility()==View.VISIBLE){
-//                    if (activity_opening_videoview.isPlaying()) {
-//                        // activity_opening_videoview.stopPlayback();
-//                        activity_opening_videoview.suspend();
-//                    }
-//                    adm_lin.setVisibility(View.GONE);
-//                }
                 if (mIsShowingOrHidingBar != false) {
                     hideBar();
                 }
@@ -1136,44 +1262,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void cancel() {
-//             Log.e("zzz", "onPageChange: "+((mPageLoader.getmCurPage().getPosition())+" "+(mPageLoader.getmCurPageList().size())));
-//             if((mPageLoader.getmCurPage().getPosition()==0&&mPageLoader.getChapterPos()%3==1)||
-//                ((mPageLoader.getmCurPage().getPosition()==mPageLoader.getmCurPageList().size()-2)&&mPageLoader.getChapterPos()%3==0)){
-//                 post_adm(2);
-//                 new Handler().postDelayed(new Runnable() {
-//                     @Override
-//                     public void run() {
-//                         adm_lin.setVisibility(View.VISIBLE);
-//                     }
-//                 }, 50);
-//             }
             }
-
-//            @Override
-//            public void touch_down() {
-////                if(adm_lin.getVisibility()==View.VISIBLE) {
-//                    int currentPosition = activity_opening_videoview.getCurrentPosition(); //in millisecond
-//                    //Bitmap bitmap = mmr.getFrameAtTime(videoView.getCurrentPosition(), MediaMetadataRetriever.OPTION_CLOSEST);
-//                    Bitmap bmFrame = mmr.getFrameAtTime(currentPosition * 1000);
-//                    txt_page.setAdm_bitmap(bmFrame);
-//                    activity_opening_videoview.pause();
-////                    adm_lin.setVisibility(View.GONE);
-////                }
-//            }
-//
-//            @Override
-//            public void touch_up() {
-////                if(adm_lin.getVisibility()==View.GONE) {
-//////                    int currentPosition = activity_opening_videoview.getCurrentPosition(); //in millisecond
-//////                    //Bitmap bitmap = mmr.getFrameAtTime(videoView.getCurrentPosition(), MediaMetadataRetriever.OPTION_CLOSEST);
-//////                    Bitmap bmFrame = mmr
-//////                            .getFrameAtTime(currentPosition * 1000);
-//////                    txt_page.setAdm_bitmap(bmFrame);
-////                    activity_opening_videoview.resume();
-////                    adm_lin.setVisibility(View.VISIBLE);
-////                }
-//            }
         });
+        Log.e("qqq4", "doAfterInit: "+chpter_id+" "+page_id);
         BookRecordBean bookRecordBean=new BookRecordBean(mCollBook.get_id(), Integer.parseInt(chpter_id), Integer.parseInt(page_id));
         mPageLoader.openBook(mCollBook,bookRecordBean);//chpter_id
     }
@@ -1437,6 +1528,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                                 .build();
                         tipDialog.show();
                     }
+                }else {
+                    finish();
                 }
                 break;
             case R.id.iv_read_menu:
@@ -1451,10 +1544,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 m_line.setVisibility(View.GONE);
                 mBookMark.setTextColor(getResources().getColor(R.color.red));
                 tvCatalog.setTextColor(getResources().getColor(R.color.catalog_chapter_order_text));
-                if (changeCategoryAdapter != null) {
-                    changeCategoryAdapter.setPosition(mPageLoader.getChapterPos());
-                    changeCategoryAdapter.notifyDataSetChanged();
-                }
+                getCategorys(mCollBook.get_id(),mPageLoader.getChapterPos());
+//                if (changeCategoryAdapter != null) {
+//                    changeCategoryAdapter.setPosition(mPageLoader.getChapterPos());
+//                    changeCategoryAdapter.notifyDataSetChanged();
+//                }
                 break;
             case R.id.tv_mulu:
                 is_all_one = false;
@@ -1462,10 +1556,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 m_line.setVisibility(View.VISIBLE);
                 mBookMark.setTextColor(getResources().getColor(R.color.catalog_chapter_order_text));
                 tvCatalog.setTextColor(getResources().getColor(R.color.red));
-                if (changeCategoryAdapter != null) {
-                    changeCategoryAdapter.setPosition(-1);
-                    changeCategoryAdapter.notifyDataSetChanged();
-                }
+                getCategorys(mCollBook.get_id());
+//                if (changeCategoryAdapter != null) {
+//                    changeCategoryAdapter.setPosition(-1);
+//                    changeCategoryAdapter.notifyDataSetChanged();
+//                }
                 break;
             case R.id.img_space_big:
                 initInterval();
@@ -1682,13 +1777,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         }
         popupWindow.setAnimationStyle(R.style.dialog_animation);
         backgroundAlpha(0.5f);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                popupWindow.setAnimationStyle(R.style.dialog_animation);
-//                backgroundAlpha(0.5f);
-//            }
-//        },500);
         // 设置允许在外点击消失
         popupWindow.setOutsideTouchable(true);
         // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
@@ -1721,6 +1809,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             textStyleAdapter.setPosition(2);
         } else if (mStyle.equals("3")) {
             textStyleAdapter.setPosition(3);
+        }else if (mStyle.equals("4")) {
+            textStyleAdapter.setPosition(4);
         }
         ts_recyle.setAdapter(textStyleAdapter);
         textStyleAdapter.setmListener(new TextStyleAdapter.ScreenListener() {
@@ -1769,7 +1859,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     dbData = new BookshelfNovelDbData(mCollBook.get_id(), mCollBook.getTitle(), mCollBook.getCover(), mPageLoader.getPagePos(), -2, mTxtChapters.size(), mPageLoader.getmCurChapterPos() + "", mTxtChapters.size(), status);
                     mDbManager.insertOrUpdateBook(dbData);
                 }
-                Noval_Readcored noval_readcored = new Noval_Readcored(mCollBook.get_id(), mPageLoader.getmCurChapterPos() + "", "", mCollBook.getTitle(), mCollBook.getAuthor(), mCollBook.getCover(), "1", mCollBook.getTitle(), mTxtChapters.size() + "");
+                Noval_Readcored noval_readcored = new Noval_Readcored(mCollBook.get_id(), mPageLoader.getmCurChapterPos() + "", "", mCollBook.getTitle(), mCollBook.getAuthor(), mCollBook.getCover(), "1", mTxtChapters.get(mPageLoader.getmCurChapterPos()).title, mTxtChapters.size() + "");
                 mDbManager.insertReadCordeNovel(noval_readcored, 0 + "");
                 if (login_admin != null) {
                     if(mPageLoader.getmCurChapterPos()==0){
@@ -1800,7 +1890,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                //Log.e("QQQ", "onResponse: "+token+" "+novel_id+" "+chapter_id+" "+json);
+                Log.e("QQQ", "onResponse: "+token+" "+novel_id+" "+chapter_id+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -2245,6 +2335,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             mPageLoader.make_loading();
             if (j == 0) {
                 mPageLoader.skipToChapter(i);
+            }else if(j == -1){
+                BookRecordBean bookRecordBean=new BookRecordBean(page_id, i, 0);
+                mPageLoader.openBook(mCollBook,bookRecordBean);//chpter_id
             } else {
                 BookRecordBean bookRecordBean=new BookRecordBean(page_id, i, j);
                 mPageLoader.openBook(mCollBook,bookRecordBean);//chpter_id

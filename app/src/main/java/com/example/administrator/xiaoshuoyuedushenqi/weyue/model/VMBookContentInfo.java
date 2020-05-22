@@ -195,7 +195,7 @@ public class VMBookContentInfo extends BaseViewModel {
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-              // Log.e("qqq", "onResponse: "+bookid+" "+id+" "+url+" "+json);
+                Log.e("QQW4", "onResponse: "+bookid+" "+id+" "+url+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");

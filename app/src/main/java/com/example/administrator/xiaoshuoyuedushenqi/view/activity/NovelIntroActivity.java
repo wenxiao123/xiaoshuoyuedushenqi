@@ -70,6 +70,8 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.PersonBean;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.DiscoveryNovelData;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.Event;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.HoldReadActivityEvent2;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.eventbus.NovelIntroInitEvent;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
@@ -77,6 +79,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.NovelInfoPresenter;
 import com.example.administrator.xiaoshuoyuedushenqi.service.CacheService;
 import com.example.administrator.xiaoshuoyuedushenqi.util.BlurUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.util.EventBusUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.util.StatusBarUtil;
@@ -223,26 +226,68 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         re_new_catalog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                    Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+//                    intent.putExtra("ACTIVITY_TYPE","NovelIntroActivity");
+//                    intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+//                    intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+//                    intent.putExtra("weigh", weigh);
+//                    intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+//                    intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
+//                    intent.putExtra(CatalogActivity.KEY_URL, pid);
+//                    startActivity(intent);
+//                    overridePendingTransition(0, 0);//去掉Activity切换间的动画
+//                } else {
+//                    BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+//                    Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
+//                    intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
+//                    intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
+//                    intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
+//                    intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+//                    startActivity(intent);
+//                    overridePendingTransition(0, 0);//去掉Activity切换间的动画
+//                }
+                bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
+                Log.e("QWW", "onClick: "+bookshelfNovelDbData1);
+                if (bookshelfNovelDbData1!=null&&bookshelfNovelDbData1.getType()!=1) {
+                    // 跳转到目录页面，并且将自己的引用传递给它
                     Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
-                    intent.putExtra("ACTIVITY_TYPE","NovelIntroActivity");
+                    intent.putExtra(CatalogActivity.KEY_URL, pid);    // 传递当前小说的 url
+                    intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
                     intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
                     intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
                     intent.putExtra("weigh", weigh);
                     intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
                     intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-                    intent.putExtra(CatalogActivity.KEY_URL, pid);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);//去掉Activity切换间的动画
-                } else {
-                    BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+                } else if (bookshelfNovelDbData1!=null&&bookshelfNovelDbData1.getType()==1) {
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("MSPANSCOMMIT", (Serializable)mPageLoader.getmChapterList());
+                    // 跳转到目录页面，并且将自己的引用传递给它
+//                        Event<HoldReadActivityEvent2> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+//                                new HoldReadActivityEvent2(WYReadActivity.this, mPageLoader.getmChapterList()));
+//                        EventBusUtil.sendStickyEvent(event);
                     Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
-                    intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
-                    intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
-                    intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
-                    intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+                    intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+                    intent.putExtra("file_path", bookshelfNovelDbData1.getFuben_id());    // 传递当前小说的 url
+                    intent.putExtra(LocalCatalogActivity.KEY_ID, pid);    // 传递当前小说的 url
+                    intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                    intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                    intent.putExtra(LocalCatalogActivity.KEY_POSTION, 0);
+                    intent.putExtra("chapter_id", "1");
+                    //intent.putExtras(bundle);
                     startActivity(intent);
-                    overridePendingTransition(0, 0);//去掉Activity切换间的动画
+                }else {
+                    Log.e("QWW", "onClick: "+2222);
+                    Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                    intent.putExtra(CatalogActivity.KEY_URL, pid);    // 传递当前小说的 url
+                    intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+                    intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                    intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                    intent.putExtra("weigh", weigh);
+                    intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+                    intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
+                    startActivity(intent);
                 }
             }
         });
@@ -402,15 +447,18 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         l_all.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         presenter.getNovels(pid);
-        if (mDbManager.isExistInBookshelfNovel(pid + "")) {
+        if (mDbManager.isExistInBookshelfNovel(pid)) {
             tv_begain_read.setText("继续阅读");
         } else {
             tv_begain_read.setText("开始阅读");
         }
-        if (mDbManager.isExistInBookshelfNovel(pid + "")) {
+        if (mDbManager.isExistInBookshelfNovel(pid)) {
             BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(pid);
+            Log.e("WWW1", "doAfterInit: "+bookshelfNovelDbData);
             if(bookshelfNovelDbData.getType()>=0){
-                tv_book_add.setText("移出书架");
+                tv_book_add.setText("移除书架");
+            }else {
+                tv_book_add.setText("加入书架");
             }
         } else {
             tv_book_add.setText("加入书架");
@@ -457,33 +505,82 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     finish();
                     break;
                 case R.id.l_catalog:
-                    if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                    BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(pid);
+//                    //if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                    if (bookshelfNovelDbData!=null&&bookshelfNovelDbData.getType()==0) {
+//                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+//                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+//                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+//                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+//                        intent.putExtra("weigh", weigh);
+//                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+//                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
+//                        intent.putExtra(CatalogActivity.KEY_URL, pid);
+//                        startActivity(intent);
+//                    } else if (bookshelfNovelDbData!=null&&bookshelfNovelDbData.getType()==1) {
+//                        //BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+//                        Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
+//                        intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
+//                        intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
+//                        intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
+//                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+//                        startActivity(intent);
+//                    }else {
+//                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+//                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+//                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+//                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+//                        intent.putExtra("weigh", weigh);
+//                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+//                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
+//                        intent.putExtra(CatalogActivity.KEY_URL, pid);
+//                        startActivity(intent);
+//                    }
+                    bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
+                    Log.e("QWW", "onClick: "+bookshelfNovelDbData1);
+                    if (bookshelfNovelDbData1!=null&&bookshelfNovelDbData1.getType()!=1) {
+                        // 跳转到目录页面，并且将自己的引用传递给它
                         Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                        intent.putExtra(CatalogActivity.KEY_URL, pid);    // 传递当前小说的 url
                         intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
                         intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
                         intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
                         intent.putExtra("weigh", weigh);
                         intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
                         intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-                        intent.putExtra(CatalogActivity.KEY_URL, pid);
                         startActivity(intent);
-                    } else {
-                        BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+                    } else if (bookshelfNovelDbData1!=null&&bookshelfNovelDbData1.getType()==1) {
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("MSPANSCOMMIT", (Serializable)mPageLoader.getmChapterList());
+                        // 跳转到目录页面，并且将自己的引用传递给它
+//                        Event<HoldReadActivityEvent2> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+//                                new HoldReadActivityEvent2(WYReadActivity.this, mPageLoader.getmChapterList()));
+//                        EventBusUtil.sendStickyEvent(event);
                         Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
-                        intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
-                        intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
-                        intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
-                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+                        intent.putExtra("file_path", bookshelfNovelDbData1.getFuben_id());    // 传递当前小说的 url
+                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+                        intent.putExtra(LocalCatalogActivity.KEY_ID, pid);    // 传递当前小说的 url
+                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, 0);
+                        intent.putExtra("chapter_id", "1");
+                        //intent.putExtras(bundle);
+                        startActivity(intent);
+                    }else {
+                        Log.e("QWW", "onClick: "+2222);
+                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                        intent.putExtra(CatalogActivity.KEY_URL, pid);    // 传递当前小说的 url
+                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                        intent.putExtra("weigh", weigh);
+                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
                         startActivity(intent);
                     }
                     break;
                 case R.id.tv_book_add:
-                    if (mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-                        tv_book_add.setText("加入书架");
-                        File file = new File(path + ".txt");
-                        file.delete();
-                        mDbManager.deleteBookshelfNovel(path + ".txt");
-                    } else {
+                    //if (mDbManager.isExistInBookshelfNovel(path + ".txt")) {
                         if (mDbManager.isExistInBookshelfNovel(pid)) {
                             tv_book_add.setText("加入书架");
                             mDbManager.deleteBookshelfNovel(pid.trim());
@@ -492,16 +589,22 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                                 delectBookshelfadd(login_admin.getToken(), pid);
                             }
                         } else {
-                            tv_book_add.setText("移出书架");
-                            //String novelUrl, String name, String cover, int position, int type, int secondPosition, String chapterid, int weight, String status
-                            BookshelfNovelDbData dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
-                                    noval_details.getPic(), 0, 0, 0, 0 + "", weigh, noval_details.getSerialize() + "");
+                            tv_book_add.setText("移除书架");
+                            File file=new File(path+".txt");
+                            BookshelfNovelDbData dbData;
+                            if(file.exists()){
+                                dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
+                                        noval_details.getPic(), 0, 1, 0, 0 + "", weigh, noval_details.getSerialize() + "");
+                                dbData.setFuben_id(path+".txt");
+                            }else {
+                               dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
+                                        noval_details.getPic(), 0, 0, 0, 0 + "", weigh, noval_details.getSerialize() + "");
+                            }
                             mDbManager.insertOrUpdateBook(dbData);
                             if (login_admin != null) {
                                 setBookshelfadd(login_admin.getToken(), pid);
                             }
                         }
-                    }
                     Intent intent_recever = new Intent("com.zhh.android");
                     intent_recever.putExtra("type", 1);
                     sendBroadcast(intent_recever);
@@ -582,24 +685,63 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     showPupowindpw(viewWidth);
                     break;
                 case R.id.tv_novel_intro_catalog:
-                    if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                    if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+//                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+//                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+//                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+//                        intent.putExtra("weigh", weigh);
+//                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+//                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
+//                        intent.putExtra(CatalogActivity.KEY_URL, pid);
+//                        startActivity(intent);
+//                    } else {
+//                        BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+//                        Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
+//                        intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
+//                        intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
+//                        intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
+//                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+//                        startActivity(intent);
+//                    }
+                    bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
+                    Log.e("QWW", "onClick: "+bookshelfNovelDbData1);
+                    if (bookshelfNovelDbData1!=null&&bookshelfNovelDbData1.getType()!=1) {
+                        // 跳转到目录页面，并且将自己的引用传递给它
                         Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                        intent.putExtra(CatalogActivity.KEY_URL, pid);    // 传递当前小说的 url
                         intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
                         intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
                         intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
                         intent.putExtra("weigh", weigh);
                         intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
                         intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-                        intent.putExtra(CatalogActivity.KEY_URL, pid);
                         startActivity(intent);
-                    } else {
-                        BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
+                    } else if (bookshelfNovelDbData1!=null&&bookshelfNovelDbData1.getType()==1) {
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("MSPANSCOMMIT", (Serializable)mPageLoader.getmChapterList());
+                        // 跳转到目录页面，并且将自己的引用传递给它
+//                        Event<HoldReadActivityEvent2> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+//                                new HoldReadActivityEvent2(WYReadActivity.this, mPageLoader.getmChapterList()));
+//                        EventBusUtil.sendStickyEvent(event);
                         Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
                         intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
-                        intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
-                        intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
-                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
+                        intent.putExtra(LocalCatalogActivity.KEY_ID, pid);    // 传递当前小说的 url
+                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, 0);
+                        intent.putExtra("chapter_id", "0");
+                        //intent.putExtras(bundle);
                         startActivity(intent);
+                    }else {
+                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                        intent.putExtra(CatalogActivity.KEY_URL, pid);    // 传递当前小说的 url
+                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
+                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
+                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
+                        intent.putExtra("weigh", weigh);
+                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
+                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
                     }
                     break;
                 default:
@@ -897,19 +1039,20 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
                         String message = jsonObject.getString("msg");
+                        showShortToast(message);
                         //mPresenter.(message);
                     } else {
                         //mPresenter.getReadRecordError("请求错误");
-                        getNovelsError("请求错误");
+                        //getNovelsError("请求错误");
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(String errorMsg) {
-                getNovelsError("请求错误");
+               // getNovelsError("请求错误");
                 //mPresenter.getReadRecordError(errorMsg);
             }
         });
@@ -933,10 +1076,10 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     if (code.equals("1")) {
                         String message = jsonObject.getString("msg");
                         //mPresenter.(message);
-                        getNovelsError(message);
+                        showShortToast(message);
                     } else {
                         //mPresenter.getReadRecordError("请求错误");
-                        getNovelsError("请求错误");
+                        showShortToast("请求错误");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -945,7 +1088,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
             @Override
             public void onFailure(String errorMsg) {
-                getNovelsError("请求错误");
+                showShortToast("请求错误");
                 //mPresenter.getReadRecordError(errorMsg);
             }
         });
@@ -980,7 +1123,8 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                             txt_book_load = findViewById(R.id.txt_book_load);
                             txt_book_load.setText(data);
                         }
-                        if (data.equals("已缓存")) {
+                        if (data.trim().equals("已缓存")) {
+                            txt_book_load.setEnabled(false);
                             is_load = true;
                             tv_book_add.setText("移除书架");
                             is_Cache = true;
@@ -997,6 +1141,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void getNovelsSuccess(Noval_details noval_details, List<Noval_details> novalDetails) {
+        Log.e("WWW", "getNovelsSuccess: "+noval_details);
        if(novalDetails.size()==0){
            title_rel.setVisibility(View.GONE);
        }
@@ -1026,7 +1171,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             path = Constant.BOOK_ADRESS + "/" + noval_details.getTitle();
             File file = new File(path + ".txt");
             try {
-                if (file.exists() && novelDbData.getFuben_id().equals(path + ".txt")) {
+                if (file.exists() && novelDbData.getFuben_id().equals(path + ".txt")&&novelDbData.getType()>=0) {
                     txt_book_load.setText("已缓存");
                     tv_book_add.setText("移除书架");
                     is_Cache = true;
@@ -1168,8 +1313,16 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             String id=intent.getStringExtra("load_position");
             String pressgress=intent.getStringExtra("load_progresss");
             if(id.equals(pid)) {
+                Log.e("QQQ", "onDataChange: "+pressgress);
                 if (txt_book_load != null) {
                     txt_book_load.setText(pressgress);
+                }
+                if (pressgress.trim().equals("已缓存")) {
+                    txt_book_load.setEnabled(false);
+                    is_load = true;
+                    tv_book_add.setText("移除书架");
+                    is_Cache = true;
+                    Is_load = false;
                 }
             }
         }

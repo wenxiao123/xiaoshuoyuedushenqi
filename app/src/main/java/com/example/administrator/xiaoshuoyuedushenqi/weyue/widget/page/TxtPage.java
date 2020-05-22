@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +17,9 @@ public class TxtPage {
     }
 
     int position;
-    String title;
+    String title="";
     int titleLines; //当前 lines 中为 title 的行数。
-    List<String> lines;
+    List<String> lines=new ArrayList<>();
 
     public List<String> getLines() {
         return lines;

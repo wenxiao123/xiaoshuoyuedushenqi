@@ -99,7 +99,7 @@ public class NovelSourceAdapter extends
             novelSourceViewHolder.author.setText(author+" | 连载中 _ "+mNovelSourceDataList.get(i).getWeigh()+"章");
         }
         if(mNovelSourceDataList.get(i).getChapter_name()==null){
-            novelSourceViewHolder.introduce.setText("阅读记录丢失");
+            novelSourceViewHolder.introduce.setText("阅读记录为空");
         }else {
             novelSourceViewHolder.introduce.setText("阅读至"+mNovelSourceDataList.get(i).getChapter_name());
         }
@@ -143,15 +143,16 @@ public class NovelSourceAdapter extends
                         .setOnClickListener(new TipDialog.OnClickListener() {
                             @Override
                             public void clickEnsure() {
-                                if (login_admin != null) {
-                                    getDelectReadcoredData(login_admin.getToken(), mNovelSourceDataList.get(i).getNovel_id(), 1);
-                                }
-
                                 if (databaseManager.isExistInReadCoderNovel(mNovelSourceDataList.get(i).getNovel_id())) {
                                     databaseManager.deleteBookReadcoderNovel(mNovelSourceDataList.get(i).getNovel_id());
                                 }
+                                if (login_admin != null) {
+                                    getDelectReadcoredData(login_admin.getToken(), mNovelSourceDataList.get(i).getNovel_id(), 1);
+                                }else {
+                                    ((ReadrecoderActivity)mContext).getDelectReadcoredDataSuccess("");
+                                }
+                                ((ReadrecoderActivity)mContext).loading();
                                 //requestPost();
-                                ((ReadrecoderActivity)mContext).requestPost();
                             }
 
                             @Override

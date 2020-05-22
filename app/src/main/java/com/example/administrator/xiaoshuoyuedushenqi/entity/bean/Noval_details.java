@@ -33,9 +33,10 @@ public class Noval_details {
                 ", rating='" + rating + '\'' +
                 ", serialize=" + serialize +
                 ", update_time='" + update_time + '\'' +
+                ", favorites=" + favorites +
+                ", position=" + position +
                 ", word=" + word +
                 ", category_name='" + category_name + '\'' +
-                ", chapter=" + chapter +
                 '}';
     }
 
@@ -157,7 +158,7 @@ public class Noval_details {
     String category_name;
     Chapter chapter;
     public class Chapter{
-       int id;
+       String id;
        String title;
 
        @Override
@@ -171,11 +172,11 @@ public class Noval_details {
                    '}';
        }
 
-       public int getId() {
+       public String getId() {
            return id;
        }
 
-       public void setId(int id) {
+       public void setId(String id) {
            this.id = id;
        }
 

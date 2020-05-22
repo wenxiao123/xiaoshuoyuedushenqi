@@ -8,7 +8,7 @@ import java.util.List;
  * Created on 2019/11/17
  */
 public class Cataloginfo implements Serializable {
-    int id;
+    String id;
     String novel_id;
     String title;
     String reurl;
@@ -17,7 +17,7 @@ public class Cataloginfo implements Serializable {
     int hits;
     int word;
 
-    public Cataloginfo(int id, String novel_id, String title, String reurl,int weigh) {
+    public Cataloginfo(String id, String novel_id, String title, String reurl,int weigh) {
         this.id = id;
         this.novel_id = novel_id;
         this.title = title;
@@ -39,11 +39,11 @@ public class Cataloginfo implements Serializable {
                 '}';
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

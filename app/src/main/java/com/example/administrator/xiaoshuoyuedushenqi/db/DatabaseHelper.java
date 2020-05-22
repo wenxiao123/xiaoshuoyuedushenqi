@@ -40,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION + " int)";
 
     private static final String CREATE_TABLE_COLALOG_NOVEL = "create table " + Constant.TABLE_COLALOG_NOVEL
-            + " ( id int primary key, "
+            + " ( id text primary key, "
             + " title text , "
             + " weigh integer , "
             + " novalid text , "

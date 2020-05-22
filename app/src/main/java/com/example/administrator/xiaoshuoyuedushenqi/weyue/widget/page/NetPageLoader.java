@@ -8,6 +8,7 @@ import com.arialyy.aria.util.DbDataHelper;
 import com.example.administrator.xiaoshuoyuedushenqi.db.DatabaseManager;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Cataloginfo;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Categorys_one;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Other_one;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Text;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
@@ -36,6 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+
+import javax.security.auth.login.LoginException;
+
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -93,9 +97,20 @@ public class NetPageLoader extends PageLoader{
         Log.e("www", "setCategorys_ones: "+mChapterList.size());
         loadCurrentChapter();
     }
+    String other_id;
+    String other_title;
+    public void setOtherCategorys_ones(String id, boolean is_all) {
+        is_website=true;
+        is_of_all=is_all;
+        other_id=id;
+        other_title=mChapterList.get(mCurChapterPos).title;
+        Log.e("TAG", "handleMessage: "+other_title+" "+mCurChapterPos+" ");
+        mStatus=STATUS_LOADING;
+        getOtherCatalogData(other_id,o,1);
+    }
 
     List<Categorys_one> categorys_ones = new ArrayList<>();
-    int z=1;
+    int z=1,o=1;
     public void getCatalogData(String id,int posion,int type) {
         Gson gson=new Gson();
         String url = UrlObtainer.GetUrl()+"/"+"/api/index/Books_List";
@@ -108,6 +123,7 @@ public class NetPageLoader extends PageLoader{
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {
+                Log.e("QQQ", "onResponse: "+posion+" "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -148,7 +164,63 @@ public class NetPageLoader extends PageLoader{
         });
     }
 
+
+    public void getOtherCatalogData(String id,int posion,int type) {
+        Gson gson=new Gson();
+        String url = UrlObtainer.GetUrl()+"/api/index/hua_book_chapter";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id", id)
+                .add("type", type+"")
+                .add("page",posion+"")
+                .add("limit","50")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {
+                Log.e("QQQ2", "onResponse: "+id+" "+posion+" "+json);
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject jsonObject1=jsonObject.getJSONObject("data");
+                        JSONArray object=jsonObject1.getJSONArray("data");
+                        weigh=Integer.parseInt(jsonObject1.getString("total"));
+                        setWeight(weigh);
+                        List<Other_one> catalogData=new ArrayList<>();
+                        for(int i=0;i<object.length();i++){
+                            catalogData.add(gson.fromJson(object.getJSONObject(i).toString(),Other_one.class));
+                        }
+                        getOtherCatalogDataSuccess(catalogData);
+                        timecount=0;
+                    }else {
+                        getCatalogDataError("请求数据失败");
+                    }
+
+                } catch (JsonSyntaxException | JSONException e) {
+                    if(timecount<6) {
+                        getOtherCatalogData(other_id, o, 1);
+                    }else {
+                        getCatalogDataError("Constant.JSON_ERROR");
+                    }
+                    timecount++;
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                if(timecount<6) {
+                    getOtherCatalogData(other_id, o, 1);
+                }else {
+                    getCatalogDataError(errorMsg);
+                }
+                timecount++;
+            }
+        });
+    }
+
+
     List<Cataloginfo> catalogDataAll=new ArrayList<>();
+    List<Other_one> other_ones=new ArrayList<>();
     int weigh;
     int timecount;
     private void getCatalogDataSuccess(List<Cataloginfo> catalogData) {
@@ -158,6 +230,7 @@ public class NetPageLoader extends PageLoader{
         }
         if(weigh<50||(z==1&&catalogData.size()<50)){
             catalogDataAll.addAll(catalogData);
+            databaseManager.insertBookshelfNovel(catalogDataAll);
             handler.sendEmptyMessage(2);
         }else {
             if (z < weigh / 50) {
@@ -182,6 +255,40 @@ public class NetPageLoader extends PageLoader{
             }
         }
     }
+
+    private void getOtherCatalogDataSuccess(List<Other_one> catalogData) {
+        if(catalogData.size()==0){
+            chapterError();
+            return;
+        }
+        if(weigh<50||(o==1&&catalogData.size()<50)){
+            other_ones.addAll(catalogData);
+            //databaseManager.insertBookshelfNovel(catalogDataAll);
+            handler.sendEmptyMessage(4);
+        }else {
+            if (o < weigh / 50) {
+                LogUtils.e(o+" "+weigh/50);
+                other_ones.addAll(catalogData);
+                handler.sendEmptyMessage(3);
+//                if(o==1) {
+//                    mChapterList=new ArrayList<>(weigh);
+//                    handler.sendEmptyMessage(4);
+//                }
+            } else {
+                if (o == weigh / 50&&weigh % 50!=0) {
+                    LogUtils.e(o+"---"+weigh/50);
+                    other_ones.addAll(catalogData);
+                    handler.sendEmptyMessage(3);
+                }else {
+                    LogUtils.e(o + "***" + weigh / 50);
+                    other_ones.addAll(catalogData);
+                    //databaseManager.insertBookshelfNovel(catalogDataAll);
+                    handler.sendEmptyMessage(4);
+                }
+            }
+        }
+    }
+
     private void getCatalogDataError(String catalogData) {
 
     }
@@ -193,12 +300,33 @@ public class NetPageLoader extends PageLoader{
             if(msg.what==1) {
                 z++;
                 getCatalogData(mCollBook.get_id(), z, 1);
-            }else {
-//                databaseManager.insertBookshelfNovel(catalogDataAll);
-                mChapterList = convertTxtChapter(catalogDataAll);
+            }else if(msg.what==2){
+                //mChapterList = convertTxtChapter(catalogDataAll);
+                mChapterList=convertTxtChapter(catalogDataAll);
+                //mChapterList=mOrigChapterList;
                 if (mPageChangeListener != null){
                     mPageChangeListener.onCategoryFinish(mChapterList);
                 }
+                loadCurrentChapter();
+            }else  if(msg.what==3) {
+                o++;
+                getOtherCatalogData(other_id, o, 1);
+            }else if(msg.what==4){
+               // mChapterList = convertTxtChapter3(other_ones);
+                mChapterList=convertTxtChapter3(other_ones);
+                for(int i=0;i<mChapterList.size();i++){
+                    Log.e("TAG", "handleMessage: "+other_title+" "+mChapterList.get(i).title+" "+i);
+                    if(other_title.trim().equals(mChapterList.get(i).title.trim())){
+                        Log.e("TAG", "handleMessage: "+other_title+" "+mChapterList.get(i).title+" "+i);
+                       mCurChapterPos=i;
+                       break;
+                    }
+                }
+               // mChapterList=mOtherChapterList;
+                if(mPageChangeListener != null){
+                    mPageChangeListener.onCategoryFinish(mChapterList);
+                }
+                Log.e("VVV", "handleMessage: "+999);
                 loadCurrentChapter();
             }
         }
@@ -212,6 +340,19 @@ public class NetPageLoader extends PageLoader{
             chapter.bookId = bean.getId()+"";
             chapter.title = bean.getTitle();
             chapter.link = bean.getReurl();
+            txtChapters.add(chapter);
+        }
+        return txtChapters;
+    }
+
+    private List<TxtChapter> convertTxtChapter3(List<Other_one> catalogDataAll){
+        List<TxtChapter> txtChapters = new ArrayList<>(catalogDataAll.size());
+        for (Other_one bean : catalogDataAll){
+            // Log.e("QQQ", "convertTxtChapter: "+bean.getTitle());
+            TxtChapter chapter = new TxtChapter();
+            chapter.bookId = bean.getId()+"";
+            chapter.title = bean.getChapter_name();
+            chapter.link = bean.getChapter_url();
             txtChapters.add(chapter);
         }
         return txtChapters;
@@ -232,22 +373,29 @@ public class NetPageLoader extends PageLoader{
     @Nullable
     @Override
     protected List<TxtPage> loadPageList(int chapter) {
-        TxtChapter txtChapter = mChapterList.get(chapter);
+        if(mChapterList==null||mChapterList.size()==0){
+           return null;
+        }
         File file;
+        TxtChapter  txtChapter= mChapterList.get(chapter);
         if(is_website==false) {
             file = new File(Constant.BOOK_CACHE_PATH + mCollBook.get_id()
                     + File.separator + txtChapter.title.replace(" ","") + FileUtils.SUFFIX_WY);
+            Log.e("QQW1", "loadPageList: "+txtChapter.title);
         }else {
             if(is_of_all==true){
                is_website=false;
             }else {
-                is_website=true;
+               is_website=true;
             }
+            Log.e("QQW2", "loadPageList: "+txtChapter.title);
             file = new File(Constant.BOOK_OTHER_CACHE_PATH + mCollBook.get_id()
                     + File.separator + txtChapter.title.replace(" ","") + FileUtils.SUFFIX_WY);
         }
-       // LogUtils.e(file.getAbsolutePath()+" "+file.exists());
-        if (!file.exists()) return null;
+        if (!file.exists()){
+            //mStatus=STATUS_EMPTY;
+            return null;
+        }
         //if(file.length()==0)
         Reader reader = null;
         try {
@@ -322,7 +470,7 @@ public class NetPageLoader extends PageLoader{
     }
 
     private void loadCurrentChapter(){
-        if (mPageChangeListener != null){
+        if (mPageChangeListener != null&&mChapterList!=null){
             List<TxtChapter> bookChapters = new ArrayList<>(5);
             //提示加载当前章节和前面两章和后面两章
             int current = mCurChapterPos;
@@ -330,6 +478,7 @@ public class NetPageLoader extends PageLoader{
                 return;
             }
             if(current>=mChapterList.size()) {
+                Log.e("www", "loadCurrentChapter: "+mChapterList.size()+" ");
                 bookChapters.add(mChapterList.get(mChapterList.size()-1));
             }else {
                 bookChapters.add(mChapterList.get(current));

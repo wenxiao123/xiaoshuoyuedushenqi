@@ -322,11 +322,13 @@ public class OverFragment extends BaseTabFragment<MalePresenter>
                 noval_detailsList);
         categoryzyAdapter.setOnCategoryNovelListener(new CategoryzyAdapter.CategoryNovelListener() {
             @Override
-            public void clickItem(int novelName) {
-                Intent intent = new Intent(getContext(), NovelIntroActivity.class);
-                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-                intent.putExtra("pid", noval_detailsList.get(novelName).getId() + "");
-                startActivity(intent);
+            public void clickItem(int position) {
+                if(position<noval_detailsList.size()) {
+                    Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                    intent.putExtra("pid", noval_detailsList.get(position).getId() + "");
+                    startActivity(intent);
+                }
             }
         });
         mNewRv.setAdapter(categoryzyAdapter);

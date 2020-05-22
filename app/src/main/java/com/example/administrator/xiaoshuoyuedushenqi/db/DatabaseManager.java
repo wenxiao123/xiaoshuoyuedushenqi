@@ -201,7 +201,7 @@ public class DatabaseManager {
         List<Cataloginfo> res = new ArrayList<>();
         if (cursor.moveToLast()) {
             do {
-                int id = cursor.getInt(
+                String id = cursor.getString(
                         cursor.getColumnIndex("id"));
                 String title = cursor.getString(
                         cursor.getColumnIndex("title"));
@@ -304,6 +304,7 @@ public class DatabaseManager {
      * 插入一条阅读记录书籍数据
      */
     public void insertReadCordeNovel(Noval_Readcored dbData, String type) {
+        Log.e("QQQ", "insertReadCordeNovel: "+dbData);
         ContentValues values = new ContentValues();
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovel_id());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_WIGH, dbData.getWeigh());

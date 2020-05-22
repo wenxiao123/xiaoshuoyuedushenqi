@@ -109,12 +109,13 @@
                 android:text="点击/滑动可继续阅读"/>
         </LinearLayout>
         <FrameLayout
-            android:visibility="gone"
+            android:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_gravity="bottom">
         <RelativeLayout
             android:id="@+id/rel_ads"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="50dp" >
             <ImageView
@@ -179,7 +180,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:visibility="gone"></TextView>
-</FrameLayout>
+       </FrameLayout>
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
@@ -305,6 +306,7 @@
             android:layout_marginRight="15dp"
             android:gravity="center"
             android:text="@string/read_next_chapter"
+            android:clickable="true"
             android:textColor="@color/black"
             android:textSize="@dimen/read_bottom_bar_text_size"
             app:layout_constraintEnd_toEndOf="parent"
@@ -316,6 +318,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:maxHeight="2dp"
+            android:clickable="true"
             android:progressDrawable="@drawable/layer_list_read_seek_bar_bg"
             android:thumb="@drawable/shape_read_seek_bar_thumb"
             app:layout_constraintEnd_toStartOf="@id/tv_read_next_chapter"

@@ -86,6 +86,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         tv_verification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.e("QQQ9", "onClick: "+222333444);
                 if(isPhoneNumber(et_mobile_phone.getText().toString())){
                     mPresenter.getVertical(et_mobile_phone.getText().toString());
                     showShortToast("已发送");

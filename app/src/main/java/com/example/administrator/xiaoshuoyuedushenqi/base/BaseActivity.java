@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -74,10 +75,13 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         if(!(this instanceof WYReadActivity)) {
             isNight = ReadSettingManager.getInstance().isNightMode();
             if (isNight == true) {
-                backgroundAlpha(0.4f);
+               // backgroundAlpha(0.5f);
+                changeToNight();
             } else {
-                backgroundAlpha(1f);
+                changeToDay();
+                //backgroundAlpha(1f);
             }
+            //Log.e("QQQ7", "onResume: "+2222);
         }
     }
     boolean isNight;
@@ -85,6 +89,9 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(mNetReceiver!=null){
+            unregisterReceiver(mNetReceiver);
+        }
         unregisterReceiver(backgroungReceiver);
         App.removeActivity(this);
         System.gc();
@@ -101,9 +108,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         public void onReceive(Context context, Intent intent) {
             isNight = ReadSettingManager.getInstance().isNightMode();
             if(isNight) {
-                backgroundAlpha(0.4f);
+               // backgroundAlpha(0.4f);
+                changeToNight();
             }else {
-                backgroundAlpha(1f);
+                changeToDay();
+                //backgroundAlpha(1f);
             }
         }
     }
@@ -118,6 +127,40 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         lp.alpha = bgAlpha; //0.0-1.0
         getWindow().setAttributes(lp);
     }
+    private WindowManager mWindowManager = null;
+    private View mNightView = null;
+    private WindowManager.LayoutParams mNightViewParam;
+    private boolean mIsAddedView;
+    /**
+     * 设置夜间模式
+     */
+    private void changeToNight() {
+        if (mIsAddedView == true)
+            return;
+        mNightViewParam = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.TYPE_APPLICATION,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSPARENT);
+        mWindowManager = getWindowManager();
+        mNightView = new View(this);
+        mNightView.setBackgroundResource(R.color.color_night);
+        mWindowManager.addView(mNightView, mNightViewParam);
+        mIsAddedView = true;
+    }
+
+    /**
+     * 设置白天模式
+     */
+    public void changeToDay(){
+
+        if (mIsAddedView && mNightView!=null) {
+            mWindowManager.removeViewImmediate(mNightView);
+            mWindowManager = null;
+            mNightView = null;
+            mIsAddedView=false;
+        }
+    }
+
     /**
      * 在setContentView方法前的操作
      */
@@ -210,12 +253,14 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         return mSavedInstanceState;
     }
 
-    private void initNetworkReceiver() {
+    public void initNetworkReceiver() {
         mNetReceiver = new NetworkReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mNetReceiver, filter);
     }
+    public void NetConect(){};
+    public void DisNetConect(){}
     NetworkReceiver mNetReceiver;
     public class NetworkReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
@@ -228,18 +273,22 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                     int type = networkInfo.getType();
                     switch (type) {
                         case ConnectivityManager.TYPE_MOBILE:
-                            Toast.makeText(context, "当前移动网络正常", Toast.LENGTH_SHORT).show();
+                            NetConect();
+                            //Toast.makeText(context, "当前移动网络正常", Toast.LENGTH_SHORT).show();
                             break;
                         case ConnectivityManager.TYPE_WIFI:
-                            Toast.makeText(context, "当前WIFI网络正常", Toast.LENGTH_SHORT).show();
+                            NetConect();
+                            //Toast.makeText(context, "当前WIFI网络正常", Toast.LENGTH_SHORT).show();
                             break;
                         case ConnectivityManager.TYPE_ETHERNET:
-                            Toast.makeText(context, "当前以太网网络正常", Toast.LENGTH_SHORT).show();
+                            NetConect();
+                            //Toast.makeText(context, "当前以太网网络正常", Toast.LENGTH_SHORT).show();
                             break;
                     }
                 } else {
+                    DisNetConect();
                     //说明当前没有网络
-                    Toast.makeText(context, "当前网络异常", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(context, "当前网络异常", Toast.LENGTH_SHORT).show();
                 }
             }
         }

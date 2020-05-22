@@ -162,8 +162,8 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-                Intent intent_recever = new Intent("com.zhh.android");
-                intent_recever.putExtra("type",1);
+                Intent intent_recever = new Intent("com.tiaozhuan.android");
+                intent_recever.putExtra("type",3);
                 sendBroadcast(intent_recever);
                 finish();
             }
@@ -214,11 +214,19 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
         recyclerView.setVisibility(View.VISIBLE);
         noval_readcoreds.clear();
         setRecyclerViewData(novelNameList);
-//        for(int i=0;i<novelNameList.size();i++){
-//            if (login_admin != null) {
-//                setReadRecord(login_admin.getToken(), novelNameList.get(i).getNovel_id(), novelNameList.get(i).getChapter_id()+ "");
-//            }
-//        }
+    }
+
+    public void queryAllBookSuccess2(List<Noval_Readcored> dataList) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (!mDbManager.isExistInReadCoderNovel(dataList.get(i).getNovel_id())) {
+                mDbManager.insertReadCordeNovel(dataList.get(i),0+"");
+            }
+        }
+        mPresenter.queryAllBook();
+    }
+    public void loading(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
     public void setReadRecord(String token, String novel_id, String chapter_id) {
         String url = UrlObtainer.GetUrl() + "/" + "/api/lookbook/add";
@@ -285,13 +293,12 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
 
     @Override
     public void getReadcoredDataSuccess(List<Noval_Readcored> novelNameList) {
-        mProgressBar.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-        if (novelNameList.size() == 0 && z == 1) {
-            mPresenter.queryAllBook();
-        } else {
-            setRecyclerViewData(novelNameList);
-        }
+//        if (novelNameList.size() == 0 && z == 1) {
+//            mPresenter.queryAllBook();
+//        } else {
+//            //setRecyclerViewData(novelNameList);
+            queryAllBookSuccess2(novelNameList);
+//        }
     }
 
     private void initAdapter() {

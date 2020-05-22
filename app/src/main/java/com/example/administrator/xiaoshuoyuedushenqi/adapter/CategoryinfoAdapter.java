@@ -63,7 +63,7 @@ public class CategoryinfoAdapter extends RecyclerView.Adapter<CategoryinfoAdapte
                 .load(url)
                 .apply(new RequestOptions()
                         .error(R.drawable.cover_error)
-                .transform(transformation))
+                .transform(transformation).dontAnimate())
                 .into(categoryNovelViewHolder.cover);
         categoryNovelViewHolder.cover.setOnClickListener(new View.OnClickListener() {
             @Override

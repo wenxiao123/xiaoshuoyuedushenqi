@@ -210,9 +210,7 @@ public class ScrollPageAnim2 extends PageAnimation {
                 mScrapViews.add(view);
                 // 从Active中移除
                 upIt.remove();
-
                 // 如果原先是下，现在变成从上加载了，则表示取消加载
-
                 if (mDirection == Direction.DOWN) {
                     mListener.pageCancel();
                     mDirection = Direction.NONE;

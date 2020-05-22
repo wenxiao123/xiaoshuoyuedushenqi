@@ -9,17 +9,28 @@ import java.io.Serializable;
 public class TxtChapter implements Serializable {
 
     //章节所属的小说(网络)
-    String bookId;
+   public String bookId;
     //章节的链接(网络)
-    String link;
+    public String link;
 
     //章节名(共用)
-    String title;
+    public String title;
 
     //章节内容在文章中的起始位置(本地)
-    long start;
+    public long start;
     //章节内容在文章中的终止位置(本地)
-    long end;
+    public long end;
+
+    public TxtChapter(String bookId, String link, String title, long start, long end) {
+        this.bookId = bookId;
+        this.link = link;
+        this.title = title;
+        this.start = start;
+        this.end = end;
+    }
+
+    public TxtChapter() {
+    }
 
     //选中目录
     boolean isSelect;

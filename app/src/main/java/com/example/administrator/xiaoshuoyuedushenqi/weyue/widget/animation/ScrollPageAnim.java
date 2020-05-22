@@ -3,7 +3,6 @@ package com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.animation;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -90,7 +89,11 @@ public class ScrollPageAnim extends PageAnimation {
             }
         }
     }
+    public synchronized void startAutoRead(int dy) {
+        isRunning = true;
+        mScroller.startScroll(0, (int)mTouchY, 0, -dy);
 
+    }
     //底部填充
     private Iterator<BitmapView> downIt;
 
@@ -348,6 +351,7 @@ public class ScrollPageAnim extends PageAnimation {
     public void draw(Canvas canvas) {
         //进行布局
         onLayout();
+
         //绘制背景
         canvas.drawBitmap(mBgBitmap, 0, 0, null);
         //绘制内容
@@ -361,14 +365,7 @@ public class ScrollPageAnim extends PageAnimation {
         //绘制Bitmap
         for (int i = 0; i < mActiveViews.size(); ++i) {
             tmpView = mActiveViews.get(i);
-            Bitmap bitmap;
-            if(i==mActiveViews.size()-1) {
-                bitmap = tmpView.bitmap;
-               // bitmap.setHeight(300);
-            }else {
-                bitmap = tmpView.bitmap;
-            }
-            canvas.drawBitmap(bitmap, tmpView.srcRect, tmpView.destRect, null);
+            canvas.drawBitmap(tmpView.bitmap, tmpView.srcRect, tmpView.destRect, null);
         }
         canvas.restore();
     }
@@ -380,11 +377,7 @@ public class ScrollPageAnim extends PageAnimation {
         //mScroller.fling(0, (int) mTouchY, 0, (int) mVelocity.getYVelocity(), 0, 0, 0, Integer.MAX_VALUE);
         mScroller.fling(0, (int) mTouchY, 0, (int) mVelocity.getYVelocity(), 0, 0, Integer.MAX_VALUE*-1, Integer.MAX_VALUE);
     }
-    public synchronized void startAutoRead(int dy) {
-        isRunning = true;
-        mScroller.startScroll(0, (int)mTouchY, 0, -dy);
 
-    }
     @Override
     public void scrollAnim() {
         if (mScroller.computeScrollOffset()) {

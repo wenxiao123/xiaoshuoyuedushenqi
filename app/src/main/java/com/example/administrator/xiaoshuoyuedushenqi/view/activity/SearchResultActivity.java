@@ -233,8 +233,10 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
      * 进行搜索
      */
     private void doSearch() {
-        mNovelSourceDataList.clear();
-        mNovelSourceAdapter.notifyDataSetChanged();
+        if(mNovelSourceAdapter!=null) {
+            mNovelSourceDataList.clear();
+            mNovelSourceAdapter.notifyDataSetChanged();
+        }
         mStringContent=mSearchBarEt.getText().toString();
         z=1;
         mPresenter.getNovelsSource(mStringContent,z);
@@ -257,6 +259,7 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
             mNoneTv.setVisibility(View.GONE);
             mNovelSourceRv.setVisibility(View.VISIBLE);
         }
+        mNovelSourceDataList.clear();
         if(isRefresh){
             mNovelSourceDataList.clear();
             isRefresh=false;
