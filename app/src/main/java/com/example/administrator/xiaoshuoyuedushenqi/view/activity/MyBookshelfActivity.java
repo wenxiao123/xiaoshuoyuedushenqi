@@ -206,12 +206,19 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ", "onResponse: "+json);
+                Log.e("www2", "onResponse: "+novel_id+" "+token+" "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
                     if(code.equals("1")){
                         String message=jsonObject.getString("msg");
+                        del_count--;
+                        if(del_count==0){
+                            mDeleteTv.setText("删除");
+                            Intent recever = new Intent("com.zhh.android");
+                            recever.putExtra("type", 1);
+                            sendBroadcast(recever);
+                        }
                         //mPresenter.(message);
                         //showShortToast("删除成功");
                     }else {
@@ -230,14 +237,16 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
             }
         });
     }
+    int del_count=0;
     /**
      * 多选删除
      */
     private void multiDelete() {
+        del_count=mDataList.size();
         mIsDeleting = true;
         for (int i = mDataList.size() - 1; i >= 0; i--) {
             if (mCheckedList.get(i)) {
-                Log.e("WWW", "multiDelete: "+mDataList.get(i).getName());
+               // Log.e("WWW", "multiDelete: "+mDataList.get(i).getName());
                 // 从数据库中删除该小说
                 if(mDataList.get(i).getType()==1){
                 File file=new File((mDataList.get(i).getFuben_id()));
@@ -245,18 +254,19 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                     file.delete();
                 }
                 }
-                mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
+                mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl().trim());
                 //mDbManager.deleteBookCalotaNovel(mDataList.get(i).getNovelUrl());
                 if(login_admin!=null){
-                  delectBookshelfadd(login_admin.getToken(), mDataList.get(i).getNovelUrl());
+                  delectBookshelfadd(login_admin.getToken(), mDataList.get(i).getNovelUrl().trim());
+                }else {
+                    if(i==0) {
+                        mDeleteTv.setText("删除");
+                        Intent recever = new Intent("com.zhh.android");
+                        recever.putExtra("type", 1);
+                        sendBroadcast(recever);
+                    }
                 }
                 mDataList.remove(i);
-            }
-            if(i==0) {
-                mDeleteTv.setText("删除");
-                Intent recever = new Intent("com.zhh.android");
-                recever.putExtra("type", 1);
-                sendBroadcast(recever);
             }
         }
         mCheckedList.clear();
@@ -267,11 +277,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         mBookshelfNovelsAdapter.notifyDataSetChanged();
         mIsDeleting = false;
         if(mBookshelfNovelsAdapter.getItemCount()==0){
-//            Intent intent = new Intent(MyBookshelfActivity.this, MainActivity.class);
-//            intent.putExtra("islaod", "2");
-//            startActivity(intent);
             finish();
-
         }
     }
 

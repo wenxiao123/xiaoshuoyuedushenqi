@@ -8,6 +8,9 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.LogUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
 import okhttp3.FormBody;
@@ -33,18 +36,21 @@ public  class ParamsInterceptor implements Interceptor {
         }
         if (METHOD_GET.equals(request.method())) { // GET方法
             // 这里可以添加一些公共get参数
-            if(token!=null) {
-                urlBuilder.addEncodedQueryParameter("token", token);
-            }
             HttpUrl httpUrl = urlBuilder.build();
-
+             boolean is_cover=false;
             // 打印所有get参数
             Set<String> paramKeys = httpUrl.queryParameterNames();
             for (String key : paramKeys) {
                 String value = httpUrl.queryParameter(key);
-                LogUtils.e(key+" "+value);
+                if(key.equals("token")){
+                    is_cover=true;
+                }
+                //LogUtils.e(key+" "+value);
             }
-
+            if(token!=null&&is_cover==false) {
+                urlBuilder.addEncodedQueryParameter("token", token);
+            }
+            urlBuilder.addEncodedQueryParameter("sign", stringToMD5("af1020a25f48ds4g55r6y."));
             // 将最终的url填充到request中
             requestBuilder.url(httpUrl);
         } else if (METHOD_POST.equals(request.method())) { // POST方法
@@ -57,18 +63,22 @@ public  class ParamsInterceptor implements Interceptor {
                     bodyBuilder.addEncoded(formBody.encodedName(i), formBody.encodedValue(i));
                 }
             }
-            if(token!=null) {
-                // 这里可以添加一些公共post参数
-                bodyBuilder.addEncoded("token", token);
-            }
+            boolean is_cover=false;
             FormBody newBody = bodyBuilder.build();
 
             // 打印所有post参数
             for (int i = 0; i < newBody.size(); i++) {
+                if(newBody.name(i).equals("token")){
+                    is_cover=true;
+                }
                // Log.d("TEST", newBody.name(i) + " " + newBody.value(i));
-                LogUtils.e(newBody.name(i) + " " + newBody.value(i));
+                //LogUtils.e(newBody.name(i) + " " + newBody.value(i));
             }
-
+            if(token!=null&&is_cover==false) {
+                // 这里可以添加一些公共post参数
+                bodyBuilder.addEncoded("token", token);
+            }
+            bodyBuilder.addEncoded("sign", stringToMD5("af1020a25f48ds4g55r6y."));
             // 将最终的表单body填充到request中
             requestBuilder.post(newBody);
         }
@@ -76,5 +86,34 @@ public  class ParamsInterceptor implements Interceptor {
         // 这里我们可以添加header
         //requestBuilder.addHeader(HEADER_KEY_USER_AGENT, getUserAgent()); // 举例，调用自己业务的getUserAgent方法
         return chain.proceed(requestBuilder.build());
+    }
+
+    /**
+     * 将字符串转成MD5值
+     *
+     * @param string
+     * @return
+     */
+    public static String stringToMD5(String string) {
+        byte[] hash;
+
+        try {
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+            if ((b & 0xFF) < 0x10)
+                hex.append("0");
+            hex.append(Integer.toHexString(b & 0xFF));
+        }
+
+        return hex.toString();
     }
 }

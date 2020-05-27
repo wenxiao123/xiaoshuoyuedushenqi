@@ -299,7 +299,50 @@ public class DatabaseManager {
         values.put(Constant.TABLE_BOOKSHELF_STATUS, dbData.getStatus());//
         mDb.insert(Constant.TABLE_BOOKSHELF_NOVEL, null, values);
     }
+    public boolean insertOrUpdateReadCordeNovel(Noval_Readcored dbData, String type) {
+        Cursor cursor = mDb.query(
+                Constant.TABLE_READCORDE_NOVEL,
+                new String[]{Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL},
+                Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?",
+                new String[]{dbData.getNovel_id() + ""},
+                null,
+                null,
+                null);
 
+        ContentValues values = new ContentValues();
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovel_id());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_WIGH, dbData.getWeigh());
+        values.put(Constant.TABLE_BOOKSHELF_STATUS, dbData.getStatus());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_ID, dbData.getChapter_id());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NAME, dbData.getTitle());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_COVER, dbData.getPic());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_TYPE, type);
+        values.put(Constant.TABLE_BOOKSHELF_AUTHOR, dbData.getAuthor());
+        values.put(Constant.TABLE_BOOKSHELF_CHAPTER_NAME, dbData.getChapter_name());
+        values.put(Constant.TABLE_BOOKSHELF_IS_CHE, dbData.getIs_che());
+        long result = 0;
+        try {
+            if (cursor != null && cursor.getCount() > 0) {
+                // Log.e("QQQ", "insertOrUpdateBook: "+"更新");
+                //更新操作
+                result = mDb.update(Constant.TABLE_READCORDE_NOVEL, values, Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?", new String[]{dbData.getNovel_id() + ""});
+            } else {
+                // Log.e("QQQ", "insertOrUpdateBook: "+"新增");
+                //插入操作
+                result = mDb.insert(Constant.TABLE_READCORDE_NOVEL, null, values);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (null != cursor) {
+                cursor.close();
+            }
+            cursor.close();
+        }
+
+        return result > 0;
+
+    }
     /**
      * 插入一条阅读记录书籍数据
      */
@@ -472,6 +515,7 @@ public class DatabaseManager {
      * 查询所有书架书籍信息
      */
     public BookshelfNovelDbData selectBookshelfNovel(String url) {
+        Log.e("QQQ", "selectBookshelfNovel: "+url);
         if(url==null){
            return null;
         }
@@ -506,13 +550,68 @@ public class DatabaseManager {
                     res = new BookshelfNovelDbData(novelUrl, name, cover,
                             position, type, secondPosition, chperid, weight, status);
                     res.setFuben_id(fuben);
-                   // Log.e("WWW", "selectBookshelfNovel: "+res);
                     break;
                 }
 
             } while (cursor.moveToPrevious());
         }
         cursor.close();
+
+        }catch (Exception ex){
+            return null;
+        }
+        return res;
+    }
+
+    /**
+     * 查询所有书架书籍信息
+     */
+    public BookshelfNovelDbData selectBookshelfNovel1(String url) {
+        if(url==null){
+            return null;
+        }
+        // 查询表中所有数据
+        Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null, null, null,
+                null, null, null);
+        BookshelfNovelDbData res = null;
+        try {
+            if (cursor.moveToLast()) {
+                do {
+                    String novelUrl = cursor.getString(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL));
+                    String name = cursor.getString(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_NAME));
+                    String cover = cursor.getString(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_COVER));
+                    String fuben = cursor.getString(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_FUBEN_ID));
+                    String chperid = cursor.getString(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_ID));
+                    String status = cursor.getString(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_STATUS));
+                    int position = cursor.getInt(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_POSITION));
+                    int type = cursor.getInt(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_TYPE));
+                    int weight = cursor.getInt(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_WIGH));
+                    int secondPosition = cursor.getInt(
+                            cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION));
+                    if (novelUrl.equals(url)) {
+                        res = new BookshelfNovelDbData(novelUrl, name, cover,
+                                position, type, secondPosition, chperid, weight, status);
+                        res.setFuben_id(fuben);
+                        break;
+                    }else if(url.equals(fuben)){
+                        res = new BookshelfNovelDbData(novelUrl, name, cover,
+                                position, type, secondPosition, chperid, weight, status);
+                        res.setFuben_id(fuben);
+                        break;
+                    }
+
+                } while (cursor.moveToPrevious());
+            }
+            cursor.close();
 
         }catch (Exception ex){
             return null;
@@ -550,6 +649,7 @@ public class DatabaseManager {
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_WIGH));
                 res.add(new Noval_Readcored(novelUrl, chapter_id, status,
                             title, author, pic, is_che, chapter_name, weigh));
+                Log.e("QQQ", "queryAllBookSuccess2: "+novelUrl+" "+title);
             } while (cursor.moveToPrevious());
         }
         cursor.close();
@@ -653,7 +753,7 @@ public class DatabaseManager {
      * 根据小说 url 删除一条书架书籍数据集
      */
     public void deleteBookshelfNovel(String novelUrl) {
-        Log.e("WWW", "deleteBookshelfNovel: "+novelUrl);
+        Log.e("WWW1", "deleteBookshelfNovel: "+novelUrl);
         mDb.delete(Constant.TABLE_BOOKSHELF_NOVEL,
                 Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?",
                 new String[]{novelUrl});
@@ -718,6 +818,26 @@ public class DatabaseManager {
         }
         Cursor cursor = mDb.query(Constant.TABLE_READCORDE_NOVEL, null,
                 Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?", new String[]{novelUrl},
+                null, null, null, null);
+        boolean res = false;
+        if (cursor.moveToLast()) {
+            do {
+                res = true;
+            } while (cursor.moveToPrevious());
+        }
+        cursor.close();
+
+        return res;
+    }
+    /**
+     * 查询 Bookshelf 表是否存在主键为 novelUrl 的记录
+     */
+    public boolean isExistInReadCoderNovel2(String novelUrl) {
+        if (TextUtils.isEmpty(novelUrl)) {
+            return false;
+        }
+        Cursor cursor = mDb.query(Constant.TABLE_READCORDE_NOVEL, null,
+                Constant.TABLE_BOOKSHELF_NOVEL_FUBEN_ID + " = ?", new String[]{novelUrl},
                 null, null, null, null);
         boolean res = false;
         if (cursor.moveToLast()) {

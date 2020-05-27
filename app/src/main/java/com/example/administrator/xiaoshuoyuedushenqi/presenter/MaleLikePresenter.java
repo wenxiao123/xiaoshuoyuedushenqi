@@ -34,7 +34,7 @@ public class MaleLikePresenter extends BasePresenter<IMaleLikeContract.View>
     }
 
     @Override
-    public void getCategoryNovels() {
-        mModel.getCategoryNovels();
+    public void getCategoryNovels(int pid) {
+        mModel.getCategoryNovels(pid);
     }
 }

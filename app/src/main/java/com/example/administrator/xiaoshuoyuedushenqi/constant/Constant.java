@@ -27,7 +27,7 @@ public class Constant {
 
     public static String text_adress3="font/流行体简体.ttf";
     public static String text_name3="流行体简体";
-
+    public static boolean is_othersite = false, is_all_one = false;//换源相关
     public static String text_adress4="font/华康圆体W7.ttf";
     public static String text_name4="华康圆体W7";
 

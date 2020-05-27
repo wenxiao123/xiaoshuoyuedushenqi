@@ -796,7 +796,7 @@ public class RealPageView extends PageView{
                             mIsLoadNextPage = event.getX() < mLastX;
                         }
                         mLastX = (int) event.getX();
-                        Log.e("SSS","isNext:" + isNext);
+                        //Log.e("SSS","isNext:" + isNext);
                     }else{
                         //判断是否取消翻页
                         if (isNext){
@@ -892,7 +892,7 @@ public class RealPageView extends PageView{
                         mIsLoadNextPage = event.getX() < mLastX;
                     }
                     mLastX = (int) event.getX();
-                    Log.e("SSS","isNext:" + isNext);
+                    //Log.e("SSS","isNext:" + isNext);
                 }else{
                     //判断是否取消翻页
                     if (isNext){

@@ -47,6 +47,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 import static com.example.administrator.xiaoshuoyuedushenqi.app.App.getContext;
+import static com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil.stringToMD5;
 
 
 public class LauncherActivity extends BaseActivity_other {

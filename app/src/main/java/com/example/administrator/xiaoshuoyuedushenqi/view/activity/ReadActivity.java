@@ -3349,7 +3349,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      * 网络小说加载下一章节
      */
     private void nextNet() {
-        Log.e("sss", "nextNet: " + weigh);
+       // Log.e("sss", "nextNet: " + weigh);
         if (mChapterIndex == weigh - 1) {
             showShortToast("已经到最后了");
             return;

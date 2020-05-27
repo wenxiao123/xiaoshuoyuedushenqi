@@ -1,5 +1,6 @@
 package com.example.administrator.xiaoshuoyuedushenqi.view.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -7,12 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
@@ -159,7 +163,72 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     TextView txt_book_load;
     ImageView img_collect, iv_tuijian;
     private RelativeLayout rel_book_add;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
+        switch (requestCode) {
+            case REQUEST_CODE_ADDRESS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] ==PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted 授予权限
+                    //处理授权之后逻辑
+                    if (!txt_book_load.getText().equals("已缓存")) {
+                        txt_book_load.setText("缓存中：0%");
+                        txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
+                        txt_book_load.setEnabled(false);
+                        String load_id = App.getInstance().getPosition();
+                        if (load_id != null && !load_id.equals(pid)) {
+                            txt_book_load.setText("已加入缓存序列");
+                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                            myBinder.che(downBean);
+                            Is_load = true;
+                        } else if (load_id != null && load_id.equals(pid)) {
+                            txt_book_load.setText("缓存中...");
+                        } else {
+                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                            myBinder.che(downBean);
+                        }
+                    }
+                } else {
+                    // Permission Denied 权限被拒绝
+                    showShortToast("权限被禁用");
+                }
+
+                break;
+            default:
+                break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+    }
+
+    private final int REQUEST_CODE_ADDRESS = 100;
+
+    private void checkPermissioin(){
+        int checkCoarse = ContextCompat.checkSelfPermission(NovelIntroActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int checkCoarseFine = ContextCompat.checkSelfPermission(NovelIntroActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkCoarse == PackageManager.PERMISSION_GRANTED  && checkCoarseFine == PackageManager.PERMISSION_GRANTED) {
+            //已经授权
+            if (!txt_book_load.getText().equals("已缓存")) {
+                txt_book_load.setText("缓存中：0%");
+                txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
+                txt_book_load.setEnabled(false);
+                String load_id = App.getInstance().getPosition();
+                if (load_id != null && !load_id.equals(pid)) {
+                    txt_book_load.setText("已加入缓存序列");
+                    DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                    myBinder.che(downBean);
+                    Is_load = true;
+                } else if (load_id != null && load_id.equals(pid)) {
+                    txt_book_load.setText("缓存中...");
+                } else {
+                    DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                    myBinder.che(downBean);
+                }
+            }
+        } else {//没有权限
+            ActivityCompat.requestPermissions(NovelIntroActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_ADDRESS);//申请授权
+        }
+    }
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
@@ -447,7 +516,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         l_all.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         presenter.getNovels(pid);
-        if (mDbManager.isExistInBookshelfNovel(pid)) {
+        if (mDbManager.isExistInReadCoderNovel(pid)) {
             tv_begain_read.setText("继续阅读");
         } else {
             tv_begain_read.setText("开始阅读");
@@ -505,37 +574,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     finish();
                     break;
                 case R.id.l_catalog:
-//                    BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(pid);
-//                    //if (!mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-//                    if (bookshelfNovelDbData!=null&&bookshelfNovelDbData.getType()==0) {
-//                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
-//                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
-//                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
-//                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
-//                        intent.putExtra("weigh", weigh);
-//                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
-//                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-//                        intent.putExtra(CatalogActivity.KEY_URL, pid);
-//                        startActivity(intent);
-//                    } else if (bookshelfNovelDbData!=null&&bookshelfNovelDbData.getType()==1) {
-//                        //BookshelfNovelDbData bookshelfNovelDbData = mDbManager.selectBookshelfNovel(path + ".txt");
-//                        Intent intent = new Intent(NovelIntroActivity.this, LocalCatalogActivity.class);
-//                        intent.putExtra("file_path", path + ".txt");    // 传递当前小说的 url
-//                        intent.putExtra(LocalCatalogActivity.KEY_NAME, noval_details.getTitle());  // 传递当前小说的名字
-//                        intent.putExtra(LocalCatalogActivity.KEY_COVER, noval_details.getPic()); // 传递当前小说的封面
-//                        intent.putExtra(LocalCatalogActivity.KEY_POSTION, bookshelfNovelDbData.getPosition());
-//                        startActivity(intent);
-//                    }else {
-//                        Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
-//                        intent.putExtra("ACTIVITY_TYPE", "NovelIntroActivity");
-//                        intent.putExtra(CatalogActivity.KEY_NAME, noval_details.getTitle());
-//                        intent.putExtra(CatalogActivity.KEY_COVER, noval_details.getPic());
-//                        intent.putExtra("weigh", weigh);
-//                        intent.putExtra(CatalogActivity.KEY_SERIALIZE, noval_details.getSerialize());
-//                        intent.putExtra(CatalogActivity.KEY_AUTHOR, noval_details.getAuthor());
-//                        intent.putExtra(CatalogActivity.KEY_URL, pid);
-//                        startActivity(intent);
-//                    }
                     bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
                     Log.e("QWW", "onClick: "+bookshelfNovelDbData1);
                     if (bookshelfNovelDbData1!=null&&bookshelfNovelDbData1.getType()!=1) {
@@ -610,23 +648,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     sendBroadcast(intent_recever);
                     break;
                 case R.id.txt_book_load:
-                    if (!txt_book_load.getText().equals("已缓存")) {
-                        txt_book_load.setText("缓存中：0%");
-                        txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
-                        txt_book_load.setEnabled(false);
-                        String load_id = App.getInstance().getPosition();
-                        if (load_id != null && !load_id.equals(pid)) {
-                            txt_book_load.setText("已加入缓存序列");
-                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
-                            myBinder.che(downBean);
-                            Is_load = true;
-                        } else if (load_id != null && load_id.equals(pid)) {
-                            txt_book_load.setText("缓存中...");
-                        } else {
-                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
-                            myBinder.che(downBean);
-                        }
-                    }
+                    checkPermissioin();
                     break;
                 case R.id.txt_read:
                     bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
@@ -1039,7 +1061,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
                         String message = jsonObject.getString("msg");
-                        showShortToast(message);
+                        //showShortToast(message);
                         //mPresenter.(message);
                     } else {
                         //mPresenter.getReadRecordError("请求错误");

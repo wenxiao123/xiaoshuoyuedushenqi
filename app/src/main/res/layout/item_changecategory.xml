@@ -14,6 +14,8 @@
         android:textSize="16sp"
         android:clickable="true"
         android:focusable="true"
+        android:maxEms="15"
+        android:ellipsize="end"
         android:text="第四十七章 真正的大人物"
         android:maxLines="1" />
     <LinearLayout

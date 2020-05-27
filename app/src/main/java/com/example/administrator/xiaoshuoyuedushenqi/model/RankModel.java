@@ -71,7 +71,7 @@ public class RankModel implements IRankContract.Model {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-            // Log.e(":QQQ", "onResponse: "+json);
+                Log.e(":QQQ", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -84,16 +84,16 @@ public class RankModel implements IRankContract.Model {
                         }
                         mPresenter.getDataSuccess(novalDetailsList);
                     }else {
-                        mPresenter.getDataError("请求错误");
+                        mPresenter.getDataError("请求失败");
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    mPresenter.getDataError("请求失败");
                 }
             }
 
             @Override
             public void onFailure(String errorMsg) {
-                mPresenter.getDataError(errorMsg);
+                mPresenter.getDataError("请求失败");
             }
         });
     }

@@ -62,7 +62,7 @@ public class CacheService extends Service {
             if (msg.what == 1) {
                 BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(id + "", bookname, bookcover, 1, weigh, 1 + "");
                 bookshelfNovelDbData.setFuben_id(path + ".txt");
-                bookshelfNovelDbData.setChapterid(1 + "");
+                bookshelfNovelDbData.setChapterid(0 + "");
                 mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
                 Intent intent_recever = new Intent("com.zhh.android");
                 intent_recever.putExtra("type", 1);

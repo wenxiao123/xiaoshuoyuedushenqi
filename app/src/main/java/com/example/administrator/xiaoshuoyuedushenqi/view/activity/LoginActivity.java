@@ -151,10 +151,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0 && !et_mobile_phone.getText().toString().trim().equals("")) {
                     tv_login.setBackground(getResources().getDrawable(R.drawable.bachground_yellow_light));
-                    tv_verification.setClickable(true);
+                   // tv_verification.setClickable(true);
                 } else {
                     tv_login.setBackground(getResources().getDrawable(R.drawable.bachground_ash));
-                    tv_verification.setClickable(false);
+                    //tv_verification.setClickable(false);
                 }
             }
 

@@ -104,7 +104,7 @@ public class NovelSourceAdapter extends
             novelSourceViewHolder.introduce.setText("阅读至"+mNovelSourceDataList.get(i).getChapter_name());
         }
         //novelSourceViewHolder.webSite.setText(mNovelSourceDataList.get(i).getUrl());
-        BookshelfNovelDbData bookshelfNovelDbData=databaseManager.selectBookshelfNovel(mNovelSourceDataList.get(i).getNovel_id());
+        BookshelfNovelDbData bookshelfNovelDbData=databaseManager.selectBookshelfNovel1(mNovelSourceDataList.get(i).getNovel_id());
         if(bookshelfNovelDbData!=null&&bookshelfNovelDbData.getType()>=0){
             novelSourceViewHolder.tv_item_bookshelf.setText("已加入书架");
             novelSourceViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));

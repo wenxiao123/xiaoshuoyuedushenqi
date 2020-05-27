@@ -12,6 +12,9 @@ import com.example.administrator.xiaoshuoyuedushenqi.util.SpUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -44,18 +47,46 @@ public class OkhttpUtil {
                     okHttpClient = new OkHttpClient.Builder()
                             .connectTimeout(10, TimeUnit.SECONDS)
                             .readTimeout(20, TimeUnit.SECONDS)
-                            //.addInterceptor(new ParamsInterceptor())
+                            .addInterceptor(new CommonParametersInterceptorHead())
                             .build();
                 }
             }
         }
         return okHttpClient;
     }
+    /**
+     * 将字符串转成MD5值
+     *
+     * @param string
+     * @return
+     */
+    public static String stringToMD5(String string) {
+        byte[] hash;
 
+        try {
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+            if ((b & 0xFF) < 0x10)
+                hex.append("0");
+            hex.append(Integer.toHexString(b & 0xFF));
+        }
+
+        return hex.toString();
+    }
     public static void getRequest(String url, final OkhttpCall okhttpCall) {
         //创建Request
         Request request = new Request.Builder()
                 .url(url)
+                .header("sign",stringToMD5("af1020a25f48ds4g55r6y."))
                 .build();
         //创建Call
         Call call = getOkHttpClient().newCall(request);
@@ -97,6 +128,7 @@ public class OkhttpUtil {
         //创建Request
         Request request = new Request.Builder()
                 .url(url)
+                .header("sign",stringToMD5("af1020a25f48ds4g55r6y."))
                 .post(requestBody)
                 .build();
         //创建Call

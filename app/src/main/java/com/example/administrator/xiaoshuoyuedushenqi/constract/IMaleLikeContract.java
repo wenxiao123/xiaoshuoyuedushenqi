@@ -16,9 +16,9 @@ public interface IMaleLikeContract {
     interface Presenter {
         void getCategoryNovelsSuccess(List<Catagorys> dataList);
         void getCategoryNovelsError(String errorMsg);
-        void getCategoryNovels();   // 获取分类小说
+        void getCategoryNovels(int pid);   // 获取分类小说
     }
     interface Model {
-        void getCategoryNovels();   // 获取分类小说
+        void getCategoryNovels(int pid);   // 获取分类小说
     }
 }

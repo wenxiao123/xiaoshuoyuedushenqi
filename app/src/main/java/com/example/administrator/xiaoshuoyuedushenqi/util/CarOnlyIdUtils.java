@@ -69,9 +69,12 @@ public class CarOnlyIdUtils {
 
 
     public static String getOnlyID(Context context){
-        String onlyId = getANDROID_ID(context)+getSerialNumber()+getUniquePsuedoID();
-
-        return getMD5Str(onlyId);
+        try {
+            String onlyId = getANDROID_ID(context) + getSerialNumber() + getUniquePsuedoID();
+            return getMD5Str(onlyId);
+        }catch (Exception ex){
+            return "";
+        }
     }
 
     private static String getMD5Str(String str)

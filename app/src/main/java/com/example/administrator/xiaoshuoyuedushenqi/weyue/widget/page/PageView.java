@@ -411,11 +411,11 @@ public class PageView extends View {
                 mPageLoader = new LocalPageLoader(this);
             }
             else {
-                if(isother==false) {
+//                if(isother==false) {
                     mPageLoader = new NetPageLoader(this);
-                }else {
-                    mPageLoader = new OtherNetPageLoader(this);
-                }
+//                }else {
+//                    mPageLoader = new OtherNetPageLoader(this);
+//                }
             }
         return mPageLoader;
     }

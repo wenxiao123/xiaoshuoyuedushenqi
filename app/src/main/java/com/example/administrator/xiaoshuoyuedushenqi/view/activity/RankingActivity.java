@@ -216,6 +216,7 @@ public class RankingActivity extends BaseActivity<RankPresenter> implements IRan
 
     @Override
     public void getDataError(String errorMsg) {
-
+        showShortToast(errorMsg);
+        mProgressBar.setVisibility(View.GONE);
     }
 }

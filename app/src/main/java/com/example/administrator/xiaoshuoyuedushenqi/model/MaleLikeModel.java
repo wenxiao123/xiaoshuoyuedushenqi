@@ -12,6 +12,9 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+
 /**
  * @author
  * Created on 2019/11/6
@@ -31,8 +34,12 @@ public class MaleLikeModel implements IMaleLikeContract.Model {
      * 获取发现页的分类小说数据
      */
     @Override
-    public void getCategoryNovels() {
-        OkhttpUtil.getRequest(UrlObtainer.GetUrl()+"/"+"api/index/List_Type", new OkhttpCall() {
+    public void getCategoryNovels(int pid) {
+        String url = UrlObtainer.GetUrl()+"/api/index/Type_one";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("pid", pid+"")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 try {

@@ -53,7 +53,7 @@ public class ReadcoredModel implements IReakcoredContract.Model {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                Log.e("QQQ", "onResponse: "+page+" "+json);
+                Log.e("QQQ", "onResponse: "+page+" "+token+" "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");

@@ -109,7 +109,10 @@ public class VMBookContentInfo extends BaseViewModel {
      * @param bookChapterList
      */
     int s=0,size=0;
+    List<TxtChapter> bookChapterList;
     public void loadContent(String bookId, List<TxtChapter> bookChapterList) {
+        Log.e("TAG", "loadContent: "+bookId);
+        this.bookChapterList=bookChapterList;
 //        //取消上次的任务，防止多次加载
 //        if (mDisposable != null) {
 //            mDisposable.dispose();
@@ -166,10 +169,16 @@ public class VMBookContentInfo extends BaseViewModel {
            if(bookChapterList.size()==0){
               return;
            }
-           s=Integer.parseInt(bookId);
-           title1=bookChapterList.get(0).getTitle();
-           //Log.e("QQQ", "loadContent2: "+noval_id+" "+title1);
-           getDetailedChapterData(noval_id, (s+1)+"",title1);
+           s=0;
+           size=bookChapterList.size();
+          // for(int i=0;i<bookChapterList.size();i++) {
+               //if(i==0) {
+           //s = Integer.parseInt(bookId);
+//               }else {
+//                   s++;
+//               }
+           //title1 = bookChapterList.get(s).getTitle();
+           getDetailedChapterData(noval_id, bookChapterList.get(s).getBookId() + "", bookChapterList.get(s).getTitle());
     }
     String div;
     public void loadContent2(int bookId, List<TxtChapter> bookChapterList,String div) {
@@ -183,7 +192,7 @@ public class VMBookContentInfo extends BaseViewModel {
         File file = new File(Constant.BOOK_CACHE_PATH + bookid
                 + File.separator + title.replace(" ", "") + FileUtils.SUFFIX_WY);
         if(file.exists()){
-            handler.sendEmptyMessage(2);
+            handler.sendEmptyMessage(1);
             return;
         }
         Gson mGson=new Gson();
@@ -202,23 +211,27 @@ public class VMBookContentInfo extends BaseViewModel {
                     if (code.equals("1")) {
                         if(jsonObject.isNull("data")){
                             BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "内容为空");
-                            iBookChapters.finishChapters();
+                           // iBookChapters.finishChapters();
+                            handler.sendEmptyMessage(1);
                             return;
                         }else {
                             JSONObject object = jsonObject.getJSONObject("data");
                             DetailedChapterData data = mGson.fromJson(object.toString(),DetailedChapterData.class);
                             BookSaveUtils.getInstance().saveChapterInfo(bookid, data.getTitle().replace(" ", ""), data.getContent().replace("&nbsp", " "));
-                            handler.sendEmptyMessage(2);
+                            // handler.sendEmptyMessage(2);
+                            handler.sendEmptyMessage(1);
                         }
                     } else {
                         BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "内容为空");
-                        iBookChapters.finishChapters();
+                        //iBookChapters.finishChapters();
+                        handler.sendEmptyMessage(1);
                         return;
 
                     }
                 } catch (JSONException e) {
                     BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "内容为空");
-                    iBookChapters.finishChapters();
+                    handler.sendEmptyMessage(1);
+                    //iBookChapters.finishChapters();
                     return;
                 }
             }
@@ -229,7 +242,8 @@ public class VMBookContentInfo extends BaseViewModel {
                 if(!file.exists()||file.length()==0) {
                     BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "内容为空");
                 }
-                iBookChapters.finishChapters();
+                handler.sendEmptyMessage(1);
+                //iBookChapters.finishChapters();
                 return;
                 // mPresenter.getDetailedChapterDataError(errorMsg);
             }
@@ -263,7 +277,12 @@ public class VMBookContentInfo extends BaseViewModel {
             super.handleMessage(msg);
             if(msg.what==1){
                 s++;
-                getDetailedChapterData(noval_id, s+"",title1);
+                if(s>=size){
+                    iBookChapters.finishChapters();
+                }else {
+                    getDetailedChapterData(noval_id, bookChapterList.get(s).getBookId() + "", bookChapterList.get(s).getTitle());
+                }
+                //getDetailedChapterData(noval_id, s+"",title1);
             }else  if(msg.what==2){
                 iBookChapters.finishChapters();
             }
@@ -294,8 +313,7 @@ public class VMBookContentInfo extends BaseViewModel {
                div="#content";
            }
            elements = doc.body().select(div);
-           content = "转码阅读：" +getTextFromHtml(elements.html());// elements.html().replaceAll(regFormat,"").replaceAll(regTag,"");
-           Log.e("QQQ2", "Analysisbiquge: "+title+" "+doc.outerHtml());
+           content = "转码阅读：" +getTextFromHtml(elements.html());//
            if(getTextFromHtml(elements.html())==null||getTextFromHtml(elements.html()).trim().equals("")){
                content="该网站已失效，请换网址阅读";
            }

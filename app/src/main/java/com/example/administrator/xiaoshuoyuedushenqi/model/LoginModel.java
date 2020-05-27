@@ -9,6 +9,7 @@ import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Noval_details;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
 import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
+import com.example.administrator.xiaoshuoyuedushenqi.weyue.utils.ToastUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -47,7 +48,7 @@ public class LoginModel implements ILoginContract.Model {
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-
+               // Log.e("SSS", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -81,6 +82,7 @@ public class LoginModel implements ILoginContract.Model {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 Log.e("qqq", "onResponse: "+diceviid+" "+mobile+" "+" "+code+" "+json);
+                //ToastUtils.show(json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -92,7 +94,7 @@ public class LoginModel implements ILoginContract.Model {
                         mPresenter.getLoginError("请求错误");
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    mPresenter.getLoginError("请求错误");
                 }
             }
 

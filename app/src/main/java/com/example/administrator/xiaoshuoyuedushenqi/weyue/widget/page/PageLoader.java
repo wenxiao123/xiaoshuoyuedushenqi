@@ -106,7 +106,7 @@ public abstract class PageLoader {
     protected OnPageChangeListener mPageChangeListener;
 
     //页面显示类
-    private PageView mPageView;
+    public PageView mPageView;
 
     public TxtPage getmCurPage() {
         return mCurPage;
@@ -211,7 +211,7 @@ public abstract class PageLoader {
     //被遮盖的页，或者认为被取消显示的页
     private TxtPage mCancelPage;
     //存储阅读记录类
-    private BookRecordBean mBookRecord;
+    public BookRecordBean mBookRecord;
     /*****************params**************************/
     //当前的状态
     protected int mStatus = STATUS_LOADING;
@@ -1509,7 +1509,7 @@ public abstract class PageLoader {
     private void cacheNextBitmap() {
 
     }
-
+    public boolean is_website;
     boolean nextChapter() {
         try {
             if (mChapterList == null) {
@@ -1542,7 +1542,7 @@ public abstract class PageLoader {
             mCurChapterPos = nextChapter;
 
             //如果存在当前章，预加载下一章
-            if (mCurPageList != null) {
+            if (mCurPageList != null&&is_website==false) {
                 mStatus = STATUS_FINISH;
                 preLoadNextChapter();
             }

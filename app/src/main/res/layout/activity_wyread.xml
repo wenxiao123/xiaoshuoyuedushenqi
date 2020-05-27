@@ -471,7 +471,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="2dp"
                 android:layout_toLeftOf="@id/sys_ligin"
-                android:src="@mipmap/sys_select" />
+                android:src="@mipmap/sys_selected" />
 
             <ImageView
                 android:id="@+id/iv_read_brightness_bar_big"

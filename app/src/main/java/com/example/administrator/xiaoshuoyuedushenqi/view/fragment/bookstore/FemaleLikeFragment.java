@@ -2,6 +2,8 @@ package com.example.administrator.xiaoshuoyuedushenqi.view.fragment.bookstore;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,13 +13,23 @@ import com.example.administrator.xiaoshuoyuedushenqi.base.BaseFragment;
 import com.example.administrator.xiaoshuoyuedushenqi.constant.Constant;
 import com.example.administrator.xiaoshuoyuedushenqi.constract.IMaleLikeContract;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Catagorys;
+import com.example.administrator.xiaoshuoyuedushenqi.entity.bean.Data;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpCall;
+import com.example.administrator.xiaoshuoyuedushenqi.http.OkhttpUtil;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.presenter.MaleLikePresenter;
+import com.example.administrator.xiaoshuoyuedushenqi.util.LogUtils;
 import com.example.administrator.xiaoshuoyuedushenqi.view.activity.FenleiNovelActivity;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.VerticalTabLayout1;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 import q.rorbin.verticaltablayout.VerticalTabLayout;
 import q.rorbin.verticaltablayout.adapter.TabAdapter;
 import q.rorbin.verticaltablayout.widget.QTabView;
@@ -45,8 +57,9 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
         verticalTabLayout.addOnTabSelectedListener(new VerticalTabLayout1.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabView tab, int position) {
-                getDataList(getPosition(titles.get(position)));
-                initBookstore();
+                //getDataList(getPosition(dataList.get(position).getTitle()));
+                //initBookstore();
+                getCategoryNovels(dataList.get(position).getId());
             }
 
             @Override
@@ -68,6 +81,41 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
             }
         }
         return  catagorys;
+    }
+    public void getCategoryNovels(int pid) {
+        Gson mGson=new Gson();
+        String url = UrlObtainer.GetUrl()+"/api/index/Type_one";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("pid", pid+"")
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                try {
+                    Log.e("ASA", "onResponse: " + json);
+                    Data bean = mGson.fromJson(json, Data.class);
+                    List<Catagorys> catagorysList = bean.getData();
+                   getCategoryNovelsSuccess2(catagorysList);
+                }catch (Exception ex){
+                   getCategoryNovelsError2("获取分类小说失败");
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                getCategoryNovelsError2("获取分类小说失败");
+            }
+        });
+    }
+
+    private void getCategoryNovelsError2(String s) {
+        showShortToast(s);
+    }
+
+    private void getCategoryNovelsSuccess2(List<Catagorys> catagorysList) {
+        catagorys.clear();
+        catagorys=catagorysList;
+        initBookstore();
     }
 
     public int getPosition(String title){
@@ -98,7 +146,7 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
     }
     @Override
     protected void doInOnCreate() {
-        mPresenter.getCategoryNovels();
+        mPresenter.getCategoryNovels(Constant.female);
     }
 
     @Override
@@ -115,24 +163,24 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
     @Override
     public void getCategoryNovelsSuccess(List<Catagorys> dataList) {
         this.dataList = dataList;
-        int z = -1;
-        for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getId()== Constant.female) {
-                z = dataList.get(i).getId();
-                break;
-            }
-        }
-        int finalZ = z;
-        for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getPid() == finalZ) {
-                titles.add(dataList.get(i).getTitle()) ;
-            }
-        }
+//        int z = -1;
+//        for (int i = 0; i < dataList.size(); i++) {
+//            if (dataList.get(i).getId()== Constant.female) {
+//                z = dataList.get(i).getId();
+//                break;
+//            }
+//        }
+//        int finalZ = z;
+//        for (int i = 0; i < dataList.size(); i++) {
+//            if (dataList.get(i).getPid() == finalZ) {
+//                titles.add(dataList.get(i).getTitle()) ;
+//            }
+//        }
 
         verticalTabLayout.setTabAdapter(new TabAdapter() {
             @Override
             public int getCount() {
-                return titles.size();
+                return dataList.size();
             }
 
             @Override
@@ -148,7 +196,7 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
             @Override
             public QTabView.TabTitle getTitle(int position) {
                 return new QTabView.TabTitle.Builder()
-                        .setContent(titles.get(position))
+                        .setContent(dataList.get(position).getTitle())
                         .setTextColor(getContext().getResources().getColor(R.color.red_aa), getContext().getResources().getColor(R.color.grey_a1))
                         .setTextSize(14)
                         .build();
@@ -159,8 +207,8 @@ public class FemaleLikeFragment extends BaseFragment<MaleLikePresenter> implemen
                 return R.color.white;
             }
         });
-        getDataList(getPosition(titles.get(0)));
-        initBookstore();
+        //getDataList(getPosition(dataList.get(0).getTitle()));
+        getCategoryNovels(dataList.get(0).getId());
     }
 
     @Override

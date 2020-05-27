@@ -6,6 +6,15 @@ public class Other_chpter {
     String reurl;
     String update_time;
     String chapter_sum;
+    String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public String getElement() {
         return element;

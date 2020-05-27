@@ -220,7 +220,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         // 列表显示小说源
         for(int i=0;i<novelSourceDataList.size();i++){
             if(novelSourceDataList.get(i).getTitle()!=null) {
-                mNovelSourceDataList.add(new Wheel(novelSourceDataList.get(i).getId(),novelSourceDataList.get(i).getPic(),novelSourceDataList.get(i).getTitle()));
+                mNovelSourceDataList.add(new Wheel(novelSourceDataList.get(i).getId(),novelSourceDataList.get(i).getPic(),novelSourceDataList.get(i).getTitle(),novelSourceDataList.get(i).getAuthor()));
             }
         }
         initAdapter();

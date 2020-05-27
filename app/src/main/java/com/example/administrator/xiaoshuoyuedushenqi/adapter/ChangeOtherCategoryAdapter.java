@@ -69,7 +69,11 @@ public class ChangeOtherCategoryAdapter extends RecyclerView.Adapter<ChangeOther
 //        if(s==null||s.trim().equals("")){
 //            holder.itemView.setVisibility(View.GONE);
 //        }
-        holder.content.setText(s);
+        if(!s.equals("")&&s!=null) {
+            holder.content.setText(s);
+        }else {
+            holder.content.setText("暂时无法获取到章节名称");
+        }
         holder.tv_laiyuan.setText("来源："+categorys_one.getReurl());
         holder.tv_total_catagorys.setText("共"+categorys_one.getChapter_sum()+"章");
         try {

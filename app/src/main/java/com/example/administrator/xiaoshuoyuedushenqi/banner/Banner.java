@@ -367,17 +367,15 @@ public class Banner extends RelativeLayout {
     }
 
     public void stopVideo() {
-        try {
-            for (int i = 0; i < views.size(); i++) {
-                View view1 = views.get(i);
-                if (view1 instanceof VideoView) {
-                    VideoView videoView = (VideoView) view1;
-                    videoView.pause();
-                }
-            }
-        } catch (Exception ex) {
-            return;
-        }
+       if(views!=null) {
+           for (int i = 0; i < views.size(); i++) {
+               View view1 = views.get(i);
+               if (view1 instanceof VideoView) {
+                   VideoView videoView = (VideoView) view1;
+                   videoView.pause();
+               }
+           }
+       }
     }
 
     public void stratVideo() {

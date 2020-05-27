@@ -51,9 +51,16 @@ public class NovelSearchAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, final int i) {
-        novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getTitle());
-        if(name_search!=null&&!name_search.equals("")) {
-            setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i).getTitle(), name_search, mContext.getResources().getColor(R.color.red_aa));
+        if(mNovelSourceDataList.get(i).getTitle().contains(name_search)){
+            novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getTitle());
+            if(name_search!=null&&!name_search.equals("")) {
+                setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i).getTitle(), name_search, mContext.getResources().getColor(R.color.red_aa));
+            }
+        }else if(mNovelSourceDataList.get(i).getAuthor().contains(name_search)){
+            novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getAuthor());
+            if(name_search!=null&&!name_search.equals("")) {
+                setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i).getAuthor(), name_search, mContext.getResources().getColor(R.color.red_aa));
+            }
         }
         novelSourceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

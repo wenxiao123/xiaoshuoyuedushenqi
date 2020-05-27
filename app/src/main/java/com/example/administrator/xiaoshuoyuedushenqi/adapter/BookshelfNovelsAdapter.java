@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.xiaoshuoyuedushenqi.R;
 import com.example.administrator.xiaoshuoyuedushenqi.entity.data.BookshelfNovelDbData;
+import com.example.administrator.xiaoshuoyuedushenqi.http.UrlObtainer;
 import com.example.administrator.xiaoshuoyuedushenqi.interfaces.Delet_book_show;
 import com.example.administrator.xiaoshuoyuedushenqi.util.FileUtil;
 import com.example.administrator.xiaoshuoyuedushenqi.widget.CornerTransform;
@@ -80,7 +81,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i, @NonNull List payloads) {
         final ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
         if (payloads.isEmpty()) {
-            Log.e("SSS", "queryAllBookSuccess: "+4444);
+            //Log.e("SSS", "queryAllBookSuccess: "+4444);
         if (mIsMultiDelete) {
             contentViewHolder.checkBox.setVisibility(View.VISIBLE);
             // 先设置 CheckBox 的状态，解决 RecyclerView 对 CheckBox 的复用所造成的影响
@@ -101,21 +102,33 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
         }
         CornerTransform transformation = new CornerTransform(mContext, 10);
         if (mDataList.get(i).getType() == 0) {  // 网络小说
+            String img_http;
+            if(!mDataList.get(i).getCover().contains("http")){
+                img_http= UrlObtainer.GetUrl()+mDataList.get(i).getCover();
+            }else {
+                img_http=mDataList.get(i).getCover();
+            }
             Glide.with(mContext)
-                    .load(mDataList.get(i).getCover())
+                    .load(img_http)
                     .apply(new RequestOptions()
                          .placeholder(R.drawable.cover_error)
                             .error(R.drawable.cover_error)
                             .transform(transformation))
                     .into(contentViewHolder.cover);
-            //Log.e("QQQ", "onBindViewHolder: "+mDataList.get(i).getCover());
+            Log.e("QQQ", "onBindViewHolder: "+mDataList.get(i).getCover());
             contentViewHolder.img_add.setVisibility(View.GONE);
             //contentViewHolder.tv_status.setVisibility(View.VISIBLE);
             contentViewHolder.tv_position.setVisibility(View.VISIBLE);
             contentViewHolder.load_status.setVisibility(View.GONE);
         } else if (mDataList.get(i).getType() == 1) {    // 本地 txt 小说
+            String img_http;
+            if(!mDataList.get(i).getCover().contains("http")){
+                img_http= UrlObtainer.GetUrl()+mDataList.get(i).getCover();
+            }else {
+                img_http=mDataList.get(i).getCover();
+            }
             Glide.with(mContext)
-                    .load(mDataList.get(i).getCover())
+                    .load(img_http)
                     .apply(new RequestOptions()
                             .placeholder(R.drawable.cover_error)
                             .error(R.drawable.cover_error)
@@ -216,7 +229,7 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
             }
         }
         } else if (payloads.size() > 0) { //&& payloads.get(0) instanceof Integer
-            Log.e("SSS", "queryAllBookSuccess: "+555);
+            //Log.e("SSS", "queryAllBookSuccess: "+555);
             //不为空，即调用notifyItemChanged(position,payloads)后执行的，可以在这里获取payloads中的数据进行局部刷新
             int type = (int) payloads.get(0);// 刷新哪个部分 标志位
             switch (type) {

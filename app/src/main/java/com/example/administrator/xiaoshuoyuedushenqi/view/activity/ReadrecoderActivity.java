@@ -218,6 +218,7 @@ public class ReadrecoderActivity extends BaseActivity<ReadcoredPresenter> implem
 
     public void queryAllBookSuccess2(List<Noval_Readcored> dataList) {
         for (int i = 0; i < dataList.size(); i++) {
+            Log.e("QQQ", "queryAllBookSuccess2: "+dataList.get(i).getNovel_id()+" "+dataList.get(i).getTitle());
             if (!mDbManager.isExistInReadCoderNovel(dataList.get(i).getNovel_id())) {
                 mDbManager.insertReadCordeNovel(dataList.get(i),0+"");
             }

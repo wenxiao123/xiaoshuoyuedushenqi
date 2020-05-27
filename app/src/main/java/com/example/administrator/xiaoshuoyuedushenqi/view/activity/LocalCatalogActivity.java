@@ -117,23 +117,27 @@ public class LocalCatalogActivity extends BaseActivity<CatalogPresenter>
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             //findContents(mParagraphList);
-            mIsRefreshing = false;
-            mProgressBar.setVisibility(View.GONE);
-            initAdapter();
-            mChapterCountTv.setText("共" + txtChapters.size() + "章");
-            mCatalogListRv.setAdapter(mCatalogAdapter);
-            for (int j = 0; j < longs.size(); j++) {
-                if (mPosition < (int) longs.get(0)) {
-                    z = 0;
-                    break;
-                } else if (mPosition < (int) longs.get(j)) {
-                    z = j - 1;
-                    break;
+            try {
+                mIsRefreshing = false;
+                mProgressBar.setVisibility(View.GONE);
+                initAdapter();
+                mChapterCountTv.setText("共" + txtChapters.size() + "章");
+                mCatalogListRv.setAdapter(mCatalogAdapter);
+                for (int j = 0; j < longs.size(); j++) {
+                    if (mPosition < (int) longs.get(0)) {
+                        z = 0;
+                        break;
+                    } else if (mPosition < (int) longs.get(j)) {
+                        z = j - 1;
+                        break;
+                    }
                 }
+                mCatalogAdapter.setPosition(z);
+                mCatalogAdapter.notifyDataSetChanged();
+                mCatalogListRv.scrollToPosition(z);
+            }catch (Exception ex){
+
             }
-            mCatalogAdapter.setPosition(z);
-            mCatalogAdapter.notifyDataSetChanged();
-            mCatalogListRv.scrollToPosition(z);
         }
     };
     String[]  sTitle={"目录","书签"};

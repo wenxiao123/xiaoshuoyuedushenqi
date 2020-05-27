@@ -525,15 +525,15 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
             }
         }
-        if(login_admin!=null){
-            for(int i=0;i<dataList.size();i++){
-                try {
-                    setBookshelfadd(login_admin.getToken(),dataList.get(i).getNovelUrl());
-                }catch (Exception ex){
-                    continue;
-                }
-            }
-        }
+//        if(login_admin!=null){
+//            for(int i=0;i<dataList.size();i++){
+//                try {
+//                    setBookshelfadd(login_admin.getToken(),dataList.get(i).getNovelUrl());
+//                }catch (Exception ex){
+//                    continue;
+//                }
+//            }
+//        }
     }
 
     public void setBookshelfadd(String token, String novel_id) {
@@ -592,7 +592,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                LogUtils.e(url+" "+token+" ");
+                LogUtils.e(url+" "+token+" "+json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");

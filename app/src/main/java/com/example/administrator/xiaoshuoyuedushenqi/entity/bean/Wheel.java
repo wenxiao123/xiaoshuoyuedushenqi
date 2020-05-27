@@ -5,6 +5,15 @@ public class Wheel {
     String picpath;
     String title;
     String novel_id;
+    String author;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
     public String getTypes() {
         return types;
@@ -32,10 +41,11 @@ public class Wheel {
         this.title = title;
     }
 
-    public Wheel(int id, String picpath, String title) {
+    public Wheel(int id, String picpath, String title,String author) {
         this.id = id;
         this.picpath = picpath;
         this.title = title;
+        this.author=author;
     }
 
     public int getId() {
