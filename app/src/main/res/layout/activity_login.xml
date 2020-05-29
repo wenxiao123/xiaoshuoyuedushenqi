@@ -30,10 +30,10 @@
             android:textSize="19sp" />
     </RelativeLayout>
 
-    <com.example.administrator.xiaoshuoyuedushenqi.widget.OvalImageView
+    <com.novel.collection.widget.OvalImageView
         android:id="@+id/img_title"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:src="@mipmap/admin" />
@@ -63,15 +63,14 @@
             android:textSize="16sp" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:background="@mipmap/right_back"
+            android:src="@mipmap/right_back"
             android:tint="@color/gray" />
 
         <View
+            android:layout_marginStart="8dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -80,6 +79,7 @@
             android:background="#CECED9" />
 
         <EditText
+            android:layout_marginLeft="10dp"
             android:id="@+id/et_login_phone"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="50dp"
         android:background="#CECED9" />
 
@@ -163,7 +163,7 @@
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="50dp"
         android:background="#CECED9" />
 

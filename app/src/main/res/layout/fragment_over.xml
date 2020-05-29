@@ -22,7 +22,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.example.administrator.xiaoshuoyuedushenqi.banner.Banner
+                <com.novel.collection.banner.Banner
                     android:id="@+id/ultra_viewpager_over"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -31,7 +31,7 @@
                 <com.wzh.viewpager.indicator.UIndicator
                     android:id="@+id/indicator_over"
                     android:layout_width="40dp"
-                    android:layout_height="6dp"
+                    android:layout_height="8dp"
                     android:layout_gravity="bottom|right"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
@@ -40,70 +40,74 @@
                     app:circle_rect_itemWidth="20dp"
                     app:circle_rect_radius="3dp"
                     app:normal_color="#ffffff"
-                    app:selected_color="#DF6513"
+                    app:selected_color="#FF4D89"
                     app:spacing="10dp"
                     app:style="circle_rect" />
             </FrameLayout>
-
+            <RelativeLayout
+                android:id="@+id/rel_hot_over"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/banner_over">
             <ImageView
+                android:layout_centerVertical="true"
                 android:id="@+id/iv_over_hot_rank_title"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_below="@id/banner_over"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
                 android:src="@mipmap/hot" />
 
             <TextView
+                android:layout_centerVertical="true"
                 android:id="@+id/tv_over_hot_rank_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/banner_over"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:layout_toRightOf="@id/iv_over_hot_rank_title"
                 android:text="@string/male_hot_rank_title"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
             <ImageView
+                android:layout_centerVertical="true"
                 android:id="@+id/iv_over_category_more"
                 android:layout_width="15dp"
-                android:layout_height="@dimen/item_category_second_height"
-                android:layout_below="@id/banner_over"
+                android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginEnd="17dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/item_category_more" />
 
             <TextView
+                android:layout_centerVertical="true"
                 android:id="@+id/tv_over_category_more"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/item_category_second_height"
-                android:layout_below="@id/banner_over"
+                android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/iv_over_category_more"
                 android:gravity="center"
                 android:text="@string/more_top_text"
                 android:textColor="@color/gray_a3"
                 android:textSize="@dimen/item_category_more_size" />
+            </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/rv_new_title"
+                android:id="@+id/rv_new_over"
+                android:layout_marginTop="30dp"
                 android:layout_below="@id/click_more_over"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="wrap_content">
                 <View
                     android:layout_marginLeft="15dp"
                     android:layout_width="3dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
                     android:layout_height="20dp"
                     android:background="@color/red_aa"/>
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_item_category_category_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="25dp"
                     android:text="新书快递"
@@ -111,17 +115,19 @@
                     android:textSize="16sp"
                     android:gravity="center"/>
                 <ImageView
+                    android:layout_centerVertical="true"
                     android:id="@+id/iv_item_new_more"
                     android:layout_width="15dp"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="15dp"
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/item_category_more"
                     android:layout_marginEnd="17dp"
                     android:scaleType="centerInside"/>
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_over_new_more"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/iv_item_new_more"
                     android:text="更多"
                     android:textColor="@color/gray_a3"
@@ -132,9 +138,9 @@
                 android:id="@+id/rv_over_hot_rank_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_over_hot_rank_title"
+                android:layout_below="@id/rel_hot_over"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="10dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never" />
@@ -147,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rv_over_hot_rank_recycler_view"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:textColor="@color/black"
                 android:visibility="gone"
                 android:background="@drawable/bachground_btn">
@@ -163,17 +169,21 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
                         android:text="超多火爆热书看不停 "
                         android:textColor="#FA5F4B"
+                        android:textStyle="bold"
                         android:textSize="13sp" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:scaleType="fitCenter"
                         android:layout_toRightOf="@id/txt"
-                        android:src="@drawable/item_category_more"
-                        android:tint="@color/red_aa" />
+                        android:src="@mipmap/icon_skip_orange"
+                        />
                 </RelativeLayout>
             </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
@@ -182,7 +192,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_below="@id/rv_new_title"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/rv_new_over"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:nestedScrollingEnabled="false"
@@ -192,7 +203,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rv_over_new_novel_list"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:nestedScrollingEnabled="false"

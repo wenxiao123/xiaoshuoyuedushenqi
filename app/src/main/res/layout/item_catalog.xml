@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:minHeight="@dimen/item_catalog_height"
     android:layout_height="@dimen/item_catalog_height"
-    android:background="#F7F7F7">
+    android:background="#F7F8F9">
 
     <TextView
         android:id="@+id/tv_item_catalog_chapter_name"
@@ -11,7 +11,7 @@
         android:layout_height="@dimen/item_catalog_height"
         android:text="@string/item_catalog_content"
         android:textColor="@color/item_catalog_text"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:gravity="start|center"
         android:paddingStart="25dp"
         android:paddingEnd="25dp"

@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/v_title">
 
-        <com.example.administrator.xiaoshuoyuedushenqi.weyue.widget.page.PageView
+        <com.novel.collection.weyue.widget.page.PageView
             android:id="@+id/txt_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -292,7 +292,7 @@
             android:layout_marginTop="28dp"
             android:gravity="center"
             android:text="@string/read_previous_chapter"
-            android:textColor="@color/black"
+            android:textColor="#0E0F1A"
             android:textSize="@dimen/read_bottom_bar_text_size"
             android:clickable="true"
             app:layout_constraintStart_toStartOf="parent"
@@ -307,7 +307,7 @@
             android:gravity="center"
             android:text="@string/read_next_chapter"
             android:clickable="true"
-            android:textColor="@color/black"
+            android:textColor="#0E0F1A"
             android:textSize="@dimen/read_bottom_bar_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -327,52 +327,71 @@
 
         <!-- second -->
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/iv_read_catalog"
             android:layout_width="0dp"
             android:layout_height="@dimen/read_bottom_bar_second_height"
-            android:paddingTop="22dp"
-            android:paddingBottom="12dp"
-            android:src="@mipmap/icon_catalog"
+            android:paddingBottom="6dp"
+            android:scaleType="centerInside"
             app:layout_constraintEnd_toStartOf="@id/iv_read_brightness"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" >
+            <ImageView
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@mipmap/icon_catalog"/>
+        </FrameLayout>
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/iv_read_brightness"
             android:layout_width="0dp"
             android:layout_height="@dimen/read_bottom_bar_second_height"
-            android:paddingTop="20dp"
-            android:paddingBottom="10dp"
+            android:paddingBottom="6dp"
             android:clickable="true"
-            android:src="@mipmap/change_website"
             app:layout_constraintEnd_toStartOf="@id/iv_read_day_and_night_mode"
             app:layout_constraintStart_toEndOf="@id/iv_read_catalog"
-            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" >
+            <ImageView
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@mipmap/change_website"/>
 
-        <ImageView
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/iv_read_day_and_night_mode"
             android:layout_width="0dp"
             android:layout_height="@dimen/read_bottom_bar_second_height"
-            android:paddingTop="22dp"
-            android:paddingBottom="12dp"
             android:clickable="true"
-            android:src="@mipmap/icon_night"
+            android:paddingBottom="6dp"
             app:layout_constraintEnd_toStartOf="@id/iv_read_setting"
             app:layout_constraintStart_toEndOf="@id/iv_read_brightness"
-            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" >
+            <ImageView
+                android:id="@+id/iv_read_day_and_night"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@mipmap/icon_night"/>
+        </FrameLayout>
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/iv_read_setting"
             android:layout_width="0dp"
             android:layout_height="@dimen/read_bottom_bar_second_height"
-            android:paddingTop="22dp"
-            android:paddingBottom="12dp"
+            android:paddingBottom="6dp"
             android:clickable="true"
-            android:src="@mipmap/icon_set"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_read_day_and_night_mode"
-            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" />
+            app:layout_constraintTop_toBottomOf="@id/tv_read_previous_chapter" >
+            <ImageView
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@mipmap/icon_set"/>
+        </FrameLayout>
 
         <!-- third -->
 
@@ -683,93 +702,9 @@
             android:layout_height="8dp"
             android:layout_marginTop="30dp"
             android:background="#FFF0F1F2" />
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
-            android:clickable="true"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:text="行间距"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-            <LinearLayout
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/shape_read_theme_grey_selected">
-
-                <ImageView
-                    android:id="@+id/iv_read_decrease_row_space"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.35"
-                    android:gravity="center"
-                    android:paddingLeft="13dp"
-                    android:paddingTop="2dp"
-                    android:paddingRight="13dp"
-                    android:paddingBottom="2dp"
-                    android:scaleX="0.5"
-                    android:scaleY="0.8"
-                    android:src="@mipmap/jian_hang"
-                    android:tint="@color/gray" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/read_catalog_progress_text" />
-
-                <TextView
-                    android:id="@+id/tv_jainju"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="1dp"
-                    android:layout_weight="0.3"
-                    android:gravity="center"
-                    android:paddingLeft="3dp"
-                    android:paddingTop="2dp"
-                    android:paddingRight="3dp"
-                    android:paddingBottom="2dp"
-                    android:text="间距"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/read_catalog_progress_text" />
-
-                <ImageView
-                    android:id="@+id/iv_read_increase_row_space"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.35"
-                    android:gravity="center"
-                    android:paddingLeft="13dp"
-                    android:paddingTop="2dp"
-                    android:paddingRight="13dp"
-                    android:paddingBottom="2dp"
-                    android:src="@mipmap/add_hang"
-                    android:tint="@color/gray" />
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="30dp"
             android:layout_marginRight="15dp"
@@ -782,8 +717,8 @@
                 android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text="自动阅读"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="#0E0F1A"
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/tv_autoread"
@@ -810,7 +745,7 @@
                 android:gravity="center"
                 android:text="慢"
                 android:textColor="@color/text_size_color"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_qucliy"
@@ -821,7 +756,7 @@
                 android:gravity="center"
                 android:text="快"
                 android:textColor="@color/text_size_color"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <SeekBar
                 android:id="@+id/sb_auto_read_progress"
@@ -850,8 +785,8 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
                 android:text="翻页动画"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="#0E0F1A"
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

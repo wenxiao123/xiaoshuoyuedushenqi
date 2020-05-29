@@ -10,7 +10,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
-        <com.example.administrator.xiaoshuoyuedushenqi.widget.RealPageView
+        <com.novel.collection.widget.RealPageView
         android:id="@+id/pv_read_page_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

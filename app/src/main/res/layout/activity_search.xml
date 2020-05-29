@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/background_color">
+    android:background="#F7F8F9">
     
     <!-- search bar -->
     <RelativeLayout
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/top"
-        android:background="@color/white"
+        android:background="#F7F8F9"
         android:paddingBottom="5dp"
         >
         <ImageView
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:background="@color/white"
+        android:background="#F7F8F9"
         android:scrollbars="none"
         android:overScrollMode="never"/>
     <!-- fragment container -->

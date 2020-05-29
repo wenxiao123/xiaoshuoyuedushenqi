@@ -8,22 +8,24 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="170dp"
         android:background="@mipmap/img_background">
     <RelativeLayout
         android:id="@+id/rel_login"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_centerVertical="true">
-        <com.example.administrator.xiaoshuoyuedushenqi.widget.OvalImageView
+        <com.novel.collection.widget.OvalImageView
             android:id="@+id/title_img"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="30dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/admin" />
         <LinearLayout
+            android:id="@+id/l_login"
+            android:visibility="gone"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/title_img"
             android:layout_marginLeft="10dp"
@@ -50,6 +52,17 @@
                 android:textColor="@color/white"
                 android:text="登录后获得更好体验"/>
         </LinearLayout>
+        <TextView
+            android:id="@+id/tv_load"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/title_img"
+            android:layout_marginLeft="10dp"
+            android:text="加载中..."
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
     </RelativeLayout>
     <!-- top -->

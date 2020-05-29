@@ -16,7 +16,7 @@
     <color name="text_size_color">#FF717380</color>
     <color name="white">#ffffff</color>
     <color name="txt_color_history">#5B5C66</color>
-    <color name="black">#FF43444B</color>
+    <color name="black">#0D0D0D</color>
     <color name="tc1">#161823</color>
     <color name="js_color1">#FF9C6CFE</color>
     <color name="js_color2">#FFC19B5A</color>
@@ -34,7 +34,7 @@
     <color name="color_19">#191919</color>
     <color name="color_cb">#cbcbcb</color>
     <color name="color_de6014">#DE6014</color>
-    <color name="color_fff_99">#99ffffff</color>
+    <color name="color_fff_99">#666666</color>
     <color name="color_2c">#161823</color>
     <color name="color_2f332d">#2f332d</color>
     <color name="color_92918c">#92918c</color>

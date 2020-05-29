@@ -70,7 +70,7 @@
         app:layout_constraintStart_toEndOf="@id/v_main_bottom_bar_bookmark_bg" />
 
     <!-- bottom bar separator -->
-    <com.example.administrator.xiaoshuoyuedushenqi.util.FpShadowLayout
+    <com.novel.collection.util.FpShadowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:fp_shadowColor="#29000000"
@@ -87,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
        />
-    </com.example.administrator.xiaoshuoyuedushenqi.util.FpShadowLayout>
+    </com.novel.collection.util.FpShadowLayout>
     <!-- bottom bar text -->
 
     <TextView

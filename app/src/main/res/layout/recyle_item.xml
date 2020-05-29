@@ -8,8 +8,8 @@
         android:layout_marginStart="10dp"
         android:id="@+id/img_title"
         android:layout_centerVertical="true"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@mipmap/jiangxu" />
     <TextView
         android:id="@+id/tv_title"
@@ -18,7 +18,7 @@
         android:layout_toRightOf="@id/img_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="#43444B"
         android:textStyle="bold"
         android:textSize="17sp"/>
     <ImageView

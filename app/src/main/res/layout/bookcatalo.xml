@@ -49,7 +49,7 @@
         android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
-    <com.example.administrator.xiaoshuoyuedushenqi.util.SideBar
+    <com.novel.collection.util.SideBar
         android:id="@+id/sidebar"
         android:layout_gravity="right"
         android:background="#00000000"

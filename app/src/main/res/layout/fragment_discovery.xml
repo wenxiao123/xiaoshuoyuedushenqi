@@ -33,18 +33,7 @@
             android:textColor="@color/white"
             android:textSize="24sp" />
 
-<!--        <com.example.administrator.xiaoshuoyuedushenqi.rewrite.TabLayout-->
-<!--            -->
-<!--            android:id="@+id/tv_discovery_tab_layout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/iv_discovery_search_icon"-->
-<!--            app:tabTextColor="@color/white_ee"-->
-<!--            app:tabSelectedTextColor="@color/white"-->
-<!--            app:tabIndicatorColor="@android:color/holo_blue_light"-->
-<!--            app:tabIndicatorHeight="2dp"-->
-<!--            app:tabMode="fixed" />-->
-        <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
+        <com.novel.collection.util.EnhanceTabLayout
             android:id="@+id/tv_discovery_tab_layout"
             android:layout_marginLeft="40dp"
             android:layout_marginBottom="7dp"
@@ -54,13 +43,13 @@
             android:layout_below="@id/iv_discovery_search_icon"
             app:tabIndicatorHeight="4dp"
             app:tabIndicatorWidth="25dp"
-            app:tabTextColor="#E6E4E4"
+            app:tabTextColor="#ffffff"
             app:tab_Mode="mode_fixed"
             app:tabSelectTextColor="@color/white"
             app:tabTextSize="@dimen/sp_16"
             >
 
-        </com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout>
+        </com.novel.collection.util.EnhanceTabLayout>
     </RelativeLayout>
 
     <TextView

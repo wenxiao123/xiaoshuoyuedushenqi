@@ -68,7 +68,8 @@
         android:gravity="left"
         android:maxLines="1"
         android:text="@string/item_novel_source_name"
-        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textColor="#43444B"
         android:textSize="14sp" />
 
     <RelativeLayout
@@ -99,7 +100,7 @@
             android:ellipsize="end"
             android:gravity="left"
             android:maxLines="1"
-            android:textColor="@color/txt_color_2"
+            android:textColor="#9FA2B3"
             android:textSize="12sp" />
     </RelativeLayout>
 </RelativeLayout>

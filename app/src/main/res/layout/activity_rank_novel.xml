@@ -24,39 +24,39 @@
         android:src="@mipmap/sousuo" />
 
     <ImageView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="35dp"
         android:id="@+id/iv_all_novel_back"
-        android:layout_width="@dimen/all_novel_top_bar_height"
-        android:layout_height="@dimen/all_novel_top_bar_height"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@drawable/all_novel_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:padding="14dp"
-        android:layout_marginStart="5dp"/>
+        android:layout_marginStart="15dp"/>
 
     <TextView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="35dp"
         android:id="@+id/tv_all_novel_title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/all_novel_top_bar_height"
+        android:layout_height="wrap_content"
         android:gravity="center"
-      android:layout_centerHorizontal="true"
+        android:layout_centerHorizontal="true"
         android:text="排行榜"
         android:textColor="@color/all_novel_title_text"
         android:textSize="20sp"/>
     <!-- list -->
 
-    <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
+    <com.novel.collection.util.EnhanceTabLayout
         android:id="@+id/tv_fenlei_tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         app:tabIndicatorHeight="4dp"
         app:tabIndicatorWidth="25dp"
-        app:tabTextColor="#E6E4E4"
+        app:tabTextColor="#ffffff"
         app:tab_Mode="mode_fixed"
         android:layout_below="@id/iv_all_novel_back"
         app:tabSelectTextColor="@color/white"
         app:tabTextSize="@dimen/sp_16"
+        android:layout_marginBottom="4dp"
         />
     </RelativeLayout>
         <com.scwang.smartrefresh.layout.SmartRefreshLayout

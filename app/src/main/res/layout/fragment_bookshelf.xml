@@ -37,6 +37,7 @@
                 android:id="@+id/iv_bookshelf_more"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:padding="2dp"
                 android:layout_centerVertical="true"
                 android:src="@mipmap/more"/>
             <TextView
@@ -60,19 +61,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bookshelf_title"
         android:background="@color/background_color"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_bookshelf_bookshelf_novels_list"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/srv_novel_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="7.5dp"
-        android:layout_marginRight="7.5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_bookshelf_separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        >
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_bookshelf_bookshelf_novels_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="7.5dp"
+        android:layout_marginRight="7.5dp"
         android:overScrollMode="never" />
-
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
     <RelativeLayout
         android:id="@+id/rv_bookshelf_loading"
         android:layout_width="120dp"

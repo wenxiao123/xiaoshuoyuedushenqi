@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:orientation="vertical"
    >
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <ImageView
         android:layout_margin="1dp"
         android:id="@+id/img"
@@ -29,4 +31,12 @@
         android:focusable="true"
         android:text="@string/content"
         android:maxLines="1" />
-</RelativeLayout>
+    </RelativeLayout>
+    <View
+        android:id="@+id/v_line"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/img"
+        android:layout_width="match_parent"
+        android:background="#DCDCDC"
+        android:layout_height="0.5dp"/>
+</LinearLayout>

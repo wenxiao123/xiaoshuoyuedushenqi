@@ -12,4 +12,4 @@
     android:textSize="14sp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:textColor="@color/gray_a3" />
+    android:textColor="#5B5C66" />

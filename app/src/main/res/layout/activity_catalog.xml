@@ -36,7 +36,7 @@
             android:layout_marginTop="1dp"
             android:gravity="center"
             android:textColor="#F0F1F2"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/paixu"
@@ -122,7 +122,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
+        <com.novel.collection.util.EnhanceTabLayout
             android:id="@+id/enhance_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="47dp"
@@ -131,11 +131,11 @@
             app:tabIndicatorHeight="2dp"
             app:tabIndicatorWidth="30dp"
             app:tabSelectTextColor="@color/white"
-            app:tabTextColor="#E6E4E4"
+            app:tabTextColor="#ffffff"
             app:tabTextSize="@dimen/sp_16"
             app:tab_Mode="mode_fixed">
 
-        </com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout>
+        </com.novel.collection.util.EnhanceTabLayout>
     </RelativeLayout>
     <!-- top bar -->
     <ImageView

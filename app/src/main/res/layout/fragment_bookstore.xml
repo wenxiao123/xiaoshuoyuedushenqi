@@ -31,7 +31,7 @@
             android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="24sp" />
-        <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
+        <com.novel.collection.util.EnhanceTabLayout
             android:id="@+id/tv_discovery_tab_layout1"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="5dp"
@@ -43,13 +43,13 @@
             android:layout_below="@id/iv_discovery_search_icon1"
             app:tabIndicatorHeight="4dp"
             app:tabIndicatorWidth="20dp"
-            app:tabTextColor="#E6E4E4"
+            app:tabTextColor="#ffffff"
             app:tab_Mode="mode_fixed"
             app:tabSelectTextColor="@color/white"
             app:tabTextSize="@dimen/sp_16"
             >
 
-        </com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout>
+        </com.novel.collection.util.EnhanceTabLayout>
     </RelativeLayout>
 
     <TextView

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#F7F8F9"
     android:clickable="true"
     android:orientation="vertical">
 
@@ -31,12 +31,13 @@
             android:layout_marginRight="20dp"
             android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
 
-        <com.example.administrator.xiaoshuoyuedushenqi.widget.LineBreakLayout
+        <com.novel.collection.widget.LineBreakLayout
             android:id="@+id/lineBreak"
             android:layout_marginLeft="5dp"
+            app:rowSpace="@dimen/dp_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="15dp" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

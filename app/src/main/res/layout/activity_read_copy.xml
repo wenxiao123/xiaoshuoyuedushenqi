@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    <com.example.administrator.xiaoshuoyuedushenqi.widget.RealPageView-->
+<!--    <com.novel.collection.widget.RealPageView-->
 <!--        android:id="@+id/pv_read_page_view"-->
 <!--        android:layout_width="0dp"-->
 <!--        android:layout_height="0dp"-->

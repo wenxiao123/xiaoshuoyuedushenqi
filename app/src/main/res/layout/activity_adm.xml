@@ -30,7 +30,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerInside"
         />
-    <com.example.administrator.xiaoshuoyuedushenqi.widget.CircleProgressbar
+    <com.novel.collection.widget.CircleProgressbar
         android:layout_marginTop="35dp"
         android:layout_marginRight="15dp"
         android:id="@+id/tv_red_skip"

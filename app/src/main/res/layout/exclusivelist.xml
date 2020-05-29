@@ -15,22 +15,23 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <RelativeLayout
+                android:visibility="gone"
+                android:layout_marginTop="15dp"
                 android:id="@+id/rv_renqi_title"
                 android:layout_below="@id/click_more"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="wrap_content">
                 <View
                     android:layout_marginLeft="10dp"
                     android:layout_width="3dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
                     android:layout_height="20dp"
                     android:background="#FA5F4B"/>
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_item_renqi_category_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="20dp"
                     android:text="人气排行榜"
@@ -38,17 +39,19 @@
                     android:textSize="18sp"
                     android:gravity="center"/>
                 <ImageView
+                    android:layout_centerVertical="true"
                     android:id="@+id/iv_item_renqi_more"
                     android:layout_width="15dp"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="15dp"
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/item_category_more"
                     android:layout_marginEnd="17dp"
                     android:scaleType="centerInside"/>
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_item_renqi_more"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/iv_item_renqi_more"
                     android:text="更多"
                     android:textColor="@color/item_category_more"
@@ -56,6 +59,7 @@
                     android:gravity="center"/>
             </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="5dp"
                 android:id="@+id/rv_male_new_novel_list1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,33 +69,34 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view" />
             <RelativeLayout
-                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                android:layout_marginTop="6dp"
                 android:id="@+id/rv_new_title"
                 android:layout_below="@id/click_more"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="wrap_content">
                 <View
                     android:layout_marginLeft="10dp"
                     android:layout_width="3dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
                     android:layout_height="20dp"
                     android:background="#C19B5A"/>
                 <TextView
                     android:id="@+id/tv_item_category_category_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="20dp"
                     android:text="推荐排行榜"
+                    android:layout_centerVertical="true"
                     android:textColor="@color/item_category_category_name"
                     android:textSize="18sp"
                     android:gravity="center"/>
                 <ImageView
                     android:id="@+id/iv_item_new_more"
                     android:layout_width="15dp"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="15dp"
+                    android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/item_category_more"
                     android:layout_marginEnd="17dp"
@@ -99,7 +104,8 @@
                 <TextView
                     android:id="@+id/tv_item_new_more1"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/iv_item_new_more"
                     android:text="更多"
                     android:textColor="@color/item_category_more"
@@ -113,28 +119,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_male_hot_rank_title"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:overScrollMode="never" />
 
             <RelativeLayout
-                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                android:layout_marginTop="6dp"
                 android:id="@+id/rv_new_renqi_title"
                 android:layout_below="@id/click_more"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="wrap_content">
                 <View
                     android:layout_marginLeft="10dp"
                     android:layout_width="3dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
                     android:layout_height="20dp"
                     android:background="#5ACB74"/>
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_item_new_renqi_category_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="20dp"
                     android:text="新书人气榜"
@@ -142,17 +148,19 @@
                     android:textSize="18sp"
                     android:gravity="center"/>
                 <ImageView
+                    android:layout_centerVertical="true"
                     android:id="@+id/iv_item_new_renqi_more"
                     android:layout_width="15dp"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="15dp"
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/item_category_more"
                     android:layout_marginEnd="17dp"
                     android:scaleType="centerInside"/>
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_item_new_renqi_more"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/iv_item_new_renqi_more"
                     android:text="更多"
                     android:textColor="@color/item_category_more"
@@ -166,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_male_hot_rank_title"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:overScrollMode="never" />
 

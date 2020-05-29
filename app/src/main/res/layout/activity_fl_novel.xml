@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,71 +7,51 @@
     >
 
     <!-- top bar -->
-    <View
+    <RelativeLayout
         android:id="@+id/v_all_novel_top_bar_bg"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:background="@drawable/background_grint"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_grint" >
 
     <ImageView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="35dp"
         android:id="@+id/iv_all_novel_back"
-        android:layout_width="@dimen/all_novel_top_bar_height"
-        android:layout_height="@dimen/all_novel_top_bar_height"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@drawable/all_novel_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="14dp"
-        android:layout_marginStart="5dp"/>
+        android:layout_marginStart="15dp"/>
 
     <TextView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="35dp"
         android:id="@+id/tv_all_novel_title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/all_novel_top_bar_height"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintStart_toStartOf="@id/v_all_novel_top_bar_bg"
-        app:layout_constraintEnd_toEndOf="@id/v_all_novel_top_bar_bg"
-        app:layout_constraintTop_toTopOf="@id/v_all_novel_top_bar_bg"
+      android:layout_centerHorizontal="true"
         android:text="@string/all_novel_title"
         android:textStyle="bold"
         android:textColor="@color/all_novel_title_text"
         android:textSize="20sp"/>
     <!-- list -->
-
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/rv_all_novel_novel_list"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="0dp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/v_all_novel_top_bar_bg"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--android:overScrollMode="never"/>-->
-    <com.example.administrator.xiaoshuoyuedushenqi.util.EnhanceTabLayout
+    <com.novel.collection.util.EnhanceTabLayout
         android:id="@+id/tv_fenlei_tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         app:tabIndicatorHeight="4dp"
         app:tabIndicatorWidth="25dp"
-        app:tabTextColor="#E6E4E4"
+        app:tabTextColor="#ffffff"
         app:tab_Mode="mode_fixed"
-        app:layout_constraintTop_toBottomOf="@id/iv_all_novel_back"
+        android:layout_below="@id/iv_all_novel_back"
         app:tabSelectTextColor="@color/white"
+        android:layout_marginBottom="4dp"
         app:tabTextSize="@dimen/sp_16"
         />
+    </RelativeLayout>
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/srv_all_novel_refresh"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_all_novel_top_bar_bg"
-        app:layout_constraintBottom_toBottomOf="parent">
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/v_all_novel_top_bar_bg">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_all_novel_novel_list"
             android:layout_width="match_parent"
@@ -85,11 +65,8 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+       android:layout_centerInParent="true"
         android:indeterminateTint="@color/progress_bar"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

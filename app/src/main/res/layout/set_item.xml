@@ -13,9 +13,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="修改姓名"
-        android:textColor="@color/tc1"
+        android:textColor="#161823"
         android:textSize="16sp"/>
     <ImageView
+        android:layout_marginRight="5dp"
         android:id="@+id/iv_right"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
@@ -23,6 +24,7 @@
         android:layout_height="24dp"
         android:src="@mipmap/right_back"/>
     <TextView
+        android:layout_marginRight="5dp"
         android:visibility="gone"
         android:id="@+id/img_title"
         android:layout_alignParentRight="true"

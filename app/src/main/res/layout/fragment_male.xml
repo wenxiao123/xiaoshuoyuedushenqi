@@ -22,15 +22,17 @@
                 android:layout_height="180dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-                <com.example.administrator.xiaoshuoyuedushenqi.banner.Banner
+
+                <com.novel.collection.banner.Banner
                     android:id="@+id/ultra_viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/darker_gray" />
+
                 <com.wzh.viewpager.indicator.UIndicator
                     android:id="@+id/indicator4"
                     android:layout_width="40dp"
-                    android:layout_height="6dp"
+                    android:layout_height="8dp"
                     android:layout_gravity="bottom|right"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
@@ -39,61 +41,67 @@
                     app:circle_rect_itemWidth="20dp"
                     app:circle_rect_radius="3dp"
                     app:normal_color="#ffffff"
-                    app:selected_color="#DF6513"
+                    app:selected_color="#FF4D89"
                     app:spacing="10dp"
                     app:style="circle_rect" />
             </FrameLayout>
 
-            <ImageView
-                android:id="@+id/iv_male_hot_rank_title"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_below="@id/banner"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:src="@mipmap/hot" />
-
-            <TextView
-                android:id="@+id/tv_male_hot_rank_title"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/rel_hot_male"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/banner"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_toRightOf="@id/iv_male_hot_rank_title"
-                android:text="@string/male_hot_rank_title"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:layout_below="@id/banner">
 
-            <ImageView
-                android:id="@+id/iv_item_category_more"
-                android:layout_width="15dp"
-                android:layout_height="@dimen/item_category_second_height"
-                android:layout_below="@id/banner"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="17dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/item_category_more" />
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_male_hot_rank_title"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/hot" />
 
-            <TextView
-                android:id="@+id/tv_male_category_more"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/item_category_second_height"
-                android:layout_below="@id/banner"
-                android:layout_marginTop="0dp"
-                android:layout_marginRight="-1dp"
-                android:layout_toLeftOf="@id/iv_item_category_more"
-                android:gravity="center"
-                android:text="@string/more_top_text"
-                android:textColor="@color/item_category_more"
-                android:textSize="@dimen/item_category_more_size" />
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/tv_male_hot_rank_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_toRightOf="@id/iv_male_hot_rank_title"
+                    android:text="@string/male_hot_rank_title"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_item_category_more"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginEnd="17dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/item_category_more" />
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/tv_male_category_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="-1dp"
+                    android:layout_toLeftOf="@id/iv_item_category_more"
+                    android:gravity="center"
+                    android:text="@string/more_top_text"
+                    android:textColor="@color/item_category_more"
+                    android:textSize="@dimen/item_category_more_size" />
+            </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rv_new_title"
+                android:layout_marginTop="30dp"
+                android:id="@+id/rv_new_male"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/click_more"
                 android:background="@color/background_color">
 
@@ -102,14 +110,13 @@
                     android:layout_height="20dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
                     android:background="@color/red_aa" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_item_category_category_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="25dp"
                     android:gravity="center"
@@ -118,18 +125,20 @@
                     android:textSize="18sp" />
 
                 <ImageView
+                    android:layout_centerVertical="true"
                     android:id="@+id/iv_item_new_more"
                     android:layout_width="15dp"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="15dp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="17dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/item_category_more" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_item_new_more"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/item_category_second_height"
+                    android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/iv_item_new_more"
                     android:gravity="center"
                     android:text="更多"
@@ -141,9 +150,9 @@
                 android:id="@+id/rv_male_hot_rank_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_male_hot_rank_title"
+                android:layout_below="@id/rel_hot_male"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="10dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never" />
@@ -155,32 +164,37 @@
                 android:layout_below="@id/rv_male_hot_rank_recycler_view"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/bachground_btn"
                 android:textColor="@color/black"
                 android:visibility="gone">
+
                 <RelativeLayout
-                    android:layout_centerHorizontal="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true">
 
                     <TextView
                         android:id="@+id/txt"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginTop="10dp"
                         android:text="超多火爆热书看不停 "
                         android:textColor="#FA5F4B"
+                        android:textStyle="bold"
                         android:textSize="13sp" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:scaleType="fitCenter"
                         android:layout_toRightOf="@id/txt"
-                        android:src="@drawable/item_category_more"
+                        android:src="@mipmap/icon_skip_orange"
                         android:tint="@color/red_aa" />
                 </RelativeLayout>
             </RelativeLayout>
@@ -189,9 +203,10 @@
                 android:id="@+id/rv_male_new_novel_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rv_new_title"
+                android:layout_below="@id/rv_new_male"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginTop="5dp"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +217,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rv_male_new_novel_list"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
