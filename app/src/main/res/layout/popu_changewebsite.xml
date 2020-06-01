@@ -99,6 +99,14 @@ android:visibility="visible">
         android:overScrollMode="never"
         android:scrollbars="vertical"
         />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_catalog_one_list1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        />
     <TextView
         android:id="@+id/tv_nodata"
         android:gravity="center"

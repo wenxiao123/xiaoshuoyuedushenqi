@@ -121,7 +121,7 @@ public class Banner extends RelativeLayout {
                     if (url.contains("http:")) {
                         url = url;
                     } else {
-                        url = UrlObtainer.GetUrl() + url;
+                        url = UrlObtainer.GetFileUrl() + url;
                     }
                     HttpProxyCacheServer proxy = App.getProxy(getContext());
                     String proxyUrl = proxy.getProxyUrl(url);
@@ -148,7 +148,7 @@ public class Banner extends RelativeLayout {
                     if (url.contains("http:")) {
                         url = url;
                     } else {
-                        url = UrlObtainer.GetUrl() + url;
+                        url = UrlObtainer.GetFileUrl() + url;
                     }
                     ImageView imageView = new ImageView(getContext());
                     imageView.setLayoutParams(lp);
@@ -171,7 +171,7 @@ public class Banner extends RelativeLayout {
                 if (url.contains("http:")) {
                     url = url;
                 } else {
-                    url = UrlObtainer.GetUrl() + url;
+                    url = UrlObtainer.GetFileUrl() + url;
                 }
                 HttpProxyCacheServer proxy = App.getProxy(getContext());
                 String proxyUrl = proxy.getProxyUrl(url);
@@ -200,7 +200,7 @@ public class Banner extends RelativeLayout {
                 if (url.contains("http:")) {
                     url = url;
                 } else {
-                    url = UrlObtainer.GetUrl() + url;
+                    url = UrlObtainer.GetFileUrl() + url;
                 }
                 ImageView imageView = new ImageView(getContext());
                 imageView.setLayoutParams(lp);

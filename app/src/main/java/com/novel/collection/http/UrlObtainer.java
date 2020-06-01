@@ -15,6 +15,10 @@ public class UrlObtainer {
         return href;
     }
 
+    public static String GetFileUrl() {
+        return "http://fl.hbsphaode.com";
+    }
+
     public static void setHref(String href) {
         UrlObtainer.href = href;
     }

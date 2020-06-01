@@ -214,7 +214,7 @@ public abstract class PageLoader {
     public BookRecordBean mBookRecord;
     /*****************params**************************/
     //当前的状态
-    protected int mStatus = STATUS_LOADING;
+    public int mStatus = STATUS_LOADING;
 
     public int getmCurChapterPos() {
         return mCurChapterPos;

@@ -1265,7 +1265,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl()+"/"+ img;
+                                https = UrlObtainer.GetFileUrl()+"/"+ img;
                             }
                             showAdm(id,https, href, false);
                         } else if (img.contains(".mp4")) {
@@ -1273,7 +1273,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl()+"/" + img;
+                                https = UrlObtainer.GetFileUrl()+"/" + img;
                             }
                             showAdm(id,https, href, true);
                         }

@@ -292,6 +292,7 @@ public class NetPageLoader extends PageLoader {
     private void getOtherCatalogDataSuccess(List<Other_one> catalogData) {
         if (catalogData.size() == 0) {
             chapterError();
+            //mChapterList.clear();
             return;
         }
         if (weigh < other_max || (o == 1 && catalogData.size() < other_max)) {

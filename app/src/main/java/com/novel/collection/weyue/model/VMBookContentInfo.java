@@ -323,15 +323,23 @@ public class VMBookContentInfo extends BaseViewModel {
         }
     };
     String content;
-
+    public static String USER_AGENT = "User-Agent";
+    public static String USER_AGENT_VALUE = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0";
     private void Analysisbiquge(String link, String div) throws IOException {
         Log.e("QQQ", "Analysisbiquge: "+link+" "+div);
        try {
            Document doc = Jsoup.parse(new URL(link), 5000);
+//           Connection con = Jsoup.connect(link);  // 获取connection
+//           con.header(USER_AGENT, USER_AGENT_VALUE);   // 配置模拟浏览器
+//           Connection.Response rs = con.execute();                // 获取响应
+//           Document doc = Jsoup.parse(rs.body());       // 转换为Dom树
+           //Document doc = (Document) Jsoup.connect(link);
+          // Document doc = Jsoup.parse(getHtmlSource(link));
            Elements elements;
            if(div==null){
                div="#content";
            }
+           Log.e("TAG", "Analysisbiquge: "+doc.html());
            elements = doc.body().select(div);
            Log.e("TAG", "Analysisbiquge: "+elements.html());
            content = "转码阅读：" +getTextFromHtml(elements.html());//
@@ -342,7 +350,7 @@ public class VMBookContentInfo extends BaseViewModel {
            BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title.replace(" ",""), content);
            //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
            iBookChapters.finishChapters();
-       }catch (Exception ex){
+      }catch (Exception ex){
            BookSaveUtils.getInstance().saveChapterInfo2(noval_id, title.replace(" ",""), "内容有误");
            //BookSaveUtils.getInstance().saveNowChapterInfo2(noval_id, content.replace("</p>",""));
            iBookChapters.finishChapters();

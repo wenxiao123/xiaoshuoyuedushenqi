@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class NovelSearchAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, final int i) {
+        Log.e("SSS", "onBindViewHolder: "+mNovelSourceDataList.get(i).getTitle()+"  "+name_search);
         if(mNovelSourceDataList.get(i).getTitle().contains(name_search)){
             novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getTitle());
             if(name_search!=null&&!name_search.equals("")) {
@@ -60,6 +62,12 @@ public class NovelSearchAdapter extends
             novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getAuthor());
             if(name_search!=null&&!name_search.equals("")) {
                 setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i).getAuthor(), name_search, mContext.getResources().getColor(R.color.red_aa));
+            }
+        }
+        else {
+            novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getTitle());
+            if(name_search!=null&&!name_search.equals("")) {
+                setColor(novelSourceViewHolder.name, mNovelSourceDataList.get(i).getTitle(), name_search, mContext.getResources().getColor(R.color.red_aa));
             }
         }
         novelSourceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

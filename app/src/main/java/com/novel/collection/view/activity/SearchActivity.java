@@ -172,14 +172,19 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private String mSearchContent;  // 搜索内容
     private List<Wheel> mNovelSourceDataList=new ArrayList<>(); // 小说源列表
     public void getNovelsSource(String novelName) {
+        if(mNovelSourceAdapter!=null) {
+            mNovelSourceDataList.clear();
+            mNovelSourceAdapter.notifyDataSetChanged();
+        }
         Gson mGson=new Gson();
         String url = UrlObtainer.GetUrl()+"/"+"/api/index/book_cke";
         RequestBody requestBody = new FormBody.Builder()
-                .add("name", novelName)
+                .add("name", novelName.trim())
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
+                Log.e("SSS", "onResponse: "+json);
                 try {
                     JSONObject jsonObject=new JSONObject(json);
                     String code=jsonObject.getString("code");
@@ -190,7 +195,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                         for(int i=0;i<jsonArray.length();i++){
                             novalDetailsList.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(),NovalInfo.class));
                         }
-                        getNovelsSourceSuccess(novalDetailsList);
+                        getNovelsSourceSuccess(novalDetailsList,novelName.trim());
                     }else {
                        getNovelsSourceError("请求错误");
                     }
@@ -207,7 +212,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     }
 
 
-    public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList) {
+    public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList,String stringContent) {
         mNovelSourceDataList.clear();
         if(novelSourceDataList.size()==0){
             mNovelSourceRv.setVisibility(View.GONE);
@@ -223,7 +228,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 mNovelSourceDataList.add(new Wheel(novelSourceDataList.get(i).getId(),novelSourceDataList.get(i).getPic(),novelSourceDataList.get(i).getTitle(),novelSourceDataList.get(i).getAuthor()));
             }
         }
-        initAdapter();
+        //if(mNovelSourceAdapter==null) {
+            initAdapter(stringContent);
+//        }else {
+//            mNovelSourceAdapter.notifyDataSetChanged();
+//        }
     }
 
     public void getNovelsSourceError(String errorMsg) {
@@ -235,12 +244,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    private void initAdapter() {
+    private void initAdapter(String string) {
         if (mNovelSourceDataList == null || mNovelSourceDataList.isEmpty()) {
             return;
         }
-
-        mNovelSourceAdapter = new NovelSearchAdapter(this, mNovelSourceDataList,mSearchContent);
+        mNovelSourceAdapter = new NovelSearchAdapter(this, mNovelSourceDataList,string);
         mNovelSourceAdapter.setOnNovelSourceListener(new NovelSearchAdapter.NovelSourceListener() {
             @Override
             public void clickItem(int position) {
@@ -310,7 +318,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 break;
             case R.id.tv_search_search_text:
                 //doSearch();
-                updateHistoryDb(mSearchBarEt.getText().toString());
+                updateHistoryDb(mSearchBarEt.getText().toString().trim());
                 Intent intent=new Intent(this,SearchResultActivity.class);
                 intent.putExtra("searchContent",mSearchBarEt.getText().toString());
                 startActivity(intent);
@@ -354,7 +362,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateHistoryDb(searchText);
+                updateHistoryDb(searchText.trim());
             }
         }, 500);
     }

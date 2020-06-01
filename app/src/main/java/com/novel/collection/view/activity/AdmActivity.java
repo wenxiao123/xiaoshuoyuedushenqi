@@ -180,7 +180,7 @@ public class AdmActivity extends BaseActivity_other implements View.OnClickListe
                                 if (img.contains("http")) {
                                     https = img;
                                 } else {
-                                    https = UrlObtainer.GetUrl() + "/" + img;
+                                    https = UrlObtainer.GetFileUrl() + "/" + img;
                                 }
                                 Url_gg gg = new Url_gg(href, time, https);
                                 SpUtil.saveObject2(AdmActivity.this, gg);
@@ -190,7 +190,7 @@ public class AdmActivity extends BaseActivity_other implements View.OnClickListe
                                 if (img.contains("http")) {
                                     https = img;
                                 } else {
-                                    https = UrlObtainer.GetUrl() + "/" + img;
+                                    https = UrlObtainer.GetFileUrl() + "/" + img;
                                 }
                                 Url_gg gg = new Url_gg(href, time, https);
                                 SpUtil.saveObject2(AdmActivity.this, gg);

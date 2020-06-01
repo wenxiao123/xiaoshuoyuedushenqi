@@ -24,7 +24,7 @@ public class ImageLoaderUtils {
         }
         String img_http;
         if(!url.contains("http")){
-            img_http= UrlObtainer.GetUrl()+url;
+            img_http= UrlObtainer.GetFileUrl()+url;
         }else {
             img_http=url;
         }
@@ -42,7 +42,7 @@ public class ImageLoaderUtils {
         }
         String img_http;
         if(!url.contains("http")){
-            img_http= UrlObtainer.GetUrl()+url;
+            img_http= UrlObtainer.GetFileUrl()+url;
         }else {
             img_http=url;
         }

@@ -578,18 +578,18 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     }
                     break;
                 case R.id.tv_book_add:
-                    //if (mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-                        if (mDbManager.isExistInBookshelfNovel(pid)) {
+                    BookshelfNovelDbData dbData=mDbManager.getBookshelfNovel(pid);
+                     if (dbData.getType()==0||dbData.getType()==1) {
+                        //if (mDbManager.isExistInBookshelfNovel(pid)) {
                             tv_book_add.setText("加入书架");
                             mDbManager.deleteBookshelfNovel(pid.trim());
-                            // Log.e("QQQ", "onClick: "+pid);
                             if (login_admin != null) {
                                 delectBookshelfadd(login_admin.getToken(), pid);
                             }
                         } else {
                             tv_book_add.setText("移除书架");
                             File file=new File(path+".txt");
-                            BookshelfNovelDbData dbData;
+                            //BookshelfNovelDbData dbData;
                             if(file.exists()){
                                 dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
                                         noval_details.getPic(), 0, 1, 0, 0 + "", weigh, noval_details.getSerialize() + "");

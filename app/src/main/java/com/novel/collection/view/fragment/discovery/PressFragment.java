@@ -134,7 +134,7 @@ public class PressFragment extends BaseTabFragment<MalePresenter>
         mHotRankRv.setLayoutManager(new GridLayoutManager(getContext(), 4));
         mCategoryNovelRv = getActivity().findViewById(R.id.rv_press_category_novel_list);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mNewRv = getActivity().findViewById(R.id.rv_male_new_novel_list1);
+        mNewRv = getActivity().findViewById(R.id.rv_male_new_discovery_novel_list);
         mNewRv.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
         rel_click_more = getActivity().findViewById(R.id.click_more_press);

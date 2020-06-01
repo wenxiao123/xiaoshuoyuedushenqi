@@ -143,6 +143,7 @@ import okhttp3.RequestBody;
 import static android.view.View.LAYER_TYPE_SOFTWARE;
 import static com.novel.collection.constant.Constant.text_adress2;
 import static com.novel.collection.constant.Constant.text_name1;
+import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_FINISH;
 
 public class WYReadActivity extends BaseActivity implements View.OnClickListener, IBookChapters {
     RelativeLayout rv_read_top_bar;
@@ -599,7 +600,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     tipDialog.dismiss();
                 }
             } else if (msg.what == 5) {
-                getOtherchpterCategorysSuccess(other_website_all);
+                getOtherchpterCategorysSuccess(other_website);
             }
         }
     };
@@ -746,6 +747,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             JSONObject object = jsonObject.getJSONObject("data");
                             JSONArray jsonArray = object.getJSONArray("data");
                             other_website.clear();
+                            other_website_all.clear();
                             for (int z = 0; z < jsonArray.length(); z++) {
                                 other_website.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Other_chpter.class));
                                 other_website_all.add(other_website.get(z));
@@ -761,7 +763,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 //                                                //title = bookChapter.getTitle();
 //                                                Elements elements;
 //                                                elements = doc.body().getAllElements();//.select(other_website.get(i).getElement());
-//                                                Log.e("QQQ", "onResponse: "+getTextFromHtml(elements.html()));
+//                                                //Log.e("QQQ", "onResponse: "+getTextFromHtml(elements.html()));
 //                                                if (getTextFromHtml(elements.html()) == null ||getTextFromHtml(elements.html()).trim().equals("")) {
 //                                                    //other_website.remove(i);
 //                                                    other_website_all.remove(other_website.get(i));
@@ -798,7 +800,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                // LogUtils.e(json);
+                LogUtils.e(json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -809,6 +811,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             JSONObject object = jsonObject.getJSONObject("data");
                             JSONArray jsonArray = object.getJSONArray("data");
                             other_website.clear();
+                            other_website_all.clear();
                             for (int z = 0; z < jsonArray.length(); z++) {
                                 other_website.add(mGson.fromJson(jsonArray.getJSONObject(z).toString(), Other_chpter.class));
                                 other_website_all.add(other_website.get(z));
@@ -857,7 +860,6 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
         switch (requestCode) {
             case REQUEST_CODE_ADDRESS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] ==PackageManager.PERMISSION_GRANTED) {
@@ -1486,7 +1488,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + "/" + img;
+                                https = UrlObtainer.GetFileUrl() + "/" + img;
                             }
                             load_url = href;
                             if (type == 1) {
@@ -1511,7 +1513,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                             if (img.contains("http")) {
                                 https = img;
                             } else {
-                                https = UrlObtainer.GetUrl() + "/" + img;
+                                https = UrlObtainer.GetFileUrl() + "/" + img;
                             }
                             AdsUtils.downLoadAds(WYReadActivity.this, https);
                             if (AdsUtils.isAdsLoaded(WYReadActivity.this, https)) {
@@ -1703,7 +1705,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 // showPupowindpw(mMenuIv);
                 break;
             case R.id.tv_read_previous_chapter:
-                setCategorySelect(mPageLoader.skipPreChapter());
+                if(mPageLoader.mStatus==STATUS_FINISH) {
+                    setCategorySelect(mPageLoader.skipPreChapter());
+                }
                 break;
             case R.id.tv_book_mark:
                 progressBar.setVisibility(View.VISIBLE);
@@ -1749,7 +1753,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 img_space_samlle.setImageResource(R.mipmap.icon_spacing_small_yes);
                 break;
             case R.id.tv_read_next_chapter:
-                setCategorySelect(mPageLoader.skipNextChapter());
+                if(mPageLoader.mStatus==STATUS_FINISH) {
+                    setCategorySelect(mPageLoader.skipNextChapter());
+                }
                 break;
             case R.id.tv_read_catalog:
             case R.id.iv_read_catalog:
