@@ -2,7 +2,7 @@
     <!-- app -->
     <string name="app_name">小说宝</string>
     <string name="content">content</string>
-
+    <string name="app_name1">小说集合</string>
     <!-- main -->
     <string name="main_bottom_bar_bookshelf">书架</string>
     <string name="manger_bookshelf">书架管理</string>

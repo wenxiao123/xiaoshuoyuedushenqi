@@ -124,7 +124,7 @@ public class MaleModel implements IMaleContract.Model {
         String url = UrlObtainer.GetUrl()+"/"+"api/Rmlist/Rem_List";
         RequestBody requestBody = new FormBody.Builder()
                 .add("type", id)
-                .add("limit", "3")
+                .add("limit", "4")
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
             @Override

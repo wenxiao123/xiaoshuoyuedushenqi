@@ -21,13 +21,14 @@
     <application
         android:name=".app.App"
         android:allowBackup="true"
-        android:icon="@mipmap/logo"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/logo"
+        android:icon="@mipmap/logo1"
+        android:label="@string/app_name1"
+
+        android:roundIcon="@mipmap/logo1"
         android:supportsRtl="true"
         android:theme="@style/AppTheme1"
         android:usesCleartextTraffic="true"
-        tools:replace="android:appComponentFactory,android:name"
+        tools:replace="android:appComponentFactory,android:name,android:label"
         android:appComponentFactory="err"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".view.activity.EpubCatalogActivity"
@@ -47,6 +48,7 @@
 
         <activity android:name=".view.activity.SearchActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
             tools:ignore="LockedOrientationActivity"
@@ -141,9 +143,10 @@
             />
         <activity android:name=".view.activity.SearchResultActivity"
             android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:launchMode="singleTop"
-            tools:ignore="LockedOrientationActivity"/>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"
+             tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".view.activity.LocalCatalogActivity"
             android:screenOrientation="portrait"

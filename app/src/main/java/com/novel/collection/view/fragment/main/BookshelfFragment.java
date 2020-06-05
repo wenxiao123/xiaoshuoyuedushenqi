@@ -623,6 +623,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     List<Noval_Readcored> noval_readcoreds = new ArrayList<>();
 
     private void queryallBook(String token) {
+        if(token!=null){
         Gson mGson = new Gson();
         String url = UrlObtainer.GetUrl() + "/api/Userbook/index";
         RequestBody requestBody = new FormBody.Builder()
@@ -632,7 +633,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
-                LogUtils.e(url+" "+token+" "+json);
+                LogUtils.e(url + " " + token + " " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
@@ -666,6 +667,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 showShortToast(errorMsg);
             }
         });
+        }
     }
 
     private void initAdapter() {

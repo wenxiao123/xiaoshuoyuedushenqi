@@ -53,7 +53,7 @@
             android:layout_height="30dp"
             android:layout_centerHorizontal="true">
             <EditText
-                android:id="@+id/et_search_search_bar"
+                android:id="@+id/et_search_activity"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bachground_white2"
@@ -61,6 +61,7 @@
                 android:paddingEnd="10dp"
                 android:hint="@string/search_edit_text_hint"
                 android:textSize="15sp"
+                android:imeOptions="actionSearch"
                 android:textCursorDrawable="@drawable/search_cursor"
                 android:singleLine="true" >
                 <requestFocus />

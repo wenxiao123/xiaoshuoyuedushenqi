@@ -41,6 +41,7 @@ import com.novel.collection.view.fragment.search.HistoryFragment;
 import com.novel.collection.view.fragment.search.SearchFragment;
 import com.novel.collection.view.fragment.search.SearchResultFragment;
 import com.google.gson.Gson;
+import com.novel.collection.widget.WrapContentLinearLayoutManager;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
@@ -140,7 +141,7 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
         mProgressBar = findViewById(R.id.pb_search_result_progress_bar);
         tv_search_result_none = findViewById(R.id.tv_search_result_none);
         mNovelSourceRv = findViewById(R.id.rv_search_result_novel_source_list);
-        mNovelSourceRv.setLayoutManager(new LinearLayoutManager(this));
+//        mNovelSourceRv.setLayoutManager(new LinearLayoutManager(this));
         fv_search_container = findViewById(R.id.fv_search_container);
         mBackIv = findViewById(R.id.iv_search_back);
         mBackIv.setOnClickListener(this);
@@ -250,8 +251,13 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
         mProgressBar.setVisibility(View.GONE);
         // Log.e("QQQ", "getNovelsSourceSuccess: "+novelSourceDataList.size());
         mProgressBar.setVisibility(View.GONE);
-        //mNovelSourceDataList.clear();
-        if(novelSourceDataList.size() == 0&&z==1){
+        if(isRefresh){
+            mNovelSourceDataList.clear();
+            isRefresh=false;
+            mNovelSourceAdapter=null;
+        }
+        mNovelSourceDataList.addAll(novelSourceDataList);
+        if(mNovelSourceDataList.size() == 0){
             showShortToast("暂无搜索小说");
             mNoneTv.setVisibility(View.VISIBLE);
             mNovelSourceRv.setVisibility(View.GONE);
@@ -259,14 +265,7 @@ public class SearchResultActivity extends BaseActivity<SearchResultPresenter> im
             mNoneTv.setVisibility(View.GONE);
             mNovelSourceRv.setVisibility(View.VISIBLE);
         }
-        mNovelSourceDataList.clear();
-        if(isRefresh){
-            mNovelSourceDataList.clear();
-            isRefresh=false;
-            mNovelSourceAdapter=null;
-        }
-        mNovelSourceDataList.addAll(novelSourceDataList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        WrapContentLinearLayoutManager linearLayoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         int last=linearLayoutManager.findLastVisibleItemPosition();
         if (mNovelSourceAdapter == null) {
             mNovelSourceDataList = novelSourceDataList;

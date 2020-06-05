@@ -419,8 +419,10 @@ public class Banner extends RelativeLayout {
 //    }
 
     public void destroy() {
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler = null;
+        if(mHandler!=null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
+        }
         time = null;
         runnable = null;
         if (views != null) {

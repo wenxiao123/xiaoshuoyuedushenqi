@@ -387,40 +387,41 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
      */
 
     void postMessage() {
-        if(login_admin==null){
+        if(login_admin==null||login_admin.getToken()==null){
             handler.sendEmptyMessage(2);
            return;
-        }
-        Gson gson = new Gson();
-        String url = UrlObtainer.GetUrl() + "/api/user/index";
-        RequestBody requestBody = new FormBody.Builder()
-                .add("token", login_admin.getToken())
-                .build();
-        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                Log.e("asd", "onResponse: " + json);
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    String code = jsonObject.getString("code");
-                    if (code.equals("1")) {
-                        login_admin = gson.fromJson(jsonObject.getJSONObject("data").toString(), Login_admin.class);
-                        SpUtil.saveObject(getContext(), login_admin);
-                    } else if (code.equals("100")) {
-                        login_admin = null;
-                        SpUtil.saveObject(getContext(), null);
+        }else {
+            Gson gson = new Gson();
+            String url = UrlObtainer.GetUrl() + "/api/user/index";
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("token", login_admin.getToken())
+                    .build();
+            OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+                @Override
+                public void onResponse(String json) {   // 得到 json 数据
+                    Log.e("asd", "onResponse: " + json);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        String code = jsonObject.getString("code");
+                        if (code.equals("1")) {
+                            login_admin = gson.fromJson(jsonObject.getJSONObject("data").toString(), Login_admin.class);
+                            SpUtil.saveObject(getContext(), login_admin);
+                        } else if (code.equals("100")) {
+                            login_admin = null;
+                            SpUtil.saveObject(getContext(), null);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    handler.sendEmptyMessage(1);
                 }
-                handler.sendEmptyMessage(1);
-            }
 
-            @Override
-            public void onFailure(String errorMsg) {
-                showShortToast(errorMsg);
-            }
-        });
+                @Override
+                public void onFailure(String errorMsg) {
+                    showShortToast(errorMsg);
+                }
+            });
+        }
     }
 
     @Override

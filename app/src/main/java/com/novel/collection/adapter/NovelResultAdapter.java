@@ -77,33 +77,16 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
         novelViewHolder.title.setText(mList.get(position).getTitle());
         novelViewHolder.author.setText(mList.get(position).getAuthor());
         novelViewHolder.shortInfo.setText(mList.get(position).getContent());
-//        String href;
-//        if(mList.get(position).getPic().contains("http")){
-//            href=mList.get(position).getPic();
-//        }else {
-//            href=UrlObtainer.GetUrl()+"/"+mList.get(position).getPic();
-//        }
-//        CornerTransform transformation = new CornerTransform(mContext, 10);
-//        Glide.with(mContext)
-//                .load(href)
-//                .apply(new RequestOptions()
-//                         .error(R.drawable.cover_error)
-//                        .transform(transformation))
-//                .into(novelViewHolder.cover);
         ImageLoaderUtils.display(mContext,novelViewHolder.cover,mList.get(position).getPic(),R.drawable.cover_error,R.drawable.cover_error);
         novelViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.clickItem(mList.get(position).getId());
+                if(position<mList.size()) {
+                    mListener.clickItem(mList.get(position).getId());
+                }
             }
         });
         novelViewHolder.cata.setText(" | "+mList.get(position).getCategory_name());
-//        if (isRating){
-//            novelViewHolder.tv_item_rating.setVisibility(View.VISIBLE);
-//            novelViewHolder.tv_item_rating.setText(mList.get(position).getRating()+"分");
-//        }else {
-//            novelViewHolder.tv_item_rating.setVisibility(View.GONE);
-//        }
         if(databaseManager.isExistInBookshelfNovel(mList.get(position).getId()+"")){
             novelViewHolder.tv_item_bookshelf.setText("已加入书架");
             novelViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
@@ -115,20 +98,22 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
             novelViewHolder.tv_item_bookshelf.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    BookshelfNovelDbData dbData;
-                    dbData = new BookshelfNovelDbData(mList.get(position).getId() + "", mList.get(position).getTitle(),
-                            mList.get(position).getPic(), 1, 0, 0, 1 + "", 10, mList.get(position).getSerialize() + "");
-                    databaseManager.insertOrUpdateBook(dbData);
-                    Intent intent_recever = new Intent("com.zhh.android");
-                    intent_recever.putExtra("type",1);
-                    mContext.sendBroadcast(intent_recever);
-                    if (login_admin != null) {
-                        setBookshelfadd(login_admin.getToken(), mList.get(position).getId() + "");
+                    if (position < mList.size()) {
+                        BookshelfNovelDbData dbData;
+                        dbData = new BookshelfNovelDbData(mList.get(position).getId() + "", mList.get(position).getTitle(),
+                                mList.get(position).getPic(), 1, 0, 0, 1 + "", 10, mList.get(position).getSerialize() + "");
+                        databaseManager.insertOrUpdateBook(dbData);
+                        Intent intent_recever = new Intent("com.zhh.android");
+                        intent_recever.putExtra("type", 1);
+                        mContext.sendBroadcast(intent_recever);
+                        if (login_admin != null) {
+                            setBookshelfadd(login_admin.getToken(), mList.get(position).getId() + "");
+                        }
+                        // ((Activity) mContext).finish();
+                        novelViewHolder.tv_item_bookshelf.setText("已加入书架");
+                        novelViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
+                        novelViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_btn));
                     }
-                    // ((Activity) mContext).finish();
-                    novelViewHolder.tv_item_bookshelf.setText("已加入书架");
-                    novelViewHolder.tv_item_bookshelf.setTextColor(mContext.getResources().getColor(R.color.gray));
-                    novelViewHolder.tv_item_bookshelf.setBackground(mContext.getResources().getDrawable(R.drawable.bachground_btn));
                 }
             });
         }

@@ -1,5 +1,6 @@
 package com.novel.collection.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -111,7 +113,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         fv_search_container=findViewById(R.id.fv_search_container);
         mBackIv = findViewById(R.id.iv_search_back);
         mBackIv.setOnClickListener(this);
-        mSearchBarEt = findViewById(R.id.et_search_search_bar);
+        mSearchBarEt = findViewById(R.id.et_search_activity);
         // 监听内容变化
         mSearchBarEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -152,12 +154,21 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         // 监听软键盘
         mSearchBarEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView v1, int actionId, KeyEvent event) {
                 // 点击“完成”或者“下一项”
-                if (actionId == EditorInfo.IME_ACTION_DONE ||
-                        actionId == EditorInfo.IME_ACTION_NEXT) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    View v = getCurrentFocus();
+                    if (v != null && (v instanceof EditText)) {
+                        //使EditText触发一次失去焦点事件
+                        v.setFocusable(false);
+//                v.setFocusable(true); //这里不需要是因为下面一句代码会同时实现这个功能
+                        v.setFocusableInTouchMode(true);
+
+                    }
+                    EditTextUtil.hiddenSoftKeyboard(SearchActivity.this, mSearchBarEt);
                     // 进行搜索操作
                     doSearch();
+                    return true;
                 }
                 return false;
             }
@@ -210,7 +221,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
         });
     }
-
 
     public void getNovelsSourceSuccess(List<NovalInfo> novelSourceDataList,String stringContent) {
         mNovelSourceDataList.clear();
@@ -336,35 +346,39 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
      */
     private void doSearch() {
         // 点击搜索后隐藏软键盘
-        SoftInputUtil.hideSoftInput(SearchActivity.this);
-        if (!NetUtil.hasInternet(this)) {
-            showShortToast("当前无网络，请检查网络后重试");
-            return;
-        }
-        // 当前搜索词
-        final String searchText = mSearchBarEt.getText().toString().trim();
-        if (searchText.equals("")) {
-            showShortToast("输入不能为空");
-            return; // 不能为空
-        }
-        if (mIsShowSearchResFg) {
-            // 如果此时已经是搜索结果 Fg，就直接更新它
-            // 搜索同一个词时不用管
-            if (!searchText.equals(mLastSearch)) {
-                mSearchResultFragment.update(searchText);
-            }
-
-        } else {
-            showSearchResFg();
-        }
-        mLastSearch = searchText;
-        // 更新历史记录
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateHistoryDb(searchText.trim());
-            }
-        }, 500);
+//        SoftInputUtil.hideSoftInput(SearchActivity.this);
+//        if (!NetUtil.hasInternet(this)) {
+//            showShortToast("当前无网络，请检查网络后重试");
+//            return;
+//        }
+//        // 当前搜索词
+//        final String searchText = mSearchBarEt.getText().toString().trim();
+//        if (searchText.equals("")) {
+//            showShortToast("输入不能为空");
+//            return; // 不能为空
+//        }
+//        if (mIsShowSearchResFg) {
+//            // 如果此时已经是搜索结果 Fg，就直接更新它
+//            // 搜索同一个词时不用管
+//            if (!searchText.equals(mLastSearch)) {
+//                mSearchResultFragment.update(searchText);
+//            }
+//
+//        } else {
+//            showSearchResFg();
+//        }
+//        mLastSearch = searchText;
+//        // 更新历史记录
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                updateHistoryDb(searchText.trim());
+//            }
+//        }, 500);
+        updateHistoryDb(mSearchBarEt.getText().toString().trim());
+        Intent intent=new Intent(this,SearchResultActivity.class);
+        intent.putExtra("searchContent",mSearchBarEt.getText().toString());
+        startActivity(intent);
     }
 
     /**

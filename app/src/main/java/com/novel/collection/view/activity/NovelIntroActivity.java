@@ -579,7 +579,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     break;
                 case R.id.tv_book_add:
                     BookshelfNovelDbData dbData=mDbManager.getBookshelfNovel(pid);
-                     if (dbData.getType()==0||dbData.getType()==1) {
+                     if (dbData!=null&&(dbData.getType()==0||dbData.getType()==1)) {
                         //if (mDbManager.isExistInBookshelfNovel(pid)) {
                             tv_book_add.setText("加入书架");
                             mDbManager.deleteBookshelfNovel(pid.trim());
