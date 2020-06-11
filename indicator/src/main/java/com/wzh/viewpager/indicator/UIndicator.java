@@ -12,6 +12,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.tmall.ultraviewpager.UltraViewPagerAdapter;
@@ -177,13 +178,26 @@ public class UIndicator extends View implements ViewPager.OnPageChangeListener {
         super.onDraw(canvas);
         if (orientation == HORIZONTAL) {
             switch (mStyle) {
-
                 case STYLE_CIRCLR_CIRCLE:
                     float cy = height / 2;
                     for (int i = 0; i < itemCount; i++) {
-                        int cx = (i + 1) * circleCircleRadius + i * spacing;
-                        //全部绘制圆点，画笔的区别
-                        canvas.drawCircle(cx, cy, circleCircleRadius, i == selection ? selectedPaint : normalPaint);
+                        if(i==0){
+                            Paint paint=new Paint();
+                            paint.setColor(mContext.getResources().getColor(Color.alpha(00000000)));
+                            int cx = (i + 1) * circleCircleRadius + i * spacing;
+                            //全部绘制圆点，画笔的区别
+                            canvas.drawCircle(cx, cy, circleCircleRadius, paint);
+                        }else if(i==itemCount-1){
+                            Paint paint=new Paint();
+                            paint.setColor(mContext.getResources().getColor(Color.alpha(00000000)));
+                            int cx = (i + 1) * circleCircleRadius + i * spacing;
+                            //全部绘制圆点，画笔的区别
+                            canvas.drawCircle(cx, cy, circleCircleRadius, paint);
+                        }else{
+                            int cx = (i + 1) * circleCircleRadius + i * spacing;
+                            //全部绘制圆点，画笔的区别
+                            canvas.drawCircle(cx, cy, circleCircleRadius, i == selection ? selectedPaint : normalPaint);
+                        }
                     }
                     break;
 
@@ -198,26 +212,27 @@ public class UIndicator extends View implements ViewPager.OnPageChangeListener {
 
                 case STYLE_CIRCLR_RECT:
                     for (int i = 0; i < itemCount; i++) {
-                        int left = selection * (circleRectRadius * 2 + spacing);
-                        int top;
-                        if (selection == i) {
-                            //选中的绘制圆角矩形
-                            top = (height - circleRectItemHeight) / 2;
-                            mRectF.set(left, top, left + circleRectItemWidth, circleRectItemHeight + top);
-                            canvas.drawRoundRect(mRectF, circleRectCorner, circleRectCorner, selectedPaint);
-                        } else {
-                            //未选中的绘制圆点，距离需要判断position在选中的左边或者右边，从而确定cx
-                            top = (height - circleRectRadius * 2) / 2;
-                            int cx = 0;
-                            float cy1 = circleRectRadius + top;
-                            if (selection < i) {
-                                cx = (i - 1) * circleRectRadius * 2 + i * spacing + circleRectItemWidth + circleRectRadius;
+                        if(i>0&&i<itemCount-1) {
+                            int left = selection * (circleRectRadius * 2 + spacing);
+                            int top;
+                            if (selection == i) {
+                                //选中的绘制圆角矩形
+                                top = (height - circleRectItemHeight) / 2;
+                                mRectF.set(left, top, left + circleRectItemWidth, circleRectItemHeight + top);
+                                canvas.drawRoundRect(mRectF, circleRectCorner, circleRectCorner, selectedPaint);
                             } else {
-                                cx = i * (circleRectRadius * 2) + i * spacing + circleRectRadius;
+                                //未选中的绘制圆点，距离需要判断position在选中的左边或者右边，从而确定cx
+                                top = (height - circleRectRadius * 2) / 2;
+                                int cx = 0;
+                                float cy1 = circleRectRadius + top;
+                                if (selection < i) {
+                                    cx = (i - 1) * circleRectRadius * 2 + i * spacing + circleRectItemWidth + circleRectRadius;
+                                } else {
+                                    cx = i * (circleRectRadius * 2) + i * spacing + circleRectRadius;
+                                }
+                                canvas.drawCircle(cx, cy1, circleRectRadius, normalPaint);
                             }
-                            canvas.drawCircle(cx, cy1, circleRectRadius, normalPaint);
                         }
-
                     }
                     break;
             }
@@ -308,6 +323,12 @@ public class UIndicator extends View implements ViewPager.OnPageChangeListener {
             PagerAdapter pagerAdapter = viewPager.getAdapter();
             if (pagerAdapter != null) {
                 selection = viewPager.getCurrentItem() % itemCount;
+                if(selection==0){
+                    selection=1;
+                }
+                if(selection==itemCount-1){
+                    selection=itemCount-2;
+                }
             }
         }
         postInvalidate();

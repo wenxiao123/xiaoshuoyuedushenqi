@@ -1368,7 +1368,7 @@ public abstract class PageLoader {
                 // }
             } else {
                 canvas.drawBitmap(adm_bitmap, mDisplayWidth / 2 - adm_bitmap.getWidth() / 2, mVisibleHeight / 2 - adm_bitmap.getHeight() / 2, null);
-                canvas.drawText("小说集合支持正版", mDisplayWidth / 2 - adm_bitmap.getWidth() / 2, mVisibleHeight / 2 - adm_bitmap.getHeight() + 20, mTitlePaint);
+                canvas.drawText("小说宝支持正版", mDisplayWidth / 2 - adm_bitmap.getWidth() / 2, mVisibleHeight / 2 - adm_bitmap.getHeight() + 20, mTitlePaint);
                 //mPageChangeListener.onShowAdm(true);
             }
         }

@@ -9,14 +9,14 @@ import com.novel.collection.constant.Constant;
  * Created on 2019/11/6
  */
 public class UrlObtainer {
-    static String href="http://do.scxy88.cn";// /http://hsa.hadskj.com/ // http://cms.scxy88.cn/   http://do.scxy88.cn
+    static String href="http://hsa.hadskj.com/";// /http://hsa.hadskj.com/ // http://cms.scxy88.cn/   http://do.scxy88.cn
 
     public static String GetUrl() {
         return href;
     }
     //http://fl.hbsphaode.com
     public static String GetFileUrl() {
-        return "http://do.scxy88.cn";
+        return "http://fl.hbsphaode.com";
     }
 
     public static void setHref(String href) {
