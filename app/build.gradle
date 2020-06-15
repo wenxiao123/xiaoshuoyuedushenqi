@@ -88,4 +88,6 @@ dependencies {
     implementation 'q.rorbin:badgeview:1.1.2'
     implementation "org.greenrobot:greendao:3.2.0"
     implementation 'com.danikula:videocache:2.7.0'
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 }

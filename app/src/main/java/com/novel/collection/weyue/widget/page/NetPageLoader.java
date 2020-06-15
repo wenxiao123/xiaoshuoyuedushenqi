@@ -361,7 +361,7 @@ public class NetPageLoader extends PageLoader {
     private List<TxtChapter> convertTxtChapter(List<Cataloginfo> catalogDataAll) {
         List<TxtChapter> txtChapters = new ArrayList<>(catalogDataAll.size());
         for (Cataloginfo bean : catalogDataAll) {
-            // Log.e("QQQ", "convertTxtChapter: "+bean.getTitle());
+            Log.e("QQQ", "convertTxtChapter: "+bean.getTitle()+" "+bean.getWeigh());
             TxtChapter chapter = new TxtChapter();
             chapter.bookId = bean.getWeigh() + "";
             chapter.title = bean.getTitle();

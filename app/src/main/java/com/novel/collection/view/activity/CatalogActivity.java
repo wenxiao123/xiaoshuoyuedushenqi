@@ -364,7 +364,14 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     finish();
                 } else {
                     Intent intent_recever = new Intent("com.read.android");
-                    intent_recever.putExtra("chpter", catalogDataAll.get(position).getWeigh() - 1);
+                    if (mIsReverse == false) {
+                        intent_recever.putExtra("chpter",position);
+                        //bundle.putString(WYReadActivity.CHPTER_ID, position + "");
+                    } else {
+                        intent_recever.putExtra("chpter",(catalogDataAll.size() - position - 1));
+                        //bundle.putString(WYReadActivity.CHPTER_ID, (txtChapters.size() - position - 1) + "");
+                    }
+                       //intent_recever.putExtra("chpter",position);//catalogDataAll.get(position).getWeigh() - 1
                     sendBroadcast(intent_recever);
                     finish();
                 }

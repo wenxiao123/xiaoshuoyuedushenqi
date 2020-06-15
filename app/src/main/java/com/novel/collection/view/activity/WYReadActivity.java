@@ -12,25 +12,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.database.ContentObserver;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -66,13 +58,9 @@ import com.novel.collection.entity.bean.Categorys_one;
 import com.novel.collection.entity.bean.Login_admin;
 import com.novel.collection.entity.bean.Noval_Readcored;
 import com.novel.collection.entity.bean.Other_chpter;
-import com.novel.collection.entity.bean.PersonBean;
-import com.novel.collection.entity.bean.Text;
 import com.novel.collection.entity.bean.TextStyle;
 import com.novel.collection.entity.data.BookmarkNovelDbData;
 import com.novel.collection.entity.data.BookshelfNovelDbData;
-import com.novel.collection.entity.data.DetailedChapterData;
-import com.novel.collection.entity.eventbus.EpubCatalogInitEvent;
 import com.novel.collection.entity.eventbus.Event;
 import com.novel.collection.entity.eventbus.HoldReadActivityEvent;
 import com.novel.collection.entity.eventbus.HoldReadActivityEvent2;
@@ -86,16 +74,14 @@ import com.novel.collection.util.LogUtils;
 import com.novel.collection.util.ScreenUtil;
 import com.novel.collection.util.SpUtil;
 import com.novel.collection.util.StatusBarUtil;
+import com.novel.collection.util.StatusBarUtil3;
 import com.novel.collection.weyue.db.entity.BookRecordBean;
 import com.novel.collection.weyue.db.entity.CollBookBean;
 import com.novel.collection.weyue.model.BookChaptersBean;
 import com.novel.collection.weyue.model.VMBookContentInfo;
 import com.novel.collection.weyue.utils.ReadSettingManager;
-import com.novel.collection.weyue.utils.ScreenUtils;
-import com.novel.collection.weyue.utils.ToastUtils;
 import com.novel.collection.weyue.widget.IBookChapters;
 import com.novel.collection.weyue.widget.page.NetPageLoader;
-import com.novel.collection.weyue.widget.page.OtherNetPageLoader;
 import com.novel.collection.weyue.widget.page.PageLoader;
 import com.novel.collection.weyue.widget.page.PageView;
 import com.novel.collection.weyue.widget.page.TxtChapter;
@@ -108,19 +94,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -135,14 +116,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javax.security.auth.login.LoginException;
-
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
-import static android.view.View.LAYER_TYPE_SOFTWARE;
-import static com.novel.collection.constant.Constant.text_adress2;
-import static com.novel.collection.constant.Constant.text_name1;
 import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_FINISH;
 
 public class WYReadActivity extends BaseActivity implements View.OnClickListener, IBookChapters {
@@ -212,6 +188,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setTranslucentStatus(this);
+        //StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
     }
 
     @Override
@@ -582,6 +559,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.read.android");//要接收的广播
         registerReceiver(myReceiver, intentFilter);//注册接收者
+
+        //注册广播
+        IntentFilter batteryFilter = new IntentFilter();
+        batteryFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        batteryFilter.addAction(Intent.ACTION_TIME_TICK);
+        registerReceiver(batteryReceiver, batteryFilter);
     }
 
     String load_url;
@@ -719,6 +702,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     txt_page.startAutoPlay();
                 }
                 backgroundAlpha(1f);
+                //StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
             }
         });
     }
@@ -1284,26 +1268,26 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 });
             }
 
-            @Override
-            public void onShowAdm(boolean pos) {
-//                is_adm=pos;
-//                if (pos==true) {
-//                    Log.e("zzz", "onPageChange: "+((mPageLoader.getmCurPage().getPosition())+" "+(mPageLoader.getmCurPageList().size())));
-//                    post_adm(2);
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            adm_lin.setVisibility(View.VISIBLE);
-//                        }
-//                    }, 50);
-//                }else {
-//                    if(activity_opening_videoview.isPlaying()){
-//                        // activity_opening_videoview.stopPlayback();
-//                        activity_opening_videoview.suspend();
-//                    }
-//                    adm_lin.setVisibility(View.GONE);
-//                }
-            }
+//            @Override
+//            public void onShowAdm(boolean pos) {
+////                is_adm=pos;
+////                if (pos==true) {
+////                    Log.e("zzz", "onPageChange: "+((mPageLoader.getmCurPage().getPosition())+" "+(mPageLoader.getmCurPageList().size())));
+////                    post_adm(2);
+////                    new Handler().postDelayed(new Runnable() {
+////                        @Override
+////                        public void run() {
+////                            adm_lin.setVisibility(View.VISIBLE);
+////                        }
+////                    }, 50);
+////                }else {
+////                    if(activity_opening_videoview.isPlaying()){
+////                        // activity_opening_videoview.stopPlayback();
+////                        activity_opening_videoview.suspend();
+////                    }
+////                    adm_lin.setVisibility(View.GONE);
+////                }
+//            }
         });
         mReadSbChapterProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -1638,6 +1622,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 @Override
                 public void onDismiss(DialogInterface dialogInterface) {
                     backgroundAlpha(1f);
+                    //StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
                     if (is_autoRead) {
                         txt_page.startAutoPlay();
                     }
@@ -1973,6 +1958,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     txt_page.startAutoPlay();
                 }
                 backgroundAlpha(1f);
+                //StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
             }
         });
     }
@@ -2009,6 +1995,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(batteryReceiver);
         if (popupWindow != null) {
             popupWindow.dismiss();
         }
@@ -2410,6 +2397,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     txt_page.startAutoPlay();
                 }
                 backgroundAlpha(1f);
+                //StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
             }
         });
 
@@ -2540,5 +2528,20 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         }
     }
+
+    // 接收电池信息和时间更新的广播
+    private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+                int level = intent.getIntExtra("level", 0);
+                mPageLoader.updateBattery(level);
+            }
+            // 监听分钟的变化
+            else if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+                mPageLoader.updateTime();
+            }
+        }
+    };
 
 }

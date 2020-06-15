@@ -1,10 +1,10 @@
 package com.novel.collection.weyue.widget.page;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -12,21 +12,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.novel.collection.R;
+
+import com.gyf.immersionbar.ImmersionBar;
 import com.novel.collection.app.App;
 import com.novel.collection.util.NetUtil;
 import com.novel.collection.util.ToastUtil;
-import com.novel.collection.weyue.utils.NetworkUtils;
 import com.novel.collection.weyue.utils.ScreenUtils;
 import com.novel.collection.weyue.widget.animation.CoverPageAnim;
 import com.novel.collection.weyue.widget.animation.HorizonPageAnim;
 import com.novel.collection.weyue.widget.animation.NonePageAnim;
 import com.novel.collection.weyue.widget.animation.PageAnimation;
-import com.novel.collection.weyue.widget.animation.ScrollPageAnim;
 import com.novel.collection.weyue.widget.animation.ScrollPageAnim2;
 import com.novel.collection.weyue.widget.animation.SimulationAnimation4;
 import com.novel.collection.weyue.widget.animation.SlidePageAnim;
-
 import java.lang.ref.WeakReference;
 
 
@@ -63,7 +61,7 @@ public class PageView extends View {
 
     //动画类
     private PageAnimation mPageAnim;
-
+    private Context mContext;
     public PageAnimation getmPageAnim() {
         return mPageAnim;
     }
@@ -98,6 +96,7 @@ public class PageView extends View {
 
     public PageView(Context context) {
         this(context,null);
+
     }
 
     public PageView(Context context, AttributeSet attrs) {
@@ -106,6 +105,7 @@ public class PageView extends View {
 
     public PageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext=context;
     }
 
     @Override
@@ -118,14 +118,31 @@ public class PageView extends View {
 
         setPageMode(mPageMode);
 
+        mPageLoader.setContext(mContext);
         //重置页面加载器的页面
+        mPageLoader.NO_TOUTCH_HIGHT= ImmersionBar.getNotchHeight((Activity) mContext);
+        if(mPageLoader.NO_TOUTCH_HIGHT==0){
+            mPageLoader.NO_TOUTCH_HIGHT=getStatusBarHeight(mContext);
+        }
+        Log.e("WWW", "onSizeChanged: "+ImmersionBar.getNotchHeight((Activity) mContext)+" "+getStatusBarHeight(mContext));
         mPageLoader.setDisplaySize(w,h);
+
         //初始化完成
         isPrepare = true;
         mAutoPlayTask = new AutoPlayTask(this);
         startAutoPlay();
     }
-
+    /**
+     * 获取状态栏高度
+     * @param context
+     * @return
+     */
+    public static int getStatusBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        int height = resources.getDimensionPixelSize(resourceId);
+        return height;
+    }
     //设置翻页的模式
     public void setPageMode(int pageMode){
         mPageMode = pageMode;
@@ -181,8 +198,8 @@ public class PageView extends View {
 //            return false;
 //        }
 //        else {
-            startPageAnim(PageAnimation.Direction.NEXT);
-               return true;
+        startPageAnim(PageAnimation.Direction.NEXT);
+        return true;
 //        }
     }
 
@@ -191,7 +208,7 @@ public class PageView extends View {
         //是否正在执行动画
         abortAnimation();
 
-        if (mPageMode ==PageView.PAGE_MODE_SCROLL && direction == PageAnimation.Direction.NEXT) {
+        if (mPageMode == PageView.PAGE_MODE_SCROLL && direction == PageAnimation.Direction.NEXT) {
             int x = mViewWidth;
             int y = 0;
             //初始化动画
@@ -364,7 +381,7 @@ public class PageView extends View {
 //        if(adm_bitmap!=null){
 //            drawAdminPage(adm_bitmap);
 //        }else {
-            mPageLoader.onDraw(getNextPage(), false);
+        mPageLoader.onDraw(getNextPage(), false);
 //        }
     }
 
@@ -396,7 +413,7 @@ public class PageView extends View {
      * @param isUpdate
      */
     public void drawCurPage(boolean isUpdate){
- //       if (!isPrepare) return;
+        //       if (!isPrepare) return;
 //        if (!isUpdate) {
 //            if (mPageAnim instanceof ScrollPageAnim2) {
 //                ((ScrollPageAnim2) mPageAnim).resetBitmap();
@@ -407,16 +424,16 @@ public class PageView extends View {
 
     //获取PageLoader
     public PageLoader getPageLoader(boolean isLocal,boolean isother){
-            if (isLocal){
-                mPageLoader = new LocalPageLoader(this);
-            }
-            else {
-//                if(isother==false) {
-                    mPageLoader = new NetPageLoader(this);
-//                }else {
-//                    mPageLoader = new OtherNetPageLoader(this);
-//                }
-            }
+        if (isLocal){
+            mPageLoader = new LocalPageLoader(this);
+        }
+        else {
+                if(isother==false) {
+             mPageLoader = new NetPageLoader(this);
+                }else {
+                    mPageLoader = new OtherNetPageLoader(this);
+                }
+        }
         return mPageLoader;
     }
 

@@ -60,13 +60,13 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
         App.getInstance().addActivity(this);
         mSavedInstanceState = savedInstanceState;
-        try {
+        //try {
             initData();
             initView();
             doAfterInit();
-        }catch (Exception ex){
-            finish();
-        }
+//        }catch (Exception ex){
+//            finish();
+//        }
     }
 
     @Override

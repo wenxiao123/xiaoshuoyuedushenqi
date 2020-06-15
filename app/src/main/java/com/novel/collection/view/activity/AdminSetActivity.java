@@ -2,6 +2,8 @@ package com.novel.collection.view.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 import androidx.core.app.ActivityCompat;
@@ -53,6 +56,7 @@ import com.novel.collection.util.FileUtil;
 import com.novel.collection.util.LogUtils;
 import com.novel.collection.util.SpUtil;
 import com.novel.collection.util.StatusBarUtil;
+import com.novel.collection.util.ToastUtil;
 import com.novel.collection.weyue.utils.Constant;
 import com.novel.collection.weyue.utils.FileUtils;
 import com.novel.collection.widget.TipDialog;
@@ -270,8 +274,11 @@ public class AdminSetActivity extends BaseActivity {
                         startActivityForResult(openCameraIntent, 3); // 参数常量为自定义的request code, 在取返回结果时有用
                     }
                 } else {
-                    Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //系统常量， 启动相机的关键
-                    startActivityForResult(openCameraIntent, 3); // 参数常量为自定义的request code, 在取返回结果时有用
+                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                    //intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(intent, 3);
+//                    Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //系统常量， 启动相机的关键
+//                    startActivityForResult(openCameraIntent, 3); // 参数常量为自定义的request code, 在取返回结果时有用
                 }
                 popupWindow.dismiss();
             }
@@ -286,9 +293,27 @@ public class AdminSetActivity extends BaseActivity {
         tv_pivture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
+//                Intent intent = new Intent(Intent.ACTION_PICK, null);
+//                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//                startActivityForResult(intent, 2);
+
+
+//                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+//                getIntent.setType("image/*");
+//                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                pickIntent.setType("image/*");
+//                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+//                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+//                startActivityForResult(chooserIntent, 2);
+
+//                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(intent, 2);
+
+                Intent intent = new Intent("android.intent.action.GET_CONTENT");
+                //intent.setType("image/*");
                 intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, 2);//打开系统相册
+
             }
         });
         popupWindow.setFocusable(false);
@@ -311,6 +336,58 @@ public class AdminSetActivity extends BaseActivity {
             }
         });
     }
+
+    @TargetApi(19)
+    private void handleImageOnKitkat(Intent data) {
+        String imagePath = null;
+        Uri uri = data.getData();
+        if (DocumentsContract.isDocumentUri(this, uri)) {
+            //如果是document类型的uri，则通过document id处理
+            String docId = DocumentsContract.getDocumentId(uri);
+            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                String id = docId.split(":")[1];
+                String selection = MediaStore.Images.Media._ID + "=" + id;
+                imagePath = getImagePath( MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content:" +
+                        "//downloads/public_downloads"), Long.valueOf(docId));
+                imagePath = getImagePath(contentUri, null);
+            }
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            //如果是content类型的uri，则使用普通方式处理
+            imagePath = getImagePath(uri, null);
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            //如果是File类型的uri，直接获取图片路径即可
+            imagePath = uri.getPath();
+        }
+        File file = new File(imagePath);
+        uploadpost2(file);
+        //根据图片路径显示图片
+        //displayImage(imagePath);
+
+    }
+
+    private void handleImageBeforeKitkat(Intent data) {
+        Uri uri = data.getData();
+        String imagePath = getImagePath(uri, null);
+        File file = new File(imagePath);
+        uploadpost2(file);
+        //displayImage(imagePath);
+
+    }
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        //通过uri和selection来获取真实的图片路径
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
+
     /**
      * 按比例缩放图片
      *
@@ -418,17 +495,22 @@ public class AdminSetActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
             // 从相册返回的数据
-            if (data != null) {
-                //得到图片的全路径
-                Uri uri = data.getData();
-                final String path = getRealPathFromURI(uri);
-                File file = new File(path);
-                //Bitmap bitmap= BitmapFactory.
-                img_name = "img" + System.currentTimeMillis() + "";
-                uploadpost2(file);
+            if (data != null&&resultCode == RESULT_OK) {
+                // 得到图片的全路径
+//                Uri uri = data.getData();
+//                final String path = getRealPathFromURI(uri);
+//                File file = new File(path);
+//                //Bitmap bitmap= BitmapFactory.
+//                img_name = "img" + System.currentTimeMillis() + "";
+//                uploadpost2(file);
+                if (Build.VERSION.SDK_INT >= 19) {
+                    handleImageOnKitkat(data);
+                } else {
+                    handleImageBeforeKitkat(data);
+                }
                 //upload(file.getPath());
             }
-            if (resultCode == RESULT_CANCELED) {
+            if (data != null&&resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "取消操作", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -468,32 +550,36 @@ public class AdminSetActivity extends BaseActivity {
     }
 
     public void postModify(String nickname, String name) {
-        String url = UrlObtainer.GetUrl() + "/api/user/profile";
-        RequestBody requestBody = new FormBody.Builder()
-                .add("token", login_admin.getToken())
-                .add(nickname, name)
-                .build();
-        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    String code = jsonObject.getString("code");
-                    if (code.equals("1")) {
-                        showShortToast("修改成功");
-                    } else {
-                        showShortToast("修改失败");
+        if(login_admin==null){
+            return;
+        }else {
+            String url = UrlObtainer.GetUrl() + "/api/user/profile";
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("token", login_admin.getToken())
+                    .add(nickname, name)
+                    .build();
+            OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+                @Override
+                public void onResponse(String json) {   // 得到 json 数据
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        String code = jsonObject.getString("code");
+                        if (code.equals("1")) {
+                            showShortToast("修改成功");
+                        } else {
+                            showShortToast("修改失败");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(String errorMsg) {
-                showShortToast(errorMsg);
-            }
-        });
+                @Override
+                public void onFailure(String errorMsg) {
+                    showShortToast(errorMsg);
+                }
+            });
+        }
     }
 
     public void postExit() {
@@ -553,7 +639,8 @@ public class AdminSetActivity extends BaseActivity {
                             showShortToast("上传失败");
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                       showShortToast("不支持大于1M的图片");
                     }
                 }
 

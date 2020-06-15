@@ -1,6 +1,7 @@
 package com.novel.collection.banner;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +27,7 @@ import com.novel.collection.app.App;
 import com.novel.collection.entity.bean.Wheel;
 import com.novel.collection.http.UrlObtainer;
 import com.novel.collection.util.ToastUtil;
+import com.novel.collection.view.activity.NovelIntroActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,12 +111,16 @@ public class Banner extends RelativeLayout {
             //循环数组，将首位各加一条数据
             for (int i = 0; i < dataList.size() + 2; i++) {
                 String url;
+                String pid;
                 if (i == 0) {
                     url = dataList.get(dataList.size() - 1).getPicpath();
+                    pid= dataList.get(dataList.size() - 1).getNovel_id();
                 } else if (i == dataList.size() + 1) {
                     url = dataList.get(0).getPicpath();
+                    pid= dataList.get(0).getNovel_id();
                 } else {
                     url = dataList.get(i - 1).getPicpath();
+                    pid= dataList.get(i - 1).getNovel_id();
                 }
 
                 if (MimeTypeMap.getFileExtensionFromUrl(url).equals("mp4")) {
@@ -134,6 +140,10 @@ public class Banner extends RelativeLayout {
                     videoView.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                            // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                            intent.putExtra("pid", pid + "");
+                            getContext().startActivity(intent);
                             //ToastUtil.showToast(getContext(), finalDataList3.get(0).getNovel_id()+"");
                         }
                     });
@@ -159,6 +169,10 @@ public class Banner extends RelativeLayout {
                     imageView.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                            // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                            intent.putExtra("pid", pid);
+                            getContext().startActivity(intent);
                             //ToastUtil.showToast(getContext(), finalDataList2.get(0).getNovel_id()+"");
                         }
                     });
@@ -167,6 +181,7 @@ public class Banner extends RelativeLayout {
         } else if (dataList.size() == 1) {
             autoCurrIndex = 0;
             String url = dataList.get(0).getPicpath();
+            String pid= dataList.get(0).getNovel_id();
             if (MimeTypeMap.getFileExtensionFromUrl(url).equals("mp4")) {
                 if (url.contains("http:")) {
                     url = url;
@@ -193,6 +208,10 @@ public class Banner extends RelativeLayout {
                 videoView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                        // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                        intent.putExtra("pid", pid);
+                        getContext().startActivity(intent);
                         //ToastUtil.showToast(getContext(), finalDataList.get(0).getNovel_id()+"");
                     }
                 });
@@ -211,6 +230,10 @@ public class Banner extends RelativeLayout {
                 imageView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Intent intent = new Intent(getContext(), NovelIntroActivity.class);
+                        // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                        intent.putExtra("pid", pid);
+                        getContext().startActivity(intent);
                        //ToastUtil.showToast(getContext(), finalDataList1.get(0).getNovel_id()+"");
                     }
                 });

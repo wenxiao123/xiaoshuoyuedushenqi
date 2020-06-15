@@ -1,8 +1,6 @@
 package com.novel.collection.weyue.utils;
 
 
-import com.novel.collection.R;
-import com.novel.collection.app.App;
 import com.novel.collection.weyue.widget.page.PageView;
 
 /**

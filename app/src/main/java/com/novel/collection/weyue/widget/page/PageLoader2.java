@@ -1,33 +1,15 @@
 package com.novel.collection.weyue.widget.page;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.os.Build;
-import android.text.TextPaint;
-import android.util.Log;
-import android.view.View;
-
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
-import com.gyf.immersionbar.ImmersionBar;
 import com.novel.collection.R;
-
-
 import com.novel.collection.app.App;
 import com.novel.collection.constant.Constant;
-import com.novel.collection.db.DatabaseManager;
+import com.novel.collection.http.OkhttpCall;
+import com.novel.collection.http.OkhttpUtil;
+import com.novel.collection.http.UrlObtainer;
+import com.novel.collection.util.AdsUtils;
+import com.novel.collection.view.activity.WYReadActivity;
 import com.novel.collection.weyue.db.entity.BookRecordBean;
 import com.novel.collection.weyue.db.entity.CollBookBean;
-import com.novel.collection.weyue.db.entity.DaoSession;
 import com.novel.collection.weyue.db.helper.BookRecordHelper;
 import com.novel.collection.weyue.utils.IOUtils;
 import com.novel.collection.weyue.utils.ReadSettingManager;
@@ -35,27 +17,55 @@ import com.novel.collection.weyue.utils.ScreenUtils;
 import com.novel.collection.weyue.utils.StringUtils;
 import com.novel.collection.weyue.utils.ToastUtils;
 import com.novel.collection.weyue.utils.rxhelper.RxUtils;
+import com.novel.collection.weyue.widget.animation.ScrollPageAnim;
+import com.novel.collection.weyue.widget.animation.ScrollPageAnim2;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.List;
+
+
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.text.TextPaint;
+import android.util.Log;
+import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
-
+import static com.novel.collection.app.App.getAppResources;
+import static com.novel.collection.app.App.getContext;
 
 /**
  * Created by newbiechen on 17-7-1.
  */
 
-public abstract class PageLoader {
+public abstract class PageLoader2 {
     private static final String TAG = "PageLoader";
 
     //当前页面的状态
@@ -67,10 +77,7 @@ public abstract class PageLoader {
     public static final int STATUS_PARSE_ERROR = 6; //本地文件解析错误(暂未被使用)
 
     static final int DEFAULT_MARGIN_HEIGHT = 28;
-    public    int NO_TOUTCH_HIGHT;
-
     static final int DEFAULT_MARGIN_WIDTH = 12;
-
 
     //默认的显示参数配置
     private static final int DEFAULT_TIP_SIZE = 12;
@@ -144,7 +151,7 @@ public abstract class PageLoader {
             if (!isBookOpen) return;
             int interval = intervals[mTextInterval];
             this.mTextInterval = App.getAppResources().getDimensionPixelOffset(interval);
-            mTitleSize = mTextSize + App.getAppResources().getDimensionPixelOffset(R.dimen.dp_4);//ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
+            mTitleSize = mTextSize + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_4);//ScreenUtils.spToPx(EXTRA_TITLE_SIZE);
 
             //mTitleInterval = mTitleInterval;
             mTitlePara = mTitleSize;
@@ -291,7 +298,7 @@ public abstract class PageLoader {
     private boolean isNightMode;
 
     /*****************************init params*******************************/
-    public PageLoader(PageView pageView) {
+    public PageLoader2(PageView pageView) {
         mPageView = pageView;
         try {
             //初始化数据
@@ -332,7 +339,6 @@ public abstract class PageLoader {
         //初始化参数
         mMarginWidth = ScreenUtils.dpToPx(DEFAULT_MARGIN_WIDTH);
         mMarginHeight = ScreenUtils.dpToPx(DEFAULT_MARGIN_HEIGHT);
-
         //mTextInterval = mTextSize / 2;
         mTitleInterval = mTitleSize / 2;
         mTextPara = mTextSize; //段落间距由 text 的高度决定。
@@ -376,16 +382,16 @@ public abstract class PageLoader {
         }
         Typeface tf = null;
         if (mTextStyle != null && !mTextStyle.equals("")) {
-            AssetManager mgr =App.getAppContext().getAssets();
+            AssetManager mgr = getContext().getAssets();
             //根据路径得到Typeface
             if (mTextStyle.equals("1")) {
-                tf = Typeface.createFromAsset(mgr, com.novel.collection.constant.Constant.text_adress1);
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
             } else if (mTextStyle.equals("2")) {
-                tf = Typeface.createFromAsset(mgr,  com.novel.collection.constant.Constant.text_adress2);
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress2);
             } else if (mTextStyle.equals("3")) {
-                tf = Typeface.createFromAsset(mgr,  com.novel.collection.constant.Constant.text_adress3);
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress3);
             } else if (mTextStyle.equals("4")) {
-                tf = Typeface.createFromAsset(mgr,  com.novel.collection.constant.Constant.text_adress4);
+                tf = Typeface.createFromAsset(mgr, Constant.text_adress4);
             } else if (mTextStyle.equals("-1")) {
                 tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
             }
@@ -597,10 +603,10 @@ public abstract class PageLoader {
             Typeface tf = null;
             if (type != null && !type.equals("")) {
                 //从asset 读取字体
-                AssetManager mgr = App.getAppContext().getAssets();
+                AssetManager mgr = getContext().getAssets();
 //根据路径得到Typeface
                 if (type.equals("1")) {
-                    tf = Typeface.createFromAsset(mgr, com.novel.collection.constant.Constant.text_adress1);
+                    tf = Typeface.createFromAsset(mgr, Constant.text_adress1);
                 } else if (type.equals("2")) {
                     tf = Typeface.createFromAsset(mgr, Constant.text_adress2);
                 } else if (type.equals("3")) {
@@ -660,8 +666,8 @@ public abstract class PageLoader {
     //绘制背景
     public void setBgColor(int theme) {
         if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
-            mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_fff_99);
-            mPageBg = ContextCompat.getColor(App.getContext(), R.color.black);
+            mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_fff_99);
+            mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.black);
             isbackground = false;
         } else if (isNightMode) {
             mBgTheme = theme;
@@ -670,24 +676,24 @@ public abstract class PageLoader {
             mSettingManager.setReadBackground(theme);
             switch (theme) {
                 case ReadSettingManager.READ_BG_DEFAULT:
-                    mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor1);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor1);
                     break;
                 case ReadSettingManager.READ_BG_1:
-                    mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor2);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor2);
                     break;
                 case ReadSettingManager.READ_BG_2:
-                    mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor3);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor3);
                     break;
                 case ReadSettingManager.READ_BG_3:
-                    mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor4);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor4);
                     break;
                 case ReadSettingManager.READ_BG_4:
-                    mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor5);
+                    mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor5);
                     break;
             }
         }
@@ -704,8 +710,8 @@ public abstract class PageLoader {
 
     public void setBgColor(int theme, View v, View tv) {
 //        if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
-//            mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_fff_99);
-//            mPageBg = ContextCompat.getColor(App.getContext(), R.color.black);
+//            mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_fff_99);
+//            mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.black);
 //        } else if (isNightMode) {
 //            mBgTheme = theme;
 //            mSettingManager.setReadBackground(theme);
@@ -714,33 +720,33 @@ public abstract class PageLoader {
         mSettingManager.setNightMode(false);
         switch (theme) {
             case ReadSettingManager.READ_BG_DEFAULT:
-                mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor1);
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor1);
                 break;
             case ReadSettingManager.READ_BG_1:
-                mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor2);
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor2);
                 break;
             case ReadSettingManager.READ_BG_2:
-                mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor3);
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor3);
                 break;
             case ReadSettingManager.READ_BG_3:
-                mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor4);
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor4);
                 break;
             case ReadSettingManager.READ_BG_4:
-                mTextColor = ContextCompat.getColor(App.getContext(), R.color.color_2c);
-                mPageBg = ContextCompat.getColor(App.getContext(), R.color.hwtxtreader_styleclor5);
+                mTextColor = ContextCompat.getColor(App.getAppContext(), R.color.color_2c);
+                mPageBg = ContextCompat.getColor(App.getAppContext(), R.color.hwtxtreader_styleclor5);
                 break;
         }
 //        }
 
         if (isBookOpen) {
-//            if(mPageBg==ContextCompat.getColor(App.getContext(), R.color.color_cec29c)){
+//            if(mPageBg==ContextCompat.getColor(App.getAppContext(), R.color.color_cec29c)){
 //                isbackground=true;
 //                v.setBackgroundColor(mPageBg);
-//                v.setBackground(getApp.getContext().Resources().getDrawable(R.mipmap.img_background2));
+//                v.setBackground(getAppResources().getDrawable(R.mipmap.img_background2));
 //            }else {
 //                isbackground=false;
             v.setBackgroundColor(mPageBg);
@@ -800,7 +806,6 @@ public abstract class PageLoader {
 
             //存储到数据库
             BookRecordHelper.getsInstance().saveRecordBook(mBookRecord);
-           //DatabaseManager.getInstance().insertOrReplace(mBookRecord);
         }catch (Exception ex){
 
         }
@@ -1085,13 +1090,13 @@ public abstract class PageLoader {
 
     void drawBackground(Bitmap bitmap, boolean isUpdate) {
         Canvas canvas = new Canvas(bitmap);
-        int tipMarginHeight = ScreenUtils.dpToPx(10);
+        int tipMarginHeight = ScreenUtils.dpToPx(3);
         if (!isUpdate) {
             /****绘制背景****/
             canvas.drawColor(mPageBg);
             /*****初始化标题的参数********/
             //需要注意的是:绘制text的y的起始点是text的基准线的位置，而不是从text的头部的位置
-            float tipTop = tipMarginHeight - mTipPaint.getFontMetrics().top+NO_TOUTCH_HIGHT;
+            float tipTop = tipMarginHeight - mTipPaint.getFontMetrics().top;
             //根据状态不一样，数据不一样
             if (mStatus != STATUS_FINISH) {
                 if (mChapterList != null && mChapterList.size() != 0) {
@@ -1112,73 +1117,64 @@ public abstract class PageLoader {
                         s = s.substring(0, 14) + "...";
                     }
                     canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
+//                String sth=(getChapterPos()+1)+"/"+mChapterList.size();
+//                canvas.drawText(sth, mVisibleWidth-mMarginWidth-sth.length(), tipTop, mTipPaint);
                     mTipPaint.setColor(mTextColor);
 
                     /******绘制页码********/
                     //底部的字显示的位置Y
                     float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
-
                     //只有finish的时候采用页码
                     if (mStatus == STATUS_FINISH&&mCurPageList!=null) {
-
-                        String percent = (mCurPage.position + 1)  *100/ mCurPageList.size()+"%";
-                        Rect rect=new Rect();
-                        mTipPaint.getTextBounds(percent,0,percent.length(),rect);
-                        float x= mDisplayWidth -rect.right-mMarginWidth;
-                        canvas.drawText(percent, x, y, mTipPaint);
-
-                        String sth=(getChapterPos()+1)+"/"+mChapterList.size();
-                        Rect rectChapter=new Rect();
-                        mTipPaint.getTextBounds(sth,0,sth.length(),rectChapter);
-                        float mChapterStart= mDisplayWidth -rectChapter.right-mMarginWidth;
-                        canvas.drawText(sth, mChapterStart, tipTop, mTipPaint);
+                        String percent = (mCurPage.position + 1) + "/" + mCurPageList.size();
+                        canvas.drawText(percent, mMarginWidth, y, mTipPaint);
                     }
                 }
             }
         } else {
             //擦除区域
             mBgPaint.setColor(mPageBg);
-            canvas.drawRect(0, mDisplayHeight - mMarginHeight -tipMarginHeight, mDisplayWidth/2, mDisplayHeight, mBgPaint);
+            canvas.drawRect(mDisplayWidth / 2, mDisplayHeight - mMarginHeight + ScreenUtils.dpToPx(2), mDisplayWidth, mDisplayHeight, mBgPaint);
         }
         /******绘制电池********/
 
-        int visibleRight =  mMarginWidth;
-        int visibleBottom = mDisplayHeight - tipMarginHeight;
-
-        int outFrameWidth = (int) mTipPaint.measureText("xxx");
-        int outFrameHeight = (int) mTipPaint.getTextSize();
-
-        int polarHeight = ScreenUtils.dpToPx(6);
-        int polarWidth = ScreenUtils.dpToPx(2);
-        int border = 1;
-        int innerMargin = 1;
+//        int visibleRight = mDisplayWidth - mMarginWidth;
+//        int visibleBottom = mDisplayHeight - tipMarginHeight;
+//
+//        int outFrameWidth = (int) mTipPaint.measureText("xxx");
+//        int outFrameHeight = (int) mTipPaint.getTextSize();
+//
+//        int polarHeight = ScreenUtils.dpToPx(6);
+//        int polarWidth = ScreenUtils.dpToPx(2);
+//        int border = 1;
+//        int innerMargin = 1;
 
         //电极的制作
-        int polarLeft = visibleRight + outFrameWidth;
-        int polarTop = visibleBottom - (outFrameHeight + polarHeight) / 2;
-        Rect polar = new Rect(polarLeft, polarTop, polarLeft+polarWidth,
-                polarTop + polarHeight - ScreenUtils.dpToPx(2));
-
-        mBatteryPaint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(polar, mBatteryPaint);
-
-        //外框的制作
-        int outFrameLeft = visibleRight;
-        int outFrameTop = visibleBottom - outFrameHeight;
-        int outFrameBottom = visibleBottom - ScreenUtils.dpToPx(2);
-        Rect outFrame = new Rect(outFrameLeft, outFrameTop, outFrameLeft+outFrameWidth, outFrameBottom);
-
-        mBatteryPaint.setStyle(Paint.Style.STROKE);
-        mBatteryPaint.setStrokeWidth(border);
-        canvas.drawRect(outFrame, mBatteryPaint);
-
-        //内框的制作
-        float innerWidth = (outFrame.width() - innerMargin * 2 - border) * (mBatteryLevel / 100.0f);
-        RectF innerFrame = new RectF(outFrameLeft + border + innerMargin, outFrameTop + border + innerMargin,
-                outFrameLeft + border + innerMargin + innerWidth, outFrameBottom - border - innerMargin);
-
-        mBatteryPaint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(innerFrame, mBatteryPaint);
+//        int polarLeft = visibleRight - polarWidth;
+//        int polarTop = visibleBottom - (outFrameHeight + polarHeight) / 2;
+//        Rect polar = new Rect(polarLeft, polarTop, visibleRight,
+//                polarTop + polarHeight - ScreenUtils.dpToPx(2));
+//
+//        mBatteryPaint.setStyle(Paint.Style.FILL);
+//        canvas.drawRect(polar, mBatteryPaint);
+//
+//        //外框的制作
+//        int outFrameLeft = polarLeft - outFrameWidth;
+//        int outFrameTop = visibleBottom - outFrameHeight;
+//        int outFrameBottom = visibleBottom - ScreenUtils.dpToPx(2);
+//        Rect outFrame = new Rect(outFrameLeft, outFrameTop, polarLeft, outFrameBottom);
+//
+//        mBatteryPaint.setStyle(Paint.Style.STROKE);
+//        mBatteryPaint.setStrokeWidth(border);
+//        canvas.drawRect(outFrame, mBatteryPaint);
+//
+//        //内框的制作
+//        float innerWidth = (outFrame.width() - innerMargin * 2 - border) * (mBatteryLevel / 100.0f);
+//        RectF innerFrame = new RectF(outFrameLeft + border + innerMargin, outFrameTop + border + innerMargin,
+//                outFrameLeft + border + innerMargin + innerWidth, outFrameBottom - border - innerMargin);
+//
+//        mBatteryPaint.setStyle(Paint.Style.FILL);
+//        canvas.drawRect(innerFrame, mBatteryPaint);
 
         /******绘制当前时间********/
         //底部的字显示的位置Y
@@ -1226,9 +1222,9 @@ public abstract class PageLoader {
             float top;
 
             if (mPageMode == PageView.PAGE_MODE_SCROLL) {
-                top = -mTextPaint.getFontMetrics().top+NO_TOUTCH_HIGHT;
+                top = -mTextPaint.getFontMetrics().top;
             } else {
-                top = mMarginHeight - mTextPaint.getFontMetrics().top+NO_TOUTCH_HIGHT;
+                top = mMarginHeight - mTextPaint.getFontMetrics().top;
             }
 
             //设置总距离
@@ -1271,9 +1267,9 @@ public abstract class PageLoader {
                             top += interval;
                         }
                     }
-//                    mPageChangeListener.onShowAdm(false);
+                    mPageChangeListener.onShowAdm(false);
                 } else {
-//                    mPageChangeListener.onShowAdm(true);
+                    mPageChangeListener.onShowAdm(true);
                 }
             }
         }
@@ -1385,7 +1381,7 @@ public abstract class PageLoader {
 
         //获取内容显示位置的大小
         mVisibleWidth = mDisplayWidth - mMarginWidth * 2;
-        mVisibleHeight = mDisplayHeight - mMarginHeight * 2-NO_TOUTCH_HIGHT;
+        mVisibleHeight = mDisplayHeight - mMarginHeight * 2;
 
         //创建用来缓冲的 Bitmap
         mNextBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
@@ -1746,11 +1742,6 @@ public abstract class PageLoader {
         //由于解析失败，让其退出
         return true;
     }
-    private Context mContext;
-    public void setContext(Context mContext) {
-        this.mContext=mContext;
-        mMarginHeight = ScreenUtils.dpToPx(DEFAULT_MARGIN_HEIGHT) ;
-    }
 
     /*****************************************interface*****************************************/
 
@@ -1770,8 +1761,8 @@ public abstract class PageLoader {
         //页面改变
         void onPageChange(int pos);
 
-//        //页面改变
-//        void onShowAdm(boolean isflag);
+        //页面改变
+        void onShowAdm(boolean isflag);
     }
 }
 

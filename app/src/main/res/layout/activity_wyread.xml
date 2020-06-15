@@ -10,6 +10,7 @@
         android:id="@+id/v_title"
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:visibility="gone"
         android:scaleType="centerCrop" />
 
     <FrameLayout
@@ -187,6 +188,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:gravity="right"
+            android:visibility="gone"
             android:paddingRight="10dp"
             android:textColor="@color/word_color"
             android:textSize="12sp" />

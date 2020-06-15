@@ -823,6 +823,17 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
             txt_book_load.setText("缓存中...");
         }
+        if (mDbManager.isExistInBookshelfNovel(pid)) {
+            BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(pid);
+            Log.e("WWW1", "doAfterInit: "+bookshelfNovelDbData);
+            if(bookshelfNovelDbData.getType()>=0){
+                tv_book_add.setText("移除书架");
+            }else {
+                tv_book_add.setText("加入书架");
+            }
+        } else {
+            tv_book_add.setText("加入书架");
+        }
     }
 
     int z = 1;
