@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.novel.collection.app.App;
+import com.novel.collection.util.ActivityHook;
 import com.novel.collection.util.EventBusUtil;
 import com.novel.collection.util.ToastUtil;
 import com.novel.collection.view.activity.WYReadActivity;
@@ -28,6 +29,7 @@ public abstract class BaseActivity_other<T extends BasePresenter> extends AppCom
     private Bundle mSavedInstanceState;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ActivityHook.hookOrientation(this);//hook，绕过检查
         super.onCreate(savedInstanceState);
 //        App.updateNightMode(isNight);
         doBeforeSetContentView();
@@ -42,9 +44,13 @@ public abstract class BaseActivity_other<T extends BasePresenter> extends AppCom
         }
         App.getInstance().addActivity(this);
         mSavedInstanceState = savedInstanceState;
-        initData();
-        initView();
-        doAfterInit();
+        try {
+            initData();
+            initView();
+            doAfterInit();
+        }catch (Exception ex){
+            finish();
+        }
 //        String is_naghit=intent.getStringExtra("is_naghit");
 //        if(is_naghit!=null&&is_naghit.equals("2")){
 //            mBookshelfBeforeIv.setVisibility(View.VISIBLE);

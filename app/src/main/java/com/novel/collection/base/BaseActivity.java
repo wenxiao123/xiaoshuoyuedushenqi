@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.novel.collection.R;
 import com.novel.collection.app.App;
+import com.novel.collection.util.ActivityHook;
 import com.novel.collection.util.EventBusUtil;
 import com.novel.collection.util.NetUtil;
 import com.novel.collection.util.SpUtil;
@@ -41,6 +42,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     private Bundle mSavedInstanceState;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ActivityHook.hookOrientation(this);//hook，绕过检查
         super.onCreate(savedInstanceState);
 //        App.updateNightMode(isNight);
         doBeforeSetContentView();
@@ -60,13 +62,13 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
         App.getInstance().addActivity(this);
         mSavedInstanceState = savedInstanceState;
-        //try {
+        try {
             initData();
             initView();
             doAfterInit();
-//        }catch (Exception ex){
-//            finish();
-//        }
+        }catch (Exception ex){
+            finish();
+        }
     }
 
     @Override

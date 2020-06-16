@@ -325,7 +325,8 @@ public class NetPageLoader extends PageLoader {
     private void getCatalogDataError(String catalogData) {
 
     }
-
+    int mCurposition = 0;
+    boolean is_first;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -338,7 +339,17 @@ public class NetPageLoader extends PageLoader {
                 if (mPageChangeListener != null) {
                     mPageChangeListener.onCategoryFinish(mChapterList);
                 }
-                loadCurrentChapter();
+                if(mCurChapterPos<mChapterList.size()) {
+                    if(mCurposition!=mCurChapterPos&&is_first==true){
+                        mCurChapterPos=mCurposition;
+                    }
+                    mCurposition=0;
+                    is_first=false;
+                    loadCurrentChapter();
+                }else {
+                    is_first=true;
+                    mCurposition=mCurChapterPos;
+                }
             } else if (msg.what == 3) {
                 o++;
                 getOtherCatalogData(other_id, o, 1);

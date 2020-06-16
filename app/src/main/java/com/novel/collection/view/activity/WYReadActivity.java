@@ -43,6 +43,8 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 
+import com.gyf.immersionbar.BarHide;
+import com.gyf.immersionbar.ImmersionBar;
 import com.novel.collection.R;
 import com.novel.collection.adapter.ChangeCategoryAdapter;
 import com.novel.collection.adapter.ChangeOtherCategoryAdapter;
@@ -187,8 +189,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void doBeforeSetContentView() {
-        StatusBarUtil.setTranslucentStatus(this);
-        //StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
+        //StatusBarUtil.setTranslucentStatus(this);
+        StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
     }
 
     @Override
@@ -1082,11 +1084,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onAnimationEnd(Animation animation) {
                 // 结束时重置标记
                 mIsShowingOrHidingBar = true;
+                //ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_SHOW_BAR).statusBarDarkFont(true).init();
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
+                ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_SHOW_BAR).statusBarDarkFont(true).init();
             }
         });
         Animation bottomAnim = AnimationUtils.loadAnimation(
@@ -1114,12 +1117,13 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             public void onAnimationEnd(Animation animation) {
                 rv_read_top_bar.setVisibility(View.GONE);
                 mIsShowingOrHidingBar = false;
-                StatusBarUtil.setLightColorStatusBar(WYReadActivity.this);
+                //ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_HIDE_BAR).init();
+                //StatusBarUtil.setLightColorStatusBar(WYReadActivity.this);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
+                ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_HIDE_BAR).init();
             }
         });
         Animation bottomExitAnim = AnimationUtils.loadAnimation(

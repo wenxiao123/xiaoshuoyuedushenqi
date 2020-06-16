@@ -137,7 +137,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mUrl = getIntent().getStringExtra(KEY_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
-        weigh = getIntent().getIntExtra("weigh", 0);
+        //weigh = getIntent().getIntExtra("weigh", 0);
         chapter_id = getIntent().getIntExtra("chapter_id", 0);
         queryBookMarks(mUrl);
         app = (App) getApplication();
@@ -356,7 +356,17 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                    bundle.putString(WYReadActivity.CHPTER_ID, catalogDataAll.get(position).getWeigh() - 1 + "");
+                   // bundle.putString(WYReadActivity.CHPTER_ID, s_id);
+                    if (mIsReverse == false) {
+                       // intent_recever.putExtra("chpter",position);
+                        bundle.putString(WYReadActivity.CHPTER_ID, position + "");
+                    } else {
+                        if(weigh==0){
+                            weigh=catalogDataAll.size();
+                        }
+                        //intent_recever.putExtra("chpter",(catalogDataAll.size() - position - 1));
+                        bundle.putString(WYReadActivity.CHPTER_ID, (weigh - position - 1) + "");
+                    }
                     startActivity(WYReadActivity.class, bundle);
                     if (mReadActivity != null) {
                         mReadActivity.finish();
@@ -392,6 +402,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mChapterOrderTv.setVisibility(View.GONE);
         mChapterOrderTv.setVisibility(View.VISIBLE);
         mChapterCountTv.setText("共" + weight+ "章");
+        this.weigh=weight;
         catalogDataAll.addAll(catalogData);//new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         WrapContentLinearLayoutManager linearLayoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         int last = linearLayoutManager.findLastVisibleItemPosition();
@@ -493,8 +504,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         catalogDataAll.clear();
         mCatalogAdapter.notifyDataSetChanged();
         mProgressBar.setVisibility(View.VISIBLE);
+        //catalogDataAll = mDbManager.queryAllCataloginfo(mUrl);
         z = 1;
         mPresenter.getCatalogData(mUrl, z, type);
+        mRefreshSrv.setEnableLoadMore(true);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

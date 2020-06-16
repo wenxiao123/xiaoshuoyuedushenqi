@@ -121,10 +121,10 @@ public class PageView extends View {
         mPageLoader.setContext(mContext);
         //重置页面加载器的页面
         mPageLoader.NO_TOUTCH_HIGHT= ImmersionBar.getNotchHeight((Activity) mContext);
-        if(mPageLoader.NO_TOUTCH_HIGHT==0){
-            mPageLoader.NO_TOUTCH_HIGHT=getStatusBarHeight(mContext);
-        }
-        Log.e("WWW", "onSizeChanged: "+ImmersionBar.getNotchHeight((Activity) mContext)+" "+getStatusBarHeight(mContext));
+//        if(mPageLoader.NO_TOUTCH_HIGHT==0){
+//            mPageLoader.NO_TOUTCH_HIGHT=getStatusBarHeight(mContext);
+//        }
+//        Log.e("WWW", "onSizeChanged: "+ImmersionBar.getNotchHeight((Activity) mContext)+" "+getStatusBarHeight(mContext));
         mPageLoader.setDisplaySize(w,h);
 
         //初始化完成

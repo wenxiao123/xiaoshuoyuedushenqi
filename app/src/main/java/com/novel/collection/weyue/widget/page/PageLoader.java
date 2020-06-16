@@ -525,7 +525,7 @@ public abstract class PageLoader {
         }
     }
 
-    int[] ints = {R.dimen.dp_14, R.dimen.dp_16, R.dimen.dp_18, R.dimen.dp_20, R.dimen.dp_22, R.dimen.dp_24, R.dimen.dp_26, R.dimen.dp_28, R.dimen.dp_29, R.dimen.dp_30, R.dimen.dp_32, R.dimen.dp_34, R.dimen.dp_36, R.dimen.dp_38, R.dimen.dp_39};
+    int[] ints = {R.dimen.dp_15, R.dimen.dp_17, R.dimen.dp_19, R.dimen.dp_21, R.dimen.dp_23, R.dimen.dp_25, R.dimen.dp_27, R.dimen.dp_29, R.dimen.dp_31, R.dimen.dp_33, R.dimen.dp_35, R.dimen.dp_37, R.dimen.dp_39, R.dimen.dp_41, R.dimen.dp_43};
     int[] intervals = {R.dimen.dp_2, R.dimen.dp_4, R.dimen.dp_6, R.dimen.dp_8, R.dimen.dp_10, R.dimen.dp_12, R.dimen.dp_14, R.dimen.dp_16, R.dimen.dp_18, R.dimen.dp_20};
 
     public int text_size() {
@@ -564,7 +564,6 @@ public abstract class PageLoader {
             if (mStatus == STATUS_FINISH) {
                 //重新计算页面
                 mCurPageList = loadPageList(mCurChapterPos);
-
                 //防止在最后一页，通过修改字体，以至于页面数减少导致崩溃的问题
                 if (mCurPage.position >= mCurPageList.size()) {
                     mCurPage.position = mCurPageList.size() - 1;
@@ -1121,7 +1120,8 @@ public abstract class PageLoader {
                     //只有finish的时候采用页码
                     if (mStatus == STATUS_FINISH&&mCurPageList!=null) {
 
-                        String percent = (mCurPage.position + 1)  *100/ mCurPageList.size()+"%";
+                        //String percent = (mCurPage.position + 1)  *100/ mCurPageList.size()+"%";
+                        String percent = (mCurPage.position + 1)+"/"+mCurPageList.size();
                         Rect rect=new Rect();
                         mTipPaint.getTextBounds(percent,0,percent.length(),rect);
                         float x= mDisplayWidth -rect.right-mMarginWidth;
@@ -1130,6 +1130,7 @@ public abstract class PageLoader {
                         String sth=(getChapterPos()+1)+"/"+mChapterList.size();
                         Rect rectChapter=new Rect();
                         mTipPaint.getTextBounds(sth,0,sth.length(),rectChapter);
+//                        float mChapterStart= mDisplayWidth -rectChapter.right-mMarginWidth;
                         float mChapterStart= mDisplayWidth -rectChapter.right-mMarginWidth;
                         canvas.drawText(sth, mChapterStart, tipTop, mTipPaint);
                     }
@@ -1138,7 +1139,7 @@ public abstract class PageLoader {
         } else {
             //擦除区域
             mBgPaint.setColor(mPageBg);
-            canvas.drawRect(0, mDisplayHeight - mMarginHeight -tipMarginHeight, mDisplayWidth/2, mDisplayHeight, mBgPaint);
+            canvas.drawRect(0, mDisplayHeight - mMarginHeight,mDisplayWidth/2, mDisplayHeight, mBgPaint);//-tipMarginHeight
         }
         /******绘制电池********/
 

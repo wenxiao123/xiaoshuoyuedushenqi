@@ -139,7 +139,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     private LinearLayout mMenuIv;
     private ImageView mTopBgIv;
     private TextView mNovelNameTv;
-    private TextView mNovelAuthorTv;
+    private TextView mNovelAuthorTv,txt_catalog_name;
     private TextView mNovelIntroduceTv;
     private TextView mMoreIntroduceIv;
     private LinearLayout mCatalogTv;
@@ -273,6 +273,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         //constraintLayout = findViewById(R.id.all);
         progressBar = findViewById(R.id.pb_catalog);
         //iv_load = findViewById(R.id.iv_load);
+        txt_catalog_name=findViewById(R.id.txt_catalog_name);
         tv_book_add = findViewById(R.id.tv_book_add);
         tv_book_add.setOnClickListener(this);
         tv_begain_read = findViewById(R.id.txt_read);
@@ -1085,6 +1086,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
        if(novalDetails.size()==0){
            title_rel.setVisibility(View.GONE);
        }
+        txt_catalog_name.setText("热门"+noval_details.getCategory_name()+"小说");
         if (j <= 1) {
             l_all.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
