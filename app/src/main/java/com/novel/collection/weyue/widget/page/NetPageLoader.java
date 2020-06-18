@@ -63,10 +63,12 @@ public class NetPageLoader extends PageLoader {
     @Override
     public void openBook(CollBookBean collBook, BookRecordBean bookRecordBean) {
         super.openBook(collBook, bookRecordBean);
+        Log.e("QQQ33", "openBook: "+collBook.getChaptersCount());
         databaseManager = DatabaseManager.getInstance();
         isBookOpen = false;
+        setWeight(collBook.getChaptersCount());
         if (collBook.getCataloginfos() != null) {
-            if (collBook.getCataloginfos().size() == 0) {
+            if (collBook.getCataloginfos().size() == 0||collBook.getCataloginfos().size()!=collBook.getChaptersCount()) {
                 getCatalogData(mCollBook.get_id(), z, 1);
             } else {
                 mChapterList = convertTxtChapter(collBook.getCataloginfos());

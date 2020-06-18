@@ -115,12 +115,11 @@ public class PageView extends View {
         mViewHeight = h;
         //重置图片的大小,由于w,h可能比原始的Bitmap更大，所以如果使用Bitmap.setWidth/Height()是会报错的。
         //所以最终还是创建Bitmap的方式。这种方式比较消耗性能，暂时没有找到更好的方法。
-
+        mPageLoader.NO_TOUTCH_HIGHT= ImmersionBar.getNotchHeight((Activity) mContext);
         setPageMode(mPageMode);
 
         mPageLoader.setContext(mContext);
-        //重置页面加载器的页面
-        mPageLoader.NO_TOUTCH_HIGHT= ImmersionBar.getNotchHeight((Activity) mContext);
+        //重置页面加载器的页
 //        if(mPageLoader.NO_TOUTCH_HIGHT==0){
 //            mPageLoader.NO_TOUTCH_HIGHT=getStatusBarHeight(mContext);
 //        }
@@ -163,8 +162,10 @@ public class PageView extends View {
                 mPageAnim = new NonePageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);
                 break;
             case PAGE_MODE_SCROLL:
-                mPageAnim = new ScrollPageAnim2(mViewWidth, mViewHeight, 0,
-                        ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener);
+//                mPageAnim = new ScrollPageAnim2(mViewWidth, mViewHeight, 0,
+//                        ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener);
+                mPageAnim = new ScrollPageAnim2(mViewWidth, mViewHeight-mPageLoader.NO_TOUTCH_HIGHT, 0,
+                        ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener,mPageLoader.NO_TOUTCH_HIGHT);
                 break;
             default:
                 mPageAnim = new SimulationAnimation4(mViewWidth, mViewHeight,this,mPageAnimListener);

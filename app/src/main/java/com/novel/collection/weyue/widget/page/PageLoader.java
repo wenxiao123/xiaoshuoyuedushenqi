@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -975,8 +976,24 @@ public abstract class PageLoader {
                             rHeight -= mTextInterval;
                         }
                     }
-                    //裁剪
+                    else {
+                        //如果刚好只剩换行符，因不显示，只增加段落高度而不增加文字高度，故先把预先扣除的字体高度添加回来再扣除需要增加的段落高度
+                        //同时吧换行符字符串添加到列表里，用于处理drawcontent里判断需要区分段落的判断
+                        lines.add(subStr);
+                        if (isTitle) {
+                            rHeight += mTitlePaint.getTextSize();
+                            titleLinesCount += 1;
+                            rHeight -= mTitleInterval;
+                        } else {
+                            rHeight += mTextPaint.getTextSize();
+                            rHeight -= mTextInterval;
+                        }
+                    }
+                        //裁剪
                     paragraph = paragraph.substring(wordCount);
+//                    if(paragraph.length()<=wordCount){
+//                        rHeight += mTextInterval;
+//                    }
                 }
 
                 //增加段落的间距
@@ -1127,7 +1144,7 @@ public abstract class PageLoader {
                         float x= mDisplayWidth -rect.right-mMarginWidth;
                         canvas.drawText(percent, x, y, mTipPaint);
 
-                        String sth=(getChapterPos()+1)+"/"+mChapterList.size();
+                        String sth=(getChapterPos()+1)+"/"+weight;//mChapterList.size();
                         Rect rectChapter=new Rect();
                         mTipPaint.getTextBounds(sth,0,sth.length(),rectChapter);
 //                        float mChapterStart= mDisplayWidth -rectChapter.right-mMarginWidth;
@@ -1231,7 +1248,7 @@ public abstract class PageLoader {
             } else {
                 top = mMarginHeight - mTextPaint.getFontMetrics().top+NO_TOUTCH_HIGHT;
             }
-
+            Log.e("WWW", "drawContent: "+top+" "+NO_TOUTCH_HIGHT);
             //设置总距离
             int interval = mTextInterval + (int) mTextPaint.getTextSize();
             int para = mTextPara + (int) mTextPaint.getTextSize();
@@ -1265,7 +1282,24 @@ public abstract class PageLoader {
                     //对内容进行绘制
                     for (int i = mCurPage.titleLines; i < mCurPage.lines.size(); ++i) {
                         str = mCurPage.lines.get(i);
-                        canvas.drawText(str, mMarginWidth, top, mTextPaint);
+                        if(!TextUtils.isEmpty(str)&&str.equals("\n")){
+
+                            top =top+ (mTextPara-mTextInterval);
+
+                            continue;
+                        }
+
+                        int outFrameWidth = (int) mTextPaint.measureText(str);
+                        int restWidth=mVisibleWidth-outFrameWidth;
+                        if(restWidth<outFrameWidth/str.length()){
+                            int restWidth_one=restWidth/(str.length()-1);
+                            for(int j=0;j<str.length();j++){
+                                canvas.drawText(String.valueOf(str.charAt(j)), restWidth_one*j+outFrameWidth/str.length()*j+mMarginWidth, top, mTextPaint);
+                            }
+                        }else {
+                            canvas.drawText(str, mMarginWidth, top, mTextPaint);
+                        }
+                        //canvas.drawText(str, mMarginWidth, top, mTextPaint);
                         if (str.endsWith("\n")) {
                             top += para;
                         } else {

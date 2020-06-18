@@ -1077,7 +1077,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onAnimationStart(Animation animation) {
                 // StatusBarUtil.setDarkColorStatusBar(ReadActivity.this);
-                StatusBarUtil.setLightColorStatusBar(WYReadActivity.this);
+                //StatusBarUtil.setLightColorStatusBar(WYReadActivity.this);
+                ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_SHOW_BAR).statusBarDarkFont(true).init();
             }
 
             @Override
@@ -1089,7 +1090,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_SHOW_BAR).statusBarDarkFont(true).init();
+                //ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_SHOW_BAR).statusBarDarkFont(true).init();
             }
         });
         Animation bottomAnim = AnimationUtils.loadAnimation(
@@ -1110,7 +1111,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         topExitAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_HIDE_BAR).init();
             }
 
             @Override
@@ -1123,7 +1124,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_HIDE_BAR).init();
+               // ImmersionBar.with(WYReadActivity.this).hideBar(BarHide.FLAG_HIDE_BAR).init();
             }
         });
         Animation bottomExitAnim = AnimationUtils.loadAnimation(

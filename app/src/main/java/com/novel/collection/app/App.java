@@ -1,6 +1,7 @@
 package com.novel.collection.app;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.arialyy.aria.core.Aria;
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.fm.openinstall.OpenInstall;
 import com.novel.collection.R;
 import com.novel.collection.entity.bean.Cataloginfo;
 import com.novel.collection.util.CrashHandler;
@@ -93,6 +95,9 @@ public class App extends Application {
         app=this;
         context = getApplicationContext();
         Aria.init(this);
+        if (isMainProcess()) {
+            OpenInstall.init(this);
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -127,6 +132,17 @@ public class App extends Application {
         }
         System.exit(0);
         activityList.clear();
+    }
+
+    public boolean isMainProcess() {
+        int pid = android.os.Process.myPid();
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
+            if (appProcess.pid == pid) {
+                return getApplicationInfo().packageName.equals(appProcess.processName);
+            }
+        }
+        return false;
     }
     public static void removeActivity(Activity acti) {
         int index = -1;

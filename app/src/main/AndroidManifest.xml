@@ -169,5 +169,16 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation"
             tools:ignore="LockedOrientationActivity"/>
+        <!--适配华为（huawei）刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true"/>
+        <!--适配小米（xiaomi）刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+        <meta-data
+            android:name="com.openinstall.APP_KEY"
+            android:value="OPENINSTALL_APPKEY"/>
     </application>
 </manifest>

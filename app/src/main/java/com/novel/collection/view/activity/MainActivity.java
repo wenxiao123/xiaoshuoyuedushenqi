@@ -8,8 +8,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,14 +34,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.novel.collection.R;
 import com.novel.collection.app.App;
 import com.novel.collection.base.BaseActivity;
 import com.novel.collection.base.BasePresenter;
 import com.novel.collection.constant.EventBusCode;
 import com.novel.collection.entity.bean.PersonBean;
+import com.novel.collection.entity.bean.Version_code;
 import com.novel.collection.entity.eventbus.Event;
 import com.novel.collection.entity.eventbus.MoreIntoEvent;
+import com.novel.collection.http.OkhttpCall;
+import com.novel.collection.http.OkhttpUtil;
+import com.novel.collection.http.UrlObtainer;
 import com.novel.collection.service.CacheService;
 import com.novel.collection.util.EventBusUtil;
 import com.novel.collection.util.LogUtils;
@@ -49,6 +56,13 @@ import com.novel.collection.view.fragment.main.BookshelfFragment;
 import com.novel.collection.view.fragment.main.BookstoreFragment;
 import com.novel.collection.view.fragment.main.DiscoveryFragment;
 import com.novel.collection.view.fragment.main.MoreFragment;
+import com.novel.collection.widget.VersionUpdateDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
@@ -115,6 +129,94 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     protected void initData() {
 
     }
+    VersionUpdateDialog mVersionUpdateDialog;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void showUpdateDialog(String describe, String content) {
+        if (mVersionUpdateDialog == null) {
+            mVersionUpdateDialog = new VersionUpdateDialog(this, new VersionUpdateDialog.OnVersionClick() {
+                @Override
+                public void onCancel() {
+
+                }
+
+                @Override
+                public void onUpdate() {
+                    Intent intent = new Intent();
+                    intent.setAction("android.intent.action.VIEW");
+                    Uri content_url = Uri.parse(content);//此处填链接
+                    intent.setData(content_url);
+                    startActivity(intent);
+                    mVersionUpdateDialog.dismiss();
+                }
+            });
+            mVersionUpdateDialog.setContent(content);
+            mVersionUpdateDialog.show();
+            mVersionUpdateDialog.setCanceledOnTouchOutside(true);
+        }
+    }
+
+    public static String getVersionName(Context context) {
+
+        //获取包管理器
+        PackageManager pm = context.getPackageManager();
+        //获取包信息
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), 0);
+            //返回版本号
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+    Version_code version_code;
+    public void getVersion() {
+        Gson gson=new Gson();
+        String url = UrlObtainer.GetUrl() + "/api/index/version";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("type", 3+"")
+                .add("version_name", getVersionName(this))
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                Log.e("SSS", "onResponse: "+json);
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        version_code=gson.fromJson(jsonObject.getJSONObject("data").toString(),Version_code.class);
+                        getVersionSuccess(version_code);
+                    }else {
+                        getVersionError("请求失败");
+                    }
+                } catch (JSONException e) {
+                    getVersionError("请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg)
+            {
+                getVersionError("请求失败");
+            }
+        });
+    }
+
+    private void getVersionError(String error) {
+        //showShortToast("");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void getVersionSuccess(Version_code data) {
+        if(data.getCode()==1){
+            showUpdateDialog(data.getDescribe(),data.getDownload_address());
+        }
+    }
+
     //MyReceiver receiver;
     @Override
     protected void initView() {
@@ -146,6 +248,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         intentFilter.addAction("com.tiaozhuan.android");//要接收的广播
         registerReceiver(receiver, intentFilter);//注册接收者
         isNightthod=SpUtil.getIsNightMode();
+        getVersion();
     }
     public void initTextColor(TextView textView){
         txt_shelf.setTextColor(App.getAppResources().getColor(R.color.black));

@@ -1,6 +1,7 @@
 package com.novel.collection.view.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.fm.openinstall.OpenInstall;
+import com.fm.openinstall.listener.AppInstallListener;
+import com.fm.openinstall.model.AppData;
+import com.fm.openinstall.model.Error;
 import com.novel.collection.R;
 import com.novel.collection.app.App;
 import com.novel.collection.base.BaseActivity;
@@ -267,6 +272,23 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
     public void getLoginSuccess(Login_admin loginAdminl) {
         SpUtil.saveObject(this, loginAdminl);
         if (loginAdminl != null) {
+            final SharedPreferences sp = getSharedPreferences("filename", MODE_PRIVATE);
+            boolean isFirst = sp.getBoolean("isFirst", true);
+            if(isFirst){
+                OpenInstall.getInstall(new AppInstallListener() {
+                    @Override
+                    public void onInstallFinish(AppData appData, Error error) {
+                        sp.edit().putBoolean("isFirst", false).apply();
+                        OpenInstall.reportRegister();
+                    }
+
+//                    @Override
+//                    public void onInstallFinish(AppData appData, Error error) {
+//                        //使用数据后，不想再调用，将isFirst设置为false
+//                        sp.edit().putBoolean("isFirst", false).apply();
+//                    }
+                });
+            }
             startActivity(new Intent(this, MainActivity.class));
         }
         Intent recever = new Intent("com.name.android");

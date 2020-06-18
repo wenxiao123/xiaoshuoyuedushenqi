@@ -40,16 +40,17 @@ public class ScrollPageAnim2 extends PageAnimation {
 
     // 是否处于刷新阶段
     private boolean isRefresh = true;
-
+    private int NO_TOUTCH_HIGHT;
     public ScrollPageAnim2(int w, int h, int marginWidth, int marginHeight,
-                           View view, OnPageChangeListener listener) {
+                           View view, OnPageChangeListener listener,int z) {
         super(w, h, marginWidth, marginHeight, view, listener);
+        NO_TOUTCH_HIGHT=z;
         // 创建两个BitmapView
         initWidget();
     }
 
     private void initWidget() {
-        mBgBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
+        mBgBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight+NO_TOUTCH_HIGHT, Bitmap.Config.RGB_565);
 
         mScrapViews = new ArrayDeque<>(2);
         for (int i = 0; i < 2; ++i) {
@@ -86,6 +87,7 @@ public class ScrollPageAnim2 extends PageAnimation {
             }
         }
     }
+
     public void refreshBitmap() {
         isRefresh = true;
         //将所有的Active加入到Scrap中
@@ -357,7 +359,8 @@ public class ScrollPageAnim2 extends PageAnimation {
         //移动位置
         canvas.translate(0, mMarginHeight);
         //裁剪显示区域
-        canvas.clipRect(0, 0, mViewWidth, mViewHeight);
+        //canvas.clipRect(0, 0, mViewWidth, mViewHeight);
+        canvas.clipRect(0, NO_TOUTCH_HIGHT, mViewWidth, mViewHeight+NO_TOUTCH_HIGHT);
 /*        //设置背景透明
         canvas.drawColor(0x40);*/
         //绘制Bitmap
