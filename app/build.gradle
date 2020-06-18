@@ -70,6 +70,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation files('libs/pinyin4j-2.5.0.jar')
+    implementation files('libs/OpenInstall_v2.3.2.jar')
     implementation project(':hwtxtreaderlib')
     implementation project(':indicator')
     implementation 'com.jude:rollviewpager:1.4.6'
