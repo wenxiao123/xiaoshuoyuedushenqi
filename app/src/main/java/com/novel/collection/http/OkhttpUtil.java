@@ -86,7 +86,7 @@ public class OkhttpUtil {
         //创建Request
         Request request = new Request.Builder()
                 .url(url)
-                .header("sign",stringToMD5("af1020a25f48ds4g55r6y."))
+               // .header("sign",stringToMD5("af1020a25f48ds4g55r6y."))
                 .build();
         //创建Call
         Call call = getOkHttpClient().newCall(request);
@@ -128,7 +128,7 @@ public class OkhttpUtil {
         //创建Request
         Request request = new Request.Builder()
                 .url(url)
-                .header("sign",stringToMD5("af1020a25f48ds4g55r6y."))
+//                .header("sign",stringToMD5("af1020a25f48ds4g55r6y."))
                 .post(requestBody)
                 .build();
         //创建Call

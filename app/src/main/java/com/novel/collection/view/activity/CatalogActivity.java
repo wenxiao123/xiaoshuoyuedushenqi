@@ -92,7 +92,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     private String mAuthor;
     private TextView text;
     int weigh;//书籍总章数
-    int chapter_id;//当前阅读书籍目录
+    int chapter_id=-1;//当前阅读书籍目录
     /*
      * 如果是在 ReadActivity 通过点击目录跳转过来，那么持有该 ReadActivity 的引用，
      * 之后如果跳转到新的章节时，利用该引用结束旧的 ReadActivity
@@ -138,7 +138,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
         //weigh = getIntent().getIntExtra("weigh", 0);
-        chapter_id = getIntent().getIntExtra("chapter_id", 0);
+        chapter_id = getIntent().getIntExtra("chapter_id", -1);
         queryBookMarks(mUrl);
         app = (App) getApplication();
         catalogDataAll = mDbManager.queryAllCataloginfo(mUrl);
@@ -234,7 +234,11 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
             mErrorPageTv.setVisibility(View.GONE);
             mChapterOrderTv.setVisibility(View.VISIBLE);
             initAdapter();
-            mCatalogAdapter.setPosition(chapter_id);
+//            if (activity_type != null && activity_type.equals("NovelIntroActivity")) {
+//                mCatalogAdapter.setPosition(-1);
+//            }else {
+                mCatalogAdapter.setPosition(chapter_id);
+//            }
             mCatalogListRv.scrollToPosition(chapter_id);
             mChapterCountTv.setText("共" + catalogDataAll.size() + "章");
         }
@@ -409,6 +413,9 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         if (mCatalogAdapter == null) {
             mCatalogListRv.setLayoutManager(linearLayoutManager);
             initAdapter();
+//            if (activity_type != null && activity_type.equals("NovelIntroActivity")) {
+//                mCatalogAdapter.setPosition(-1);
+//            }
             mCatalogListRv.setFocusableInTouchMode(false);
             mCatalogListRv.setScrollingTouchSlop(last);
         } else {
@@ -459,8 +466,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                             mIsReversing = true;
                             Collections.reverse(catalogDataAll);
                             mCatalogAdapter.notifyDataSetChanged();
-                            mCatalogAdapter.setPosition(0);
-                            mCatalogListRv.scrollToPosition(0);
+                            mCatalogAdapter.setPosition(chapter_id);
+                            mCatalogListRv.scrollToPosition(chapter_id);
                             mIsReverse = false;
                             mIsReversing = false;
                         } else {
@@ -468,8 +475,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                             mIsReversing = true;
                             Collections.reverse(catalogDataAll);
                             mCatalogAdapter.notifyDataSetChanged();
-                            mCatalogAdapter.setPosition(0);
-                            mCatalogListRv.scrollToPosition(0);
+                            mCatalogAdapter.setPosition(mCatalogAdapter.getItemCount()-chapter_id-1);
+                            mCatalogListRv.scrollToPosition(mCatalogAdapter.getItemCount()-chapter_id-1);
                             mIsReverse = true;
                             mIsReversing = false;
                         }

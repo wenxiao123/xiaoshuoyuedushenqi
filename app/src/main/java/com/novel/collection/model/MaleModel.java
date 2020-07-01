@@ -69,6 +69,7 @@ public class MaleModel implements IMaleContract.Model {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    mPresenter.getHotRankDataError("请求错误");
                 }
             }
 

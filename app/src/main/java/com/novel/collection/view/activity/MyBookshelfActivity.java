@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.novel.collection.R;
@@ -24,6 +25,7 @@ import com.novel.collection.http.UrlObtainer;
 import com.novel.collection.interfaces.Delet_book_show;
 import com.novel.collection.presenter.BookshelfPresenter;
 import com.novel.collection.util.FpShadowLayout;
+import com.novel.collection.util.LogUtils;
 import com.novel.collection.util.SpUtil;
 import com.novel.collection.util.StatusBarUtil;
 import com.novel.collection.widget.TipDialog;
@@ -69,61 +71,13 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                 }
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
             }
-            if(dataList.size()==0&&login_admin!=null){
-                queryallBook(login_admin.getToken());
-            }
+//            if(dataList.size()==0&&login_admin!=null){
+//                queryallBook(login_admin.getToken());
+//            }
         }
     };
     Login_admin login_admin;
     List<Noval_Readcored> noval_readcoreds=new ArrayList<>();
-
-
-    private void queryallBook(String token){
-        Gson mGson=new Gson();
-        String url = UrlObtainer.GetUrl() + "/api/Userbook/index";
-        RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
-                .add("page", 1+"")
-                .build();
-        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    String code = jsonObject.getString("code");
-                    if (code.equals("1")) {
-                        if(jsonObject.isNull("data")){
-                            showShortToast("请求数据失败");
-                        }else {
-                            JSONObject object = jsonObject.getJSONObject("data");
-                            JSONArray jsonArray=object.getJSONArray("data");
-                            if(jsonArray.length()==0){
-                                return;
-                            }
-                            mDataList1.clear();
-                            for(int i=0;i<jsonArray.length();i++){
-                                //String novelUrl, String name, String cover,  int position, int type, int secondPosition, String chapterid, int weight
-                                noval_readcoreds.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(), Noval_Readcored.class));
-                                mDataList1.add(new BookshelfNovelDbData(noval_readcoreds.get(i).getNovel_id(),noval_readcoreds.get(i).getTitle(),noval_readcoreds.get(i).getPic()
-                                        ,0,0,0,noval_readcoreds.get(i).getChapter_id(),noval_readcoreds.get(i).getSerialize()));
-                            }
-                            queryAllBookSuccess2(mDataList1);
-                        }
-                    } else {
-                        showShortToast("请求数据失败");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                showShortToast(errorMsg);
-            }
-        });
-    }
-
 
     public void queryAllBookSuccess2(List<BookshelfNovelDbData> dataList) {
         if (mBookshelfNovelsAdapter == null) {
@@ -172,15 +126,66 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
     private List<BookshelfNovelDbData> mDataList1 = new ArrayList<>();
     private List<Boolean> mCheckedList = new ArrayList<>();
+    private List<String> strings = new ArrayList<>();
     private BookshelfNovelsAdapter mBookshelfNovelsAdapter;
     private boolean mIsDeleting = false;
    // private LinearLayout rv_bookshelf_multi_delete_bar;
     @Override
     protected void doBeforeSetContentView() {
-        bookshelfPresenter.queryAllBook();
+       // bookshelfPresenter.queryAllBook();
         StatusBarUtil.setTranslucentStatus(this);
     }
+    int z=1;
+    private void queryallBook(String token) {
+        if(token!=null){
+            Gson mGson = new Gson();
+            String url = UrlObtainer.GetUrl() + "/api/Userbook/index";
+            RequestBody requestBody = new FormBody.Builder()
+//                .add("token", token)
+                    .add("type", 0 + "")
+                    .add("page", z + "")
+                    .add("limit", 20 + "")
+                    .build();
+            OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+                @Override
+                public void onResponse(String json) {   // 得到 json 数据
+                    LogUtils.e(url + " " + token + " " + json);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        String code = jsonObject.getString("code");
+                        if (code.equals("1")) {
+                            if (jsonObject.isNull("data")) {
+                                showShortToast("请求数据失败");
+                            } else {
+                                JSONObject object = jsonObject.getJSONObject("data");
+                                JSONArray jsonArray = object.getJSONArray("data");
+                                mDataList1.clear();
+                                for(int i=0;i<jsonArray.length();i++){
+                                    //String novelUrl, String name, String cover,  int position, int type, int secondPosition, String chapterid, int weight
+                                    noval_readcoreds.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(), Noval_Readcored.class));
+                                    mDataList1.add(new BookshelfNovelDbData(noval_readcoreds.get(i).getNovel_id(),noval_readcoreds.get(i).getTitle(),noval_readcoreds.get(i).getPic()
+                                            ,0,0,0,noval_readcoreds.get(i).getChapter_id(),noval_readcoreds.get(i).getSerialize()));
+                                }
+                                queryAllBookSuccess2(mDataList1);
+                            }
+                        } else {
+                            showShortToast("请求数据失败");
+                        }
+                    } catch (JSONException e) {
+                        queryAllBookSuccess2(mDataList1);
+                        e.printStackTrace();
+                    }
+                }
 
+                @Override
+                public void onFailure(String errorMsg) {
+                    queryAllBookSuccess2(mDataList1);
+                    showShortToast(errorMsg);
+                }
+            });
+        }
+    }
+    private RelativeLayout mLoadingRv;
     @Override
     protected int getLayoutId() {
         return R.layout.mybookshelf;
@@ -197,6 +202,11 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
     protected void initData() {
         mDbManager = DatabaseManager.getInstance();
         login_admin= (Login_admin) SpUtil.readObject(this);
+        if(login_admin!=null){
+            queryallBook(login_admin.getToken());
+        }else {
+            queryallBook("");
+        }
     }
 
     //删除书籍
@@ -206,7 +216,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
         }
         String url = UrlObtainer.GetUrl()+"/"+"api/Userbook/del";
         RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
+//                .add("token", token)
                 .add("novel_id", novel_id)
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
@@ -219,7 +229,9 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
                     if(code.equals("1")){
                         String message=jsonObject.getString("msg");
                         del_count--;
+                        Log.e("www2", "onResponse: "+novel_id+" "+del_count+" "+json);
                         if(del_count==0){
+                            mLoadingRv.setVisibility(View.GONE);
                             mDeleteTv.setText("删除");
                             Intent recever = new Intent("com.zhh.android");
                             recever.putExtra("type", 1);
@@ -248,30 +260,24 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
      * 多选删除
      */
     private void multiDelete() {
-        del_count=mDataList.size();
+        mLoadingRv.setVisibility(View.VISIBLE);
         mIsDeleting = true;
         for (int i = mDataList.size() - 1; i >= 0; i--) {
             if (mCheckedList.get(i)) {
-               // Log.e("WWW", "multiDelete: "+mDataList.get(i).getName());
+                if(mDbManager.isExistInBookshelfNovel(mDataList.get(i).getNovelUrl())) {
+                    mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
+                }
+                del_count++;
                 // 从数据库中删除该小说
                 if(mDataList.get(i).getType()==1){
                 File file=new File((mDataList.get(i).getFuben_id()));
                 if(file.exists()){
                     file.delete();
+                    file.getParentFile().delete();
                 }
                 }
-                mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl().trim());
-                //mDbManager.deleteBookCalotaNovel(mDataList.get(i).getNovelUrl());
-                if(login_admin!=null){
-                  delectBookshelfadd(login_admin.getToken(), mDataList.get(i).getNovelUrl().trim());
-                }else {
-                    if(i==0) {
-                        mDeleteTv.setText("删除");
-                        Intent recever = new Intent("com.zhh.android");
-                        recever.putExtra("type", 1);
-                        sendBroadcast(recever);
-                    }
-                }
+                //mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl().trim());
+                delectBookshelfadd("", mDataList.get(i).getNovelUrl().trim());
                 mDataList.remove(i);
             }
         }
@@ -306,7 +312,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
 
         mSelectAllTv = findViewById(R.id.tv_bookshelf_multi_delete_select_all);
         mSelectAllTv.setOnClickListener(this);
-
+        mLoadingRv = findViewById(R.id.rv_bookshelf_loading);
         mDeleteTv = findViewById(R.id.tv_bookshelf_multi_delete_delete);
         mDeleteTv.setOnClickListener(this);
 
@@ -324,6 +330,7 @@ public class MyBookshelfActivity extends BaseActivity implements Delet_book_show
 
     @Override
     protected void doAfterInit() {
+        mLoadingRv.setVisibility(View.GONE);
     }
 
     @Override

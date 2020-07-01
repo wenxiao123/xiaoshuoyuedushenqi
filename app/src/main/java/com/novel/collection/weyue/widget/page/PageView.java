@@ -424,16 +424,16 @@ public class PageView extends View {
     }
 
     //获取PageLoader
-    public PageLoader getPageLoader(boolean isLocal,boolean isother){
+    public PageLoader getPageLoader(boolean isLocal){
         if (isLocal){
             mPageLoader = new LocalPageLoader(this);
         }
         else {
-                if(isother==false) {
+//                if(isother==false) {
              mPageLoader = new NetPageLoader(this);
-                }else {
-                    mPageLoader = new OtherNetPageLoader(this);
-                }
+//                }else {
+//                    mPageLoader = new OtherNetPageLoader(this);
+//                }
         }
         return mPageLoader;
     }

@@ -176,13 +176,13 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                         String load_id = App.getInstance().getPosition();
                         if (load_id != null && !load_id.equals(pid)) {
                             txt_book_load.setText("已加入缓存序列");
-                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid,noval_details.getSerialize());
                             myBinder.che(downBean);
                             Is_load = true;
                         } else if (load_id != null && load_id.equals(pid)) {
                             txt_book_load.setText("缓存中...");
                         } else {
-                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                            DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid,noval_details.getSerialize());
                             myBinder.che(downBean);
                         }
                     }
@@ -213,13 +213,13 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 String load_id = App.getInstance().getPosition();
                 if (load_id != null && !load_id.equals(pid)) {
                     txt_book_load.setText("已加入缓存序列");
-                    DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                    DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid,noval_details.getSerialize());
                     myBinder.che(downBean);
                     Is_load = true;
                 } else if (load_id != null && load_id.equals(pid)) {
                     txt_book_load.setText("缓存中...");
                 } else {
-                    DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid);
+                    DownBean downBean = new DownBean(weigh, 1, noval_details.getTitle(), noval_details.getPic(), pid,noval_details.getSerialize());
                     myBinder.che(downBean);
                 }
             }
@@ -264,6 +264,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     protected void initView() {
         title_rel=findViewById(R.id.title_rel);
         l_collect = findViewById(R.id.l_collect);
+        recommend=findViewById(R.id.recommend);
         img_collect = findViewById(R.id.img_collect);
         iv_tuijian = findViewById(R.id.iv_tuijian);
         tv_novel_intro_novel_name = findViewById(R.id.tv_novel_intro_novel_name);
@@ -392,6 +393,12 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 post_collect();
             }
         });
+        recommend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                post_Recommend();
+            }
+        });
     }
 
     private void showPupowindpw(int parent) {
@@ -490,17 +497,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         } else {
             tv_begain_read.setText("开始阅读");
         }
-        if (mDbManager.isExistInBookshelfNovel(pid)) {
-            BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(pid);
-            Log.e("WWW1", "doAfterInit: "+bookshelfNovelDbData);
-            if(bookshelfNovelDbData.getType()>=0){
-                tv_book_add.setText("移除书架");
-            }else {
-                tv_book_add.setText("加入书架");
-            }
-        } else {
-            tv_book_add.setText("加入书架");
-        }
+
     }
 
     @Override
@@ -581,32 +578,33 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 case R.id.tv_book_add:
                     BookshelfNovelDbData dbData=mDbManager.getBookshelfNovel(pid);
                      if (dbData!=null&&(dbData.getType()==0||dbData.getType()==1)) {
-                        //if (mDbManager.isExistInBookshelfNovel(pid)) {
                             tv_book_add.setText("加入书架");
                             mDbManager.deleteBookshelfNovel(pid.trim());
                             if (login_admin != null) {
                                 delectBookshelfadd(login_admin.getToken(), pid);
+                            }else {
+                                delectBookshelfadd("", pid);
                             }
                         } else {
-                            tv_book_add.setText("移除书架");
                             File file=new File(path+".txt");
-                            //BookshelfNovelDbData dbData;
                             if(file.exists()){
                                 dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
                                         noval_details.getPic(), 0, 1, 0, 0 + "", weigh, noval_details.getSerialize() + "");
                                 dbData.setFuben_id(path+".txt");
-                            }else {
+                            }
+                            else {
                                dbData = new BookshelfNovelDbData(pid, noval_details.getTitle(),
-                                        noval_details.getPic(), 0, 0, 0, 0 + "", weigh, noval_details.getSerialize() + "");
+                                        noval_details.getPic(), 0, -2, 0, 0 + "", weigh, noval_details.getSerialize() + "");
                             }
                             mDbManager.insertOrUpdateBook(dbData);
                             if (login_admin != null) {
+                                Log.e("zzz", "onClick: "+111);
                                 setBookshelfadd(login_admin.getToken(), pid);
+                            }else {
+                                Log.e("zzz", "onClick: "+222);
+                                setBookshelfadd("", pid);
                             }
                         }
-                    Intent intent_recever = new Intent("com.zhh.android");
-                    intent_recever.putExtra("type", 1);
-                    sendBroadcast(intent_recever);
                     break;
                 case R.id.txt_book_load:
                     checkPermissioin();
@@ -824,72 +822,72 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             txt_book_load.setTextColor(getResources().getColor(R.color.yellow));
             txt_book_load.setText("缓存中...");
         }
-        if (mDbManager.isExistInBookshelfNovel(pid)) {
-            BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(pid);
-            Log.e("WWW1", "doAfterInit: "+bookshelfNovelDbData);
-            if(bookshelfNovelDbData.getType()>=0){
-                tv_book_add.setText("移除书架");
-            }else {
-                tv_book_add.setText("加入书架");
-            }
-        } else {
-            tv_book_add.setText("加入书架");
-        }
+//        if (mDbManager.isExistInBookshelfNovel(pid)) {
+//            BookshelfNovelDbData bookshelfNovelDbData=mDbManager.selectBookshelfNovel(pid);
+//            Log.e("WWW1", "doAfterInit: "+bookshelfNovelDbData);
+//            if(bookshelfNovelDbData.getType()>=0){
+//                tv_book_add.setText("移除书架");
+//            }else {
+//                tv_book_add.setText("加入书架");
+//            }
+//        } else {
+//            tv_book_add.setText("加入书架");
+//        }
     }
 
     int z = 1;
 
-    void postBooks_che() {
-        String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
-        RequestBody requestBody = new FormBody.Builder()
-                .add("id", pid)
-                .add("page", z + "")
-                .add("limit", 30 + "")
-                .build();
-        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    String code = jsonObject.getString("code");
-                    if (code.equals("1")) {
-                        JSONObject object = jsonObject.getJSONObject("data");
-                        JSONArray jsonArray = object.getJSONArray("data");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            String title = jsonArray.getJSONObject(i).getString("title");
-                            String content = jsonArray.getJSONObject(i).getString("content");
-                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
-                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
-                            if (!load_title.contains("第")) {
-                                String s = Pattern.compile("[^0-9]").matcher(title).replaceAll("");
-                                String title2 = "";
-                                if (load_title.contains(s)) {
-                                    title2 = load_title.replace(s, "第" + s + "章 ");
-                                }
-                                addTxtToFileBuffered(title2 + "\n");
-                                addTxtToFileBuffered(load_content + "\n");
-                            } else {
-                                addTxtToFileBuffered(load_title + "\n");
-                                addTxtToFileBuffered(load_content + "\n");
-                            }
-                            Message message = new Message();
-                            message.what = 2;
-                            message.arg1 = i;
-                            handler.sendMessage(message);
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                showShortToast(errorMsg);
-            }
-        });
-    }
+//    void postBooks_che() {
+//        String url = UrlObtainer.GetUrl() + "/api/index/Books_che";
+//        RequestBody requestBody = new FormBody.Builder()
+//                .add("id", pid)
+//                .add("page", z + "")
+//                .add("limit", 30 + "")
+//                .build();
+//        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+//            @Override
+//            public void onResponse(String json) {   // 得到 json 数据
+//                try {
+//                    JSONObject jsonObject = new JSONObject(json);
+//                    String code = jsonObject.getString("code");
+//                    if (code.equals("1")) {
+//                        JSONObject object = jsonObject.getJSONObject("data");
+//                        JSONArray jsonArray = object.getJSONArray("data");
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            String title = jsonArray.getJSONObject(i).getString("title");
+//                            String content = jsonArray.getJSONObject(i).getString("content");
+//                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
+//                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
+//                            if (!load_title.contains("第")) {
+//                                String s = Pattern.compile("[^0-9]").matcher(title).replaceAll("");
+//                                String title2 = "";
+//                                if (load_title.contains(s)) {
+//                                    title2 = load_title.replace(s, "第" + s + "章 ");
+//                                }
+//                                addTxtToFileBuffered(title2 + "\n");
+//                                addTxtToFileBuffered(load_content + "\n");
+//                            } else {
+//                                addTxtToFileBuffered(load_title + "\n");
+//                                addTxtToFileBuffered(load_content + "\n");
+//                            }
+//                            Message message = new Message();
+//                            message.what = 2;
+//                            message.arg1 = i;
+//                            handler.sendMessage(message);
+//                        }
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String errorMsg) {
+//                showShortToast(errorMsg);
+//            }
+//        });
+//    }
 
     void post_collect() {
         if(login_admin==null){
@@ -924,54 +922,15 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         });
     }
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 1) {
-                tv_book_add.setText("移除书架");
-                if (mDbManager.isExistInBookshelfNovel(pid) || mDbManager.isExistInBookshelfNovel(path + ".txt")) {
-                    BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(path + ".txt", bookname, bookcover, 1, weigh, 1 + "");
-                    mDbManager.updataBookshelfNovel(bookshelfNovelDbData, pid);
-                } else {
-                    BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(path + ".txt", bookname, bookcover, 1, weigh, 1 + "");
-                    bookshelfNovelDbData.setFuben_id(pid);
-                    bookshelfNovelDbData.setChapterid(1 + "");
-                    mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
-                }
-                Intent intent_recever = new Intent("com.zhh.android");
-                intent_recever.putExtra("type",1);
-                sendBroadcast(intent_recever);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ReadData(path + ".txt", paragraphData);
-                    }
-                }).start();
-            } else if (msg.what == 2) {
-                int j = msg.arg1;
-                if (30 * z <= weigh && (j + 1) == 30) {
-                    z++;
-                    postBooks_che();
-                }
-                float pressent = (float) (((z - 1) * 30 + (j + 1))) / (weigh) * 100;
-                txt_book_load.setText("缓存中:" + (int) pressent + "%");
-                if (((z - 1) * 30 + (j + 1)) == weigh) {
-                    txt_book_load.setText("已缓存");
-                    tv_book_add.setText("移除书架");
-                    tv_begain_read.setText("继续阅读");
-                    handler.sendEmptyMessage(1);
-                }
-            }
+    void post_Recommend() {
+        if(login_admin==null){
+            showShortToast("还未登录，无法进行收藏");
+            return;
         }
-    };
-    boolean is_Cache;
-
-    public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
+        String url = UrlObtainer.GetUrl() + "/api/user/user_up";
         RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
-                .add("novel_id", novel_id)
+                .add("token", login_admin.getToken())
+                .add("novel_id", pid)
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
@@ -980,13 +939,92 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     JSONObject jsonObject = new JSONObject(json);
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
+                        String msg = jsonObject.getString("msg");
+                        showShortToast(msg);
+                        presenter.getNovels(pid);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                showShortToast(errorMsg);
+            }
+        });
+    }
+
+//    Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            if (msg.what == 1) {
+//                tv_book_add.setText("移除书架");
+//                if (mDbManager.isExistInBookshelfNovel(pid) || mDbManager.isExistInBookshelfNovel(path + ".txt")) {
+//                    BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(path + ".txt", bookname, bookcover, 1, weigh, 1 + "");
+//                    mDbManager.updataBookshelfNovel(bookshelfNovelDbData, pid);
+//                } else {
+//                    BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(path + ".txt", bookname, bookcover, 1, weigh, 1 + "");
+//                    bookshelfNovelDbData.setFuben_id(pid);
+//                    bookshelfNovelDbData.setChapterid(1 + "");
+//                    mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
+//                }
+//                Intent intent_recever = new Intent("com.zhh.android");
+//                intent_recever.putExtra("type",1);
+//                sendBroadcast(intent_recever);
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ReadData(path + ".txt", paragraphData);
+//                    }
+//                }).start();
+//            } else if (msg.what == 2) {
+//                int j = msg.arg1;
+//                if (30 * z <= weigh && (j + 1) == 30) {
+//                    z++;
+//                    postBooks_che();
+//                }
+//                float pressent = (float) (((z - 1) * 30 + (j + 1))) / (weigh) * 100;
+//                txt_book_load.setText("缓存中:" + (int) pressent + "%");
+//                if (((z - 1) * 30 + (j + 1)) == weigh) {
+//                    txt_book_load.setText("已缓存");
+//                    tv_book_add.setText("移除书架");
+//                    tv_begain_read.setText("继续阅读");
+//                    handler.sendEmptyMessage(1);
+//                }
+//            }
+//        }
+//    };
+    boolean is_Cache;
+
+    public void setBookshelfadd(String token, String novel_id) {
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+                //.add("token", token)
+                .add("type", 2+"")
+                .add("novel_id", novel_id)
+                .add("chapter_id", 1+"")
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQW", "onResponse: "+json);
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
                         String message = jsonObject.getString("msg");
-                        //showShortToast(message);
+                        showShortToast(message);
+                        tv_book_add.setText("移除书架");
                         //mPresenter.(message);
                     } else {
                         //mPresenter.getReadRecordError("请求错误");
                         //getNovelsError("请求错误");
                     }
+                    Intent intent_recever = new Intent("com.zhh.android");
+                    intent_recever.putExtra("type", 1);
+                    sendBroadcast(intent_recever);
                 } catch (JSONException e) {
                     //e.printStackTrace();
                 }
@@ -1006,7 +1044,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         }
         String url = UrlObtainer.GetUrl() + "/api/Userbook/del";
         RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
+//                .add("token", token)
                 .add("novel_id", novel_id)
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
@@ -1023,6 +1061,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                         //mPresenter.getReadRecordError("请求错误");
                         //showShortToast("请求错误");
                     }
+                    Intent intent_recever = new Intent("com.zhh.android");
+                    intent_recever.putExtra("type", 1);
+                    sendBroadcast(intent_recever);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1079,7 +1120,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         }
     };
     boolean is_load;
-    LinearLayout l_collect;
+    LinearLayout l_collect,recommend;
 
     @Override
     public void getNovelsSuccess(Noval_details noval_details, List<Noval_details> novalDetails) {
@@ -1087,6 +1128,19 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
            title_rel.setVisibility(View.GONE);
        }
         txt_catalog_name.setText("热门"+noval_details.getCategory_name()+"小说");
+
+        if(noval_details.getIs_che()==1){
+                tv_book_add.setText("移除书架");
+        }else {
+                tv_book_add.setText("加入书架");
+         }
+
+        if(noval_details.getIs_sc()==1){
+            img_collect.setImageResource(R.mipmap.icon_collection_yes);
+        }else {
+            img_collect.setImageResource(R.mipmap.icon_collection);
+        }
+
         if (j <= 1) {
             l_all.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -1109,19 +1163,19 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
             } else {
                 adapter.notifyDataSetChanged();
             }
-            BookshelfNovelDbData novelDbData = mDbManager.selectBookshelfNovel(noval_details.getId() + "");
-            path = Constant.BOOK_ADRESS + "/" + noval_details.getTitle();
-            File file = new File(path + ".txt");
-            try {
-                if (file.exists() && novelDbData.getFuben_id().equals(path + ".txt")&&novelDbData.getType()>=0) {
-                    txt_book_load.setText("已缓存");
-                    tv_book_add.setText("移除书架");
-                    is_Cache = true;
-                    txt_book_load.setClickable(false);
-                }
-            }catch (Exception ex){
-
-            }
+            //BookshelfNovelDbData novelDbData = mDbManager.selectBookshelfNovel(noval_details.getId() + "");
+            path = Constant.BOOK_ADRESS + "/"+pid+"/"+ noval_details.getTitle();
+//            File file = new File(path + ".txt");
+//            try {
+//                if (file.exists() && novelDbData.getFuben_id().equals(path + ".txt")&&novelDbData.getType()>=0) {
+//                    txt_book_load.setText("已缓存");
+//                    tv_book_add.setText("移除书架");
+//                    is_Cache = true;
+//                    txt_book_load.setClickable(false);
+//                }
+//            }catch (Exception ex){
+//
+//            }
             recycle_book.setAdapter(adapter);
             mNovelIntroduceTv.setText(noval_details.getContent());
             if(noval_details.getContent()==null||noval_details.getContent().length()<=12){

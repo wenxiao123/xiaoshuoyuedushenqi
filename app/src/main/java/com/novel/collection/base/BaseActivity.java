@@ -138,10 +138,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      */
     private void changeToNight() {
         if (mIsAddedView == true)
-            return;
-        mNightViewParam = new WindowManager.LayoutParams(
+            return;                                           //WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+        mNightViewParam = new WindowManager.LayoutParams(  //WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 WindowManager.LayoutParams.TYPE_APPLICATION,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
                 PixelFormat.TRANSPARENT);
         mWindowManager = getWindowManager();
         mNightView = new View(this);
@@ -154,7 +154,6 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      * 设置白天模式
      */
     public void changeToDay(){
-
         if (mIsAddedView && mNightView!=null) {
             mWindowManager.removeViewImmediate(mNightView);
             mWindowManager = null;

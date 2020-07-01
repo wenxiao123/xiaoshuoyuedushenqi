@@ -11,6 +11,33 @@ public class Noval_details {
     String rating;
     int serialize;
     String update_time;
+    int is_che;
+    int is_sc;
+    int is_tj;
+
+    public int getIs_sc() {
+        return is_sc;
+    }
+
+    public void setIs_sc(int is_sc) {
+        this.is_sc = is_sc;
+    }
+
+    public int getIs_tj() {
+        return is_tj;
+    }
+
+    public void setIs_tj(int is_tj) {
+        this.is_tj = is_tj;
+    }
+
+    public int getIs_che() {
+        return is_che;
+    }
+
+    public void setIs_che(int is_che) {
+        this.is_che = is_che;
+    }
 
     public int getId() {
         return id;

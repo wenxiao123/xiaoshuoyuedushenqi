@@ -64,6 +64,7 @@ import com.novel.collection.view.activity.WYReadActivity;
 import com.novel.collection.weyue.db.entity.CollBookBean;
 import com.novel.collection.widget.TipDialog;
 import com.google.gson.Gson;
+import com.novel.collection.widget.WrapContentLinearGridManager;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
@@ -109,6 +110,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     private TextView mDeleteTv;
     private RefreshLayout mRefreshSrv;
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
+    private List<BookshelfNovelDbData> mDataList_all = new ArrayList<>();
     private List<BookshelfNovelDbData> mDataList1 = new ArrayList<>();
     private BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData("", "", "", 0, 2, -1);
     private List<Boolean> mCheckedList = new ArrayList<>();
@@ -126,11 +128,18 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void doInOnCreate() {
-        if (login_admin == null) {
-           mPresenter.queryAllBook();
-        } else {
-            queryallBook(login_admin.getToken());
-        }
+        //if (login_admin == null) {
+           //mPresenter.queryAllBook();
+            int first= SpUtil.getIsfirst();
+            Log.e("DDD", "doInOnCreate: "+first);
+            if(first==0){
+                queryallBook_First("");
+            }else {
+                queryallBook("");
+            }
+//        } else {
+//            queryallBook(login_admin.getToken());
+//        }
     }
 
     boolean is_add;
@@ -142,11 +151,11 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         }
         login_admin= (Login_admin) SpUtil.readObject(getContext());
         if (mPresenter != null) {
-            if (login_admin == null) {
-                mPresenter.queryAllBook();
-            } else {
-                queryallBook(login_admin.getToken());
-            }
+//            if (login_admin == null) {
+//                mPresenter.queryAllBook();
+//            } else {
+                queryallBook("");
+//            }
         }
     }
 
@@ -169,7 +178,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     @Override
     protected void initView() {
         mBookshelfNovelsRv = getActivity().findViewById(R.id.rv_bookshelf_bookshelf_novels_list);
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 4);
+        final WrapContentLinearGridManager gridLayoutManager = new WrapContentLinearGridManager(getActivity(), 4);
         mBookshelfNovelsRv.setLayoutManager(gridLayoutManager);
         l_emputy = getActivity().findViewById(R.id.l_emputy);
         btn_jingxuan=getActivity().findViewById(R.id.btn_jingxuan);
@@ -200,43 +209,37 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             }
         });
         mRefreshSrv =getActivity().findViewById(R.id.srv_novel_refresh);
-        mRefreshSrv.setEnableRefresh(false);
-        mRefreshSrv.setEnableLoadMore(false);
-//        mRefreshSrv.setOnRefreshListener(new OnRefreshListener() {
-//            @Override
-//            public void onRefresh(RefreshLayout refreshlayout) {
-//                z=1;
-//                isRefresh=true;
-//                if (mPresenter != null) {
-//                    if (login_admin == null) {
-//                        mPresenter.queryAllBook();
-//                    } else {
-//                        queryallBook(login_admin.getToken());
-//                    }
-//                }
-//                //mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "",z+" ");
-//                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-//                //refreshlayout.finishLoadMore(false);
-//            }
-//        });
-//        mRefreshSrv.setOnLoadMoreListener(new OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore(RefreshLayout refreshlayout) {
-//                z++;
-//
-//                //mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "",z+" ");
-//                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-//                // refreshlayout.finishLoadMore(false);
-//            }
-//        });
-//        ClassicsHeader classicsHeader=new ClassicsHeader(getContext());
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//        String dateString = formatter.format(new Date());
-//        classicsHeader.setLastUpdateText("最后更新:"+dateString);
-//        //refreshLayout.setRefreshHeader(new BezierRadarHeader(getContext()).setEnableHorizontalDrag(true));
-//        mRefreshSrv.setRefreshHeader(classicsHeader);
-//        //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
-//        mRefreshSrv.setRefreshFooter(new ClassicsFooter(getContext()));
+//        mRefreshSrv.setEnableRefresh(false);
+//        mRefreshSrv.setEnableLoadMore(false);
+        mRefreshSrv.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                z=1;
+                isRefresh=true;
+                queryallBook("");
+                //mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "",z+" ");
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                //refreshlayout.finishLoadMore(false);
+            }
+        });
+        mRefreshSrv.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                z++;
+                queryallBook("");
+                //mPresenter.getRankData(type + "", new_or_hot + "",sort + "", category_id + "",z+" ");
+                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+                // refreshlayout.finishLoadMore(false);
+            }
+        });
+        ClassicsHeader classicsHeader=new ClassicsHeader(getContext());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(new Date());
+        classicsHeader.setLastUpdateText("最后更新:"+dateString);
+        //refreshLayout.setRefreshHeader(new BezierRadarHeader(getContext()).setEnableHorizontalDrag(true));
+        mRefreshSrv.setRefreshHeader(classicsHeader);
+        //refreshLayout.setRefreshFooter(new BallPulseFooter(getContext()).setSpinnerStyle(SpinnerStyle.Scale));
+        mRefreshSrv.setRefreshFooter(new ClassicsFooter(getContext()));
         receiver = new MyReceiver();
         // 注册广播接受者
         IntentFilter intentFilter = new IntentFilter();
@@ -255,11 +258,11 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         switch (event.getCode()) {
             case EventBusCode.BOOKSHELF_UPDATE_LIST:
                 mDataList.clear();
-                if (login_admin == null) {
-                    mPresenter.queryAllBook();
-                } else {
-                    queryallBook(login_admin.getToken());
-                }
+//                if (login_admin == null) {
+//                    mPresenter.queryAllBook();
+//                } else {
+                    //queryallBook("");
+//                }
                 break;
             default:
                 break;
@@ -290,28 +293,28 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 break;
             case R.id.tv_bookshelf_multi_delete_delete:
                 // 删除操作
-                if (!deleteCheck()) {
-                    break;
-                }
-                if(!getActivity().isDestroyed()) {
-                    new TipDialog.Builder(getActivity())
-                            .setContent("确定要删除这些小说吗？")
-                            .setCancel("不了")
-                            .setEnsure("确定")
-                            .setOnClickListener(new TipDialog.OnClickListener() {
-                                @Override
-                                public void clickEnsure() {
-                                    multiDelete();
-                                }
-
-                                @Override
-                                public void clickCancel() {
-
-                                }
-                            })
-                            .build()
-                            .show();
-                }
+//                if (!deleteCheck()) {
+//                    break;
+//                }
+//                if(!getActivity().isDestroyed()) {
+//                    new TipDialog.Builder(getActivity())
+//                            .setContent("确定要删除这些小说吗？")
+//                            .setCancel("不了")
+//                            .setEnsure("确定")
+//                            .setOnClickListener(new TipDialog.OnClickListener() {
+//                                @Override
+//                                public void clickEnsure() {
+//                                    multiDelete();
+//                                }
+//
+//                                @Override
+//                                public void clickCancel() {
+//
+//                                }
+//                            })
+//                            .build()
+//                            .show();
+//                }
                 break;
             default:
                 break;
@@ -330,37 +333,37 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         mMultiDeleteRv.setVisibility(View.GONE);
     }
 
-    /**
-     * 多选删除
-     */
-    private void multiDelete() {
-        mIsDeleting = true;
-        for (int i = mDataList.size() - 1; i >= 0; i--) {
-            if (mCheckedList.get(i)) {
-                // 从数据库中删除该小说
-                mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
-                mDataList.remove(i);
-            }
-        }
-        mCheckedList.clear();
-        for (int i = 0; i < mDataList.size(); i++) {
-            mCheckedList.add(false);
-        }
-        mBookshelfNovelsAdapter.setIsMultiDelete(false);
-        mBookshelfNovelsAdapter.notifyDataSetChanged();
-        mMultiDeleteRv.setVisibility(View.GONE);
-        mIsDeleting = false;
-    }
-
-    private boolean deleteCheck() {
-        for (int i = 0; i < mCheckedList.size(); i++) {
-            if (mCheckedList.get(i)) {
-                return true;
-            }
-        }
-        showShortToast("请先选定要删除的小说");
-        return false;
-    }
+//    /**
+//     * 多选删除
+//     */
+//    private void multiDelete() {
+//        mIsDeleting = true;
+//        for (int i = mDataList.size() - 1; i >= 0; i--) {
+//            if (mCheckedList.get(i)) {
+//                // 从数据库中删除该小说
+//                mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
+//                mDataList.remove(i);
+//            }
+//        }
+//        mCheckedList.clear();
+//        for (int i = 0; i < mDataList.size(); i++) {
+//            mCheckedList.add(false);
+//        }
+//        mBookshelfNovelsAdapter.setIsMultiDelete(false);
+//        mBookshelfNovelsAdapter.notifyDataSetChanged();
+//        mMultiDeleteRv.setVisibility(View.GONE);
+//        mIsDeleting = false;
+//    }
+//
+//    private boolean deleteCheck() {
+//        for (int i = 0; i < mCheckedList.size(); i++) {
+//            if (mCheckedList.get(i)) {
+//                return true;
+//            }
+//        }
+//        showShortToast("请先选定要删除的小说");
+//        return false;
+//    }
 
     private void showPupowindpw(View parent) {
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -527,16 +530,43 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     }
 
     Login_admin login_admin;
+    private List<BookshelfNovelDbData> bookshelfNovelDbDataList = new ArrayList<>();
 
     /**
      * 查询所有书籍信息成功
      */
     @Override
     public void queryAllBookSuccess(List<BookshelfNovelDbData> dataList) {
-        mDataList.clear();
+        bookshelfNovelDbDataList.clear();
+            for(int j=0;j<mDataList_all.size();j++){
+                boolean isExit=false;
+                BookshelfNovelDbData novelDbData=mDataList_all.get(j);
+                Log.e("ZXZ", "queryAllBookSuccess: "+novelDbData);
+                for(int i=0;i<dataList.size();i++){
+                 if(novelDbData.getNovelUrl().equals(dataList.get(i).getNovelUrl())){
+                    isExit=true;
+                    if(dataList.get(i).getType()>=0) {
+                        bookshelfNovelDbDataList.add(dataList.get(i));
+                    }else {
+                        BookshelfNovelDbData dbData=dataList.get(i);
+                        dbData.setType(0);
+                        bookshelfNovelDbDataList.add(dataList.get(i));
+                    }
+                    break;
+                }
+            }
+                if(isExit==false){
+                    bookshelfNovelDbDataList.add(novelDbData);
+                }
+        }
+        //mDataList_all.clear();
+        if(z==1) {
+            mDataList.clear();
+            isRefresh=false;
+        }
         mLoadingRv.setVisibility(View.GONE);
         if (mBookshelfNovelsAdapter == null) {
-            mDataList = dataList;
+            mDataList.addAll(bookshelfNovelDbDataList);
             mCheckedList.clear();
             for (int i = 0; i < mDataList.size(); i++) {
                 mCheckedList.add(false);
@@ -544,10 +574,16 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
             initAdapter();
             mBookshelfNovelsRv.setAdapter(mBookshelfNovelsAdapter);
         } else {
-            mDataList.clear();
-            mDataList.addAll(dataList);
+            mDataList.addAll(bookshelfNovelDbDataList);
             mCheckedList.clear();
-            mDataList.add(bookshelfNovelDbData);
+            if(bookshelfNovelDbDataList.size()<20&&isFull==false) {
+                mDataList.add(bookshelfNovelDbData);
+                mCheckedList.add(false);
+                isFull=true;
+            }else  if(z==1&&bookshelfNovelDbDataList.size()<20) {
+                mDataList.add(bookshelfNovelDbData);
+                mCheckedList.add(false);
+            }
             mCheckedList.add(false);
             if (mDataList.size() == 1) {
                 l_emputy.setVisibility(View.VISIBLE);
@@ -566,55 +602,25 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 mBookshelfNovelsAdapter.notifyDataSetChanged();
             }
         }
-        //將數據庫的数据传给后台
-//        if(login_admin!=null){
-//            for(int i=0;i<dataList.size();i++){
-//                try {
-//                    setBookshelfadd(login_admin.getToken(),dataList.get(i).getNovelUrl());
-//                }catch (Exception ex){
-//                    continue;
-//                }
-//            }
-//        }
     }
-
-    public void setBookshelfadd(String token, String novel_id) {
-        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
-        RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
-                .add("novel_id", novel_id)
-                .build();
-        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    String code = jsonObject.getString("code");
-                    if (code.equals("1")) {
-                        String message = jsonObject.getString("msg");
-                    } else {
-                        //mPresenter.getReadRecordError("请求错误");
-                        //getChapterUrlListError("请求错误");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                //getChapterUrlListError("请求错误");
-                //mPresenter.getReadRecordError(errorMsg);
-            }
-        });
-    }
-
     //将不重复的书籍添加进数据库中
     public void queryAllBookSuccess2(List<BookshelfNovelDbData> dataList) {
-        for (int i = 0; i < dataList.size(); i++) {
-            if (!mDbManager.isExistInBookshelfNovel(dataList.get(i).getNovelUrl())) {
-                mDbManager.insertOrUpdateBook(new BookshelfNovelDbData(dataList.get(i).getNovelUrl(),
-                        dataList.get(i).getName(), dataList.get(i).getCover(), 0, 0, dataList.get(i).getWeight(), 0 + "", dataList.get(i).getWeight(), dataList.get(i).getStatus()));
+//        if(isRefresh){
+//            mDataList_all.clear();
+//            isRefresh=false;
+//        }
+        mDataList_all.clear();
+        mDataList_all.addAll(dataList);
+        //mDbManager.clear_Book();
+        for (int i = 0; i < mDataList_all.size(); i++) {
+            Log.e("ZXZ2", "queryAllBookSuccess: "+mDataList_all.get(i));
+            BookshelfNovelDbData bookshelfNovelDbData=mDbManager.getBookshelfNovel(mDataList_all.get(i).getNovelUrl());
+            if (bookshelfNovelDbData==null) {
+                mDbManager.insertOrUpdateBook(new BookshelfNovelDbData(mDataList_all.get(i).getNovelUrl(),
+                        mDataList_all.get(i).getName(), mDataList_all.get(i).getCover(), 0, 0, mDataList_all.get(i).getWeight(), 0 + "", mDataList_all.get(i).getWeight(), mDataList_all.get(i).getStatus()));
+            }else if((bookshelfNovelDbData!=null&&bookshelfNovelDbData.getType()==-2)){
+                bookshelfNovelDbData.setType(0);
+                mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
             }
         }
         mPresenter.queryAllBook();
@@ -627,8 +633,10 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         Gson mGson = new Gson();
         String url = UrlObtainer.GetUrl() + "/api/Userbook/index";
         RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
-                .add("page", 1 + "")
+//                .add("token", token)
+                .add("type", 0 + "")
+                .add("page", z + "")
+                .add("limit", 20 + "")
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
             @Override
@@ -669,10 +677,63 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         });
         }
     }
+    private void queryallBook_First(String token) {
+        if(token!=null){
+            Gson mGson = new Gson();
+            String url = UrlObtainer.GetUrl() + "/api/Userbook/index";
+            RequestBody requestBody = new FormBody.Builder()
+//                .add("token", token)
+                    .add("type", 0 + "")
+                    .add("page", 1 + "")
+                    .add("limit", 20 + "")
+                    .build();
+            OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+                @Override
+                public void onResponse(String json) {   // 得到 json 数据
+                    LogUtils.e(url + " " + token + " " + json);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        String code = jsonObject.getString("code");
+                        if (code.equals("1")) {
+                            if (jsonObject.isNull("data")) {
+                                showShortToast("请求数据失败");
+                            } else {
+                                JSONObject object = jsonObject.getJSONObject("data");
+                                JSONArray jsonArray = object.getJSONArray("data");
+                                mDataList1.clear();
+                                noval_readcoreds.clear();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    noval_readcoreds.add(mGson.fromJson(jsonArray.getJSONObject(i).toString(), Noval_Readcored.class));
+                                    mDataList1.add(new BookshelfNovelDbData(noval_readcoreds.get(i).getNovel_id(), noval_readcoreds.get(i).getTitle(), noval_readcoreds.get(i).getPic()
+                                            , 0, 0, 0, noval_readcoreds.get(i).getChapter_id(), noval_readcoreds.get(i).getChapter_count(), noval_readcoreds.get(i).getSerialize()));
+                                }
+                                queryAllBookSuccess2(mDataList1);
+                                SpUtil.saveIs_first(1);
+                            }
+                        } else {
+                            showShortToast("请求数据失败");
+                        }
+                    } catch (JSONException e) {
+                        queryAllBookSuccess2(mDataList1);
+                        e.printStackTrace();
+                    }
+                }
 
+                @Override
+                public void onFailure(String errorMsg) {
+                    queryAllBookSuccess2(mDataList1);
+                    showShortToast(errorMsg);
+                }
+            });
+        }
+    }
+    boolean isFull=false;
     private void initAdapter() {
-        mDataList.add(bookshelfNovelDbData);
-        mCheckedList.add(false);
+        if(z==1&&mDataList.size()<20) {
+            mDataList.add(bookshelfNovelDbData);
+            mCheckedList.add(false);
+            isFull=true;
+        }
         mBookshelfNovelsAdapter = new BookshelfNovelsAdapter(getActivity(), mDataList, mCheckedList,
                 new BookshelfNovelsAdapter.BookshelfNovelListener() {
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -698,6 +759,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                                    bundle.putString(WYReadActivity.LOAD_PATH, mDataList.get(position).getNovelUrl());
                                     bundle.putString(WYReadActivity.CHPTER_ID, mDataList.get(position).getChapterid());
                                     bundle.putString(WYReadActivity.PAGE_ID, mDataList.get(position).getPosition()+"");
                                     LogUtils.e(mDataList.get(position).getPosition()+" "+mDataList.get(position).getChapterid());
@@ -820,6 +882,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     public class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            isRefresh=true;
             int i=intent.getIntExtra("type",0);
             String position=intent.getStringExtra("position");
             int z = -1;
@@ -832,6 +895,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                     }
                 }
             }
+            Log.e("WWW3", "onReceive: "+i);
             if(i==0) {
                 updata2(false,z);
             }else if(i==1){

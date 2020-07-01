@@ -5,6 +5,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.novel.collection.R;
@@ -30,7 +31,6 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
     private TextView mAllBookTv;
     private EnhanceTabLayout mTabLayout;
     private ViewPager mViewPager;
-
     private List<Fragment> mFragmentList = new ArrayList<>();   // 碎片集合
     private List<String> mPageTitleList = new ArrayList<>();    // tab 的标题集合
 
@@ -59,9 +59,8 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
     protected void initView() {
         mSearchView = getActivity().findViewById(R.id.iv_discovery_search_icon1);
         mSearchView.setOnClickListener(this);
-        mAllBookTv = getActivity().findViewById(R.id.tv_discovery_all_book1);
-        mAllBookTv.setOnClickListener(this);
-
+//        mAllBookTv = getActivity().findViewById(R.id.tv_discovery_all_book1);
+//        mAllBookTv.setOnClickListener(this);
         mTabLayout = getActivity().findViewById(R.id.tv_discovery_tab_layout1);
         // TabLayout + ViewPager
         mViewPager = getActivity().findViewById(R.id.vp_discovery_view_pager1);
@@ -96,8 +95,17 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
 //            }
 //        });
         mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.getmTabLayout().getTabAt(0).select();
+        if(!isChecked) {
+            mTabLayout.getmTabLayout().getTabAt(0).select();
+        }else {
+            mTabLayout.getmTabLayout().getTabAt(2).select();
+            isChecked=false;
+        }
 //        mViewPager.setPageTransformer(false, new DiscoveryPageTransformer(mTabLayout.getmTabLayout()));
+    }
+    boolean isChecked=false;
+    public void setPositionChecked(){
+        isChecked=true;
     }
 
     @Override
@@ -116,12 +124,12 @@ public class BookstoreFragment extends BaseFragment implements View.OnClickListe
             case R.id.iv_discovery_search_icon1:
                 jump2Activity(SearchActivity.class);
                 break;
-            case R.id.tv_discovery_all_book1:
-                if (!NetUtil.hasInternet(getActivity())) {
-                    showShortToast("当前无网络，请检查网络后重试");
-                    return;
-                }
-                break;
+//            case R.id.tv_discovery_all_book1:
+//                if (!NetUtil.hasInternet(getActivity())) {
+//                    showShortToast("当前无网络，请检查网络后重试");
+//                    return;
+//                }
+//                break;
             default:
                 break;
         }

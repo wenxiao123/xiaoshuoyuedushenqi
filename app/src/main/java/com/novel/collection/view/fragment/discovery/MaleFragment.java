@@ -71,7 +71,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     private CategoryAdapter mCategoryAdapter;
     private List<Noval_details> mNovelDataList = new ArrayList<>();
-
+    private  TextView txt_more_book;
     private RelativeLayout rel_click_more,rel_hot,rel_new;
 
     @Override
@@ -97,6 +97,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void initView() {
+        txt_more_book=getActivity().findViewById(R.id.txt_more_book);
+        txt_more_book.setVisibility(View.GONE);
         rel_hot=getActivity().findViewById(R.id.rel_hot_male);
         rel_new=getActivity().findViewById(R.id.rv_new_male);
         tv_hot_more=getActivity().findViewById(R.id.tv_male_category_more);
@@ -140,7 +142,15 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
         rel_click_more = getActivity().findViewById(R.id.click_more);
         mProgressBar = getActivity().findViewById(R.id.pb_male);
-
+        txt_more_book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent_recever = new Intent("com.tiaozhuan.android");
+                intent_recever.putExtra("type",4);
+                getContext().sendBroadcast(intent_recever);
+                //finish();
+            }
+        });
         mRefreshSrv = getActivity().findViewById(R.id.srv_male_refresh);
         mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.red_aa));   //设置颜色
         mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -314,6 +324,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     List<CategoryNovels> categoryNovelsList=new ArrayList<>();
     @Override
     public void getHotRankDataSuccess(List<CategoryNovels> novelNameList_one) {
+        Log.e("XXX", "getHotRankDataSuccess: "+novelNameList_one.size());
+        txt_more_book.setVisibility(View.VISIBLE);
         categoryNovelsList.clear();
         for(int i=0;i<novelNameList_one.size();i++){
             if(novelNameList_one.get(i).getData_list().size()!=0){
@@ -337,6 +349,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
      */
     @Override
     public void getHotRankDataError(String errorMsg) {
+        txt_more_book.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
     }

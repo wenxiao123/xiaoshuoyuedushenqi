@@ -1,11 +1,14 @@
 package com.novel.collection.view.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fm.openinstall.OpenInstall;
+import com.fm.openinstall.listener.AppInstallAdapter;
 import com.fm.openinstall.listener.AppInstallListener;
 import com.fm.openinstall.model.AppData;
 import com.fm.openinstall.model.Error;
@@ -78,7 +82,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         Glide.with(this)
                 .load(R.mipmap.admin)
                 .apply(new RequestOptions()
-                        )
+                )
                 .into(img_title);
         findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,11 +95,11 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         tv_verification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isPhoneNumber(et_mobile_phone.getText().toString())){
+                if (isPhoneNumber(et_mobile_phone.getText().toString())) {
                     mPresenter.getVertical(et_mobile_phone.getText().toString());
                     showShortToast("已发送");
                     tv_verification.setEnabled(false);
-                }else {
+                } else {
                     showShortToast("电话号码格式错误！");
                 }
             }
@@ -184,8 +188,51 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
             @Override
             public void onClick(View view) {
                 if (isChecked) {
-                    String Diviceid= CarOnlyIdUtils.getOnlyID(LoginActivity.this);
-                    mPresenter.getLogin(Diviceid,et_mobile_phone.getText().toString(), et_vertical.getText().toString());
+                    final SharedPreferences sp = getSharedPreferences("filename", MODE_PRIVATE);
+                    boolean isFirst = sp.getBoolean("isFirst", true);
+                    String channelCode = sp.getString("channel", null);
+                    String Diviceid = CarOnlyIdUtils.getOnlyID(LoginActivity.this);
+                    if (isFirst && channelCode == null) {
+                        OpenInstall.getInstall(new AppInstallAdapter() {
+                            @Override
+                            public void onInstall(AppData appData) {
+                                //获取渠道数据
+                                String channelCode = appData.getChannel();
+                                //获取自定义数据
+                                sp.edit().putBoolean("isFirst", false).apply();
+                                // String channelCode=appData.getChannel();
+                                if (channelCode != null) {
+                                    sp.edit().putString("channel", channelCode).apply();
+                                    mPresenter.getLogin(Diviceid, et_mobile_phone.getText().toString(), et_vertical.getText().toString(), channelCode);
+                                } else {
+                                    ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                                    try {
+                                        ClipData data = cm.getPrimaryClip();
+                                        if(data==null){
+                                            mPresenter.getLogin(Diviceid, et_mobile_phone.getText().toString(), et_vertical.getText().toString());
+                                        }else {
+                                            ClipData.Item item = data.getItemAt(0);
+                                            String content = item.getText().toString();
+                                            sp.edit().putString("channel", content).apply();
+                                            mPresenter.getLogin(Diviceid, et_mobile_phone.getText().toString(), et_vertical.getText().toString(), content);
+                                            Log.d("OpenInstall", "CONTENT " + content);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                       // OpenInstall.reportRegister();
+                    } else {
+                        Log.e("QQQ2", "onInstallFinish: " + channelCode);
+                        if (channelCode != null) {
+                            mPresenter.getLogin(Diviceid, et_mobile_phone.getText().toString(), et_vertical.getText().toString(), channelCode);
+                        } else {
+                            mPresenter.getLogin(Diviceid, et_mobile_phone.getText().toString(), et_vertical.getText().toString());
+                        }
+                    }
+                    // mPresenter.getLogin(Diviceid,et_mobile_phone.getText().toString(), et_vertical.getText().toString());
                 } else {
                     showShortToast("请先同意用户协议与隐私条款");
                 }
@@ -195,13 +242,13 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         tv_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(!isExit1){
-                   isExit1=true;
-                   Intent intent = new Intent(LoginActivity.this, WebActivity.class);
-                   intent.putExtra("type", "3");
-                   intent.putExtra("title", "用户协议");
-                   startActivity(intent);
-               }
+                if (!isExit1) {
+                    isExit1 = true;
+                    Intent intent = new Intent(LoginActivity.this, WebActivity.class);
+                    intent.putExtra("type", "3");
+                    intent.putExtra("title", "用户协议");
+                    startActivity(intent);
+                }
 
             }
         });
@@ -210,7 +257,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
         tv_yinsi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isExit2) {
+                if (!isExit2) {
                     isExit2 = true;
                     Intent intent = new Intent(LoginActivity.this, WebActivity.class);
                     intent.putExtra("type", "2");
@@ -219,8 +266,32 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
                 }
             }
         });
+//        OpenInstall.getInstall(new AppInstallAdapter() {
+//            @Override
+//            public void onInstall(AppData appData) {
+//                //获取渠道数据
+//                String channelCode = appData.getChannel();
+//                //获取自定义数据
+//                String bindData = appData.getData();
+//                Log.d("OpenInstall", "getInstall : installData = " + appData.toString());
+//                ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+//                try {
+//                    ClipData data = cm.getPrimaryClip();
+//
+//                    ClipData.Item item = data.getItemAt(0);
+//                    String content = item.getText().toString();
+//                    Log.d("OpenInstall", "CONTENT " + content);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//            }
+//        });
     }
-    private static boolean isExit1 = false,isExit2 = false;
+
+    private static boolean isExit1 = false, isExit2 = false;
+
     @Override
     protected void doAfterInit() {
 
@@ -255,8 +326,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
 
     @Override
     public void getVerticalSuccess(String code) {
-        if(code!=null) {
-           showShortToast(code);
+        if (code != null) {
+            showShortToast(code);
         }
         tv_verification.setEnabled(true);
         time.start();
@@ -272,23 +343,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements ILogi
     public void getLoginSuccess(Login_admin loginAdminl) {
         SpUtil.saveObject(this, loginAdminl);
         if (loginAdminl != null) {
-            final SharedPreferences sp = getSharedPreferences("filename", MODE_PRIVATE);
-            boolean isFirst = sp.getBoolean("isFirst", true);
-            if(isFirst){
-                OpenInstall.getInstall(new AppInstallListener() {
-                    @Override
-                    public void onInstallFinish(AppData appData, Error error) {
-                        sp.edit().putBoolean("isFirst", false).apply();
-                        OpenInstall.reportRegister();
-                    }
-
-//                    @Override
-//                    public void onInstallFinish(AppData appData, Error error) {
-//                        //使用数据后，不想再调用，将isFirst设置为false
-//                        sp.edit().putBoolean("isFirst", false).apply();
-//                    }
-                });
-            }
             startActivity(new Intent(this, MainActivity.class));
         }
         Intent recever = new Intent("com.name.android");

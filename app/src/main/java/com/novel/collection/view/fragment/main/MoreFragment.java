@@ -177,12 +177,12 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener ,
             public void clickItem(int position) {
                 switch (position) {
                     case 0:
-                        if (login_admin == null) {
-                            showShortToast("你还未登录，请先登录");
-                            return;
-                        } else {
+//                        if (login_admin == null) {
+//                            showShortToast("你还未登录，请先登录");
+//                            return;
+//                        } else {
                             getContext().startActivity(new Intent(getContext(), ReadrecoderActivity.class));
-                        }
+//                        }
                         break;
                     case 1:
                         getContext().startActivity(new Intent(getContext(), AdminSetActivity.class));

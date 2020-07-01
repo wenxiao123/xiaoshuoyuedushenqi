@@ -605,6 +605,9 @@ public class AdminSetActivity extends BaseActivity {
                 }
                 Intent recever = new Intent("com.name.android");
                 sendBroadcast(recever);
+                Intent intent_recever = new Intent("com.zhh.android");
+                intent_recever.putExtra("type", 1);
+                sendBroadcast(intent_recever);
             }
 
             @Override

@@ -57,6 +57,11 @@ public class LoginPresenter extends BasePresenter<ILoginContract.View>
     }
 
     @Override
+    public void getLogin(String diveceid, String mobile, String code, String chanel) {
+        mModel.getLogin(diveceid,mobile,code,chanel);
+    }
+
+    @Override
     public void getLogin(String diviceid,String mobile, String code) {
       mModel.getLogin(diviceid,mobile,code);
     }

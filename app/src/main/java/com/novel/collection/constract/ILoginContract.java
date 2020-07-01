@@ -26,9 +26,11 @@ public interface ILoginContract {
 
         void getVertical(String moildle);
         void getLogin(String diveceid,String mobile,String code);
+        void getLogin(String diveceid,String mobile,String code,String chanel);
     }
     interface Model {
         void getVertical(String moildle);
         void getLogin(String diveceid,String mobile,String code);
+        void getLogin(String diveceid,String mobile,String code,String chanel);
     }
 }

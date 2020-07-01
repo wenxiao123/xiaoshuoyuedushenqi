@@ -1077,6 +1077,7 @@ public abstract class PageLoader {
             drawBackground(mPageView.getBgBitmap(), isUpdate);
             if (!isUpdate) {
                 drawContent(bitmap);
+            Log.e("XXX2", "onDraw: "+222);
             }
             //更新绘制
             mPageView.invalidate();
@@ -1121,6 +1122,7 @@ public abstract class PageLoader {
                 }
                 mTipPaint.setColor(mTextColor);
             } else {
+                Log.e("XXX1", "onDraw: "+333);
                 if(mChapterList != null&&mCurPage!=null) {
                     mTipPaint.setColor(App.getAppResources().getColor(R.color.word_color));
                     String s = mChapterList.get(mCurChapterPos).getTitle() + "/" + mCollBook.getTitle();
@@ -1129,7 +1131,7 @@ public abstract class PageLoader {
                     }
                     canvas.drawText(s, mMarginWidth, tipTop, mTipPaint);
                     mTipPaint.setColor(mTextColor);
-
+                    Log.e("SSS", "drawBackground: "+s);
                     /******绘制页码********/
                     //底部的字显示的位置Y
                     float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
@@ -1283,9 +1285,7 @@ public abstract class PageLoader {
                     for (int i = mCurPage.titleLines; i < mCurPage.lines.size(); ++i) {
                         str = mCurPage.lines.get(i);
                         if(!TextUtils.isEmpty(str)&&str.equals("\n")){
-
                             top =top+ (mTextPara-mTextInterval);
-
                             continue;
                         }
 

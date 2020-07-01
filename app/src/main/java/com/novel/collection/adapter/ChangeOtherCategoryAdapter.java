@@ -50,6 +50,15 @@ public class ChangeOtherCategoryAdapter extends RecyclerView.Adapter<ChangeOther
         this.categorys_ones = categorys_ones;
     }
 
+    public String getOther_website_id() {
+        return other_website_id;
+    }
+
+    public void setOther_website_id(String other_website_id) {
+        this.other_website_id = other_website_id;
+    }
+
+    String other_website_id="";
 
     @NonNull
     @Override
@@ -80,6 +89,17 @@ public class ChangeOtherCategoryAdapter extends RecyclerView.Adapter<ChangeOther
             holder.tv_updata_time.setText("更新于:"+getTimeFormatText(ConverToDate(categorys_one.getUpdate_time())));
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if(!other_website_id.equals(categorys_one.getId())){
+            holder.content.setTextColor(mContext.getResources().getColor(R.color.item_history_text));
+            holder.tv_laiyuan.setTextColor(mContext.getResources().getColor(R.color.gray_a3));
+            holder.tv_total_catagorys.setTextColor(mContext.getResources().getColor(R.color.gray_a3));
+            holder.tv_updata_time.setTextColor(mContext.getResources().getColor(R.color.gray_a3));
+        }else {
+            holder.content.setTextColor(mContext.getResources().getColor(R.color.yellow));
+            holder.tv_laiyuan.setTextColor(mContext.getResources().getColor(R.color.yellow));
+            holder.tv_total_catagorys.setTextColor(mContext.getResources().getColor(R.color.yellow));
+            holder.tv_updata_time.setTextColor(mContext.getResources().getColor(R.color.yellow));
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -115,4 +115,40 @@ public class LoginModel implements ILoginContract.Model {
             }
         });
     }
+
+    @Override
+    public void getLogin(String diveceid, String mobile, String code, String chanel) {
+        String url = UrlObtainer.GetUrl() + "/api/index/mobilelogin";
+        RequestBody requestBody = new FormBody.Builder()
+                .add("mobile", mobile)
+                .add("code", code)
+                .add("uuid", diveceid)
+                .add("channelCode", chanel)
+                .build();
+        OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                Log.e("qqq", "onResponse: "+diveceid+" "+mobile+" "+" "+code+" "+json);
+                //ToastUtils.show(json);
+                try {
+                    JSONObject jsonObject=new JSONObject(json);
+                    String code=jsonObject.getString("code");
+                    if(code.equals("1")){
+                        JSONObject object=jsonObject.getJSONObject("data");
+                        Login_admin login_admin=mGson.fromJson(object.toString(),Login_admin.class);
+                        mPresenter.getLoginSuccess(login_admin);
+                    }else {
+                        mPresenter.getLoginError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    mPresenter.getLoginError("请求错误");
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                mPresenter.getLoginError(errorMsg);
+            }
+        });
+    }
 }

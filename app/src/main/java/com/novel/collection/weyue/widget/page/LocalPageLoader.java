@@ -1,6 +1,8 @@
 package com.novel.collection.weyue.widget.page;
 
 
+import android.util.Log;
+
 import com.novel.collection.weyue.db.entity.BookRecordBean;
 import com.novel.collection.weyue.db.entity.CollBookBean;
 import com.novel.collection.weyue.model.Void;
@@ -53,7 +55,8 @@ public class LocalPageLoader extends PageLoader {
             "^(\\s{0,4})([\\(\u3010\u300a]?(\u5377)?)([0-9\u96f6\u4e00\u4e8c\u4e24\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u767e\u5343\u4e07\u58f9\u8d30\u53c1\u8086\u4f0d\u9646\u67d2\u634c\u7396\u62fe\u4f70\u4edf]{1,10})([\\.:\uff1a\u0020\f\t])(.{0,30})$",
             "^(\\s{0,4})([\\(\uff08\u3010\u300a])(.{0,30})([\\)\uff09\u3011\u300b])(\\s{0,2})$",
             "^(\\s{0,4})(\u6b63\u6587)(.{0,20})$",
-            "^(.{0,4})(Chapter|chapter)(\\s{0,4})([0-9]{1,4})(.{0,30})$"};
+            "^(.{0,4})(Chapter|chapter)(\\s{0,4})([0-9]{1,4})(.{0,30})$","(<[^>]*>)"};
+    private static final String[] CHAPTER_CATALOG =new String[]{"(<[^>]*>)"};//"(^.{0,3}\\s*第)(.{0,9})[章节卷集部篇回](\\s*)";
 
     //书本的大小
     private long mBookSize;
@@ -79,7 +82,7 @@ public class LocalPageLoader extends PageLoader {
 
         //判断是否文件存在
         if (!mBookFile.exists()) return;
-
+        setWeight(collBookBean.getChaptersCount());
         //获取文件的大小
         mBookSize = mBookFile.length();
 
@@ -163,6 +166,11 @@ public class LocalPageLoader extends PageLoader {
                 String blockContent = new String(buffer, 0, length, mCharset.getName());
                 //当前Block下使过的String的指针
                 int seekPos = 0;
+//                Pattern p = null;
+//                Matcher matcher = null;
+//                //
+//                p = Pattern.compile(CHAPTER_CATALOG);
+               // matcher = p.matcher(blockContent);
                 //进行正则匹配
                 Matcher matcher = mChapterPattern.matcher(blockContent);
                 //如果存在相应章节
@@ -174,7 +182,7 @@ public class LocalPageLoader extends PageLoader {
                     //第一种情况一定是序章 第二种情况可能是上一个章节的内容
                     if (seekPos == 0 && chapterStart != 0) {
                         //获取当前章节的内容
-                        String chapterContent = blockContent.substring(seekPos, chapterStart);
+                        String chapterContent = blockContent.substring(seekPos, chapterStart).replace("<br>","");
                         //设置指针偏移
                         seekPos += chapterContent.length();
 
@@ -193,7 +201,7 @@ public class LocalPageLoader extends PageLoader {
 
                             //创建当前章节
                             TxtChapter curChapter = new TxtChapter();
-                            curChapter.title = matcher.group();
+                            curChapter.title = matcher.group().replace("<","").replace(">","");
                             curChapter.start = preChapter.end;
                             chapters.add(curChapter);
                         }
@@ -211,7 +219,7 @@ public class LocalPageLoader extends PageLoader {
 
                             //创建当前章节
                             TxtChapter curChapter = new TxtChapter();
-                            curChapter.title = matcher.group();
+                            curChapter.title = matcher.group().replace("<","").replace(">","");
                             curChapter.start = lastChapter.end;
                             chapters.add(curChapter);
                         }
@@ -233,14 +241,14 @@ public class LocalPageLoader extends PageLoader {
 
                             //创建当前章节
                             TxtChapter curChapter = new TxtChapter();
-                            curChapter.title = matcher.group();
+                            curChapter.title = matcher.group().replace("<","").replace(">","");
                             curChapter.start = lastChapter.end;
                             chapters.add(curChapter);
                         }
                         //如果章节不存在则创建章节
                         else {
                             TxtChapter curChapter = new TxtChapter();
-                            curChapter.title = matcher.group();
+                            curChapter.title = matcher.group().replace("<","").replace(">","");
                             curChapter.start = 0;
                             chapters.add(curChapter);
                         }
@@ -325,6 +333,7 @@ public class LocalPageLoader extends PageLoader {
         }
         //从文件中获取数据
         byte[] content = getChapterContent(chapter);
+        Log.e("ERE", "loadPageList: "+new String(content));
         ByteArrayInputStream bais = new ByteArrayInputStream(content);
         BufferedReader br = null;
         try {
@@ -372,7 +381,7 @@ public class LocalPageLoader extends PageLoader {
         byte[] buffer = new byte[BUFFER_SIZE / 4];
         int length = bookStream.read(buffer, 0, buffer.length);
         //进行章节匹配
-        for (String str : CHAPTER_PATTERNS) {
+        for (String str : CHAPTER_CATALOG) {
             Pattern pattern = Pattern.compile(str, Pattern.MULTILINE);
             Matcher matcher = pattern.matcher(new String(buffer, 0, length, mCharset.getName()));
             //如果匹配存在，那么就表示当前章节使用这种匹配方式
@@ -414,6 +423,7 @@ public class LocalPageLoader extends PageLoader {
         //额，写的不太优雅，之后再改
         if (mChapterList != null && mChapterList.size() != 0) {
             mPageChangeListener.onCategoryFinish(mChapterList);
+            setWeight(mChapterList.size());
         }
     }
 

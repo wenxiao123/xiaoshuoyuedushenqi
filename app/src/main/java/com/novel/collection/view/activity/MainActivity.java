@@ -141,11 +141,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
                 @Override
                 public void onUpdate() {
-                    Intent intent = new Intent();
-                    intent.setAction("android.intent.action.VIEW");
-                    Uri content_url = Uri.parse(content);//此处填链接
-                    intent.setData(content_url);
-                    startActivity(intent);
+//                    Intent intent = new Intent();
+//                    intent.setAction("android.intent.action.VIEW");
+//                    Uri content_url = Uri.parse(content);//此处填链接
+//                    intent.setData(content_url);
+//                    startActivity(intent);
                     mVersionUpdateDialog.dismiss();
                 }
             });
@@ -212,7 +212,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void getVersionSuccess(Version_code data) {
-        if(data.getCode()==1){
+        if(data.getVersion_name()!=getVersionName(this)){
             showUpdateDialog(data.getDescribe(),data.getDownload_address());
         }
     }
@@ -548,17 +548,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 //            }
 //        });
     }
-   public void updata(PersonBean personBean,boolean isflag){
-       if(mBookshelfFragment!=null){
-           ((BookshelfFragment)mBookshelfFragment).setPersonBean(personBean,isflag);
-       }
-   }
-
-    public void updata2(boolean flag){
-        if(mBookshelfFragment!=null){
-            ((BookshelfFragment)mBookshelfFragment).updata2(flag,0);
-        }
-    }
     /**
      * 切换 Fragment
      *
@@ -695,6 +684,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 mDiscoveryBeforeIv.setVisibility(View.INVISIBLE);
                 // 切换 Fragment
                 changeFragment(FG_DISCOVERY);
+            }else if(i==4){
+                // 在开启当前菜单项的动画前，先切换其他菜单项的 icon
+                mBookshelfBeforeIv.setVisibility(View.VISIBLE);
+                mBookshelfAfterIv.setVisibility(View.INVISIBLE);
+                mMoreBeforeIv.setVisibility(View.VISIBLE);
+                mMoreAfterIv.setVisibility(View.INVISIBLE);
+                mBookMarkBefore.setVisibility(View.INVISIBLE);
+                mBookMarkAfter.setVisibility(View.VISIBLE);
+                mDiscoveryAfterIv.setVisibility(View.INVISIBLE);
+                mDiscoveryBeforeIv.setVisibility(View.VISIBLE);
+                // 切换 Fragment
+                changeFragment(FG_BOOKMARK);
+                ((BookstoreFragment) mBookmarkFragment).setPositionChecked();
             }
         }
     }

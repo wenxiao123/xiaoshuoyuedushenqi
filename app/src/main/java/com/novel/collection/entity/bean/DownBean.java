@@ -6,13 +6,23 @@ public class DownBean {
     String title;
     String pic;
     String id;
+    int serialize;
 
-    public DownBean(int weight, int position, String title, String pic, String id) {
+    public int getSerialize() {
+        return serialize;
+    }
+
+    public void setSerialize(int serialize) {
+        this.serialize = serialize;
+    }
+
+    public DownBean(int weight, int position, String title, String pic, String id, int serialize) {
         this.weight = weight;
         this.position = position;
         this.title = title;
         this.pic = pic;
         this.id = id;
+        this.serialize = serialize;
     }
 
     public int getWeight() {

@@ -112,6 +112,7 @@ public class ExclusiveModel  implements IExclusiveContract.Model {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    mPresenter.getNewDataError("请求错误");
                 }
             }
 

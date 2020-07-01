@@ -1445,7 +1445,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     public void setBookshelfadd(String token, String novel_id) {
         String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
+//                .add("token", token)
                 .add("novel_id", novel_id)
                 .build();
         OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {

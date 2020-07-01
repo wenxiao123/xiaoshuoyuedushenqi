@@ -12,10 +12,12 @@ import com.novel.collection.app.App;
 import com.novel.collection.constant.Constant;
 import com.novel.collection.db.DatabaseManager;
 import com.novel.collection.entity.bean.DownBean;
+import com.novel.collection.entity.bean.Login_admin;
 import com.novel.collection.entity.data.BookshelfNovelDbData;
 import com.novel.collection.http.OkhttpCall;
 import com.novel.collection.http.OkhttpUtil;
 import com.novel.collection.http.UrlObtainer;
+import com.novel.collection.util.SpUtil;
 import com.novel.collection.util.ToastUtil;
 
 import org.greenrobot.greendao.annotation.Id;
@@ -32,6 +34,7 @@ import java.io.Serializable;
 import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.security.auth.login.LoginException;
@@ -44,11 +47,12 @@ public class CacheService extends Service {
     private static String TAG = "CacheService";
     int z = 1;
     int weigh;
+    int serialize;
     String bookname, bookcover, id;
     String path;
     DatabaseManager mDbManager;
     private MyBinder mBinder = new MyBinder();
-
+    Login_admin login_admin;
     //该服务不存在需要被创建时被调用，不管startService()还是bindService()都会启动时调用该方法
     @Override
     public void onCreate() {
@@ -60,13 +64,19 @@ public class CacheService extends Service {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 1) {
-                BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(id + "", bookname, bookcover, 1, weigh, 1 + "");
-                bookshelfNovelDbData.setFuben_id(path + ".txt");
-                bookshelfNovelDbData.setChapterid(0 + "");
+                //BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(id + "", bookname, bookcover, 1, weigh, 1 + "");
+                BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(id, bookname,
+                        bookcover, 0, 1, 0, 0 + "", weigh, serialize + "");
+                bookshelfNovelDbData.setFuben_id(path+".txt");
                 mDbManager.insertOrUpdateBook(bookshelfNovelDbData);
-                Intent intent_recever = new Intent("com.zhh.android");
-                intent_recever.putExtra("type", 1);
-                sendBroadcast(intent_recever);
+                if (login_admin != null) {
+                    setBookshelfadd(login_admin.getToken(), id);
+                }else {
+                    setBookshelfadd("", id);
+                }
+//                Intent intent_recever = new Intent("com.zhh.android");
+//                intent_recever.putExtra("type", 1);
+//                sendBroadcast(intent_recever);
                 for(int i=0;i<downBeanList.size();i++){
                   if(downBeanList.get(i).getId().equals(id)){
                       downBeanList.remove(downBeanList.get(i));
@@ -75,11 +85,12 @@ public class CacheService extends Service {
                  if(downBeanList.size()>0){
                      DownBean downBean=downBeanList.get(0);
                      weigh=downBean.getWeight();
+                     serialize=downBean.getSerialize();
                      bookname=downBean.getTitle();
                      bookcover=downBean.getPic();
                      id=downBean.getId();
                      z=1;
-                     path = Constant.BOOK_ADRESS + "/" + bookname;
+                     path = Constant.BOOK_ADRESS + "/" +id+"/" +bookname;
                      postBooks_che();
                  }else {
                      App.getInstance().setPosition(null);
@@ -94,12 +105,11 @@ public class CacheService extends Service {
                 }
                 float pressent = (float) f/ (weigh) * 100;
                 App.getInstance().setPosition(id);
-                String progress;
+                String progress="";
                 if (((z-1)*post_num+(j+1)) < weigh) {
                     //CacheService.this.callback.onDataChange("正在缓存:" +(int)pressent + "%",id);
                     progress="缓存中:" +(int)pressent + "%";
                 } else {
-                   // CacheService.this.callback.onDataChange("已缓存",id);
                     progress="已缓存";
                     handler.sendEmptyMessage(1);
                 }
@@ -131,22 +141,29 @@ public class CacheService extends Service {
                         JSONObject object = jsonObject.getJSONObject("data");
                         JSONArray jsonArray = object.getJSONArray("data");
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            String title = jsonArray.getJSONObject(i).getString("title");
-                            String content = jsonArray.getJSONObject(i).getString("content");
-                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
-                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
-                            if (!load_title.contains("第") || !load_title.startsWith("第")) {
-                                String s = Pattern.compile(ChapterPatternStr).matcher(title).replaceAll("");
-                                String title2 = "";
-                                if (load_title.contains(s)) {
-                                    title2 = load_title.replace(s, "第" + s + "章 ");
-                                }
-                                addTxtToFileBuffered(title2 + "\n");
-                                addTxtToFileBuffered(load_content + "\n");
-                            } else {
-                                addTxtToFileBuffered(load_title + "\n");
-                                addTxtToFileBuffered(load_content + "\n");
-                            }
+                            String title = jsonArray.getJSONObject(i).getString("title").replace("</br>", "\n");;
+                            String content = jsonArray.getJSONObject(i).getString("content").replace("</br>", "\n");;
+//                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
+//                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
+//                            if (!title.startsWith("第")) {
+//                                String title2 = "";
+//                                for(int k=0;k<title.length();k++){
+//                                  String c= String.valueOf(title.charAt(k));
+//                                  if(c.equals("\\s+")||c.equals(":")||c.equals("_")){
+//                                      title2 = title.replace(c, "章 ");
+//                                      break;
+//                                  }
+//                                }
+//                                if (title2.equals("")) {
+//                                    title2 = (z*post_num+i)+"章 "+title;
+//                                }
+//                                addTxtToFileBuffered("<"+title2+">"+"\n");
+//                                addTxtToFileBuffered(content + "\n");
+//                                Log.e("vvv", "onResponse: "+title2);
+//                            } else {
+                            addTxtToFileBuffered("<"+title+">"+"\n");
+                            addTxtToFileBuffered(content + "\n");
+                           // }
                             Message message = new Message();
                             message.what = 2;
                             message.arg1 = i;
@@ -161,9 +178,7 @@ public class CacheService extends Service {
                         }
                         time_count = 0;
                     }
-                    Log.e("QQQ", "onResponse: "+111);
                 } catch (JSONException e) {
-                    Log.e("QQQ", "onResponse: "+222);
                     if (time_count < Constant.TIME_MAX) {
                         postBooks_che();
                     } else {
@@ -185,6 +200,45 @@ public class CacheService extends Service {
                 time_count++;
             }
         });
+    }
+    public void setBookshelfadd(String token, String novel_id) {
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+                //.add("token", token)
+                .add("type", 2+"")
+                .add("novel_id", novel_id)
+                .add("chapter_id", 1+"")
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                Log.e("QQW", "onResponse: "+json);
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        String message = jsonObject.getString("msg");
+                    } else {
+                        //mPresenter.getReadRecordError("请求错误");
+                        //getNovelsError("请求错误");
+                    }
+                    Intent intent_recever = new Intent("com.zhh.android");
+                    intent_recever.putExtra("type", 1);
+                    sendBroadcast(intent_recever);
+                } catch (JSONException e) {
+                    //e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                // getNovelsError("请求错误");
+                //mPresenter.getReadRecordError(errorMsg);
+            }
+        });
+    }
+    public static boolean containSpace(CharSequence input){
+        return Pattern.compile("\\s+").matcher(input).find();
     }
     int time_count = 0;
     int post_num=5;
@@ -238,6 +292,7 @@ public class CacheService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         mDbManager = DatabaseManager.getInstance();
+        login_admin=(Login_admin) SpUtil.readObject(App.getAppContext());
         return new MyBinder();
     }
 
@@ -273,11 +328,12 @@ public class CacheService extends Service {
     }
     public void all_che(DownBean downBean){
           weigh=downBean.getWeight();
+          serialize=downBean.getSerialize();
           bookname=downBean.getTitle();
           bookcover=downBean.getPic();
           id=downBean.getId();
           z=downBean.getPosition();
-          path = Constant.BOOK_ADRESS + "/" + bookname;
+          path = Constant.BOOK_ADRESS + "/"+id+"/"+ bookname;
           postBooks_che();
     }
     public Callback getCallback() {

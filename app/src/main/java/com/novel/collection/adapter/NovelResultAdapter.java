@@ -108,6 +108,8 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
                         mContext.sendBroadcast(intent_recever);
                         if (login_admin != null) {
                             setBookshelfadd(login_admin.getToken(), mList.get(position).getId() + "");
+                        }else {
+                            setBookshelfadd("", mList.get(position).getId() + "");
                         }
                         // ((Activity) mContext).finish();
                         novelViewHolder.tv_item_bookshelf.setText("已加入书架");
@@ -134,7 +136,7 @@ public class NovelResultAdapter extends RecyclerView.Adapter {
     public void setBookshelfadd(String token, String novel_id) {
         String url = UrlObtainer.GetUrl()+"/"+"/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
+//                .add("token", token)
                 .add("novel_id", novel_id)
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {

@@ -273,6 +273,26 @@ public class DatabaseManager {
 
     }
 
+    public boolean clear_Book() {
+        // 查询表中所有数据
+        Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null, null, null,
+                null, null, null);
+        List<BookshelfNovelDbData> res = new ArrayList<>();
+        if (cursor.moveToLast()) {
+            do {
+                String novelUrl = cursor.getString(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL));
+                ContentValues values = new ContentValues();
+                values.put(Constant.TABLE_BOOKSHELF_NOVEL_TYPE, -2);
+                mDb.update(Constant.TABLE_BOOKSHELF_NOVEL, values, Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?", new String[]{novelUrl});
+            } while (cursor.moveToPrevious());
+        }
+        cursor.close();
+
+        return false;
+
+    }
+
 
     public boolean isNumeric(String str) {
         Pattern pattern = Pattern.compile("[0-9]*");
@@ -749,7 +769,6 @@ public class DatabaseManager {
                 "novalid = ?",
                 new String[]{novelUrl});
     }
-
     /**
      * 根据小说 url 删除一条书架书籍数据集
      */
@@ -760,6 +779,30 @@ public class DatabaseManager {
                 new String[]{novelUrl});
     }
 
+//    public void deleteLostBookshelfNovel(List<String> list) {
+//        if (null == list || list.size() <= 0) {
+//            return ;
+//        }
+//        try {
+//            mDb.beginTransaction();
+//            for (String remoteAppInfo : list) {
+//                Log.e("SDS", "deleteLostBookshelfNovel: "+remoteAppInfo);
+//                deleteBookshelfNovel(remoteAppInfo);
+//            }
+//            mDb.setTransactionSuccessful();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ;
+//        } finally {
+//            try {
+//                if (null != mDb) {
+//                    mDb.endTransaction();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     /**
      * 根据书签 url 删除一条书架书籍数据集

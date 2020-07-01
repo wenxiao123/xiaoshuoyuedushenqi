@@ -222,7 +222,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rv_male_hot_rank_recycler_view" />
-
+            <TextView
+                android:id="@+id/txt_more_book"
+                android:padding="@dimen/dp_15"
+                android:layout_below="@id/rv_male_category_novel_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/red_aa"
+                android:text="前往书库看更多内容 >>"/>
             <ProgressBar
                 android:id="@+id/pb_male"
                 style="?android:attr/progressBarStyle"

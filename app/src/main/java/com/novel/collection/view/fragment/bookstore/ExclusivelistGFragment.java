@@ -103,8 +103,7 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
         recyclerView3.setLayoutManager(new GridLayoutManager(getActivity(),4));
         recyclerView4 = getActivity().findViewById(R.id.rv_male_category_novel_list1);
         recyclerView4.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mProgressBar = getActivity().findViewById(R.id.pb_male);
-
+        mProgressBar = getActivity().findViewById(R.id.pb_male_excu);
         mRefreshSrv = getActivity().findViewById(R.id.srv_male_refresh1);
         mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.red_aa));   //设置颜色
         mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -125,7 +124,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
     @Override
     protected void doInOnCreate() {
         requestUpdate();
-        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     private void requestUpdate() {
@@ -148,13 +146,13 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
 
     @Override
     public void getNewDataSuccess(List<Noval_details> novelNameList) {
+        mProgressBar.setVisibility(View.GONE);
         Log.e("TAG", "getNewDataSuccess: "+novelNameList.size());
        if(novelNameList.size()==0){
            rv_renqi_title.setVisibility(View.GONE);
        }else {
            rv_renqi_title.setVisibility(View.VISIBLE);
        }
-        mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         if (novelNameList.isEmpty()) {
             return;
@@ -202,7 +200,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
                 mHotRankNovelNameList.add(novelNameList.get(i));
             }
         }
-        mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         if (mHotRankNovelNameList.isEmpty()) {
             return;
@@ -254,7 +251,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
     }
     @Override
     public void getHotRankDataError(String errorMsg) {
-        mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         showShortToast(errorMsg);
     }
@@ -266,7 +262,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
         }else {
             rv_new_renqi_title.setVisibility(View.VISIBLE);
         }
-        mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         if (dataList.isEmpty()) {
             return;
@@ -313,7 +308,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
     }
     @Override
     public void getCategoryNovelsError(String errorMsg) {
-        mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         showShortToast("" + errorMsg);
     }
@@ -325,7 +319,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
         }else {
             rv_new_title.setVisibility(View.VISIBLE);
         }
-        mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
         if (dataList.isEmpty()) {
             return;
@@ -342,7 +335,6 @@ public class ExclusivelistGFragment extends BaseFragment<ExclusivePresenter> imp
 
     @Override
     public void getCategoryNovels2Error(String errorMsg) {
-        mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
     }
 }

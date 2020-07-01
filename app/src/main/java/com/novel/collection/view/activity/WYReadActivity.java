@@ -226,6 +226,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 status = 0 + "";
             }
             load_path = getIntent().getStringExtra(LOAD_PATH);
+            if(mCollBook.getIsLocal()==true){
+                path = Constant.BOOK_ADRESS + "/"+load_path+"/";
+            }else {
+                path = Constant.BOOK_ADRESS + "/"+mCollBook.get_id()+"/";
+            }
             mVmContentInfo = new VMBookContentInfo(getApplicationContext(), this);
             mStyle = SpUtil.getTextStyle();
             mDbManager = DatabaseManager.getInstance();
@@ -675,9 +680,9 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         m_line.setVisibility(View.VISIBLE);
         mBookMark.setTextColor(getResources().getColor(R.color.catalog_chapter_order_text));
         tvCatalog.setTextColor(getResources().getColor(R.color.red));
-        if (changeCategoryAdapter != null) {
-            changeCategoryAdapter.setPosition(-1);
-            changeCategoryAdapter.notifyDataSetChanged();
+        if (changeOtherCategoryAdapter != null) {
+            changeOtherCategoryAdapter.setOther_website_id(other_website_id);
+            changeOtherCategoryAdapter.notifyDataSetChanged();
         }
         rv_catalog_list = view.findViewById(R.id.rv_catalog_list1);
         rv_catalog_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -1020,6 +1025,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 }
             });
             rv_catalog_list.setAdapter(changeOtherCategoryAdapter);
+            changeOtherCategoryAdapter.setOther_website_id(other_website_id);
+            changeOtherCategoryAdapter.notifyDataSetChanged();
         }
     }
     String other_website_id="";
@@ -1166,7 +1173,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             iv_read_day_and_night.setImageResource(R.mipmap.icon_night);
             tv_read_day_and_night_mode.setText("夜间");
         }
-        mPageLoader = txt_page.getPageLoader(mCollBook.isLocal(), is_othersite);
+        mPageLoader = txt_page.getPageLoader(mCollBook.isLocal());
         switch (mPageLoader.getmPageMode()) {
             case PageView.PAGE_MODE_COVER:
                 mTurnRealTv.setBackground(getResources().getDrawable(R.drawable.shape_read_theme_white_selected));
@@ -2186,21 +2193,28 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                         JSONObject object = jsonObject.getJSONObject("data");
                         JSONArray jsonArray = object.getJSONArray("data");
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            String title = jsonArray.getJSONObject(i).getString("title");
-                            String content = jsonArray.getJSONObject(i).getString("content");
-                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
-                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
-                            if (!load_title.contains("第")) {
-                                String s = Pattern.compile("[^0-9]").matcher(title).replaceAll("");
+                            String title = jsonArray.getJSONObject(i).getString("title").replace("</br>", "\n");
+                            String content = jsonArray.getJSONObject(i).getString("content").replace("</br>", "\n");
+//                            String load_title = title.replace("&nbsp", " ").replace("</br>", "\n");
+//                            String load_content = content.replace("&nbsp", " ").replace("</br>", "\n");
+                            if (!title.startsWith("第")) {
                                 String title2 = "";
-                                if (load_title.contains(s)) {
-                                    title2 = load_title.replace(s, "第" + s + "章 ");
+                                for(int k=0;k<title.length();k++){
+                                    String c= String.valueOf(title.charAt(k));
+                                    if(c.equals("\\s+")||c.equals(":")||c.equals("_")){
+                                        title2 = title.replace(c, "章 ");
+                                        break;
+                                    }
                                 }
-                                addTxtToFileBuffered(title2 + "\n");
-                                addTxtToFileBuffered(load_content + "\n");
+                                if (title2.equals("")) {
+                                    title2 = ((z-1)*post_num+i)+"章 "+title;
+                                }
+                                addTxtToFileBuffered("第"+title2 + "\n");
+                                addTxtToFileBuffered(content + "\n");
+                                Log.e("vvv", "onResponse: "+title2);
                             } else {
-                                addTxtToFileBuffered(load_title + "\n");
-                                addTxtToFileBuffered(load_content + "\n");
+                                addTxtToFileBuffered(title + "\n");
+                                addTxtToFileBuffered(content + "\n");
                             }
                             Message message = new Message();
                             message.what = 4;
@@ -2234,7 +2248,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     }
 
     int time_count;
-    String path = Constant.BOOK_ADRESS + "/";
+    String path ;
 
     private void addTxtToFileBuffered(String content) {
         //在文本文本中追加内容
@@ -2290,10 +2304,10 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                     if (load_title.contains(s)) {
                         title2 = load_title.replace(s, "第" + s + "章 ");
                     }
-                    addTxtToFileBuffered(title2 + "\n");
+                    addTxtToFileBuffered("<br><br>"+title2 + "\n");
                     addTxtToFileBuffered(load_content + "\n");
                 } else {
-                    addTxtToFileBuffered(load_title + "\n");
+                    addTxtToFileBuffered("<br><br>"+load_title + "\n");
                     addTxtToFileBuffered(load_content + "\n");
                 }
                 handler.sendEmptyMessage(2);

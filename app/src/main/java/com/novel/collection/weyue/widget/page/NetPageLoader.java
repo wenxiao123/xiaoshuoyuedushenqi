@@ -306,7 +306,7 @@ public class NetPageLoader extends PageLoader {
                 LogUtils.e(o + " " + weigh / 50);
                 other_ones.addAll(catalogData);
                 handler.sendEmptyMessage(3);
-                if(mCurChapterPos/other_max+1==o) {
+                if(o==1) {
                     mChapterList=new ArrayList<>(weigh);
                     handler.sendEmptyMessage(4);
                 }
@@ -357,6 +357,7 @@ public class NetPageLoader extends PageLoader {
                 getOtherCatalogData(other_id, o, 1);
             } else if (msg.what == 4) {
                 mChapterList = convertTxtChapter3(other_ones);
+                Log.e("VVV", "handleMessage: "+mChapterList.size());
 //                for (int i = 0; i < mChapterList.size(); i++) {
 //                    if (format(other_title.trim()).equals(format(mChapterList.get(i).title.trim()))) {
 //                        mCurChapterPos = i;
@@ -424,7 +425,8 @@ public class NetPageLoader extends PageLoader {
             Log.e("zzz", "loadPageList: orghi " + txtChapter.title);
         } else {
             if (is_of_all == true) {
-                mChapterList = mOrigChapterList;
+//                mChapterList = mOrigChapterList;
+//                Log.e("EEE", "loadPageList: "+mOrigChapterList.size());
                 if(mChapterList!=null) {
                     for (int i = 0; i < mChapterList.size(); i++) {
                         if (format(txtChapter.title.trim()).equals(format(mChapterList.get(i).title.trim()))) {

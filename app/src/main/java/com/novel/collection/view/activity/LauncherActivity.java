@@ -34,6 +34,7 @@ import com.novel.collection.entity.data.BookshelfNovelDbData;
 import com.novel.collection.http.OkhttpCall;
 import com.novel.collection.http.OkhttpUtil;
 import com.novel.collection.http.UrlObtainer;
+import com.novel.collection.util.CarOnlyIdUtils;
 import com.novel.collection.util.LogUtils;
 import com.novel.collection.util.SpUtil;
 import com.novel.collection.util.StatusBarUtil;
@@ -163,7 +164,44 @@ public class LauncherActivity extends BaseActivity_other {
     private void getCategoryNovelsError(String errorMsg) {
         showShortToast(errorMsg);
     }
+    public void setBookshelfadd(String token, String novel_id) {
+        String Diviceid = CarOnlyIdUtils.getOnlyID(App.getAppContext());
+        String url = UrlObtainer.GetUrl() + "/api/Userbook/add";
+        RequestBody requestBody = new FormBody.Builder()
+//                .add("token", token)
+                .add("type", 2+"")
+                .add("novel_id", novel_id)
+                .add("chapter_id", 1+"")
+                .add("uuid",Diviceid)
+                .build();
+        OkhttpUtil.getpostRequest(url, requestBody, new OkhttpCall() {
+            @Override
+            public void onResponse(String json) {   // 得到 json 数据
+                Log.e("WWW", "onResponse: "+Diviceid+" "+json);
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    String code = jsonObject.getString("code");
+                    if (code.equals("1")) {
+                        String message = jsonObject.getString("msg");
+                        Log.e("WWW", "onResponse: "+message );
+                        //showShortToast(message);
+                        //mPresenter.(message);
+                    } else {
+                        //mPresenter.getReadRecordError("请求错误");
+                        //getNovelsError("请求错误");
+                    }
+                } catch (JSONException e) {
+                    //e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onFailure(String errorMsg) {
+                // getNovelsError("请求错误");
+                //mPresenter.getReadRecordError(errorMsg);
+            }
+        });
+    }
     private void getCategoryNovelsSuccess(List<Noval_details> novalDetailsList) {
         SpUtil.saveWebsite(UrlObtainer.GetUrl());
         for(int i=0;i<novalDetailsList.size();i++){
@@ -171,8 +209,8 @@ public class LauncherActivity extends BaseActivity_other {
             BookshelfNovelDbData dbData = new BookshelfNovelDbData(noval_details.getId()+"", noval_details.getTitle(),
                     noval_details.getPic(), 0, 0, 0, 0 + "", 20, noval_details.getSerialize() + "");
             databaseManager.insertOrUpdateBook(dbData);
+            setBookshelfadd("",noval_details.getId()+"");
         }
-        SpUtil.saveIs_first(1);
         if (true) {
             mCountDownTextView.setText("3s 跳过");
             //创建倒计时类
@@ -290,10 +328,10 @@ public class LauncherActivity extends BaseActivity_other {
         for(int i=0;i<websites.size();i++){
           databaseManager.insertWebsite(websites.get(i));
         }
-        int first= SpUtil.getIsfirst();
-        if(first==0) {
-            getCategoryNovels();
-        }else {
+//        int first= SpUtil.getIsfirst();
+//        if(first==0) {
+//            getCategoryNovels();
+//        }else {
             if (true) {
                 mCountDownTextView.setText("3s 跳过");
                 //创建倒计时类
@@ -307,7 +345,7 @@ public class LauncherActivity extends BaseActivity_other {
                 mCountDownTimer.start();
                 mHandler.sendEmptyMessageDelayed(MSG_FINISH_LAUNCHERACTIVITY, 1000);
             }
-        }
+        //}
     }
 
     List<Website> websites=new ArrayList<>();

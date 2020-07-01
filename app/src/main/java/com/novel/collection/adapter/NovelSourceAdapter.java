@@ -127,6 +127,8 @@ public class NovelSourceAdapter extends
                     mContext.sendBroadcast(intent_recever);
                     if(login_admin!=null){
                         setBookshelfadd(login_admin.getToken(),mNovelSourceDataList.get(i).getNovel_id());
+                    }else {
+                        setBookshelfadd("",mNovelSourceDataList.get(i).getNovel_id());
                     }
                     //((ReadrecoderActivity)mContext).finish();
                     novelSourceViewHolder.tv_item_bookshelf.setText("已加入书架");
@@ -219,7 +221,7 @@ public class NovelSourceAdapter extends
     public void setBookshelfadd(String token, String novel_id) {
         String url = UrlObtainer.GetUrl()+"/"+"/api/Userbook/add";
         RequestBody requestBody = new FormBody.Builder()
-                .add("token", token)
+//                .add("token", token)
                 .add("novel_id", novel_id)
                 .build();
         OkhttpUtil.getpostRequest(url,requestBody, new OkhttpCall() {
