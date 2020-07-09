@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,9 +25,18 @@ import com.novel.collection.presenter.MaleLikePresenter;
 import com.novel.collection.view.activity.FenleiNovelActivity;
 import com.novel.collection.widget.VerticalTabLayout1;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -44,6 +54,7 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
     LinearLayout lin_male;
     ProgressBar pb_novel;
     BookstoreAdapter bookstoreAdapter;
+    TextView tv_begain_reser;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_malelike;
@@ -56,6 +67,13 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
     @Override
     protected void initView() {
         lin_male=getActivity().findViewById(R.id.lin_male);
+        tv_begain_reser=getActivity().findViewById(R.id.tv_begain_reser);
+        tv_begain_reser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.getCategoryNovels(Constant.male);
+            }
+        });
         pb_novel=getActivity().findViewById(R.id.pb_novel);
         verticalTabLayout = getActivity().findViewById(R.id.tablayout_male);
         verticalTabLayout.addTab(new QTabView(getActivity()));
@@ -75,6 +93,7 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
         recyclerView=getActivity().findViewById(R.id.grid_fenlei);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         recyclerView.setLayoutManager(gridLayoutManager);
+
     }
 
     @Override
@@ -130,6 +149,7 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
     }
     @Override
     public void getCategoryNovelsSuccess(List<Catagorys> dataList) {
+        tv_begain_reser.setVisibility(View.GONE);
         this.dataList = dataList;
 //        int z = -1;
 //        for (int i = 0; i < dataList.size(); i++) {
@@ -222,6 +242,9 @@ public class MaleLikeFragment extends BaseFragment<MaleLikePresenter> implements
 
     @Override
     public void getCategoryNovelsError(String errorMsg) {
+       lin_male.setVisibility(View.GONE);
+       pb_novel.setVisibility(View.GONE);
+       tv_begain_reser.setVisibility(View.VISIBLE);
        showShortToast("数据请求失败，请重新再试");
     }
 }

@@ -12,7 +12,6 @@
         android:layout_height="30dp"
         android:visibility="gone"
         android:scaleType="centerCrop" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -193,7 +192,21 @@
             android:textColor="@color/word_color"
             android:textSize="12sp" />
     </FrameLayout>
-
+    <TextView
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:id="@+id/tv_begain_reser_read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bachground_yellow2"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:text="刷新重试"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
     <RelativeLayout
         android:id="@+id/rv_read_top_bar"
         android:layout_width="match_parent"

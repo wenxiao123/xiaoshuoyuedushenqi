@@ -59,6 +59,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -368,6 +370,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                         if(weigh==0){
                             weigh=catalogDataAll.size();
                         }
+                        Log.e("SSS", "clickItem: "+weigh);
                         //intent_recever.putExtra("chpter",(catalogDataAll.size() - position - 1));
                         bundle.putString(WYReadActivity.CHPTER_ID, (weigh - position - 1) + "");
                     }
@@ -382,7 +385,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                         intent_recever.putExtra("chpter",position);
                         //bundle.putString(WYReadActivity.CHPTER_ID, position + "");
                     } else {
-                        intent_recever.putExtra("chpter",(catalogDataAll.size() - position - 1));
+                        if(weigh==0){
+                            weigh=catalogDataAll.size();
+                        }
+                        intent_recever.putExtra("chpter",(weigh - position - 1));
                         //bundle.putString(WYReadActivity.CHPTER_ID, (txtChapters.size() - position - 1) + "");
                     }
                        //intent_recever.putExtra("chpter",position);//catalogDataAll.get(position).getWeigh() - 1
@@ -467,7 +473,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                             Collections.reverse(catalogDataAll);
                             mCatalogAdapter.notifyDataSetChanged();
                             mCatalogAdapter.setPosition(chapter_id);
-                            mCatalogListRv.scrollToPosition(chapter_id);
+                           // mCatalogListRv.scrollToPosition(chapter_id);
                             mIsReverse = false;
                             mIsReversing = false;
                         } else {
@@ -476,7 +482,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                             Collections.reverse(catalogDataAll);
                             mCatalogAdapter.notifyDataSetChanged();
                             mCatalogAdapter.setPosition(mCatalogAdapter.getItemCount()-chapter_id-1);
-                            mCatalogListRv.scrollToPosition(mCatalogAdapter.getItemCount()-chapter_id-1);
+                            //mCatalogListRv.scrollToPosition(mCatalogAdapter.getItemCount()-chapter_id-1);
                             mIsReverse = true;
                             mIsReversing = false;
                         }

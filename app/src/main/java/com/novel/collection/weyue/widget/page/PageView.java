@@ -22,10 +22,14 @@ import com.novel.collection.weyue.widget.animation.CoverPageAnim;
 import com.novel.collection.weyue.widget.animation.HorizonPageAnim;
 import com.novel.collection.weyue.widget.animation.NonePageAnim;
 import com.novel.collection.weyue.widget.animation.PageAnimation;
+import com.novel.collection.weyue.widget.animation.ScrollPageAnim;
 import com.novel.collection.weyue.widget.animation.ScrollPageAnim2;
 import com.novel.collection.weyue.widget.animation.SimulationAnimation4;
 import com.novel.collection.weyue.widget.animation.SlidePageAnim;
 import java.lang.ref.WeakReference;
+
+import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_ERROR;
+import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_LOADING;
 
 
 /**
@@ -58,7 +62,8 @@ public class PageView extends View {
     private boolean isPrepare = false;
     //唤醒菜单的区域
     private RectF mCenterRect = null;
-
+    //唤醒菜单的区域
+    private RectF mRefreshRect = null;
     //动画类
     private PageAnimation mPageAnim;
     private Context mContext;
@@ -162,9 +167,9 @@ public class PageView extends View {
                 mPageAnim = new NonePageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);
                 break;
             case PAGE_MODE_SCROLL:
-//                mPageAnim = new ScrollPageAnim2(mViewWidth, mViewHeight, 0,
-//                        ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener);
-                mPageAnim = new ScrollPageAnim2(mViewWidth, mViewHeight-mPageLoader.NO_TOUTCH_HIGHT, 0,
+//                mPageAnim = new ScrollPageAnim(mViewWidth, mViewHeight, 0,
+//                        mPageLoader.getmMarginHeight(), this, mPageAnimListener);
+                mPageAnim = new ScrollPageAnim2(mViewWidth, mViewHeight, 0,
                         ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener,mPageLoader.NO_TOUTCH_HIGHT);
                 break;
             default:
@@ -263,12 +268,11 @@ public class PageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+        Log.e(TAG, "draw: "+3333);
         //绘制背景
-        canvas.drawColor(mBgColor);
-
-        //绘制动画
-        mPageAnim.draw(canvas);
+         canvas.drawColor(mBgColor);
+         //绘制动画
+         mPageAnim.draw(canvas);
     }
 
     @Override
@@ -308,7 +312,18 @@ public class PageView extends View {
                         mCenterRect = new RectF(mViewWidth/4,0,
                                 mViewWidth*3/4,mViewHeight);
                     }
-
+                    if(mRefreshRect==null){
+                        mRefreshRect= new RectF(mViewWidth*2/5,mViewHeight*2/5,
+                                mViewWidth*4/5,mViewHeight*4/5);
+                    }
+                    if(mRefreshRect.contains(x,y)&&mPageLoader.mStatus==STATUS_ERROR){
+                        if (mTouchListener != null) {
+                            if(mTouchListener.onTouch()==true) {
+                                mTouchListener.reset();
+                            }
+                        }
+                        return true;
+                    }else
                     //是否点击了中间
                     if (mCenterRect.contains(x,y)) {
                         if (mTouchListener != null) {
@@ -362,7 +377,10 @@ public class PageView extends View {
     public void abortAnimation() {
         mPageAnim.abortAnim();
     }
-
+    //如果滑动状态没有停止就取消状态，重新设置Anim的触碰点
+//    public void stopAnimation() {
+//        mPageAnim.c
+//    }
     public boolean isPrepare(){
         return isPrepare;
     }
@@ -440,6 +458,7 @@ public class PageView extends View {
 
     public interface TouchListener{
         void center();
+        void reset();
         boolean onTouch();
         boolean prePage();
         boolean nextPage();

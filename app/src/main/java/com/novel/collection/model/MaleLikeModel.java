@@ -47,6 +47,7 @@ public class MaleLikeModel implements IMaleLikeContract.Model {
                     Data bean = mGson.fromJson(json, Data.class);
                     List<Catagorys> catagorysList = bean.getData();
                     mPresenter.getCategoryNovelsSuccess(catagorysList);
+                    //mPresenter.getCategoryNovelsError("获取分类小说失败");
                 }catch (Exception ex){
                     mPresenter.getCategoryNovelsError("获取分类小说失败");
                 }

@@ -341,6 +341,7 @@ public class NetPageLoader extends PageLoader {
                 if (mPageChangeListener != null) {
                     mPageChangeListener.onCategoryFinish(mChapterList);
                 }
+                Log.e("WWW5", "handleMessage: "+mCurChapterPos+" "+mChapterList.size());
                 if(mCurChapterPos<mChapterList.size()) {
                     if(mCurposition!=mCurChapterPos&&is_first==true){
                         mCurChapterPos=mCurposition;
@@ -443,8 +444,10 @@ public class NetPageLoader extends PageLoader {
                     + File.separator + txtChapter.title.replace(" ", "") + FileUtils.SUFFIX_WY);
             Log.e("zzz", "loadPageList: other " + txtChapter.title);
         }
+        Log.e("QAQ", "loadPageList: "+file.length());
         if (!file.exists()) {
-            return null;
+            mStatus=STATUS_ERROR;
+           return null;
         }
         Reader reader = null;
         try {
@@ -476,6 +479,7 @@ public class NetPageLoader extends PageLoader {
     @Override
     boolean nextChapter() {
         boolean hasNext = super.nextChapter();
+        Log.e("AQA", "nextChapter: "+hasNext);
         // if (!hasNext) return false;
         if (mStatus == STATUS_FINISH) {
             //Log.e("QQQ", "nextChapter: "+222);

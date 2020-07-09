@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+
     <LinearLayout
         android:id="@+id/lin_male"
         android:visibility="visible"
@@ -36,6 +37,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     </LinearLayout>
+    <TextView
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:id="@+id/tv_begain_reser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bachground_yellow2"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:text="刷新重试"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
     <ProgressBar
         android:layout_gravity="center"
         android:id="@+id/pb_novel"

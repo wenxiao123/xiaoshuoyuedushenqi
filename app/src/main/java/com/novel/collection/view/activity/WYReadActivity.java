@@ -122,6 +122,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_FINISH;
+import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_LOADING;
 
 public class WYReadActivity extends BaseActivity implements View.OnClickListener, IBookChapters {
     RelativeLayout rv_read_top_bar;
@@ -192,7 +193,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         //StatusBarUtil.setTranslucentStatus(this);
         StatusBarUtil3.setFullScreen(WYReadActivity.this, 1);
     }
-
+    TextView tv_begain_reser;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_wyread;
@@ -302,6 +303,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         tv_title = findViewById(R.id.tv_title);
         txt_click = findViewById(R.id.txt_click);
         l_yingdaoye = findViewById(R.id.l_yingdaoye);
+        tv_begain_reser=findViewById(R.id.tv_begain_reser_read);
         l_yingdaoye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1280,6 +1282,17 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 });
             }
 
+            @Override
+            public void onPageError(int pos) {
+                Log.e("XXX", "onPageError: "+2345678);
+                tv_begain_reser.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onPageSuccess(int pos) {
+                tv_begain_reser.setVisibility(View.GONE);
+            }
+
 //            @Override
 //            public void onShowAdm(boolean pos) {
 ////                is_adm=pos;
@@ -1375,6 +1388,12 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
 
             @Override
+            public void reset() {
+                mPageLoader.make_loading();
+                mPageLoader.skipToChapter(mPageLoader.getChapterPos());
+            }
+
+            @Override
             public boolean onTouch() {
                 return true;
             }
@@ -1427,6 +1446,15 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
         Log.e("qqq4", "doAfterInit: " + chpter_id + " " + page_id);
         BookRecordBean bookRecordBean = new BookRecordBean(mCollBook.get_id(), Integer.parseInt(chpter_id), Integer.parseInt(page_id));
         mPageLoader.openBook(mCollBook, bookRecordBean);//chpter_id
+        tv_begain_reser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tv_begain_reser.setVisibility(View.GONE);
+                Intent intent_recever = new Intent("com.read.android");
+                intent_recever.putExtra("chpter",mPageLoader.getChapterPos());
+                sendBroadcast(intent_recever);
+            }
+        });
     }
 
     int last_pos;
@@ -1702,7 +1730,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 // showPupowindpw(mMenuIv);
                 break;
             case R.id.tv_read_previous_chapter:
-                if(mPageLoader.mStatus==STATUS_FINISH) {
+               if(mPageLoader.mStatus!=STATUS_LOADING) {
                     setCategorySelect(mPageLoader.skipPreChapter());
                 }
                 break;
@@ -2521,7 +2549,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
     public void errorChapters() {
         if (mPageLoader.getPageStatus() == PageLoader.STATUS_LOADING) {
             mPageLoader.chapterError();
-        }
+       }
     }
 
     MyReceiver myReceiver;
@@ -2545,6 +2573,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 //                    mReadSbChapterProgress.setProgress(j);
 //                });
             }
+            hideBar();
         }
     }
 

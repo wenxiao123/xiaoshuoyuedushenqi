@@ -3,13 +3,18 @@ package com.novel.collection.weyue.widget.animation;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 
+import com.novel.collection.weyue.widget.animation.PageAnimation;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.security.auth.login.LoginException;
 
 /**
  * Created by newbiechen on 17-7-23.
@@ -32,7 +37,7 @@ public class ScrollPageAnim2 extends PageAnimation {
 
     // 下一个展示的图片
     private Bitmap mNextBitmap;
-
+    int NO_TOUTCH_HIGHT;
     // 被废弃的图片列表
     private ArrayDeque<BitmapView> mScrapViews;
     // 正在被利用的图片列表
@@ -40,12 +45,12 @@ public class ScrollPageAnim2 extends PageAnimation {
 
     // 是否处于刷新阶段
     private boolean isRefresh = true;
-    private int NO_TOUTCH_HIGHT;
+
     public ScrollPageAnim2(int w, int h, int marginWidth, int marginHeight,
                            View view, OnPageChangeListener listener,int z) {
         super(w, h, marginWidth, marginHeight, view, listener);
-        NO_TOUTCH_HIGHT=z;
         // 创建两个BitmapView
+        NO_TOUTCH_HIGHT=z;
         initWidget();
     }
 
@@ -65,9 +70,14 @@ public class ScrollPageAnim2 extends PageAnimation {
         onLayout();
         isRefresh = false;
     }
-
+    // boolean isScroll;
     // 修改布局,填充内容
     private void onLayout() {
+    //    Log.e("2222", "onLayout: "+5555);
+//        if(isScroll){
+//            isScroll=false;
+//            return;
+//        }
         // 如果还没有开始加载，则从上到下进行绘制
         if (mActiveViews.size() == 0) {
             fillDown(0, 0);
@@ -87,7 +97,6 @@ public class ScrollPageAnim2 extends PageAnimation {
             }
         }
     }
-
     public void refreshBitmap() {
         isRefresh = true;
         //将所有的Active加入到Scrap中
@@ -110,7 +119,6 @@ public class ScrollPageAnim2 extends PageAnimation {
      * @param offset     :滑动的偏移量
      */
     private void fillDown(int bottomEdge, int offset) {
-
         downIt = mActiveViews.iterator();
         BitmapView view;
 
@@ -153,7 +161,6 @@ public class ScrollPageAnim2 extends PageAnimation {
 
             if (!isRefresh) {
                 boolean hasNext = mListener.hasNext(); //如果不成功则无法滑动
-
                 // 如果不存在next,则进行还原
                 if (!hasNext) {
                     mNextBitmap = cancelBitmap;
@@ -351,7 +358,6 @@ public class ScrollPageAnim2 extends PageAnimation {
     public void draw(Canvas canvas) {
         //进行布局
         onLayout();
-
         //绘制背景
         canvas.drawBitmap(mBgBitmap, 0, 0, null);
         //绘制内容
@@ -359,8 +365,7 @@ public class ScrollPageAnim2 extends PageAnimation {
         //移动位置
         canvas.translate(0, mMarginHeight);
         //裁剪显示区域
-        //canvas.clipRect(0, 0, mViewWidth, mViewHeight);
-        canvas.clipRect(0, NO_TOUTCH_HIGHT, mViewWidth, mViewHeight+NO_TOUTCH_HIGHT);
+        canvas.clipRect(0, NO_TOUTCH_HIGHT, mViewWidth, mViewHeight);
 /*        //设置背景透明
         canvas.drawColor(0x40);*/
         //绘制Bitmap
@@ -399,10 +404,12 @@ public class ScrollPageAnim2 extends PageAnimation {
 
     @Override
     public void abortAnim() {
-        if (!mScroller.isFinished()) {
+       if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
             isRunning = false;
-        }
+            mView.postInvalidate();
+      }
+        // isScroll=true;
     }
 
     @Override

@@ -211,7 +211,7 @@ public class VMBookContentInfo extends BaseViewModel {
                     String code = jsonObject.getString("code");
                     if (code.equals("1")) {
                         if(jsonObject.isNull("data")){
-                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "该章节已失效，请阅读下一章");
+                            BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ",""), "该章节为空，请换源阅读");
                            // iBookChapters.finishChapters();
                             handler.sendEmptyMessage(1);
                             return;
@@ -223,15 +223,15 @@ public class VMBookContentInfo extends BaseViewModel {
                             handler.sendEmptyMessage(1);
                         }
                     } else {
-                        BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "该章节已失效，请阅读下一章");
+                        //BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "该章节已失效，请阅读下一章");
                         //iBookChapters.finishChapters();
-                        handler.sendEmptyMessage(1);
+                        handler.sendEmptyMessage(3);
                         return;
 
                     }
                 } catch (JSONException e) {
-                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "该章节已失效，请阅读下一章");
-                    handler.sendEmptyMessage(1);
+                    //BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "该章节已失效，请阅读下一章");
+                    handler.sendEmptyMessage(3);
                     //iBookChapters.finishChapters();
                     return;
                 }
@@ -239,11 +239,11 @@ public class VMBookContentInfo extends BaseViewModel {
 
             @Override
             public void onFailure(String errorMsg) {
-                File file = BookManager.getBookFile(bookid, title.replace(" ", ""));
-                if(!file.exists()||file.length()==0) {
-                    BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "该章节已失效，请阅读下一章");
-                }
-                handler.sendEmptyMessage(1);
+//                File file = BookManager.getBookFile(bookid, title.replace(" ", ""));
+//                if(!file.exists()||file.length()==0) {
+//                    //BookSaveUtils.getInstance().saveChapterInfo(bookid, title.replace(" ", ""), "该章节已失效，请阅读下一章");
+//                }
+                handler.sendEmptyMessage(3);
                 //iBookChapters.finishChapters();
                 return;
                 // mPresenter.getDetailedChapterDataError(errorMsg);
@@ -319,6 +319,8 @@ public class VMBookContentInfo extends BaseViewModel {
                 //getDetailedChapterData(noval_id, s+"",title1);
             }else  if(msg.what==2){
                 iBookChapters.finishChapters();
+            }else  if(msg.what==3){
+                iBookChapters.errorChapters();
             }
         }
     };

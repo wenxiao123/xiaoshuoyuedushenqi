@@ -3,6 +3,7 @@ package com.novel.collection.weyue.widget.animation;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.view.View;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_ERROR;
 
 /**
  * Created by newbiechen on 17-7-23.
@@ -71,6 +74,7 @@ public class ScrollPageAnim extends PageAnimation {
 
     //修改布局,填充内容
     private void onLayout() {
+
         //如果还没有开始加载，则从上到下进行绘制
         if (mActiveViews.size() == 0) {
             fillDown(0, 0);
@@ -326,7 +330,6 @@ public class ScrollPageAnim extends PageAnimation {
                 isRunning = false;
                 //开启动画
                 startAnim();
-
                 //删除检测器
                 mVelocity.recycle();
                 mVelocity = null;
@@ -346,7 +349,7 @@ public class ScrollPageAnim extends PageAnimation {
 
 
     BitmapView tmpView;
-
+    boolean isScroll;
     @Override
     public void draw(Canvas canvas) {
         //进行布局
@@ -374,7 +377,7 @@ public class ScrollPageAnim extends PageAnimation {
     public synchronized void startAnim() {
         isRunning = true;
         //倒数第二个参数0修改 解决上滑问题
-        //mScroller.fling(0, (int) mTouchY, 0, (int) mVelocity.getYVelocity(), 0, 0, 0, Integer.MAX_VALUE);
+       // mScroller.fling(0, (int) mTouchY, 0, (int) mVelocity.getYVelocity(), 0, 0, 0, Integer.MAX_VALUE);
         mScroller.fling(0, (int) mTouchY, 0, (int) mVelocity.getYVelocity(), 0, 0, Integer.MAX_VALUE*-1, Integer.MAX_VALUE);
     }
 
@@ -393,10 +396,13 @@ public class ScrollPageAnim extends PageAnimation {
 
     @Override
     public void abortAnim() {
+        Log.e("DDD", "abortAnim: "+22222);
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
             isRunning = false;
         }
+        mScroller.abortAnimation();
+        isScroll=true;
     }
 
     @Override

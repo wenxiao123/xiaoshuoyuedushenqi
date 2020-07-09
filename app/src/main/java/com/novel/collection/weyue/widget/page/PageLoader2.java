@@ -1732,10 +1732,11 @@ public abstract class PageLoader2 {
     private boolean checkStatus() {
         if (mStatus == STATUS_LOADING) {
             ToastUtils.show("正在加载中，请稍等");
+            mPageView.drawCurPage(false);
             return false;
         } else if (mStatus == STATUS_ERROR) {
             //点击重试
-            mStatus = STATUS_LOADING;
+            //mStatus = STATUS_LOADING;
             mPageView.drawCurPage(false);
             return false;
         }
