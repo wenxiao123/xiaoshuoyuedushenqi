@@ -92,6 +92,7 @@ import com.novel.collection.view.fragment.main.BookshelfFragment;
 import com.novel.collection.weyue.db.entity.CollBookBean;
 import com.novel.collection.widget.CornerTransform;
 import com.novel.collection.widget.TipDialog;
+import com.novel.collection.widget.WaitDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -254,8 +255,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         Intent intent = new Intent(getContext(), className);
         intent.putExtras(bundle);
         startActivity(intent);
+        handler.sendEmptyMessage(2);
     }
-
+    WaitDialog waitDialog;
     //ImageView iv_load;
     TextView tv_novel_intro_novel_name;
     boolean is_checked = false;
@@ -497,7 +499,6 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         } else {
             tv_begain_read.setText("开始阅读");
         }
-
     }
 
     @Override
@@ -610,52 +611,60 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     checkPermissioin();
                     break;
                 case R.id.txt_read:
-                    bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
-                    if (bookshelfNovelDbData1 != null && is_Cache == false) {
-                        CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
-                                noval_details.getPic(), false, 0, 0,
-                                "", "", weigh, "",
-                                false, false);
-                        List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
-                        Collections.reverse(cataloginfos);
-                        bookBean.setCataloginfos(cataloginfos);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                        bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                        bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
-                        bundle.putString(WYReadActivity.CHPTER_ID, bookshelfNovelDbData1.getChapterid() + "");
-                        bundle.putString(WYReadActivity.PAGE_ID, bookshelfNovelDbData1.getPosition() + "");
-                        startActivity(WYReadActivity.class, bundle);
-                    } else if (bookshelfNovelDbData1 != null && is_Cache == true) {
-                        CollBookBean bookBean = new CollBookBean(bookshelfNovelDbData1.getFuben_id(), noval_details.getTitle(), noval_details.getAuthor(), "",
-                                noval_details.getPic(), false, 0, 0,
-                                "", "", weigh, "",
-                                false, true);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                        bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                        bundle.putString(WYReadActivity.LOAD_PATH, pid);
-                        bundle.putString(WYReadActivity.CHPTER_ID, bookshelfNovelDbData1.getChapterid() + "");
-                        bundle.putString(WYReadActivity.PAGE_ID, bookshelfNovelDbData1.getPosition() + "");
-                        bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
-                        startActivity(WYReadActivity.class, bundle);
-                    }
-                    else {
-                        CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
-                                noval_details.getPic(), false, 0, 0,
-                                "", "", weigh, "",
-                                false, false);
-                        List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
-                        Collections.reverse(cataloginfos);
-                        bookBean.setCataloginfos(cataloginfos);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
-                        bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
-                        bundle.putString(WYReadActivity.CHPTER_ID, 0 + "");
-                        bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
-                        startActivity(WYReadActivity.class, bundle);
-                    }
+                    handler.sendEmptyMessage(1);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bookshelfNovelDbData1 = mDbManager.selectBookshelfNovel(pid);
+                            if (bookshelfNovelDbData1 != null && is_Cache == false) {
+                                CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
+                                        noval_details.getPic(), false, 0, 0,
+                                        "", "", weigh, "",
+                                        false, false);
+                                List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
+                                Collections.reverse(cataloginfos);
+                                bookBean.setCataloginfos(cataloginfos);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                                bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
+                                bundle.putString(WYReadActivity.CHPTER_ID, bookshelfNovelDbData1.getChapterid() + "");
+                                bundle.putString(WYReadActivity.PAGE_ID, bookshelfNovelDbData1.getPosition() + "");
+                                startActivity(WYReadActivity.class, bundle);
+                            } else if (bookshelfNovelDbData1 != null && is_Cache == true) {
+                                CollBookBean bookBean = new CollBookBean(bookshelfNovelDbData1.getFuben_id(), noval_details.getTitle(), noval_details.getAuthor(), "",
+                                        noval_details.getPic(), false, 0, 0,
+                                        "", "", weigh, "",
+                                        false, true);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                                bundle.putString(WYReadActivity.LOAD_PATH, pid);
+                                bundle.putString(WYReadActivity.CHPTER_ID, bookshelfNovelDbData1.getChapterid() + "");
+                                bundle.putString(WYReadActivity.PAGE_ID, bookshelfNovelDbData1.getPosition() + "");
+                                bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
+                                startActivity(WYReadActivity.class, bundle);
+                            }
+                            else {
+                                CollBookBean bookBean = new CollBookBean(pid, noval_details.getTitle(), noval_details.getAuthor(), "",
+                                        noval_details.getPic(), false, 0, 0,
+                                        "", "", weigh, "",
+                                        false, false);
+                                List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(pid);
+                                Collections.reverse(cataloginfos);
+                                bookBean.setCataloginfos(cataloginfos);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
+                                bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);
+                                bundle.putString(WYReadActivity.CHPTER_ID, 0 + "");
+                                bundle.putString(WYReadActivity.STATUS, noval_details.getSerialize() + "");
+                                startActivity(WYReadActivity.class, bundle);
+                            }
+                        }
+                    },500);
+//                    waitDialog=  new WaitDialog(NovelIntroActivity.this,0).ShowDialog(true);
 
+                    // waitDialog.ShowDialog(false);
                     break;
                 case R.id.l_share:
                     WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -955,11 +964,13 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
         });
     }
 
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            if (msg.what == 1) {
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1) {
+                waitDialog=  new WaitDialog(NovelIntroActivity.this,0);
+                waitDialog.ShowDialog(true);
 //                tv_book_add.setText("移除书架");
 //                if (mDbManager.isExistInBookshelfNovel(pid) || mDbManager.isExistInBookshelfNovel(path + ".txt")) {
 //                    BookshelfNovelDbData bookshelfNovelDbData = new BookshelfNovelDbData(path + ".txt", bookname, bookcover, 1, weigh, 1 + "");
@@ -979,7 +990,14 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 //                        ReadData(path + ".txt", paragraphData);
 //                    }
 //                }).start();
-//            } else if (msg.what == 2) {
+            }
+            else if (msg.what == 2) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        waitDialog.ShowDialog(false);
+                    }
+                },1000);
 //                int j = msg.arg1;
 //                if (30 * z <= weigh && (j + 1) == 30) {
 //                    z++;
@@ -993,9 +1011,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
 //                    tv_begain_read.setText("继续阅读");
 //                    handler.sendEmptyMessage(1);
 //                }
-//            }
-//        }
-//    };
+            }
+        }
+    };
     boolean is_Cache;
 
     public void setBookshelfadd(String token, String novel_id) {

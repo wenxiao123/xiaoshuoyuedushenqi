@@ -379,6 +379,7 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                         mReadActivity.finish();
                     }
                     finish();
+                    Log.e("QQQQ", "clickItem: "+3333);
                 } else {
                     Intent intent_recever = new Intent("com.read.android");
                     if (mIsReverse == false) {

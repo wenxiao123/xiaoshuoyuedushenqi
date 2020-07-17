@@ -1,6 +1,7 @@
 package com.novel.collection.view.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -104,6 +105,12 @@ public class LauncherActivity extends BaseActivity_other {
             websites_lrc.add(new Website("http://ges.atkskjx4.com:36213/",0));
             websites_lrc.add(new Website("http://jos.6ajpz3qu.com:36213/",0));
         }
+    }
+    public static void startClearLastTask(Activity restoreActivity) {
+        Intent intent = new Intent(restoreActivity, LauncherActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        restoreActivity.startActivity(intent);
+        restoreActivity.finish();
     }
     private MyCountDownTimer mCountDownTimer;
     @Override

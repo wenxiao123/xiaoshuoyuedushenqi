@@ -19,6 +19,7 @@ import com.novel.collection.http.OkhttpUtil;
 import com.novel.collection.http.UrlObtainer;
 import com.novel.collection.util.SpUtil;
 import com.novel.collection.util.ToastUtil;
+import com.novel.collection.weyue.utils.BookSaveUtils;
 
 import org.greenrobot.greendao.annotation.Id;
 import org.json.JSONArray;
@@ -161,8 +162,9 @@ public class CacheService extends Service {
 //                                addTxtToFileBuffered(content + "\n");
 //                                Log.e("vvv", "onResponse: "+title2);
 //                            } else {
-                            addTxtToFileBuffered("<"+title+">"+"\n");
-                            addTxtToFileBuffered(content + "\n");
+//                            addTxtToFileBuffered("<"+title+">"+"\n");
+//                            addTxtToFileBuffered(content + "\n");
+                            BookSaveUtils.getInstance().saveChapterInfo(id, title.replace(" ", ""), content.replace("&nbsp", " "));
                            // }
                             Message message = new Message();
                             message.what = 2;

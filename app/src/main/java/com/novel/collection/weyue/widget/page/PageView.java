@@ -28,6 +28,8 @@ import com.novel.collection.weyue.widget.animation.SimulationAnimation4;
 import com.novel.collection.weyue.widget.animation.SlidePageAnim;
 import java.lang.ref.WeakReference;
 
+import javax.security.auth.login.LoginException;
+
 import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_ERROR;
 import static com.novel.collection.weyue.widget.page.PageLoader.STATUS_LOADING;
 
@@ -96,6 +98,12 @@ public class PageView extends View {
 
     //点击监听
     private TouchListener mTouchListener;
+
+    public void setPrepare(PrepareLisition prepare) {
+        this.prepare = prepare;
+    }
+
+    private PrepareLisition prepare;
     //内容加载器
     private PageLoader mPageLoader;
 
@@ -130,7 +138,11 @@ public class PageView extends View {
 //        }
 //        Log.e("WWW", "onSizeChanged: "+ImmersionBar.getNotchHeight((Activity) mContext)+" "+getStatusBarHeight(mContext));
         mPageLoader.setDisplaySize(w,h);
-
+        if (prepare != null&&!isPrepare&&mPageLoader.isBookOpen) {
+            //if(mTouchListener.onTouch()==true) {
+            prepare.prepare();
+            // }
+        }
         //初始化完成
         isPrepare = true;
         mAutoPlayTask = new AutoPlayTask(this);
@@ -463,6 +475,10 @@ public class PageView extends View {
         boolean prePage();
         boolean nextPage();
         void cancel();
+    }
+
+    public interface PrepareLisition{
+        void prepare();
     }
 
     /**

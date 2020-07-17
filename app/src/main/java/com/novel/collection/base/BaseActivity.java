@@ -27,6 +27,7 @@ import com.novel.collection.util.EventBusUtil;
 import com.novel.collection.util.NetUtil;
 import com.novel.collection.util.SpUtil;
 import com.novel.collection.util.ToastUtil;
+import com.novel.collection.view.activity.LauncherActivity;
 import com.novel.collection.view.activity.MainActivity;
 import com.novel.collection.view.activity.NovelIntroActivity;
 import com.novel.collection.view.activity.WYReadActivity;
@@ -43,6 +44,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         ActivityHook.hookOrientation(this);//hook，绕过检查
+        if (savedInstanceState != null) {
+            savedInstanceState.clear();
+            //isTaskRoot();
+            LauncherActivity.startClearLastTask(this);
+        }
         super.onCreate(savedInstanceState);
 //        App.updateNightMode(isNight);
         doBeforeSetContentView();

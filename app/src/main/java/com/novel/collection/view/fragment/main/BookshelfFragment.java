@@ -765,10 +765,10 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                                     LogUtils.e(mDataList.get(position).getPosition()+" "+mDataList.get(position).getChapterid());
                                     startActivity(WYReadActivity.class, bundle);
                                 } else {
-                                    CollBookBean bookBean = new CollBookBean(mDataList.get(position).getFuben_id(), mDataList.get(position).getName(), "", "",
+                                    CollBookBean bookBean = new CollBookBean(mDataList.get(position).getNovelUrl(), mDataList.get(position).getName(), "", "",
                                             mDataList.get(position).getCover(), false, 0, 0,
                                             "", "", mDataList.get(position).getWeight(), "",
-                                            false, true);
+                                            false, false);//mDataList.get(position).getFuben_id()
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable(WYReadActivity.EXTRA_COLL_BOOK, bookBean);
                                     bundle.putBoolean(WYReadActivity.EXTRA_IS_COLLECTED, true);//

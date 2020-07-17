@@ -65,14 +65,15 @@ public class NetPageLoader extends PageLoader {
         super.openBook(collBook, bookRecordBean);
         Log.e("QQQ33", "openBook: "+collBook.getChaptersCount());
         databaseManager = DatabaseManager.getInstance();
-        isBookOpen = false;
+        //isBookOpen = false;
         setWeight(collBook.getChaptersCount());
         if (collBook.getCataloginfos() != null) {
             if (collBook.getCataloginfos().size() == 0||collBook.getCataloginfos().size()!=collBook.getChaptersCount()) {
                 getCatalogData(mCollBook.get_id(), z, 1);
             } else {
+                Log.e(TAG, "openBook: "+333);
                 mChapterList = convertTxtChapter(collBook.getCataloginfos());
-                mOrigChapterList = convertTxtChapter(collBook.getCataloginfos());
+                //mOrigChapterList = convertTxtChapter(collBook.getCataloginfos());
                 if (mPageChangeListener != null) {
                     mPageChangeListener.onCategoryFinish(mChapterList);
                 }
@@ -444,7 +445,6 @@ public class NetPageLoader extends PageLoader {
                     + File.separator + txtChapter.title.replace(" ", "") + FileUtils.SUFFIX_WY);
             Log.e("zzz", "loadPageList: other " + txtChapter.title);
         }
-        Log.e("QAQ", "loadPageList: "+file.length());
         if (!file.exists()) {
             mStatus=STATUS_ERROR;
            return null;
@@ -500,7 +500,7 @@ public class NetPageLoader extends PageLoader {
     //跳转到指定章节
     public void skipToChapter(int pos) {
         super.skipToChapter(pos);
-
+        Log.e("QQA", "skipToChapter: "+pos);
         //提示章节改变，需要下载
         loadCurrentChapter();
     }
@@ -551,7 +551,7 @@ public class NetPageLoader extends PageLoader {
 
                 bookChapters.addAll(mChapterList.subList(prev, current));
             }
-            //Log.e("QQQ", "loadCurrentChapter: "+222);
+            Log.e("qaq", "loadCurrentChapter: "+mCurChapterPos);
             mPageChangeListener.onLoadChapter(bookChapters, mCurChapterPos);
         }
     }

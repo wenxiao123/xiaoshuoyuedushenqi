@@ -2,12 +2,17 @@ package com.novel.collection.weyue.widget.animation;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
+import com.novel.collection.R;
+import com.novel.collection.app.App;
 import com.novel.collection.weyue.widget.animation.PageAnimation;
 
 import java.util.ArrayDeque;

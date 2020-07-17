@@ -288,7 +288,7 @@ public abstract class PageLoader {
     }
 
     //页面的翻页效果模式
-    private int mPageMode;
+    public int mPageMode;
     //加载器的颜色主题
     private int mBgTheme;
 
@@ -421,10 +421,8 @@ public abstract class PageLoader {
         if (!isBookOpen) {
             return mCurChapterPos;
         }
-        Log.e("SXS", "skipPreChapter: "+111);
         //载入上一章。
         if (prevChapter()) {
-            Log.e("SXS", "skipPreChapter: "+222);
             mCurPage = getCurPage(0);
             mPageView.refreshPage();
         }
@@ -433,10 +431,10 @@ public abstract class PageLoader {
 
     //跳转到下一章
     public int skipNextChapter() {
+        Log.e("WWW3", "skipNextChapter: " + isBookOpen);
         if (!isBookOpen) {
             return mCurChapterPos;
         }
-
         //判断是否达到章节的终止点
         if (nextChapter()) {
             mCurPage = getCurPage(0);
@@ -469,7 +467,7 @@ public abstract class PageLoader {
             //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
             mCurPage.position = 0;
         }
-
+        //openChapter();
         //需要对ScrollAnimation进行重新布局
         mPageView.refreshPage();
     }
@@ -863,7 +861,6 @@ public abstract class PageLoader {
 //            mStatus=STATUS_ERROR;
 //        }
 //        mPageView.drawCurPage(false);
-        Log.e("WWW", "openChapter: " + mCurChapterPos);
         mCurPageList = loadPageList(mCurChapterPos);
         if(mCurPageList==null){
             return;
@@ -872,6 +869,7 @@ public abstract class PageLoader {
         preLoadNextChapter();
         //加载完成
         mStatus = STATUS_FINISH;
+        Log.e("WWW1", "openChapter: " + isBookOpen);
         //获取制定页面
         if (!isBookOpen) {
             isBookOpen = true;
@@ -888,7 +886,7 @@ public abstract class PageLoader {
         } else {
             mCurPage = getCurPage(0);
         }
-        Log.e("www", "openChapter: " + 222);
+        Log.e("www2", "openChapter: " + isBookOpen);
         mPageView.drawCurPage(false);
     }
 
@@ -901,6 +899,7 @@ public abstract class PageLoader {
 
     //清除记录，并设定是否缓存数据
     public void closeBook() {
+        Log.e("WWW4", "skipNextChapter: " + isBookOpen);
         isBookOpen = false;
         mPageView = null;
         if (mPreLoadDisp != null) {
@@ -928,7 +927,6 @@ public abstract class PageLoader {
         String paragraph = chapter.getTitle();//默认展示标题
         try {
             while (isTitle || (paragraph = br.readLine()) != null) {
-
                 //重置段落
                 if (!isTitle) {
                     paragraph = paragraph.replaceAll("\\s", "");
@@ -1222,7 +1220,7 @@ public abstract class PageLoader {
     void drawContent(Bitmap bitmap) {
         Canvas canvas = new Canvas(bitmap);
         if (mPageMode == PageView.PAGE_MODE_SCROLL) {
-            canvas.drawColor(mPageBg);
+                canvas.drawColor(mPageBg);
         }
         // mPageChangeListener.onShowAdm(true);
         /******绘制内容****/
@@ -1248,7 +1246,6 @@ public abstract class PageLoader {
                     tip = "文件解析错误";
                     break;
             }
-        //    if(STATUS_ERROR!=mStatus) {
                 //将提示语句放到正中间
                 Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
                 float textHeight = fontMetrics.top - fontMetrics.bottom;
@@ -1256,26 +1253,12 @@ public abstract class PageLoader {
                 float pivotX = (mDisplayWidth - textWidth) / 2;
                 float pivotY = (mDisplayHeight - textHeight) / 2;
                 canvas.drawText(tip, pivotX, pivotY, mTextPaint);
-//            }else {
-//                Bitmap bitmap_clicke = BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.add);
-//                // 将画布坐标系移动到画布中央
-//                canvas.translate(mVisibleWidth/2,mVisibleHeight/2);
-//
-//                // 指定图片绘制区域(左上角的四分之一)
-//                Rect src = new Rect(0,0,bitmap.getWidth()/2,bitmap.getHeight()/2);
-//
-//                // 指定图片在屏幕上显示的区域
-//                Rect dst = new Rect(0,0,200,400);
-//
-//                // 绘制图片
-//                canvas.drawBitmap(bitmap_clicke,src,dst,null);
-//            }
         } else {
             float top;
 
             if (mPageMode == PageView.PAGE_MODE_SCROLL) {
                 top = -mTextPaint.getFontMetrics().top;
-                Log.e("WWW", "drawContent: "+top+" "+NO_TOUTCH_HIGHT);
+                //Log.e("WWW", "drawContent: "+top+" "+NO_TOUTCH_HIGHT);
             } else {
                 top = mMarginHeight - mTextPaint.getFontMetrics().top+NO_TOUTCH_HIGHT;
             }
@@ -1338,7 +1321,6 @@ public abstract class PageLoader {
                     }
 //                    mPageChangeListener.onShowAdm(false);
                 } else {
-                    Log.e("AQA", "drawContent: "+6655555);
                     //mPageChangeListener.onPageError(mCurChapterPos);
 //                    mPageChangeListener.onShowAdm(true);
                 }

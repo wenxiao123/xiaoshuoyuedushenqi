@@ -215,6 +215,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initData() {
+//        t1=System.currentTimeMillis();
+//        Log.e("WQW", "initData: "+0);
         try {
             mCollBook = (CollBookBean) getIntent().getSerializableExtra(EXTRA_COLL_BOOK);
             chpter_id = getIntent().getStringExtra(CHPTER_ID);
@@ -227,11 +229,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 status = 0 + "";
             }
             load_path = getIntent().getStringExtra(LOAD_PATH);
-            if(mCollBook.getIsLocal()==true){
-                path = Constant.BOOK_ADRESS + "/"+load_path+"/";
-            }else {
+//            if(mCollBook.getIsLocal()==true){
+//                path = Constant.BOOK_ADRESS + "/"+load_path+"/";
+//            }else {
                 path = Constant.BOOK_ADRESS + "/"+mCollBook.get_id()+"/";
-            }
+//            }
             mVmContentInfo = new VMBookContentInfo(getApplicationContext(), this);
             mStyle = SpUtil.getTextStyle();
             mDbManager = DatabaseManager.getInstance();
@@ -240,7 +242,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             List<Cataloginfo> cataloginfos = mDbManager.queryAllCataloginfo(mCollBook.get_id());
             Collections.reverse(cataloginfos);
             mCollBook.setCataloginfos(cataloginfos);
-            post_adm(1);
+            //post_adm(1);
         } catch (Exception ex) {
             finish();
         }
@@ -294,9 +296,11 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             txt_page.stopAutoPlay();
         }
     }
-
+    long t1,t2,t3;
     @Override
     protected void initView() {
+//        t2=System.currentTimeMillis();
+//        Log.e("WQW", "initView: "+(t2-t1));
         App.init(this);
         tv_read_day_and_night_mode = findViewById(R.id.tv_read_day_and_night_mode);
         tv_jainju = findViewById(R.id.tv_jainju);
@@ -1168,6 +1172,8 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void doAfterInit() {
+//        t3=System.currentTimeMillis();
+//        Log.e("WQW", "doAfterInit: "+(t3-t2));
         if (isNightMode) {
             iv_read_day_and_night.setImageResource(R.mipmap.icon_day);
             tv_read_day_and_night_mode.setText("日间");
@@ -1231,7 +1237,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onLoadChapter(List<TxtChapter> chapters, int pos) {
                 if (pos % Constant.ADM_MAX == 0) {
-                    post_adm(1);
+                    //post_adm(1);
                 }
                 mVmContentInfo.setNoval_id(mCollBook.get_id());
                 if (is_othersite == true) {
@@ -1444,8 +1450,15 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
             }
         });
         Log.e("qqq4", "doAfterInit: " + chpter_id + " " + page_id);
-        BookRecordBean bookRecordBean = new BookRecordBean(mCollBook.get_id(), Integer.parseInt(chpter_id), Integer.parseInt(page_id));
-        mPageLoader.openBook(mCollBook, bookRecordBean);//chpter_id
+        txt_page.setPrepare(new PageView.PrepareLisition() {
+            @Override
+            public void prepare() {
+                BookRecordBean bookRecordBean = new BookRecordBean(mCollBook.get_id(), Integer.parseInt(chpter_id), Integer.parseInt(page_id));
+                mPageLoader.openBook(mCollBook, bookRecordBean);//chpter_id
+            }
+        });
+//        BookRecordBean bookRecordBean = new BookRecordBean(mCollBook.get_id(), Integer.parseInt(chpter_id), Integer.parseInt(page_id));
+//        mPageLoader.openBook(mCollBook, bookRecordBean);//chpter_id
         tv_begain_reser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1778,6 +1791,7 @@ public class WYReadActivity extends BaseActivity implements View.OnClickListener
                 img_space_samlle.setImageResource(R.mipmap.icon_spacing_small_yes);
                 break;
             case R.id.tv_read_next_chapter:
+                //Log.e("ASA", "skipNextChapter: "+mPageLoader.mStatus);
                 if(mPageLoader.mStatus==STATUS_FINISH) {
                     setCategorySelect(mPageLoader.skipNextChapter());
                 }
